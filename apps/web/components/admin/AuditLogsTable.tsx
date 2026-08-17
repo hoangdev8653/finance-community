@@ -1,0 +1,373 @@
+'use client';
+
+import React, { useState } from 'react';
+import { useAuditLogs } from '@/lib/admin/use-admin';
+import { AuditLogEntity } from '@/types/admin';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/Button';
+import {
+  FileSearch,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  User,
+  Activity,
+  Code,
+  X,
+  Filter,
+} from 'lucide-react';
+
+export function AuditLogsTable() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filterAction, setFilterAction] = useState('');
+  const [filterEntityType, setFilterEntityType] = useState('');
+  const [filterActorId, setFilterActorId] = useState('');
+  const [selectedLog, setSelectedLog] = useState<AuditLogEntity | null>(null);
+
+  const { data, isLoading, isError, refetch } = useAuditLogs({
+    page: currentPage,
+    limit: 15,
+    action: filterAction.trim() || undefined,
+    entityType: filterEntityType.trim() || undefined,
+    actorId: filterActorId.trim() || undefined,
+  });
+
+  const logs = data?.data || [];
+  const meta = data?.meta;
+
+  const handleResetFilters = () => {
+    setFilterAction('');
+    setFilterEntityType('');
+    setFilterActorId('');
+    setCurrentPage(1);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="font-serif text-xl font-bold text-foreground">
+            Security & Governance Audit Logs
+          </h2>
+          <p className="text-xs text-muted-foreground font-mono">
+            {meta ? `${meta.totalItems} immutable security log events recorded` : 'Loading audit logs...'}
+          </p>
+        </div>
+      </div>
+
+      {/* Filter Toolbar */}
+      <div className="rounded-lg border border-border bg-surface p-4 space-y-3">
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground font-mono">
+          <Filter className="h-3.5 w-3.5 text-primary" />
+          <span>Audit Filters</span>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label htmlFor="filter-action" className="text-2xs font-mono text-muted-foreground">
+              Action Name
+            </label>
+            <input
+              id="filter-action"
+              type="text"
+              value={filterAction}
+              onChange={(e) => {
+                setFilterAction(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="e.g. ROLE_ASSIGN"
+              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="filter-entity-type" className="text-2xs font-mono text-muted-foreground">
+              Entity Type
+            </label>
+            <input
+              id="filter-entity-type"
+              type="text"
+              value={filterEntityType}
+              onChange={(e) => {
+                setFilterEntityType(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="e.g. users, posts"
+              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="filter-actor-id" className="text-2xs font-mono text-muted-foreground">
+              Actor User UUID
+            </label>
+            <input
+              id="filter-actor-id"
+              type="text"
+              value={filterActorId}
+              onChange={(e) => {
+                setFilterActorId(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="Actor UUID..."
+              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+            />
+          </div>
+        </div>
+
+        {(filterAction || filterEntityType || filterActorId) && (
+          <div className="flex justify-end pt-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetFilters}
+              className="text-xs h-7 font-mono"
+            >
+              Reset Filters
+            </Button>
+          </div>
+        )}
+      </div>
+
+      {/* Loading Skeletons */}
+      {isLoading && (
+        <div className="space-y-3">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div
+              key={i}
+              className="h-16 rounded-lg border border-border bg-surface/50 animate-pulse"
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && (
+        <div
+          role="alert"
+          className="p-8 text-center rounded-lg border border-danger/20 bg-danger/5 space-y-3"
+        >
+          <p className="text-sm font-medium text-foreground">
+            Failed to load audit logs.
+          </p>
+          <Button variant="outline" size="sm" onClick={() => refetch()}>
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!isLoading && !isError && logs.length === 0 && (
+        <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
+          <FileSearch className="h-8 w-8 text-muted-foreground mx-auto" />
+          <h3 className="text-sm font-semibold text-foreground">No Audit Logs Found</h3>
+          <p className="text-xs text-muted-foreground">
+            No matching audit records exist for the specified filters.
+          </p>
+        </div>
+      )}
+
+      {/* Desktop Table View */}
+      {!isLoading && !isError && logs.length > 0 && (
+        <>
+          <div className="hidden md:block overflow-x-auto rounded-lg border border-border bg-surface">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-3xs">
+                <tr>
+                  <th className="py-3 px-4">Action</th>
+                  <th className="py-3 px-4">Actor</th>
+                  <th className="py-3 px-4">Entity</th>
+                  <th className="py-3 px-4">Reason / Notes</th>
+                  <th className="py-3 px-4">Timestamp</th>
+                  <th className="py-3 px-4 text-right">Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border font-mono">
+                {logs.map((log) => {
+                  const formattedDate = new Date(log.created_at).toLocaleDateString(
+                    'en-US',
+                    { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                  );
+
+                  return (
+                    <tr key={log.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-1.5">
+                          <Activity className="h-3 w-3 text-primary shrink-0" />
+                          <span className="font-semibold text-foreground">{log.action}</span>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4 text-2xs text-muted-foreground">
+                        {log.actor_id ? `#${log.actor_id.slice(0, 8)}` : 'System'}
+                      </td>
+
+                      <td className="py-3 px-4 text-2xs">
+                        <span className="text-foreground">{log.entity_type}</span>
+                        {log.entity_id && (
+                          <span className="text-muted-foreground"> #{log.entity_id.slice(0, 8)}</span>
+                        )}
+                      </td>
+
+                      <td className="py-3 px-4 text-2xs text-muted-foreground font-sans max-w-xs truncate">
+                        {log.reason || '-'}
+                      </td>
+
+                      <td className="py-3 px-4 text-2xs text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          <span>{formattedDate}</span>
+                        </div>
+                      </td>
+
+                      <td className="py-3 px-4 text-right">
+                        {log.metadata ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setSelectedLog(log)}
+                            className="text-2xs h-6 px-2 gap-1 font-mono"
+                          >
+                            <Code className="h-3 w-3" />
+                            <span>JSON</span>
+                          </Button>
+                        ) : (
+                          <span className="text-muted-foreground text-3xs">-</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Responsive Cards */}
+          <div className="md:hidden space-y-3">
+            {logs.map((log) => {
+              const formattedDate = new Date(log.created_at).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+
+              return (
+                <div
+                  key={log.id}
+                  className="rounded-lg border border-border bg-surface p-4 space-y-2.5 font-mono text-xs"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold text-foreground">{log.action}</span>
+                    <span className="text-2xs text-muted-foreground">{formattedDate}</span>
+                  </div>
+
+                  <div className="flex items-center gap-4 text-2xs text-muted-foreground">
+                    <div>Actor: {log.actor_id ? `#${log.actor_id.slice(0, 8)}` : 'System'}</div>
+                    <div>
+                      Target: {log.entity_type} {log.entity_id ? `#${log.entity_id.slice(0, 8)}` : ''}
+                    </div>
+                  </div>
+
+                  {log.reason && (
+                    <p className="text-2xs text-foreground/90 font-sans italic">
+                      "{log.reason}"
+                    </p>
+                  )}
+
+                  {log.metadata && (
+                    <div className="pt-1 flex justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setSelectedLog(log)}
+                        className="text-2xs h-6 px-2"
+                      >
+                        Inspect Metadata
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination Controls */}
+          {meta && meta.totalPages > 1 && (
+            <div className="flex items-center justify-between gap-4 pt-4 border-t border-border text-xs font-mono text-muted-foreground">
+              <div>
+                Page {meta.page} of {meta.totalPages} ({meta.totalItems} events)
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={!meta.hasPreviousPage}
+                  aria-label="Previous Page"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                  disabled={!meta.hasNextPage}
+                  aria-label="Next Page"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Metadata Inspector Modal */}
+      {selectedLog && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="audit-meta-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in"
+        >
+          <div className="relative w-full max-w-lg rounded-lg border border-border bg-background p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div>
+                <h3 id="audit-meta-title" className="font-mono text-sm font-bold text-foreground">
+                  Audit Event Metadata
+                </h3>
+                <p className="text-2xs font-mono text-muted-foreground">
+                  {selectedLog.action} (Event #{selectedLog.id.slice(0, 8)})
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedLog(null)}
+                aria-label="Close dialog"
+                className="rounded p-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <pre className="p-3 rounded-md bg-muted/30 border border-border text-2xs font-mono text-foreground overflow-x-auto max-h-80">
+              {JSON.stringify(selectedLog.metadata, null, 2)}
+            </pre>
+
+            <div className="flex justify-end pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedLog(null)}
+                className="font-mono text-xs"
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

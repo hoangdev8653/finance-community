@@ -1,0 +1,29 @@
+import { IsString, IsNotEmpty, MaxLength, Matches, IsIn, IsOptional, IsInt, Min } from 'class-validator';
+
+export class CreateCategoryDto {
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(120)
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message: 'Slug must be in kebab-case format (e.g. market-news)',
+  })
+  slug!: string;
+
+  @IsString()
+  @IsIn(['SERIES', 'COMMUNITY'])
+  scope!: 'SERIES' | 'COMMUNITY';
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+}
