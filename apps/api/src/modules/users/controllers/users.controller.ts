@@ -5,6 +5,7 @@ import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller()
@@ -35,6 +36,7 @@ export class UsersController {
     return this.profilesService.updateProfile(user.sub, dto);
   }
 
+  @Public()
   @Get('profiles/:username')
   @ApiOperation({ summary: 'Get public user profile by username' })
   @ApiResponse({ status: 200, description: 'Public profile object' })

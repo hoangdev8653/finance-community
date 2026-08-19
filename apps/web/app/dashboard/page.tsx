@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { DashboardView } from '@/components/dashboard/DashboardView';
+import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Analyst Dashboard',
@@ -14,7 +15,9 @@ export const metadata: Metadata = buildPageMetadata({
 export default function DashboardPage() {
   return (
     <AuthGuard>
-      <DashboardView />
+      <AppShell>
+        <DashboardView />
+      </AppShell>
     </AuthGuard>
   );
 }

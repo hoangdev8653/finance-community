@@ -13,36 +13,37 @@ export function CategoryFilterBar({
   selectedCategoryId,
   onSelectCategory,
 }: CategoryFilterBarProps) {
-  const { data: categories = [], isLoading } = useCategories();
+  const { data: fetchedCategories = [], isLoading } = useCategories();
+
+  // Only show COMMUNITY scope categories on home feed (exclude SERIES)
+  const categories = fetchedCategories.filter((c) => c.scope === 'COMMUNITY');
 
   if (isLoading) {
     return (
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-        <div className="h-8 w-20 bg-muted animate-pulse rounded-md" />
-        <div className="h-8 w-24 bg-muted animate-pulse rounded-md" />
-        <div className="h-8 w-28 bg-muted animate-pulse rounded-md" />
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        <div className="h-9 w-16 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full" />
+        <div className="h-9 w-28 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full" />
+        <div className="h-9 w-32 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full" />
+        <div className="h-9 w-28 bg-slate-200 dark:bg-slate-800 animate-pulse rounded-full" />
       </div>
     );
   }
 
-  if (categories.length === 0) {
-    return null;
-  }
-
   return (
-    <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" role="toolbar" aria-label="Filter by category">
+    <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none" role="toolbar" aria-label="Filter by category">
       <button
         type="button"
         onClick={() => onSelectCategory(undefined)}
         aria-pressed={!selectedCategoryId}
+        aria-label="All Topics"
         className={cn(
-          'px-3.5 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
+          'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer',
           !selectedCategoryId
-            ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-            : 'border border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-muted'
+            ? 'bg-blue-600 text-white font-bold shadow-xs'
+            : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
         )}
       >
-        All Topics
+        All
       </button>
 
       {categories.map((category) => {
@@ -54,10 +55,10 @@ export function CategoryFilterBar({
             onClick={() => onSelectCategory(category.id)}
             aria-pressed={isSelected}
             className={cn(
-              'px-3.5 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
+              'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer',
               isSelected
-                ? 'bg-primary text-primary-foreground font-semibold shadow-2xs'
-                : 'border border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-muted'
+                ? 'bg-blue-600 text-white font-bold shadow-xs'
+                : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
             )}
           >
             {category.name}

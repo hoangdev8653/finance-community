@@ -8,6 +8,8 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { SeriesGrid } from '@/components/series/SeriesGrid';
 import { SeriesSkeleton } from '@/components/series/SeriesSkeleton';
 import { BookOpen } from 'lucide-react';
+import { AppShell } from '@/components/layout/AppShell';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Educational Series & Curriculums',
@@ -39,27 +41,23 @@ export default async function SeriesPage() {
   ]);
 
   return (
-    <div className="space-y-8">
-      <JsonLd data={[collectionJsonLd, breadcrumbsJsonLd]} />
+    <AppShell>
+      <div className="space-y-8">
+        <JsonLd data={[collectionJsonLd, breadcrumbsJsonLd]} />
 
-      {/* Page Header */}
-      <div className="space-y-2 border-b border-border pb-6">
-        <div className="flex items-center gap-2 text-xs font-mono text-primary font-medium">
-          <BookOpen className="h-4 w-4" />
-          <span className="uppercase tracking-widest">Educational Tracks</span>
-        </div>
-        <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-          Curated Research Series
-        </h1>
-        <p className="text-sm text-muted-foreground max-w-2xl">
-          Deep-dive, multi-part investment research curricula structured into comprehensive chapters.
-        </p>
+        {/* Page Header */}
+        <PageHeader
+          icon={BookOpen}
+          label="Educational Tracks"
+          title="Curated Research Series"
+          subtitle="Deep-dive, multi-part investment research curricula structured into comprehensive chapters."
+        />
+
+        {/* Series Grid */}
+        <Suspense fallback={<SeriesSkeleton variant="grid" />}>
+          <SeriesGrid series={seriesList} />
+        </Suspense>
       </div>
-
-      {/* Series Grid */}
-      <Suspense fallback={<SeriesSkeleton variant="grid" />}>
-        <SeriesGrid series={seriesList} />
-      </Suspense>
-    </div>
+    </AppShell>
   );
 }

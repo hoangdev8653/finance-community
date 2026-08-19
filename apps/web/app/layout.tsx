@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Newsreader, JetBrains_Mono } from 'next/font/google';
+import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ToastProvider } from '@/components/ui/Toast';
@@ -12,9 +12,10 @@ const inter = Inter({
   display: 'swap',
 });
 
-const newsreader = Newsreader({
+const playfair = Playfair_Display({
   subsets: ['latin'],
   variable: '--font-serif',
+  weight: ['400', '500', '600', '700', '800'],
   style: ['normal', 'italic'],
   display: 'swap',
 });
@@ -62,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${newsreader.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>

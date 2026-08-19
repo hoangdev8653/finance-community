@@ -5,12 +5,14 @@ import { CreateTagDto } from '../dto/create-tag.dto';
 import { QueryTagsDto } from '../dto/query-tags.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
+import { Public } from '../../auth/decorators/public.decorator';
 
 @ApiTags('Tags')
 @Controller('tags')
 export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Search content tags' })
   @ApiResponse({ status: 200, description: 'Array of TagEntity objects' })
@@ -18,6 +20,7 @@ export class TagsController {
     return this.tagsService.searchTags(query.search, query.limit);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get tag detail by ID' })
   @ApiResponse({ status: 200, description: 'TagEntity object' })

@@ -6,7 +6,6 @@ import { PostEntity } from '@/types/content';
 import { PostCard } from './PostCard';
 import { PostCardSkeleton } from './PostCardSkeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
-import { ErrorState } from '@/components/feedback/ErrorState';
 import { Button } from '@/components/ui/Button';
 
 interface FeedListProps {
@@ -30,11 +29,9 @@ export function FeedList({
     data,
     isLoading,
     isError,
-    error,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    refetch,
   } = usePostsFeed({
     contentType,
     categoryId,
@@ -54,22 +51,9 @@ export function FeedList({
     );
   }
 
-  if (isError) {
-    return (
-      <ErrorState
-        title="Unable to load feed"
-        message={
-          (error as any)?.message ||
-          'Failed to retrieve articles. Please check your connection and try again.'
-        }
-        onRetry={() => refetch()}
-      />
-    );
-  }
-
   const allPosts = data?.pages.flatMap((page) => page.data) || [];
 
-  if (allPosts.length === 0) {
+  if (allPosts.length === 0 || isError) {
     return (
       <EmptyState
         title="No published analyses found"
@@ -98,7 +82,7 @@ export function FeedList({
         <div className="pt-4 flex justify-center">
           <Button
             variant="outline"
-            className="w-full sm:w-auto min-w-[200px] border-border text-foreground font-medium hover:bg-muted"
+            className="w-full sm:w-auto min-w-[200px] border-border text-foreground font-medium hover:bg-muted cursor-pointer"
             onClick={() => fetchNextPage()}
             isLoading={isFetchingNextPage}
             disabled={isFetchingNextPage}

@@ -31,11 +31,11 @@ export function SearchBar() {
         type="button"
         onClick={() => setIsOpen(true)}
         aria-label="Open search dialog"
-        className="group relative flex items-center justify-between w-full h-9 pl-9 pr-3 text-xs rounded-md border border-input bg-surface text-muted-foreground hover:border-primary/50 hover:text-foreground transition-all cursor-pointer"
+        className="group relative flex items-center justify-between w-full h-10 pl-10 pr-4 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 font-medium hover:border-blue-500/50 hover:text-slate-950 dark:hover:text-white transition-all cursor-pointer shadow-2xs"
       >
-        <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-        <span className="truncate">Search analysis, tags, or topics...</span>
-        <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 text-3xs font-mono font-medium text-muted-foreground shadow-2xs">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+        <span className="truncate text-slate-600 dark:text-slate-300 font-medium">Search analysis, tags, or topics...</span>
+        <kbd className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-2 py-0.5 text-xs font-mono font-semibold text-slate-600 dark:text-slate-300 shadow-2xs">
           {shortcutKey}
         </kbd>
       </button>

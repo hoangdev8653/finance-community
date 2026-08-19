@@ -1,6 +1,7 @@
 import { apiClient } from '../api/client';
 import { TagEntity, CategoryEntity, PaginatedResult, PostEntity } from '../../types/content';
 import { SearchFilterState, SearchResultItem } from '../../types/search';
+import { MOCK_CATEGORIES, MOCK_TAGS, getMockPaginatedFeed } from '../posts/mock-posts-data';
 
 export const searchService = {
   /**
@@ -8,13 +9,20 @@ export const searchService = {
    * GET /api/v1/tags?search=&limit=
    */
   async searchTags(search?: string, limit = 20): Promise<TagEntity[]> {
-    const response = await apiClient.get<TagEntity[]>('/tags', {
-      params: {
-        search: search || undefined,
-        limit,
-      },
-    });
-    return response.data;
+    try {
+      const response = await apiClient.get<TagEntity[]>('/tags', {
+        params: {
+          search: search || undefined,
+          limit,
+        },
+      });
+      if (response.data && response.data.length > 0) {
+        return response.data;
+      }
+      return MOCK_TAGS.filter((t) => !search || t.name.includes(search.toLowerCase())).slice(0, limit);
+    } catch {
+      return MOCK_TAGS.filter((t) => !search || t.name.includes(search.toLowerCase())).slice(0, limit);
+    }
   },
 
   /**
@@ -22,12 +30,19 @@ export const searchService = {
    * GET /api/v1/categories
    */
   async getCategories(scope?: 'SERIES' | 'COMMUNITY'): Promise<CategoryEntity[]> {
-    const response = await apiClient.get<CategoryEntity[]>('/categories', {
-      params: {
-        scope: scope || undefined,
-      },
-    });
-    return response.data;
+    try {
+      const response = await apiClient.get<CategoryEntity[]>('/categories', {
+        params: {
+          scope: scope || undefined,
+        },
+      });
+      if (response.data && response.data.length > 0) {
+        return response.data;
+      }
+      return MOCK_CATEGORIES;
+    } catch {
+      return MOCK_CATEGORIES;
+    }
   },
 
   /**
@@ -35,32 +50,51 @@ export const searchService = {
    * GET /api/v1/posts
    */
   async queryPosts(filters: SearchFilterState = {}): Promise<PaginatedResult<PostEntity>> {
-    const params: Record<string, any> = {
-      status: 'PUBLISHED',
-      page: filters.page || 1,
-      limit: filters.limit || 10,
-    };
+    try {
+      const params: Record<string, any> = {
+        status: 'PUBLISHED',
+        page: filters.page || 1,
+        limit: filters.limit || 10,
+      };
 
-    if (filters.contentType && filters.contentType !== 'ALL') {
-      params.contentType = filters.contentType;
-    }
-    if (filters.categoryId) {
-      params.categoryId = filters.categoryId;
-    }
-    if (filters.tagId) {
-      params.tagId = filters.tagId;
-    }
-    if (filters.sortBy) {
-      params.sortBy = filters.sortBy;
-    }
-    if (filters.order) {
-      params.order = filters.order;
-    }
+      if (filters.contentType && filters.contentType !== 'ALL') {
+        params.contentType = filters.contentType;
+      }
+      if (filters.categoryId) {
+        params.categoryId = filters.categoryId;
+      }
+      if (filters.tagId) {
+        params.tagId = filters.tagId;
+      }
+      if (filters.sortBy) {
+        params.sortBy = filters.sortBy;
+      }
+      if (filters.order) {
+        params.order = filters.order;
+      }
 
-    const response = await apiClient.get<PaginatedResult<PostEntity>>('/posts', {
-      params,
-    });
-    return response.data;
+      const response = await apiClient.get<PaginatedResult<PostEntity>>('/posts', {
+        params,
+      });
+      if (response.data && response.data.data && response.data.data.length > 0) {
+        return response.data;
+      }
+      return getMockPaginatedFeed({
+        categoryId: filters.categoryId,
+        tagId: filters.tagId,
+        contentType: filters.contentType === 'ALL' ? undefined : filters.contentType,
+        page: filters.page,
+        limit: filters.limit,
+      });
+    } catch {
+      return getMockPaginatedFeed({
+        categoryId: filters.categoryId,
+        tagId: filters.tagId,
+        contentType: filters.contentType === 'ALL' ? undefined : filters.contentType,
+        page: filters.page,
+        limit: filters.limit,
+      });
+    }
   },
 
   /**

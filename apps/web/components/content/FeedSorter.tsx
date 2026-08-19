@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Clock, Sparkles } from 'lucide-react';
-import { cn } from '@/lib/utils/cn';
+import { ChevronDown } from 'lucide-react';
 
 export type FeedSortOption = 'latest' | 'recent';
 
@@ -12,39 +11,19 @@ interface FeedSorterProps {
 }
 
 export function FeedSorter({ currentSort, onSortChange }: FeedSorterProps) {
-  return (
-    <div className="flex items-center gap-1 p-0.5 rounded-md border border-border bg-surface text-xs" role="tablist" aria-label="Sort feed items">
-      <button
-        type="button"
-        role="tab"
-        aria-selected={currentSort === 'latest'}
-        onClick={() => onSortChange('latest')}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1 rounded-sm font-medium transition-colors focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary',
-          currentSort === 'latest'
-            ? 'bg-muted text-foreground font-semibold shadow-2xs'
-            : 'text-muted-foreground hover:text-foreground'
-        )}
-      >
-        <Clock className="h-3 w-3" />
-        <span>Latest</span>
-      </button>
+  const toggleSort = () => {
+    onSortChange(currentSort === 'latest' ? 'recent' : 'latest');
+  };
 
-      <button
-        type="button"
-        role="tab"
-        aria-selected={currentSort === 'recent'}
-        onClick={() => onSortChange('recent')}
-        className={cn(
-          'flex items-center gap-1.5 px-3 py-1 rounded-sm font-medium transition-colors focus:outline-hidden focus-visible:ring-1 focus-visible:ring-primary',
-          currentSort === 'recent'
-            ? 'bg-muted text-foreground font-semibold shadow-2xs'
-            : 'text-muted-foreground hover:text-foreground'
-        )}
-      >
-        <Sparkles className="h-3 w-3" />
-        <span>Recent</span>
-      </button>
-    </div>
+  return (
+    <button
+      type="button"
+      onClick={toggleSort}
+      className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white transition-all shadow-2xs cursor-pointer"
+      aria-label="Toggle sort order"
+    >
+      <span>Sort</span>
+      <ChevronDown className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+    </button>
   );
 }

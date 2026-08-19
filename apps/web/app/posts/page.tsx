@@ -8,6 +8,7 @@ import {
 import { JsonLd } from '@/components/seo/JsonLd';
 import { PostsExplorerView } from '@/components/posts/PostsExplorerView';
 import { PostCardSkeleton } from '@/components/content/PostCardSkeleton';
+import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Research Archives & Financial Analyses',
@@ -29,10 +30,10 @@ export default function PostsPage() {
   ]);
 
   return (
-    <>
+    <AppShell>
       <JsonLd data={collectionSchema} />
       <JsonLd data={breadcrumbsSchema} />
-      <div className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
+      <div className="space-y-6">
         <Suspense
           fallback={
             <div className="space-y-4">
@@ -45,6 +46,6 @@ export default function PostsPage() {
           <PostsExplorerView />
         </Suspense>
       </div>
-    </>
+    </AppShell>
   );
 }

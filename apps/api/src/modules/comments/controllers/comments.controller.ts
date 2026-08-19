@@ -20,6 +20,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
 import { EmailVerificationGuard } from '../../auth/guards/email-verification.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
 
 @ApiTags('Comments')
@@ -30,6 +31,7 @@ export class CommentsController {
     private readonly jitService: JitProvisioningService,
   ) {}
 
+  @Public()
   @Get('posts/:postId/comments')
   @ApiOperation({ summary: 'Get thread comments for a post with soft-delete body masking' })
   @ApiResponse({ status: 200, description: 'Paginated list of SerializedComment objects' })

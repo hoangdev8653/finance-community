@@ -20,6 +20,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
 import { EmailVerificationGuard } from '../../auth/guards/email-verification.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
 
 @ApiTags('Posts')
@@ -30,6 +31,7 @@ export class PostsController {
     private readonly jitService: JitProvisioningService,
   ) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Get published posts feed with pagination and filters' })
   @ApiResponse({ status: 200, description: 'Paginated list of PostEntity items' })
@@ -37,6 +39,7 @@ export class PostsController {
     return this.postsService.findFeedPaginated(query);
   }
 
+  @Public()
   @Get(':contentType/:slug')
   @ApiOperation({ summary: 'Get published post detail by content type and slug' })
   @ApiResponse({ status: 200, description: 'Post detail object with tags and media' })

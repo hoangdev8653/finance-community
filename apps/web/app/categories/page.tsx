@@ -7,6 +7,7 @@ import {
 } from '@/lib/seo/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { CategoriesDirectoryView } from '@/components/categories/CategoriesDirectoryView';
+import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Research Sectors & Categories',
@@ -28,12 +29,12 @@ export default function CategoriesPage() {
   ]);
 
   return (
-    <>
+    <AppShell>
       <JsonLd data={collectionSchema} />
       <JsonLd data={breadcrumbsSchema} />
-      <div className="container mx-auto max-w-6xl px-4 py-8 sm:py-10">
+      <div className="space-y-6">
         <CategoriesDirectoryView />
       </div>
-    </>
+    </AppShell>
   );
 }

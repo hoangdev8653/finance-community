@@ -7,6 +7,7 @@ import { generateProfileJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/stru
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ProfileView } from '@/components/profile/ProfileView';
 import { ProfileSkeleton } from '@/components/profile/ProfileSkeleton';
+import { AppShell } from '@/components/layout/AppShell';
 
 interface PageProps {
   params: Promise<{
@@ -65,11 +66,11 @@ export default async function ProfilePage({ params }: PageProps) {
   ]);
 
   return (
-    <>
+    <AppShell>
       <JsonLd data={[profileJsonLd, breadcrumbsJsonLd]} />
       <Suspense fallback={<ProfileSkeleton />}>
         <ProfileView initialProfile={profile} />
       </Suspense>
-    </>
+    </AppShell>
   );
 }

@@ -9,12 +9,14 @@ import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
 import { PermissionGuard } from '../../auth/guards/permission.guard';
 import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { Public } from '../../auth/decorators/public.decorator';
 
 @ApiTags('Categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
+  @Public()
   @Get()
   @ApiOperation({ summary: 'Get list of content categories' })
   @ApiResponse({ status: 200, description: 'Array of CategoryEntity objects' })
@@ -22,6 +24,7 @@ export class CategoriesController {
     return this.categoriesService.getCategories(query.scope);
   }
 
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get category detail by ID' })
   @ApiResponse({ status: 200, description: 'CategoryEntity object' })
