@@ -1,0 +1,716 @@
+{
+  "info": {
+    "_postman_id": "78a6c7c6-6e68-4419-b86a-16b7c80dc827",
+    "name": "Finance Community API",
+    "description": "Clean, human-readable Postman collection for the Finance Community Platform (NestJS v1).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_JWT_ACCESS_TOKEN",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register New Account",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!@#\",\n  \"username\": \"hoangdev\",\n  \"displayName\": \"Hoang Finance\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login with Email & Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"Password123!@#\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login with Google OAuth",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"GOOGLE_OAUTH_ID_TOKEN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/google",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "google"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Users & Profiles",
+      "item": [
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Current User Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Hoang Investment Specialist\",\n  \"bio\": \"Chuyên gia phân tích thị trường & định giá doanh nghiệp.\",\n  \"avatarUrl\": \"https://res.cloudinary.com/demo/avatar.png\",\n  \"websiteUrl\": \"https://financepulse.community\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/me/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "me", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Get Public Profile by Username",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/profiles/hoangdev",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "profiles", "hoangdev"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Posts & Articles",
+      "item": [
+        {
+          "name": "List Posts (Feed & Filter)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&sort=LATEST&contentType=COMMUNITY",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "sort", "value": "LATEST" },
+                { "key": "contentType", "value": "COMMUNITY" },
+                { "key": "categoryId", "value": "", "disabled": true },
+                { "key": "tagId", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Post Details by Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/COMMUNITY/phan-tich-co-phieu-vcb-2026",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "COMMUNITY", "phan-tich-co-phieu-vcb-2026"]
+            }
+          }
+        },
+        {
+          "name": "Create New Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Phân tích định giá cổ phiếu Ngân hàng VCB 2026\",\n  \"content\": \"Nội dung phân tích tài chính chuyên sâu với các mô hình định giá...\",\n  \"excerpt\": \"Tóm tắt tiềm năng tăng trưởng và định giá P/B của VCB.\",\n  \"contentType\": \"COMMUNITY\",\n  \"categoryId\": \"CAT_UUID_HERE\",\n  \"tagIds\": [\"TAG_UUID_1\"],\n  \"status\": \"PUBLISHED\",\n  \"coverImageUrl\": \"https://res.cloudinary.com/demo/vcb.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts"]
+            }
+          }
+        },
+        {
+          "name": "Update Existing Post",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cập nhật mới phân tích VCB\",\n  \"content\": \"Nội dung mới cập nhật...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Categories & Tags",
+      "item": [
+        {
+          "name": "List All Categories",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"]
+            }
+          }
+        },
+        {
+          "name": "Get Category Details",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/CAT_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "CAT_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Create New Category (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Định giá doanh nghiệp\",\n  \"slug\": \"dinh-gia-doanh-nghiep\",\n  \"description\": \"Chuyên mục phân tích định giá DCF, P/E, P/B\",\n  \"icon\": \"Calculator\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories"]
+            }
+          }
+        },
+        {
+          "name": "List All Tags",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags"]
+            }
+          }
+        },
+        {
+          "name": "Get Tag Details",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/TAG_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "TAG_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Create New Tag",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"VN30\",\n  \"slug\": \"vn30\",\n  \"description\": \"Nhóm cổ phiếu vốn hóa lớn VN30\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Educational Series",
+      "item": [
+        {
+          "name": "List All Series",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series"]
+            }
+          }
+        },
+        {
+          "name": "Get Series Details by Slug",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series/nhap-mon-dinh-gia-co-phieu",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series", "nhap-mon-dinh-gia-co-phieu"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Comments & Discussions",
+      "item": [
+        {
+          "name": "Get Comments by Post",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "comments"]
+            }
+          }
+        },
+        {
+          "name": "Add Comment to Post",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Góc nhìn phân tích rất hay và thực tế!\",\n  \"parentId\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/comments",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "comments"]
+            }
+          }
+        },
+        {
+          "name": "Edit Comment",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Nội dung bình luận đã chỉnh sửa...\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/COMMENT_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments", "COMMENT_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Comment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/COMMENT_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments", "COMMENT_UUID_HERE"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Reactions & Social",
+      "item": [
+        {
+          "name": "Toggle Post Like",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"LIKE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/reactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "reactions"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Comment Like",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"LIKE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/comments/COMMENT_UUID_HERE/reactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "comments", "COMMENT_UUID_HERE", "reactions"]
+            }
+          }
+        },
+        {
+          "name": "Get Post Reactions Summary",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/reactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "reactions"]
+            }
+          }
+        },
+        {
+          "name": "Follow User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/TARGET_USER_UUID/follow",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "TARGET_USER_UUID", "follow"]
+            }
+          }
+        },
+        {
+          "name": "Unfollow User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/TARGET_USER_UUID/follow",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "TARGET_USER_UUID", "follow"]
+            }
+          }
+        },
+        {
+          "name": "Get Followers List",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/TARGET_USER_UUID/followers",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "TARGET_USER_UUID", "followers"]
+            }
+          }
+        },
+        {
+          "name": "Get Following List",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/TARGET_USER_UUID/following",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", "TARGET_USER_UUID", "following"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Notifications",
+      "item": [
+        {
+          "name": "List User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mark Single Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/NOTIF_UUID_HERE/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications", "NOTIF_UUID_HERE", "read"]
+            }
+          }
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/read-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications", "read-all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Media & Uploads",
+      "item": [
+        {
+          "name": "Request Upload Signature (Cloudinary)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder\": \"posts\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/media/upload-signature",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "media", "upload-signature"]
+            }
+          }
+        },
+        {
+          "name": "Save Uploaded Media Record",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://res.cloudinary.com/demo/image.png\",\n  \"publicId\": \"posts/image123\",\n  \"format\": \"png\",\n  \"bytes\": 102400,\n  \"resourceType\": \"image\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/media",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "media"]
+            }
+          }
+        },
+        {
+          "name": "Get Media Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/media/MEDIA_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "media", "MEDIA_UUID_HERE"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Reports & Moderation",
+      "item": [
+        {
+          "name": "Submit Content Report",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"targetType\": \"POST\",\n  \"targetId\": \"POST_UUID_HERE\",\n  \"reason\": \"SPAM\",\n  \"description\": \"Nội dung có dấu hiệu lừa đảo/spam.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/reports",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Get Moderation Reports Queue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/moderation/reports",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "moderation", "reports"]
+            }
+          }
+        },
+        {
+          "name": "Execute Moderation Action",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reportId\": \"REPORT_UUID_HERE\",\n  \"action\": \"DISMISS\",\n  \"notes\": \"Đã xem xét và không vi phạm tiêu chuẩn cộng đồng.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/moderation/actions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "moderation", "actions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. Admin & Governance",
+      "item": [
+        {
+          "name": "Get Public Feature Flags",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/feature-flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "feature-flags"]
+            }
+          }
+        },
+        {
+          "name": "List All Feature Flags (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/feature-flags",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "feature-flags"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Feature Flag State",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isEnabled\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/feature-flags/ENABLE_COMMUNITY_POSTS",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "feature-flags", "ENABLE_COMMUNITY_POSTS"]
+            }
+          }
+        },
+        {
+          "name": "List System Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Change User Status (Active/Suspended/Banned)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUSPENDED\",\n  \"reason\": \"Vi phạm quy định nhiều lần.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/USER_UUID_HERE/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "USER_UUID_HERE", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
