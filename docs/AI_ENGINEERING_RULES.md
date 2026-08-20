@@ -154,3 +154,22 @@ Ensure:
 - Clear action-based request names (no redundant HTTP method prefix).
 - Proper authentication (`{{token}}` or `noauth`).
 - Accurate URL parameters, query parameters, and realistic request body payloads.
+
+## Rule 20 --- Mandatory i18n & No hardcoded strings
+
+Never hardcode user-facing text strings directly in frontend JSX/TSX.
+- Always declare keys in `apps/web/lib/i18n/types.ts`.
+- Synchronously provide translations in both `vi.ts` (default) and `en.ts`.
+- Access translations via the `useTranslation()` hook `t('namespace.key')`.
+
+## Rule 21 --- Frontend-Backend type contract synchronization
+
+When backend DTOs, Entities, or API responses change, update corresponding TypeScript types in `apps/web/types/` and API client hooks in `apps/web/lib/` to prevent schema drift and runtime errors. Maintain consistent `camelCase` naming.
+
+## Rule 22 --- Secrets and environment safety
+
+Never hardcode credentials, secrets, or API keys into source code. Always access them via environment variables and maintain documentation with dummy values in `.env.example`.
+
+## Rule 23 --- Data integrity & Soft deletion
+
+For essential entities (posts, comments, users, series), prefer soft deletion (`deletedAt` or status flags) to preserve audit trails and avoid foreign key integrity issues. Never return raw database stack traces to clients.
