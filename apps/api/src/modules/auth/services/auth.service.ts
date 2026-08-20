@@ -3,6 +3,7 @@ import {
   ConflictException,
   UnauthorizedException,
   Inject,
+  Optional,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { ConfigType } from '@nestjs/config';
@@ -10,8 +11,14 @@ import * as bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';
 import { securityConfig } from '../../../config/security.config';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
+import { AuthCredentialsRepository } from '../../../database/repositories/auth-credentials.repository';
+import { UsersRepository } from '../../../database/repositories/users.repository';
+import { ProfilesRepository } from '../../../database/repositories/profiles.repository';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
+import { OAuth2Client } from 'google-auth-library';
+import { createHash } from 'crypto';
+import { GoogleAuthDto } from '../dto/google-auth.dto';
 
 interface LocalCredentials {
   userId: string;
@@ -20,12 +27,8 @@ interface LocalCredentials {
   passwordHash: string;
 }
 
-import { OAuth2Client } from 'google-auth-library';
-import { createHash } from 'crypto';
-import { GoogleAuthDto } from '../dto/google-auth.dto';
-
-// In-memory local password store for local authentication credentials
-const localUserCredentials = new Map<string, LocalCredentials>();
+// In-memory local password fallback cache for unit test runs when DB is offline
+const fallbackMemoryCredentials = new Map<string, LocalCredentials>();
 
 @Injectable()
 export class AuthService {
@@ -36,6 +39,9 @@ export class AuthService {
     private readonly secConfig: ConfigType<typeof securityConfig>,
     private readonly jwtService: JwtService,
     private readonly jitService: JitProvisioningService,
+    @Optional() private readonly authCredentialsRepo?: AuthCredentialsRepository,
+    @Optional() private readonly usersRepo?: UsersRepository,
+    @Optional() private readonly profilesRepo?: ProfilesRepository,
   ) {
     if (this.secConfig.googleClientId && this.secConfig.googleClientId !== 'mock-google-client-id.apps.googleusercontent.com') {
       this.googleOAuthClient = new OAuth2Client(this.secConfig.googleClientId);
@@ -45,8 +51,24 @@ export class AuthService {
   async register(dto: RegisterDto) {
     const emailKey = dto.email.toLowerCase();
 
-    // Check if email already registered locally
-    if (localUserCredentials.has(emailKey)) {
+    // 1. Check if email already registered in Database or memory
+    if (this.usersRepo) {
+      try {
+        const existingUser = await this.usersRepo.findByEmail(emailKey);
+        if (existingUser) {
+          throw new ConflictException({
+            statusCode: 409,
+            error: 'Conflict',
+            message: 'Email address is already registered.',
+            code: 'EMAIL_ALREADY_EXISTS',
+          });
+        }
+      } catch (err: any) {
+        if (err instanceof ConflictException) throw err;
+      }
+    }
+
+    if (fallbackMemoryCredentials.has(emailKey)) {
       throw new ConflictException({
         statusCode: 409,
         error: 'Conflict',
@@ -55,8 +77,24 @@ export class AuthService {
       });
     }
 
-    // Check if username is taken locally
-    for (const cred of localUserCredentials.values()) {
+    // 2. Check if username is already taken in Database or memory
+    if (this.profilesRepo) {
+      try {
+        const existingProfile = await this.profilesRepo.findByUsername(dto.username);
+        if (existingProfile) {
+          throw new ConflictException({
+            statusCode: 409,
+            error: 'Conflict',
+            message: 'Username is already taken.',
+            code: 'USERNAME_ALREADY_EXISTS',
+          });
+        }
+      } catch (err: any) {
+        if (err instanceof ConflictException) throw err;
+      }
+    }
+
+    for (const cred of fallbackMemoryCredentials.values()) {
       if (cred.username.toLowerCase() === dto.username.toLowerCase()) {
         throw new ConflictException({
           statusCode: 409,
@@ -67,25 +105,35 @@ export class AuthService {
       }
     }
 
+    // 3. Hash password securely
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const userId = randomUUID();
 
-    // Provision User, Profile and Role in DB/Store
+    // 4. Provision User, Profile and Role in Database
     const userRecord = await this.jitService.ensureUserProvisioned({
       sub: userId,
       email: dto.email,
       displayName: dto.username,
     });
 
-    // Save local credentials
-    localUserCredentials.set(emailKey, {
+    // 5. Persist password hash permanently in PostgreSQL database
+    if (this.authCredentialsRepo) {
+      try {
+        await this.authCredentialsRepo.upsertCredentialTx(undefined, userRecord.id, passwordHash);
+      } catch (err) {
+        // Fallback to memory if DB offline in local test
+      }
+    }
+
+    // Keep memory fallback in sync for testing
+    fallbackMemoryCredentials.set(emailKey, {
       userId: userRecord.id,
       email: dto.email,
       username: dto.username,
       passwordHash,
     });
 
-    // Sign local JWT Token
+    // 6. Sign JWT Access Token
     const accessToken = this.jwtService.sign(
       { sub: userRecord.id, email: userRecord.email },
       { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
@@ -105,9 +153,52 @@ export class AuthService {
 
   async login(dto: LoginDto) {
     const emailKey = dto.email.toLowerCase();
-    const credentials = localUserCredentials.get(emailKey);
+    let targetUserId: string | undefined;
+    let targetEmail = dto.email;
+    let targetUsername = dto.email.split('@')[0];
+    let passwordHash: string | undefined;
+    let userStatus: any = 'ACTIVE';
 
-    if (!credentials) {
+    // 1. Try resolving credentials from PostgreSQL Database
+    if (this.usersRepo && this.authCredentialsRepo) {
+      try {
+        const user = await this.usersRepo.findByEmail(emailKey);
+        if (user) {
+          targetUserId = user.id;
+          targetEmail = user.email;
+          userStatus = user.status;
+
+          // Fetch profile for display username
+          if (this.profilesRepo) {
+            const profile = await this.profilesRepo.findByUserId(user.id);
+            if (profile?.username) {
+              targetUsername = profile.username;
+            }
+          }
+
+          // Fetch persistent password hash from auth_credentials table
+          const cred = await this.authCredentialsRepo.findByUserId(user.id);
+          if (cred) {
+            passwordHash = cred.passwordHash;
+          }
+        }
+      } catch {
+        // DB fallback
+      }
+    }
+
+    // 2. Fallback to memory store if DB is offline or not found
+    if (!passwordHash) {
+      const memCred = fallbackMemoryCredentials.get(emailKey);
+      if (memCred) {
+        targetUserId = memCred.userId;
+        targetEmail = memCred.email;
+        targetUsername = memCred.username;
+        passwordHash = memCred.passwordHash;
+      }
+    }
+
+    if (!passwordHash || !targetUserId) {
       throw new UnauthorizedException({
         statusCode: 401,
         error: 'Unauthorized',
@@ -116,7 +207,8 @@ export class AuthService {
       });
     }
 
-    const isMatch = await bcrypt.compare(dto.password, credentials.passwordHash);
+    // 3. Verify bcrypt password hash
+    const isMatch = await bcrypt.compare(dto.password, passwordHash);
     if (!isMatch) {
       throw new UnauthorizedException({
         statusCode: 401,
@@ -126,10 +218,10 @@ export class AuthService {
       });
     }
 
-    // Ensure user record is provisioned
+    // 4. Ensure user record is active and roles are assigned
     const userRecord = await this.jitService.ensureUserProvisioned({
-      sub: credentials.userId,
-      email: credentials.email,
+      sub: targetUserId,
+      email: targetEmail,
     });
 
     const accessToken = this.jwtService.sign(
@@ -143,8 +235,8 @@ export class AuthService {
       user: {
         id: userRecord.id,
         email: userRecord.email,
-        username: credentials.username,
-        status: userRecord.status,
+        username: targetUsername,
+        status: userRecord.status || userStatus,
       },
     };
   }

@@ -32,6 +32,24 @@ CREATE TABLE users (
 );
 
 -- ============================================================================
+-- 1.1 auth_credentials
+-- Persistent local password hashes for email/password authentication.
+-- ============================================================================
+CREATE TABLE IF NOT EXISTS auth_credentials (
+    id              UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id         UUID            NOT NULL,
+    password_hash   VARCHAR(255)    NOT NULL,
+    created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT uq_auth_credentials_user_id
+        UNIQUE (user_id),
+
+    CONSTRAINT fk_auth_credentials_user_id
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ============================================================================
 -- 2. roles
 -- RBAC role definitions. Seeded data.
 -- ============================================================================

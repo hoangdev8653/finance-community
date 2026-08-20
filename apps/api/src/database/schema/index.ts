@@ -18,6 +18,7 @@ import { reportsTable } from './reports.schema';
 import { moderationActionsTable } from './moderation-actions.schema';
 import { systemSettingsTable } from './system-settings.schema';
 import { featureFlagsTable } from './feature-flags.schema';
+import { authCredentialsTable } from './auth-credentials.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -39,6 +40,7 @@ export * from './reports.schema';
 export * from './moderation-actions.schema';
 export * from './system-settings.schema';
 export * from './feature-flags.schema';
+export * from './auth-credentials.schema';
 
 export const schema = {
   users: usersTable,
@@ -61,4 +63,5 @@ export const schema = {
   moderationActions: moderationActionsTable,
   systemSettings: systemSettingsTable,
   featureFlags: featureFlagsTable,
+  authCredentials: authCredentialsTable,
 };

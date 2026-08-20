@@ -12,6 +12,7 @@ import { PermissionGuard } from './guards/permission.guard';
 import { UsersModule } from '../users/users.module';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
+import { AuthCredentialsRepository } from '../../database/repositories/auth-credentials.repository';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthController } from './controllers/auth.controller';
   controllers: [AuthController],
   providers: [
     AuthService,
+    AuthCredentialsRepository,
     LocalJwtStrategy,
     SupabaseJwksStrategy,
     JwtAuthGuard,
