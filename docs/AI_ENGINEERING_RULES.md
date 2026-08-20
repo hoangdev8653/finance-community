@@ -145,3 +145,12 @@ When an architectural decision changes, update the corresponding
 specification.
 
 Code and architecture documentation must not intentionally drift apart.
+
+## Rule 19 --- Automatic Postman API collection synchronization
+
+Whenever you create, update, or remove any Backend endpoint, Controller, or DTO in `apps/api`, you MUST immediately review and update `docs/finance_community_postman_collection.json`.
+
+Ensure:
+- Clear action-based request names (no redundant HTTP method prefix).
+- Proper authentication (`{{token}}` or `noauth`).
+- Accurate URL parameters, query parameters, and realistic request body payloads.
