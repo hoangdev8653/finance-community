@@ -22,12 +22,12 @@ export function HeroSection() {
       <div className="relative z-10 space-y-4">
         {/* Title — Elegant editorial serif typography */}
         <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
-          Financial Analysis &amp; Market Intelligence
+          Financial Intelligence &amp; Knowledge Hub
         </h1>
 
         {/* Subtitle */}
-        <p className="text-sm sm:text-base text-blue-50/95 leading-relaxed max-w-2xl font-normal">
-          Strength analysis and financial community to help see communities
+        <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed max-w-2xl font-normal">
+          In-depth financial knowledge, wealth planning frameworks, and curated editorial insights from leading industry practitioners.
         </p>
 
         {/* Action Controls & Stats Row */}

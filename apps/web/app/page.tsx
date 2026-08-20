@@ -72,7 +72,7 @@ function HomePageContent() {
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
-            { label: currentType === 'SERIES' ? 'Educational Series' : 'Market Feed' },
+            { label: currentType === 'SERIES' ? 'Educational Series' : 'Editorial Feed' },
           ]}
         />
 
@@ -96,8 +96,8 @@ function HomePageContent() {
           <div className="flex items-center gap-2 text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
             <span>
               {currentCategory || currentTag
-                ? 'Filtered Stream'
-                : 'All Published Analyses'}
+                ? 'Filtered Articles'
+                : 'Curated Articles & Insights'}
             </span>
             <ChevronDown className="h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
           </div>
@@ -126,7 +126,7 @@ export default function HomePage() {
     <Suspense
       fallback={
         <div className="py-20">
-          <LoadingState message="Loading financial intelligence feed..." />
+          <LoadingState message="Loading curated financial insights..." />
         </div>
       }
     >

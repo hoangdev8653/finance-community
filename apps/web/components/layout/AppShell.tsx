@@ -27,8 +27,8 @@ export function AppShell({
       )}
 
       {/* Main Content Canvas — Maximized content width with compact right sidebar */}
-      <div className="flex-1 bg-[#f0f4f9] dark:bg-slate-950 min-w-0 py-6 px-6 lg:px-8">
-        <div className="w-full flex flex-col xl:flex-row items-start gap-6 lg:gap-8 min-w-0">
+      <div className="flex-1 bg-slate-50/60 dark:bg-slate-950 min-w-0 py-6 px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto flex flex-col xl:flex-row items-start gap-6 lg:gap-8 min-w-0">
           {/* Main Feed Content — Takes expansive space */}
           <main className={cn('flex-1 w-full space-y-6 min-w-0', mainClassName)}>
             {children}
@@ -36,7 +36,7 @@ export function AppShell({
 
           {/* Right Sidebar Widgets — Compact width */}
           {showRightSidebar && rightSidebar && (
-            <aside className="w-full xl:w-[285px] 2xl:w-[300px] shrink-0 space-y-6 xl:sticky xl:top-20">
+            <aside className="w-full xl:w-[300px] 2xl:w-[320px] shrink-0 space-y-6 xl:sticky xl:top-20">
               {rightSidebar}
             </aside>
           )}

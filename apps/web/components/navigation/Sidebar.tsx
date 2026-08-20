@@ -5,27 +5,30 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { BookOpen, Compass, LayoutGrid, Tag, Home, Folder, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
+import { useTranslation } from '@/lib/i18n/useTranslation';
+import { TranslationKey } from '@/lib/i18n/useTranslation';
 
-export interface NavItem {
-  label: string;
+export interface NavItemConfig {
+  labelKey: TranslationKey;
   href: string;
   icon: LucideIcon;
 }
 
-const mainNavItems: NavItem[] = [
-  { label: 'Home Feed', href: '/', icon: Home },
-  { label: 'Explore Posts', href: '/posts', icon: Compass },
-  { label: 'Educational Series', href: '/series', icon: BookOpen },
-  { label: 'Categories', href: '/categories', icon: LayoutGrid },
-  { label: 'Market Tags', href: '/tags', icon: Tag },
+const mainNavConfig: NavItemConfig[] = [
+  { labelKey: 'navigation.home', href: '/', icon: Home },
+  { labelKey: 'navigation.explore', href: '/posts', icon: Compass },
+  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
+  { labelKey: 'navigation.categories', href: '/categories', icon: LayoutGrid },
+  { labelKey: 'navigation.tags', href: '/tags', icon: Tag },
 ];
 
-const secondaryNavItems: NavItem[] = [
-  { label: 'My Workspace', href: '/dashboard', icon: Folder },
+const secondaryNavConfig: NavItemConfig[] = [
+  { labelKey: 'navigation.workspace', href: '/dashboard', icon: Folder },
 ];
 
 export function Sidebar({ className }: { className?: string }) {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
     <aside
@@ -41,10 +44,10 @@ export function Sidebar({ className }: { className?: string }) {
         {/* Primary Navigation: Feeds & Discover */}
         <div className="space-y-2">
           <h4 className="px-2 text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-            Feeds &amp; Discover
+            {t('navigation.feedsAndDiscover')}
           </h4>
           <nav className="space-y-1">
-            {mainNavItems.map((item) => {
+            {mainNavConfig.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               return (
@@ -66,7 +69,7 @@ export function Sidebar({ className }: { className?: string }) {
                         : 'text-slate-500 dark:text-slate-400'
                     )}
                   />
-                  <span>{item.label}</span>
+                  <span>{t(item.labelKey)}</span>
                 </Link>
               );
             })}
@@ -79,10 +82,10 @@ export function Sidebar({ className }: { className?: string }) {
         {/* Library / Saved */}
         <div className="space-y-2">
           <h4 className="px-2 text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-            Personal Library
+            {t('navigation.personalLibrary')}
           </h4>
           <nav className="space-y-1">
-            {secondaryNavItems.map((item) => {
+            {secondaryNavConfig.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href || pathname.startsWith(item.href);
               return (
@@ -104,7 +107,7 @@ export function Sidebar({ className }: { className?: string }) {
                         : 'text-slate-500 dark:text-slate-400'
                     )}
                   />
-                  <span>{item.label}</span>
+                  <span>{t(item.labelKey)}</span>
                 </Link>
               );
             })}

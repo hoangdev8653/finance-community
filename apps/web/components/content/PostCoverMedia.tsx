@@ -1,4 +1,4 @@
-import React from 'react';
+import Image from 'next/image';
 import { PostDetailResponse } from '@/types/content';
 
 interface PostCoverMediaProps {
@@ -27,12 +27,14 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-lg border border-border bg-surface my-6 aspect-video sm:aspect-21/9 shadow-xs">
-      <img
+    <div className="relative w-full overflow-hidden rounded-xl border border-border bg-muted my-6 aspect-video sm:aspect-21/9 shadow-sm">
+      <Image
         src={coverMedia.secureUrl}
         alt={post.title}
-        className="w-full h-full object-cover"
-        loading={priority ? 'eager' : 'lazy'}
+        fill
+        priority={priority}
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1100px"
+        className="object-cover"
       />
     </div>
   );

@@ -7,19 +7,22 @@ import { Avatar } from '@/components/ui/Avatar';
 
 const topContributors = [
   {
-    name: 'Joan Names',
-    username: 'joan_names',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    name: 'Sarah Chen, CFA',
+    role: 'Wealth Strategist',
+    username: 'sarah_chen',
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80',
   },
   {
-    name: 'Antona Names',
-    username: 'antona_names',
+    name: 'David Miller',
+    role: 'Financial Planner',
+    username: 'david_miller',
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
   },
   {
-    name: 'Joan Names',
-    username: 'joan_research',
-    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
+    name: 'Elena Rostova',
+    role: 'Corporate Finance Lead',
+    username: 'elena_rostova',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
   },
 ];
 
@@ -44,9 +47,14 @@ export function TopContributorsWidget() {
               size="md"
               className="ring-1 ring-slate-200 dark:ring-slate-700 group-hover:ring-blue-500/50 transition-all"
             />
-            <span className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-              {contributor.name}
-            </span>
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                {contributor.name}
+              </span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                {contributor.role}
+              </span>
+            </div>
           </Link>
         ))}
       </div>

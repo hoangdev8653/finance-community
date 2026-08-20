@@ -5,15 +5,18 @@ import Link from 'next/link';
 import { TrendingUp, Sun, Moon, Settings, Bell } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { SearchBar } from '@/components/search/SearchBar';
+import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 
 export function Header() {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
+  const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export function Header() {
                 Finance Pulse
               </span>
               <span className="text-xs uppercase font-mono tracking-widest text-slate-600 dark:text-slate-300 font-bold mt-1">
-                Editorial &amp; Community
+                {t('header.brandSubtitle')}
               </span>
             </div>
           </Link>
@@ -49,11 +52,14 @@ export function Header() {
 
         {/* Right Navigation Controls — strictly integer 4pt classes */}
         <div className="flex items-center gap-2">
+          {/* Language Switcher */}
+          <LanguageSwitcher />
+
           {/* Settings Icon */}
           <IconButton
             variant="ghost"
             size="md"
-            label="Settings"
+            label={t('common.settings')}
             onClick={() => {}}
           >
             <Settings className="h-5 w-5 text-slate-600 hover:text-slate-950 dark:text-slate-300 dark:hover:text-white transition-colors" />
@@ -63,7 +69,7 @@ export function Header() {
           <IconButton
             variant="ghost"
             size="md"
-            label="Toggle theme"
+            label={t('common.toggleTheme')}
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
           >
             {isDark ? (
@@ -80,7 +86,7 @@ export function Header() {
             <Link
               href="/login"
               className="inline-flex items-center justify-center h-10 w-10 rounded-xl text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-              aria-label="Notifications"
+              aria-label={t('common.notifications')}
             >
               <Bell className="h-5 w-5" />
             </Link>
@@ -92,10 +98,10 @@ export function Header() {
           ) : (
             <div className="flex items-center gap-2 ml-2">
               <Button variant="outline" size="sm" asChild className="font-bold text-sm text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700 px-4 py-2">
-                <Link href="/login">Sign In</Link>
+                <Link href="/login">{t('common.signIn')}</Link>
               </Button>
               <Button variant="primary" size="sm" asChild className="font-bold text-sm px-5 py-2 shadow-xs bg-blue-600 hover:bg-blue-700 text-white">
-                <Link href="/register">Join</Link>
+                <Link href="/register">{t('common.join')}</Link>
               </Button>
             </div>
           )}

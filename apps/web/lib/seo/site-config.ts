@@ -46,13 +46,13 @@ export const siteConfig: SiteConfig = {
   name: 'Finance Pulse',
   shortName: 'FinancePulse',
   description:
-    'A high-precision financial knowledge and community platform for editorial research, valuation models, and collaborative market breakdown.',
+    'Nền tảng kiến thức & cộng đồng tài chính chuyên sâu về nghiên cứu thị trường, mô hình định giá và phân tích chuyên gia.',
   get url() {
     return getSiteUrl();
   },
   ogImage: '/images/og-default.png',
   twitterHandle: '@financepulse',
-  locale: 'en_US',
+  locale: 'vi_VN',
 };
 
 /**

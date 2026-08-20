@@ -33,12 +33,12 @@ import { JsonLd } from '@/components/seo/JsonLd';
 export const metadata: Metadata = {
   metadataBase: getSiteUrlObject(),
   title: {
-    default: `${siteConfig.name} — Institutional Knowledge & Market Intelligence`,
+    default: `${siteConfig.name} — Tri thức & Thông tin Thị trường Tài chính`,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
   openGraph: {
-    title: `${siteConfig.name} — Institutional Knowledge & Market Intelligence`,
+    title: `${siteConfig.name} — Tri thức & Thông tin Thị trường Tài chính`,
     description: siteConfig.description,
     url: siteConfig.url,
     siteName: siteConfig.name,
@@ -63,7 +63,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
+    <html lang="vi" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>
