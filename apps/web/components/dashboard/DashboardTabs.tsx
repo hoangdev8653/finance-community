@@ -19,6 +19,7 @@ export function DashboardTabs({
   const tabs: { id: DashboardTabType; label: string; count?: number }[] = [
     { id: 'published', label: 'Published Research', count: publishedCount },
     { id: 'drafts', label: 'Drafts', count: draftsCount },
+    { id: 'bookmarks', label: 'Saved Bookmarks' },
     { id: 'archived', label: 'Archived Notes' },
   ];
 

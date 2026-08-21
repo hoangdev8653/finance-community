@@ -50,7 +50,7 @@ export class PermissionGuard implements CanActivate {
 
     // Resolve user application roles exclusively from public.user_roles / public.roles
     // Supabase JWT role claim ('authenticated') is strictly ignored!
-    const userRoles = this.jitService.getUserRoles(user.sub);
+    const userRoles = await this.jitService.getUserRolesAsync(user.sub);
 
     // Default to MEMBER if no role explicit (fallback for JIT)
     const effectiveRoles = userRoles.length > 0 ? userRoles : ['MEMBER'];

@@ -7,12 +7,14 @@ import { DatabaseModule } from '../../database/database.module';
 import { PostsModule } from '../posts/posts.module';
 import { CommentsModule } from '../comments/comments.module';
 import { UsersModule } from '../users/users.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
     DatabaseModule,
     PostsModule,
     CommentsModule,
+    NotificationsModule,
     forwardRef(() => UsersModule),
   ],
   controllers: [ReactionsController],

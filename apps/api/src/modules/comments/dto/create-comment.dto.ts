@@ -9,4 +9,8 @@ export class CreateCommentDto {
   @IsOptional()
   @IsUUID()
   parentId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  mediaId?: string;
 }

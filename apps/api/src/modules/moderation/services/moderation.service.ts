@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, Inject, Optional } from '@nestjs/common';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { ModerationActionsRepository } from '../../../database/repositories/moderation-actions.repository';
@@ -7,6 +7,7 @@ import { PostsRepository } from '../../../database/repositories/posts.repository
 import { CommentsRepository } from '../../../database/repositories/comments.repository';
 import { UsersRepository } from '../../../database/repositories/users.repository';
 import { AuditLogService } from '../../audit/services/audit-log.service';
+import { NotificationsService } from '../../notifications/services/notifications.service';
 import { ExecuteModerationActionDto } from '../dto/execute-moderation-action.dto';
 
 @Injectable()
@@ -19,7 +20,112 @@ export class ModerationService {
     private readonly commentsRepo: CommentsRepository,
     private readonly usersRepo: UsersRepository,
     private readonly auditLogService: AuditLogService,
+    @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
+
+  async getPostsQueue(moderationStatus = 'UNREVIEWED', page = 1, limit = 20) {
+    return this.postsRepo.findModerationPostsPaginated(moderationStatus, page, limit);
+  }
+
+  async approvePost(moderatorId: string, postId: string) {
+    const post = await this.postsRepo.findById(postId);
+    if (!post) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Post '${postId}' not found.`,
+        code: 'POST_NOT_FOUND',
+      });
+    }
+
+    return await this.db.transaction(async (tx) => {
+      const updated = await this.postsRepo.updateModerationStatusTx(tx, postId, {
+        moderationStatus: 'APPROVED',
+        moderatedBy: moderatorId,
+      });
+
+      await this.moderationRepo.createTx(tx, {
+        moderatorId,
+        reportId: null,
+        actionType: 'APPROVE_POST',
+        targetUserId: post.authorId,
+        reason: 'Post content verified and approved by moderator.',
+        metadata: { postId },
+      });
+
+      await this.auditLogService.log(
+        {
+          actor_id: moderatorId,
+          action: 'MODERATION_APPROVE_POST',
+          entity_type: 'posts',
+          entity_id: postId,
+          reason: 'Post verified and approved',
+        },
+        tx,
+      );
+
+      return updated;
+    });
+  }
+
+  async banPost(moderatorId: string, postId: string, reason = 'Nội dung vi phạm quy chuẩn cộng đồng.') {
+    const post = await this.postsRepo.findById(postId);
+    if (!post) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Post '${postId}' not found.`,
+        code: 'POST_NOT_FOUND',
+      });
+    }
+
+    const updated = await this.db.transaction(async (tx) => {
+      const rec = await this.postsRepo.updateModerationStatusTx(tx, postId, {
+        status: 'HIDDEN',
+        moderationStatus: 'BANNED',
+        moderatedBy: moderatorId,
+        moderationReason: reason,
+      });
+
+      await this.moderationRepo.createTx(tx, {
+        moderatorId,
+        reportId: null,
+        actionType: 'BAN_POST',
+        targetUserId: post.authorId,
+        reason,
+        metadata: { postId },
+      });
+
+      await this.auditLogService.log(
+        {
+          actor_id: moderatorId,
+          action: 'MODERATION_BAN_POST',
+          entity_type: 'posts',
+          entity_id: postId,
+          reason,
+        },
+        tx,
+      );
+
+      return rec;
+    });
+
+    if (this.notificationsService) {
+      try {
+        await this.notificationsService.createNotification({
+          userId: post.authorId,
+          type: 'POST_MODERATED',
+          title: 'Bài viết của bạn đã bị cấm hiển thị',
+          message: `Bài viết "${post.title.slice(0, 50)}" đã bị hạn chế với lý do: ${reason}`,
+          referencePostId: postId,
+        });
+      } catch {
+        // Non-blocking
+      }
+    }
+
+    return updated;
+  }
 
   async executeAction(moderatorId: string, moderatorRoles: string[], dto: ExecuteModerationActionDto) {
     let targetType: 'POST' | 'COMMENT' | 'USER';

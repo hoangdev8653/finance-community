@@ -63,6 +63,11 @@ export function DashboardPostsList({
         description: 'Archived research articles will be organized here.',
         cta: 'Create Analysis',
       },
+      bookmarks: {
+        title: 'Chưa có bài viết nào được lưu',
+        description: 'Bạn chưa lưu bài viết nào vào danh sách dấu trang. Hãy khám phá và lưu lại những bài phân tích hữu ích.',
+        cta: 'Khám phá bài viết',
+      },
     };
 
     const empty = emptyMessages[activeTab] || emptyMessages.published;

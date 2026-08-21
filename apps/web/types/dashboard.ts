@@ -13,7 +13,7 @@ export interface DashboardMetrics {
 /**
  * Active content tab in the dashboard workspace.
  */
-export type DashboardTabType = 'published' | 'drafts' | 'archived';
+export type DashboardTabType = 'published' | 'drafts' | 'archived' | 'bookmarks';
 
 /**
  * Filter and pagination parameters for dashboard post queries.

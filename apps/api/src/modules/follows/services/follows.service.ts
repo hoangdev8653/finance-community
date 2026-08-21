@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject, Optional } from '@nestjs/common';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { FollowsRepository } from '../../../database/repositories/follows.repository';
 import { ProfilesRepository } from '../../../database/repositories/profiles.repository';
+import { NotificationsService } from '../../notifications/services/notifications.service';
 
 @Injectable()
 export class FollowsService {
@@ -10,6 +11,7 @@ export class FollowsService {
     @Inject(DRIZZLE_TOKEN) private readonly db: DrizzleDB,
     private readonly followsRepo: FollowsRepository,
     private readonly profilesRepo: ProfilesRepository,
+    @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
 
   async followUser(followerId: string, followingId: string): Promise<{ following: boolean; followingId: string; isNew: boolean }> {
@@ -38,10 +40,26 @@ export class FollowsService {
       await this.followsRepo.followTx(tx, followerId, followingId);
     });
 
+    const isNew = !alreadyFollowing;
+
+    if (isNew && this.notificationsService) {
+      try {
+        await this.notificationsService.createNotification({
+          userId: followingId,
+          type: 'NEW_FOLLOWER',
+          title: 'Người theo dõi mới',
+          message: `Có người dùng mới bắt đầu theo dõi bạn`,
+          referenceUserId: followerId,
+        });
+      } catch {
+        // Non-blocking notification dispatch
+      }
+    }
+
     return {
       following: true,
       followingId,
-      isNew: !alreadyFollowing,
+      isNew,
     };
   }
 

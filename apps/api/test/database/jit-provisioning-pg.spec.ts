@@ -125,6 +125,8 @@ describe('JitProvisioningService (Database & Concurrency Remediation)', () => {
         displayName: 'collision_33333333333333333333333333333333',
         avatarMediaId: null,
         bio: null,
+        reputationScore: 0,
+        badge: 'MEMBER',
         createdAt: new Date(),
         updatedAt: new Date(),
       });

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
+  FileCheck2,
   Users,
   Flag,
   Sliders,
@@ -14,6 +15,7 @@ import {
 
 const ADMIN_LINKS = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard, exact: true },
+  { href: '/admin/posts', label: 'Post Moderation', icon: FileCheck2 },
   { href: '/admin/users', label: 'User Governance', icon: Users },
   { href: '/admin/feature-flags', label: 'Feature Flags', icon: Flag },
   { href: '/admin/settings', label: 'System Settings', icon: Sliders },

@@ -8,6 +8,10 @@ export interface PostEntity {
   coverMediaId: string | null;
   categoryId: string | null;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
+  moderationStatus?: 'UNREVIEWED' | 'APPROVED' | 'BANNED';
+  moderatedBy?: string | null;
+  moderatedAt?: string | null;
+  moderationReason?: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
   viewCount: number;

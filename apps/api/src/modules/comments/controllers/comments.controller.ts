@@ -22,6 +22,8 @@ import { EmailVerificationGuard } from '../../auth/guards/email-verification.gua
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Public } from '../../auth/decorators/public.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
+import { RateLimit } from '../../../common/decorators/rate-limit.decorator';
+import { RateLimitGuard } from '../../../common/guards/rate-limit.guard';
 
 @ApiTags('Comments')
 @Controller()
@@ -50,7 +52,9 @@ export class CommentsController {
   @ApiResponse({ status: 201, description: 'Created SerializedComment' })
   @ApiResponse({ status: 400, description: 'Validation error or invalid parentId post mismatch' })
   @ApiResponse({ status: 403, description: 'Email verification required' })
-  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard)
+  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 10 comments per 5 minutes)' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
+  @RateLimit({ limit: 10, ttlSeconds: 300, keyPrefix: 'create_comment' })
   createComment(
     @CurrentUser() user: any,
     @Param('postId') postId: string,

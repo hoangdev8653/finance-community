@@ -1,6 +1,7 @@
 import { pgTable, uuid, text, varchar, timestamp } from 'drizzle-orm/pg-core';
 import { postsTable } from './posts.schema';
 import { usersTable } from './users.schema';
+import { mediaTable } from './media.schema';
 
 export const commentsTable = pgTable(
   'comments',
@@ -16,6 +17,7 @@ export const commentsTable = pgTable(
       onDelete: 'set null',
     }),
     body: text('body').notNull(),
+    mediaId: uuid('media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
     status: varchar('status', { length: 20 }).notNull().default('VISIBLE'),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

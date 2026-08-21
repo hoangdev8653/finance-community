@@ -33,7 +33,7 @@ export class AccountStatusGuard implements CanActivate {
     }
 
     // Query user record statefully from PostgreSQL/storage
-    const userRecord = this.jitService.getUserById(user.sub);
+    const userRecord = await this.jitService.getUserByIdAsync(user.sub);
     const status = userRecord?.status || user.app_status || 'ACTIVE';
 
     if (status !== 'ACTIVE') {

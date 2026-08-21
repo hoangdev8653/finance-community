@@ -12,8 +12,12 @@ import { CommentsRepository, CommentEntity } from '../../../database/repositorie
 import { PostsService } from '../../posts/services/posts.service';
 import { AuditLogService } from '../../audit/services/audit-log.service';
 import { SanitizerUtil } from '../../../common/utils/sanitizer.util';
+import { ContentSafetyUtil } from '../../../common/utils/content-safety.util';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { MediaService } from '../../media/services/media.service';
+
+import { NotificationsService } from '../../notifications/services/notifications.service';
 
 export interface SerializedComment {
   id: string;
@@ -21,6 +25,8 @@ export interface SerializedComment {
   authorId: string;
   parentId: string | null;
   body: string;
+  mediaId?: string | null;
+  media?: { id: string; secureUrl: string } | null;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -39,7 +45,9 @@ export class CommentsService {
     @Inject(DRIZZLE_TOKEN) private readonly db: DrizzleDB,
     private readonly commentsRepo: CommentsRepository,
     private readonly postsService: PostsService,
+    @Optional() private readonly mediaService?: MediaService,
     @Optional() private readonly auditLogService?: AuditLogService,
+    @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
 
   async createComment(authorId: string, postId: string, dto: CreateCommentDto): Promise<SerializedComment> {
@@ -55,9 +63,10 @@ export class CommentsService {
     }
 
     // 2. Validate Parent Comment if reply
+    let parentComment: any;
     if (dto.parentId) {
-      const parent = await this.commentsRepo.findById(dto.parentId);
-      if (!parent) {
+      parentComment = await this.commentsRepo.findById(dto.parentId);
+      if (!parentComment) {
         throw new BadRequestException({
           statusCode: 400,
           error: 'Bad Request',
@@ -65,7 +74,7 @@ export class CommentsService {
           code: 'INVALID_PARENT_COMMENT',
         });
       }
-      if (parent.postId !== postId) {
+      if (parentComment.postId !== postId) {
         throw new BadRequestException({
           statusCode: 400,
           error: 'Bad Request',
@@ -75,8 +84,25 @@ export class CommentsService {
       }
     }
 
+    // 2.1 Validate Attached Media if provided
+    if (dto.mediaId && this.mediaService) {
+      const media = await this.mediaService.getMediaById(dto.mediaId);
+      if (media.uploaderId !== authorId) {
+        throw new ForbiddenException({
+          statusCode: 403,
+          error: 'Forbidden',
+          message: 'You do not own the attached media asset.',
+          code: 'FORBIDDEN_MEDIA_OWNERSHIP',
+        });
+      }
+    }
+
     // 3. Sanitize Rich Text Body
     const sanitizedBody = SanitizerUtil.sanitizeRichText(dto.body);
+
+    // 3.1 Content Safety Evaluation
+    const safetyCheck = ContentSafetyUtil.evaluate(dto.body);
+    const commentStatus = safetyCheck.isSevereSpam ? 'HIDDEN' : 'VISIBLE';
 
     // 4. Create Comment Record
     const record = await this.commentsRepo.createTx(undefined, {
@@ -84,8 +110,42 @@ export class CommentsService {
       authorId,
       parentId: dto.parentId || null,
       body: sanitizedBody,
-      status: 'VISIBLE',
+      mediaId: dto.mediaId || null,
+      status: commentStatus,
     });
+
+    // 5. Dispatch in-app notifications asynchronously
+    if (this.notificationsService) {
+      try {
+        // Notify post author if commenter is not post author
+        if (post.authorId !== authorId) {
+          await this.notificationsService.createNotification({
+            userId: post.authorId,
+            type: 'NEW_COMMENT',
+            title: 'Bình luận mới',
+            message: `Có bình luận mới trên bài viết "${post.title.slice(0, 60)}"`,
+            referencePostId: postId,
+            referenceCommentId: record.id,
+            referenceUserId: authorId,
+          });
+        }
+
+        // Notify parent comment author if reply and different user
+        if (parentComment && parentComment.authorId !== authorId && parentComment.authorId !== post.authorId) {
+          await this.notificationsService.createNotification({
+            userId: parentComment.authorId,
+            type: 'COMMENT_REPLY',
+            title: 'Phản hồi bình luận',
+            message: `Có người đã phản hồi bình luận của bạn`,
+            referencePostId: postId,
+            referenceCommentId: record.id,
+            referenceUserId: authorId,
+          });
+        }
+      } catch {
+        // Non-blocking notification dispatch
+      }
+    }
 
     return this.serializeComment(record);
   }
@@ -217,17 +277,19 @@ export class CommentsService {
   }
 
   private serializeComment(c: any): SerializedComment {
-    const isDeleted = c.deletedAt !== null;
+    const isDeleted = Boolean(c.deletedAt);
     return {
       id: c.id,
       postId: c.postId,
       authorId: isDeleted ? '00000000-0000-0000-0000-000000000000' : c.authorId,
       parentId: c.parentId,
       body: isDeleted ? '[Comment deleted]' : c.body,
+      mediaId: isDeleted ? null : c.mediaId || null,
+      media: isDeleted ? null : c.media || null,
       status: c.status,
-      createdAt: c.createdAt,
-      updatedAt: c.updatedAt,
-      deletedAt: c.deletedAt,
+      createdAt: c.createdAt || new Date(),
+      updatedAt: c.updatedAt || new Date(),
+      deletedAt: c.deletedAt || null,
       isDeleted,
       authorProfile: isDeleted
         ? { username: '[deleted]', displayName: null, avatarMediaId: null }

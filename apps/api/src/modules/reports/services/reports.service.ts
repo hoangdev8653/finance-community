@@ -1,7 +1,9 @@
-import { Injectable, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, Inject, Optional } from '@nestjs/common';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { ReportsRepository } from '../../../database/repositories/reports.repository';
+import { PostsRepository } from '../../../database/repositories/posts.repository';
+import { CommentsRepository } from '../../../database/repositories/comments.repository';
 import { PostsService } from '../../posts/services/posts.service';
 import { CommentsService } from '../../comments/services/comments.service';
 import { ProfilesRepository } from '../../../database/repositories/profiles.repository';
@@ -15,6 +17,8 @@ export class ReportsService {
     private readonly postsService: PostsService,
     private readonly commentsService: CommentsService,
     private readonly profilesRepo: ProfilesRepository,
+    @Optional() private readonly postsRepo?: PostsRepository,
+    @Optional() private readonly commentsRepo?: CommentsRepository,
   ) {}
 
   async fileReport(reporterId: string, dto: CreateReportDto) {
@@ -84,6 +88,33 @@ export class ReportsService {
       description: dto.description || null,
       status: 'OPEN',
     });
+
+    // Auto-hide content on mass reports (>= 3 active reports)
+    if (targetType === 'POST' && this.postsRepo) {
+      try {
+        const activeCount = await this.reportsRepo.countActiveReportsForTarget('POST', targetId);
+        if (activeCount >= 3) {
+          await this.postsRepo.updateTx(undefined, targetId, {
+            status: 'HIDDEN',
+            moderationStatus: 'UNREVIEWED',
+            moderationReason: `Hệ thống tự động tạm ẩn do nhận được ${activeCount} lượt báo cáo vi phạm từ cộng đồng.`,
+          });
+        }
+      } catch {
+        // Non-blocking
+      }
+    } else if (targetType === 'COMMENT' && this.commentsRepo) {
+      try {
+        const activeCount = await this.reportsRepo.countActiveReportsForTarget('COMMENT', targetId);
+        if (activeCount >= 3) {
+          await this.commentsRepo.updateTx(undefined, targetId, {
+            status: 'HIDDEN',
+          });
+        }
+      } catch {
+        // Non-blocking
+      }
+    }
 
     return { report, isDuplicate: false };
   }

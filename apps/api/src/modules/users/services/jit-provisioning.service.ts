@@ -270,6 +270,40 @@ export class JitProvisioningService {
 
   // --- Helper Data Access Methods for Security Guards & Testing ---
 
+  async getUserByIdAsync(userId: string): Promise<UserRecord | undefined> {
+    if (this.usersRepo) {
+      try {
+        const user = await this.usersRepo.findById(userId);
+        if (user) {
+          return {
+            id: user.id,
+            email: user.email,
+            status: user.status as UserRecord['status'],
+            created_at: user.createdAt,
+            updated_at: user.updatedAt,
+          };
+        }
+      } catch (err) {
+        this.logger.warn(`Failed to retrieve user by ID from DB: ${err}`);
+      }
+    }
+    return this.usersStore.get(userId);
+  }
+
+  async getUserRolesAsync(userId: string): Promise<string[]> {
+    if (this.rolesRepo) {
+      try {
+        const dbRoles = await this.rolesRepo.getUserRoles(userId);
+        if (dbRoles && dbRoles.length > 0) {
+          return dbRoles;
+        }
+      } catch (err) {
+        this.logger.warn(`Failed to retrieve user roles from DB: ${err}`);
+      }
+    }
+    return this.getUserRoles(userId);
+  }
+
   getUserById(userId: string): UserRecord | undefined {
     return this.usersStore.get(userId);
   }
@@ -304,3 +338,4 @@ export class JitProvisioningService {
     }
   }
 }
+

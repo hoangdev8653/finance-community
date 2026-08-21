@@ -7,6 +7,7 @@ import {
   Body,
   Param,
   Query,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -22,6 +23,9 @@ import { EmailVerificationGuard } from '../../auth/guards/email-verification.gua
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { Public } from '../../auth/decorators/public.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
+
+import { RateLimit } from '../../../common/decorators/rate-limit.decorator';
+import { RateLimitGuard } from '../../../common/guards/rate-limit.guard';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -39,6 +43,69 @@ export class PostsController {
     return this.postsService.findFeedPaginated(query);
   }
 
+  @Get('feed/following')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get posts feed from authors followed by current user' })
+  @ApiResponse({ status: 200, description: 'Paginated list of posts from followed authors' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  getFollowingFeed(
+    @CurrentUser() user: any,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return this.postsService.findFollowingFeed(user.sub, Number(page), Number(limit));
+  }
+
+  @Public()
+  @Get('feed/trending')
+  @ApiOperation({ summary: 'Get trending posts feed sorted by engagement and views' })
+  @ApiResponse({ status: 200, description: 'Paginated list of trending posts' })
+  getTrendingFeed(
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return this.postsService.findTrendingFeed(Number(page), Number(limit));
+  }
+
+  @Get('bookmarks/my-feed')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get current user saved/bookmarked posts feed' })
+  @ApiResponse({ status: 200, description: 'Paginated list of bookmarked posts' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  getMyBookmarks(
+    @CurrentUser() user: any,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return this.postsService.getMyBookmarkedPosts(user.sub, Number(page), Number(limit));
+  }
+
+  @Post(':id/bookmark')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Toggle post bookmark (save or unsave)' })
+  @ApiResponse({ status: 200, description: 'Bookmark status toggled' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  toggleBookmark(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+  ) {
+    return this.postsService.toggleBookmark(user.sub, id);
+  }
+
+  @Post(':id/request-review')
+  @HttpCode(HttpStatus.OK)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Author requests moderation review after modifying banned/hidden post' })
+  @ApiResponse({ status: 200, description: 'Review requested' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  requestReview(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+  ) {
+    return this.postsService.requestPostReview(user.sub, id);
+  }
+
   @Public()
   @Get(':contentType/:slug')
   @ApiOperation({ summary: 'Get published post detail by content type and slug' })
@@ -47,8 +114,12 @@ export class PostsController {
   getPostBySlug(
     @Param('contentType') contentType: string,
     @Param('slug') slug: string,
+    @Req() req: any,
   ) {
-    return this.postsService.getPostBySlug(contentType, slug);
+    const viewerIdentifier = req.ip || req.headers['x-forwarded-for'] || 'anonymous';
+    const viewerUserId = req.user?.sub;
+    const viewerRoles = viewerUserId ? this.jitService.getUserRoles(viewerUserId) : undefined;
+    return this.postsService.getPostBySlug(contentType, slug, viewerIdentifier, viewerUserId, viewerRoles);
   }
 
   @Post()
@@ -58,7 +129,9 @@ export class PostsController {
   @ApiResponse({ status: 201, description: 'Created PostEntity' })
   @ApiResponse({ status: 400, description: 'Validation error or invalid category/tag' })
   @ApiResponse({ status: 403, description: 'Email verification required' })
-  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard)
+  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 5 posts per hour)' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
+  @RateLimit({ limit: 5, ttlSeconds: 3600, keyPrefix: 'create_post' })
   createPost(@CurrentUser() user: any, @Body() dto: CreatePostDto) {
     return this.postsService.createPost(user.sub, dto);
   }

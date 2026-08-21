@@ -5,6 +5,8 @@ export interface PublicProfile {
   displayName: string | null;
   avatarMediaId: string | null;
   bio: string | null;
+  reputationScore?: number;
+  badge?: string | null;
   createdAt: string;
 }
 

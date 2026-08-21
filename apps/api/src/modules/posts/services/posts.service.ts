@@ -11,11 +11,13 @@ import type { DrizzleDB } from '../../../database/database.module';
 import { PostsRepository, PostEntity } from '../../../database/repositories/posts.repository';
 import { PostTagsRepository } from '../../../database/repositories/post-tags.repository';
 import { PostMediaRepository } from '../../../database/repositories/post-media.repository';
+import { PostBookmarksRepository } from '../../../database/repositories/post-bookmarks.repository';
 import { CategoriesService } from '../../categories/services/categories.service';
 import { MediaService } from '../../media/services/media.service';
 import { TagsService } from '../../tags/services/tags.service';
 import { AuditLogService } from '../../audit/services/audit-log.service';
 import { SanitizerUtil } from '../../../common/utils/sanitizer.util';
+import { ContentSafetyUtil } from '../../../common/utils/content-safety.util';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { QueryPostsDto } from '../dto/query-posts.dto';
@@ -27,6 +29,9 @@ export interface PostDetailResponse extends PostEntity {
 
 @Injectable()
 export class PostsService {
+  private readonly viewDebounceCache = new Map<string, number>();
+  private readonly VIEW_DEBOUNCE_WINDOW_MS = 15 * 60 * 1000; // 15 minutes cooldown per viewer/IP
+
   constructor(
     @Inject(DRIZZLE_TOKEN) private readonly db: DrizzleDB,
     private readonly postsRepo: PostsRepository,
@@ -35,8 +40,28 @@ export class PostsService {
     private readonly categoriesService: CategoriesService,
     private readonly mediaService: MediaService,
     private readonly tagsService: TagsService,
+    @Optional() private readonly postBookmarksRepo?: PostBookmarksRepository,
     @Optional() private readonly auditLogService?: AuditLogService,
   ) {}
+
+  public incrementViewCountDebounced(postId: string, viewerIdentifier = 'anonymous'): void {
+    const key = `${postId}:${viewerIdentifier}`;
+    const now = Date.now();
+    const lastView = this.viewDebounceCache.get(key);
+
+    if (!lastView || now - lastView > this.VIEW_DEBOUNCE_WINDOW_MS) {
+      this.viewDebounceCache.set(key, now);
+      this.postsRepo.incrementViewCountTx(undefined, postId).catch(() => {});
+
+      if (this.viewDebounceCache.size > 10000) {
+        for (const [k, timestamp] of this.viewDebounceCache.entries()) {
+          if (now - timestamp > this.VIEW_DEBOUNCE_WINDOW_MS) {
+            this.viewDebounceCache.delete(k);
+          }
+        }
+      }
+    }
+  }
 
   public slugify(title: string): string {
     const slugified = title
@@ -126,8 +151,12 @@ export class PostsService {
     // 5. Sanitize Rich Text Body
     const sanitizedBody = dto.body ? SanitizerUtil.sanitizeRichText(dto.body) : null;
 
+    // 5.1 Content Safety Evaluation (Anti-Phishing & Spam Filter)
+    const safetyCheck = ContentSafetyUtil.evaluate(`${dto.title} ${dto.body || ''}`);
+    const effectiveStatus = safetyCheck.isSevereSpam ? 'HIDDEN' : dto.status;
+
     // 6. Calculate PublishedAt
-    const publishedAt = dto.status === 'PUBLISHED' ? new Date() : null;
+    const publishedAt = effectiveStatus === 'PUBLISHED' ? new Date() : null;
 
     // 7. Execute Atomic Transaction for Post + PostTags + PostMedia
     return await this.db.transaction(async (tx) => {
@@ -145,7 +174,7 @@ export class PostsService {
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
             categoryId: dto.categoryId || null,
-            status: dto.status,
+            status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
             publishedAt,
@@ -339,9 +368,15 @@ export class PostsService {
     });
   }
 
-  async getPostBySlug(contentType: string, slug: string): Promise<PostDetailResponse> {
+  async getPostBySlug(
+    contentType: string,
+    slug: string,
+    viewerIdentifier?: string,
+    viewerUserId?: string,
+    viewerRoles?: string[],
+  ): Promise<PostDetailResponse> {
     const post = await this.postsRepo.findBySlug(contentType, slug);
-    if (!post || post.status !== 'PUBLISHED') {
+    if (!post) {
       throw new NotFoundException({
         statusCode: 404,
         error: 'Not Found',
@@ -350,8 +385,25 @@ export class PostsService {
       });
     }
 
-    // Asynchronously increment view count without blocking response
-    this.postsRepo.incrementViewCountTx(undefined, post.id).catch(() => {});
+    if (post.status !== 'PUBLISHED') {
+      const isAuthor = viewerUserId && post.authorId === viewerUserId;
+      const isModeratorOrAdmin =
+        viewerRoles && viewerRoles.some((r) => r === 'MODERATOR' || r === 'ADMIN' || r === 'SUPER_ADMIN');
+
+      if (!isAuthor && !isModeratorOrAdmin) {
+        throw new NotFoundException({
+          statusCode: 404,
+          error: 'Not Found',
+          message: `Published post '${slug}' in scope '${contentType}' not found.`,
+          code: 'POST_NOT_FOUND',
+        });
+      }
+    }
+
+    // Debounced view count increment for published posts
+    if (post.status === 'PUBLISHED') {
+      this.incrementViewCountDebounced(post.id, viewerIdentifier);
+    }
 
     const tags = await this.postTagsRepo.getTagsForPost(post.id);
     const media = await this.postMediaRepo.getMediaForPost(post.id);
@@ -363,7 +415,7 @@ export class PostsService {
     };
   }
 
-  async getPostById(id: string): Promise<PostDetailResponse> {
+  async getPostById(id: string, viewerUserId?: string, viewerRoles?: string[]): Promise<PostDetailResponse> {
     const post = await this.postsRepo.findById(id);
     if (!post) {
       throw new NotFoundException({
@@ -374,6 +426,21 @@ export class PostsService {
       });
     }
 
+    if (post.status !== 'PUBLISHED') {
+      const isAuthor = viewerUserId && post.authorId === viewerUserId;
+      const isModeratorOrAdmin =
+        viewerRoles && viewerRoles.some((r) => r === 'MODERATOR' || r === 'ADMIN' || r === 'SUPER_ADMIN');
+
+      if (!isAuthor && !isModeratorOrAdmin) {
+        throw new NotFoundException({
+          statusCode: 404,
+          error: 'Not Found',
+          message: `Post with ID '${id}' not found.`,
+          code: 'POST_NOT_FOUND',
+        });
+      }
+    }
+
     const tags = await this.postTagsRepo.getTagsForPost(post.id);
     const media = await this.postMediaRepo.getMediaForPost(post.id);
 
@@ -382,6 +449,34 @@ export class PostsService {
       tags,
       media,
     };
+  }
+
+  async toggleBookmark(userId: string, postId: string): Promise<{ bookmarked: boolean }> {
+    const post = await this.postsRepo.findById(postId);
+    if (!post || post.status !== 'PUBLISHED' || post.deletedAt !== null) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Published post '${postId}' not found.`,
+        code: 'POST_NOT_FOUND',
+      });
+    }
+
+    if (!this.postBookmarksRepo) {
+      throw new BadRequestException('Bookmarks repository is not available.');
+    }
+
+    return this.postBookmarksRepo.toggleBookmarkTx(undefined, userId, postId);
+  }
+
+  async getMyBookmarkedPosts(userId: string, page = 1, limit = 20) {
+    if (!this.postBookmarksRepo) {
+      return {
+        data: [],
+        meta: { page, limit, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false },
+      };
+    }
+    return this.postBookmarksRepo.findUserBookmarksPaginated(userId, page, limit);
   }
 
   async findFeedPaginated(query: QueryPostsDto): Promise<any> {
@@ -398,6 +493,37 @@ export class PostsService {
     };
 
     return this.postsRepo.findFeedPaginated(options);
+  }
+
+  async findFollowingFeed(userId: string, page = 1, limit = 20) {
+    return this.postsRepo.findFollowingFeedPaginated(userId, page, limit);
+  }
+
+  async findTrendingFeed(page = 1, limit = 20) {
+    return this.postsRepo.findTrendingFeedPaginated(page, limit);
+  }
+
+  async requestPostReview(userId: string, postId: string) {
+    const post = await this.postsRepo.findById(postId);
+    if (!post) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Post '${postId}' not found.`,
+        code: 'POST_NOT_FOUND',
+      });
+    }
+
+    if (post.authorId !== userId) {
+      throw new ForbiddenException({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'Only the author can request a review for this post.',
+        code: 'FORBIDDEN_RESOURCE',
+      });
+    }
+
+    return this.postsRepo.requestPostReviewTx(undefined, postId);
   }
 
   async deletePost(userSub: string, userRoles: string[], id: string): Promise<boolean> {

@@ -2,6 +2,8 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
+  Param,
   Body,
   Query,
   UseGuards,
@@ -38,6 +40,44 @@ export class ModerationController {
   @RequirePermission('moderation:manage')
   getReports(@Query() query: QueryReportsDto) {
     return this.reportsService.getQueue(query.status, query.page, query.limit);
+  }
+
+  @Get('posts')
+  @ApiOperation({ summary: 'Get paginated moderation posts queue (UNREVIEWED, APPROVED, BANNED, ALL)' })
+  @ApiResponse({ status: 200, description: 'Paginated list of posts for moderation' })
+  @ApiResponse({ status: 403, description: 'Permission moderation:manage required' })
+  @RequirePermission('moderation:manage')
+  getPostsQueue(
+    @Query('status') status = 'UNREVIEWED',
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+  ) {
+    return this.moderationService.getPostsQueue(status, Number(page), Number(limit));
+  }
+
+  @Patch('posts/:id/approve')
+  @ApiOperation({ summary: 'Approve / mark post as reviewed by Admin' })
+  @ApiResponse({ status: 200, description: 'Post approved' })
+  @ApiResponse({ status: 403, description: 'Permission moderation:manage required' })
+  @RequirePermission('moderation:manage')
+  approvePost(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+  ) {
+    return this.moderationService.approvePost(user.sub, id);
+  }
+
+  @Patch('posts/:id/ban')
+  @ApiOperation({ summary: 'Ban / hide post from public view (only visible to author and admin)' })
+  @ApiResponse({ status: 200, description: 'Post banned and hidden' })
+  @ApiResponse({ status: 403, description: 'Permission moderation:manage required' })
+  @RequirePermission('moderation:manage')
+  banPost(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+    @Body('reason') reason?: string,
+  ) {
+    return this.moderationService.banPost(user.sub, id, reason);
   }
 
   @Post('actions')

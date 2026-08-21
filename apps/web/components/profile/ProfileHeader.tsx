@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { FollowButton } from './FollowButton';
 import { EditProfileModal } from './EditProfileModal';
 import { ReportButton } from '@/components/moderation/ReportButton';
+import { ReputationBadge } from '@/components/ui/ReputationBadge';
 import { Calendar, Users, Edit3 } from 'lucide-react';
 
 interface ProfileHeaderProps {
@@ -55,6 +56,7 @@ export function ProfileHeader({
                 <Badge variant="outline" className="text-2xs font-mono py-0 px-1.5">
                   Analyst #{shortId}
                 </Badge>
+                <ReputationBadge score={profile.reputationScore} badge={profile.badge} />
               </div>
             </div>
           </div>

@@ -12,6 +12,8 @@ import { PostTagsList } from './PostTagsList';
 import { CommentsSection } from './CommentsSection';
 import { ReadingProgressBar } from './ReadingProgressBar';
 import { PostReactionsBar } from '@/components/reactions/PostReactionsBar';
+import { PostAppealBanner } from './PostAppealBanner';
+import { SeriesNavigationWidget } from '@/components/series/SeriesNavigationWidget';
 import { ShieldCheck, BookOpen } from 'lucide-react';
 
 interface PostDetailViewProps {
@@ -35,6 +37,9 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
       <ReadingProgressBar />
 
       <main className="mx-auto max-w-[1280px] px-4 sm:px-6 py-8">
+        {/* Appeal Banner for author if post is banned/hidden */}
+        <PostAppealBanner post={post} />
+
         {/* Breadcrumb Navigation */}
         <div className="mb-6">
           <Breadcrumb
@@ -58,6 +63,7 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
               <PostContentRenderer body={post.body} />
               <PostTagsList tags={post.tags} />
               <PostReactionsBar postId={post.id} />
+              <SeriesNavigationWidget postId={post.id} />
               <CommentsSection postId={post.id} />
             </article>
 

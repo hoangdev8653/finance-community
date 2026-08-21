@@ -96,3 +96,40 @@ export const REPORT_REASONS = [
     description: 'General violation of the community platform code of conduct.',
   },
 ] as const;
+
+export type PostModerationStatus = 'UNREVIEWED' | 'APPROVED' | 'BANNED';
+
+export interface ModerationPostItem {
+  id: string;
+  title: string;
+  slug: string;
+  contentType: string;
+  status: string;
+  moderationStatus: PostModerationStatus;
+  moderatedBy: string | null;
+  moderatedAt: string | null;
+  moderationReason: string | null;
+  authorId: string;
+  categoryId: string | null;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  author?: {
+    username: string;
+    displayName: string | null;
+    avatarMediaId: string | null;
+  } | null;
+}
+
+export interface PaginatedModerationPostsResponse {
+  data: ModerationPostItem[];
+  meta: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+

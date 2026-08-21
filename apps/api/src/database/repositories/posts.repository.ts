@@ -1,8 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, isNull, desc, asc, count, sql } from 'drizzle-orm';
+import { eq, and, isNull, desc, asc, count, sql, inArray } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { postsTable } from '../schema/posts.schema';
+import { postTagsTable } from '../schema/post-tags.schema';
+import { profilesTable } from '../schema/profiles.schema';
+import { followsTable } from '../schema/follows.schema';
 
 export type PostEntity = typeof postsTable.$inferSelect;
 export type NewPostEntity = typeof postsTable.$inferInsert;
@@ -86,6 +89,13 @@ export class PostsRepository {
     if (options.categoryId) {
       conditions.push(eq(postsTable.categoryId, options.categoryId));
     }
+    if (options.tagId) {
+      const taggedPostIds = this.db
+        .select({ postId: postTagsTable.postId })
+        .from(postTagsTable)
+        .where(eq(postTagsTable.tagId, options.tagId));
+      conditions.push(inArray(postsTable.id, taggedPostIds));
+    }
     if (options.authorId) {
       conditions.push(eq(postsTable.authorId, options.authorId));
     }
@@ -143,5 +153,193 @@ export class PostsRepository {
       .update(postsTable)
       .set({ viewCount: sql`${postsTable.viewCount} + 1` })
       .where(eq(postsTable.id, id));
+  }
+
+  async findModerationPostsPaginated(
+    moderationStatus?: string,
+    page = 1,
+    limit = 20,
+  ): Promise<PaginatedResult<any>> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+    const offset = (safePage - 1) * safeLimit;
+
+    const conditions = [isNull(postsTable.deletedAt)];
+    if (moderationStatus && moderationStatus !== 'ALL') {
+      conditions.push(eq(postsTable.moderationStatus, moderationStatus));
+    }
+
+    const whereClause = and(...conditions);
+
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(postsTable)
+      .where(whereClause);
+
+    const totalItems = Number(total);
+    const totalPages = Math.ceil(totalItems / safeLimit);
+
+    const rows = await this.db
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          badge: profilesTable.badge,
+        },
+      })
+      .from(postsTable)
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .where(whereClause)
+      .orderBy(desc(postsTable.createdAt))
+      .limit(safeLimit)
+      .offset(offset);
+
+    const data = rows.map((r) => ({
+      ...r.post,
+      author: r.author,
+    }));
+
+    return {
+      data,
+      meta: {
+        page: safePage,
+        limit: safeLimit,
+        totalItems,
+        totalPages,
+        hasNextPage: safePage < totalPages,
+        hasPreviousPage: safePage > 1,
+      },
+    };
+  }
+
+  async updateModerationStatusTx(
+    tx: any,
+    id: string,
+    data: {
+      status?: string;
+      moderationStatus: string;
+      moderatedBy: string;
+      moderationReason?: string | null;
+    },
+  ): Promise<PostEntity | undefined> {
+    const client = tx || this.db;
+    const [updated] = await client
+      .update(postsTable)
+      .set({
+        ...(data.status ? { status: data.status } : {}),
+        moderationStatus: data.moderationStatus,
+        moderatedBy: data.moderatedBy,
+        moderatedAt: new Date(),
+        moderationReason: data.moderationReason !== undefined ? data.moderationReason : null,
+        updatedAt: new Date(),
+      })
+      .where(eq(postsTable.id, id))
+      .returning();
+
+    return updated;
+  }
+
+  async findFollowingFeedPaginated(
+    userId: string,
+    page = 1,
+    limit = 20,
+  ): Promise<PaginatedResult<PostEntity>> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+    const offset = (safePage - 1) * safeLimit;
+
+    const whereClause = and(
+      eq(followsTable.followerId, userId),
+      eq(postsTable.status, 'PUBLISHED'),
+      isNull(postsTable.deletedAt),
+    );
+
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(postsTable)
+      .innerJoin(followsTable, eq(postsTable.authorId, followsTable.followingId))
+      .where(whereClause);
+
+    const totalItems = Number(total);
+    const totalPages = Math.ceil(totalItems / safeLimit);
+
+    const rows = await this.db
+      .select({ post: postsTable })
+      .from(postsTable)
+      .innerJoin(followsTable, eq(postsTable.authorId, followsTable.followingId))
+      .where(whereClause)
+      .orderBy(desc(postsTable.publishedAt), desc(postsTable.createdAt))
+      .limit(safeLimit)
+      .offset(offset);
+
+    return {
+      data: rows.map((r) => r.post),
+      meta: {
+        page: safePage,
+        limit: safeLimit,
+        totalItems,
+        totalPages,
+        hasNextPage: safePage < totalPages,
+        hasPreviousPage: safePage > 1,
+      },
+    };
+  }
+
+  async findTrendingFeedPaginated(
+    page = 1,
+    limit = 20,
+  ): Promise<PaginatedResult<PostEntity>> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+    const offset = (safePage - 1) * safeLimit;
+
+    const whereClause = and(
+      eq(postsTable.status, 'PUBLISHED'),
+      isNull(postsTable.deletedAt),
+    );
+
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(postsTable)
+      .where(whereClause);
+
+    const totalItems = Number(total);
+    const totalPages = Math.ceil(totalItems / safeLimit);
+
+    const rows = await this.db
+      .select()
+      .from(postsTable)
+      .where(whereClause)
+      .orderBy(desc(postsTable.viewCount), desc(postsTable.publishedAt), desc(postsTable.createdAt))
+      .limit(safeLimit)
+      .offset(offset);
+
+    return {
+      data: rows,
+      meta: {
+        page: safePage,
+        limit: safeLimit,
+        totalItems,
+        totalPages,
+        hasNextPage: safePage < totalPages,
+        hasPreviousPage: safePage > 1,
+      },
+    };
+  }
+
+  async requestPostReviewTx(tx: any, id: string): Promise<PostEntity | undefined> {
+    const client = tx || this.db;
+    const [updated] = await client
+      .update(postsTable)
+      .set({
+        moderationStatus: 'UNREVIEWED',
+        updatedAt: new Date(),
+      })
+      .where(eq(postsTable.id, id))
+      .returning();
+    return updated;
   }
 }

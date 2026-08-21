@@ -18,6 +18,15 @@ export class SeriesController {
   }
 
   @Public()
+  @Get('posts/:id/navigation')
+  @ApiOperation({ summary: 'Get series navigation (previous, next, and table of contents) for a post' })
+  @ApiResponse({ status: 200, description: 'Series navigation details' })
+  @ApiResponse({ status: 404, description: 'Series post not found' })
+  getSeriesNavigation(@Param('id') id: string) {
+    return this.seriesService.getSeriesNavigation(id);
+  }
+
+  @Public()
   @Get(':slug')
   @ApiOperation({ summary: 'Get series detail and post list by slug' })
   @ApiResponse({ status: 200, description: 'Series detail object with paginated posts' })

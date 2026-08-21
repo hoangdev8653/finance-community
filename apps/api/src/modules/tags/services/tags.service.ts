@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TagsRepository, TagEntity } from '../../../database/repositories/tags.repository';
+import { TagsRepository, TagEntity, TagWithUsageCount } from '../../../database/repositories/tags.repository';
 import { CreateTagDto } from '../dto/create-tag.dto';
 
 @Injectable()
@@ -15,11 +15,11 @@ export class TagsService {
       .slice(0, 120);
   }
 
-  async searchTags(search?: string, limit = 20): Promise<TagEntity[]> {
+  async searchTags(search?: string, limit = 20): Promise<TagWithUsageCount[]> {
     return this.tagsRepo.searchByName(search, limit);
   }
 
-  async getTagById(id: string): Promise<TagEntity> {
+  async getTagById(id: string): Promise<TagWithUsageCount> {
     const tag = await this.tagsRepo.findById(id);
     if (!tag) {
       throw new NotFoundException({

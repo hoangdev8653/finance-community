@@ -15,6 +15,8 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
 import { EmailVerificationGuard } from '../../auth/guards/email-verification.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+import { RateLimit } from '../../../common/decorators/rate-limit.decorator';
+import { RateLimitGuard } from '../../../common/guards/rate-limit.guard';
 
 @ApiTags('Reactions')
 @Controller()
@@ -27,7 +29,9 @@ export class ReactionsController {
   @ApiOperation({ summary: 'Atomically toggle reaction (Like/Unlike) on a post' })
   @ApiResponse({ status: 200, description: 'Reaction toggle state payload' })
   @ApiResponse({ status: 404, description: 'Post not found or unpublished' })
-  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard)
+  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 30 reactions per minute)' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
+  @RateLimit({ limit: 30, ttlSeconds: 60, keyPrefix: 'reaction' })
   togglePostReaction(
     @CurrentUser() user: any,
     @Param('id') id: string,
@@ -43,7 +47,9 @@ export class ReactionsController {
   @ApiResponse({ status: 200, description: 'Reaction toggle state payload' })
   @ApiResponse({ status: 400, description: 'Cannot react to a deleted comment' })
   @ApiResponse({ status: 404, description: 'Comment not found' })
-  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard)
+  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 30 reactions per minute)' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
+  @RateLimit({ limit: 30, ttlSeconds: 60, keyPrefix: 'reaction' })
   toggleCommentReaction(
     @CurrentUser() user: any,
     @Param('id') id: string,

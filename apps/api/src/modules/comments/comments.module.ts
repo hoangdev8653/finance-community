@@ -6,12 +6,16 @@ import { DatabaseModule } from '../../database/database.module';
 import { PostsModule } from '../posts/posts.module';
 import { AuditModule } from '../audit/audit.module';
 import { UsersModule } from '../users/users.module';
+import { NotificationsModule } from '../notifications/notifications.module';
+import { MediaModule } from '../media/media.module';
 
 @Module({
   imports: [
     DatabaseModule,
     PostsModule,
     AuditModule,
+    NotificationsModule,
+    MediaModule,
     forwardRef(() => UsersModule),
   ],
   controllers: [CommentsController],

@@ -64,6 +64,8 @@ describe('ProfilesService', () => {
       displayName: 'John Doe',
       avatarMediaId: null,
       bio: 'Finance enthusiast',
+      reputationScore: 0,
+      badge: 'MEMBER',
       createdAt: new Date(),
       updatedAt: new Date(),
     });

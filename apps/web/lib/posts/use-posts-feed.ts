@@ -21,6 +21,31 @@ export function usePostsFeed(filters?: Omit<PostsFeedParams, 'page'>) {
   });
 }
 
+export function useTrendingFeed(limit = 10) {
+  return useInfiniteQuery({
+    queryKey: ['posts', 'feed', 'trending', limit],
+    queryFn: ({ pageParam = 1 }) =>
+      postsService.getTrendingFeed({ page: pageParam, limit }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.hasNextPage ? lastPage.meta.page + 1 : undefined,
+    staleTime: 60 * 1000,
+  });
+}
+
+export function useFollowingFeed(limit = 10, enabled = true) {
+  return useInfiniteQuery({
+    queryKey: ['posts', 'feed', 'following', limit],
+    queryFn: ({ pageParam = 1 }) =>
+      postsService.getFollowingFeed({ page: pageParam, limit }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.meta.hasNextPage ? lastPage.meta.page + 1 : undefined,
+    enabled,
+    staleTime: 60 * 1000,
+  });
+}
+
 export function useCategories(scope?: 'SERIES' | 'COMMUNITY') {
   return useQuery({
     queryKey: queryKeys.categories.list(scope),

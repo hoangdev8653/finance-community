@@ -4,6 +4,7 @@ import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { commentsTable } from '../schema/comments.schema';
 import { profilesTable } from '../schema/profiles.schema';
+import { mediaTable } from '../schema/media.schema';
 
 export type CommentEntity = typeof commentsTable.$inferSelect;
 export type NewCommentEntity = typeof commentsTable.$inferInsert;
@@ -13,6 +14,10 @@ export interface CommentWithProfile extends CommentEntity {
     username: string;
     displayName: string | null;
     avatarMediaId: string | null;
+  } | null;
+  media?: {
+    id: string;
+    secureUrl: string;
   } | null;
 }
 
@@ -49,7 +54,11 @@ export class CommentsRepository {
     const safeLimit = Math.min(100, Math.max(1, limit));
     const offset = (safePage - 1) * safeLimit;
 
-    const whereClause = and(eq(commentsTable.postId, postId), eq(commentsTable.status, 'VISIBLE'));
+    const whereClause = and(
+      eq(commentsTable.postId, postId),
+      eq(commentsTable.status, 'VISIBLE'),
+      isNull(commentsTable.deletedAt),
+    );
 
     const [{ total }] = await this.db
       .select({ total: count() })
@@ -67,9 +76,14 @@ export class CommentsRepository {
           displayName: profilesTable.displayName,
           avatarMediaId: profilesTable.avatarMediaId,
         },
+        media: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
       })
       .from(commentsTable)
       .leftJoin(profilesTable, eq(commentsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(commentsTable.mediaId, mediaTable.id))
       .where(whereClause)
       .orderBy(asc(commentsTable.createdAt))
       .limit(safeLimit)
@@ -78,6 +92,7 @@ export class CommentsRepository {
     const data: CommentWithProfile[] = rows.map((r) => ({
       ...r.comment,
       authorProfile: r.profile,
+      media: r.media && r.media.id ? r.media : null,
     }));
 
     return {
@@ -97,7 +112,7 @@ export class CommentsRepository {
     const client = tx || this.db;
     const [updated] = await client
       .update(commentsTable)
-      .set({ deletedAt: new Date(), updatedAt: new Date() })
+      .set({ deletedAt: new Date(), status: 'HIDDEN', updatedAt: new Date() })
       .where(and(eq(commentsTable.id, id), isNull(commentsTable.deletedAt)))
       .returning();
     return !!updated;

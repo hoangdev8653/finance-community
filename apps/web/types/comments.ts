@@ -10,6 +10,8 @@ export interface SerializedComment {
   authorId: string;
   parentId: string | null;
   body: string;
+  mediaId?: string | null;
+  media?: { id: string; secureUrl: string } | null;
   status: 'VISIBLE' | 'HIDDEN';
   createdAt: string;
   updatedAt: string;
@@ -25,6 +27,7 @@ export interface ThreadedComment extends SerializedComment {
 export interface CreateCommentDto {
   body: string;
   parentId?: string;
+  mediaId?: string;
 }
 
 export interface UpdateCommentDto {

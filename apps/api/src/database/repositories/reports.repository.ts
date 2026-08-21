@@ -52,6 +52,23 @@ export class ReportsRepository {
     return existing;
   }
 
+  async countActiveReportsForTarget(
+    targetType: 'POST' | 'COMMENT',
+    targetId: string,
+  ): Promise<number> {
+    const targetCondition =
+      targetType === 'POST'
+        ? eq(reportsTable.reportedPostId, targetId)
+        : eq(reportsTable.reportedCommentId, targetId);
+
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(reportsTable)
+      .where(and(targetCondition, eq(reportsTable.status, 'OPEN')));
+
+    return Number(total);
+  }
+
   async findQueuePaginated(status?: string, page = 1, limit = 20): Promise<{ data: ReportEntity[]; meta: any }> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));

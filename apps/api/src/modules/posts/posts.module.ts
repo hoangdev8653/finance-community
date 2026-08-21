@@ -4,6 +4,7 @@ import { PostsController } from './controllers/posts.controller';
 import { PostsRepository } from '../../database/repositories/posts.repository';
 import { PostTagsRepository } from '../../database/repositories/post-tags.repository';
 import { PostMediaRepository } from '../../database/repositories/post-media.repository';
+import { PostBookmarksRepository } from '../../database/repositories/post-bookmarks.repository';
 import { DatabaseModule } from '../../database/database.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { MediaModule } from '../media/media.module';
@@ -26,12 +27,14 @@ import { AuditModule } from '../audit/audit.module';
     PostsRepository,
     PostTagsRepository,
     PostMediaRepository,
+    PostBookmarksRepository,
   ],
   exports: [
     PostsService,
     PostsRepository,
     PostTagsRepository,
     PostMediaRepository,
+    PostBookmarksRepository,
   ],
 })
 export class PostsModule {}

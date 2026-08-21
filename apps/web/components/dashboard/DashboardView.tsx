@@ -7,6 +7,7 @@ import { useAuth } from '../../lib/auth/AuthContext';
 import {
   useDashboardMetrics,
   useDashboardPosts,
+  useDashboardBookmarks,
   useDashboardMutations,
 } from '../../lib/dashboard/use-dashboard';
 import { DashboardTabType } from '../../types/dashboard';
@@ -21,22 +22,31 @@ export function DashboardView() {
   const [activeTab, setActiveTab] = useState<DashboardTabType>('published');
   const [page, setPage] = useState<number>(1);
 
-  const statusMap: Record<DashboardTabType, 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'> = {
+  const isBookmarkTab = activeTab === 'bookmarks';
+
+  const statusMap: Record<Exclude<DashboardTabType, 'bookmarks'>, 'PUBLISHED' | 'DRAFT' | 'ARCHIVED'> = {
     published: 'PUBLISHED',
     drafts: 'DRAFT',
     archived: 'ARCHIVED',
   };
 
   const { data: metrics, isLoading: isMetricsLoading } = useDashboardMetrics(user?.id);
+
   const {
     data: postsData,
     isLoading: isPostsLoading,
     isError: isPostsError,
   } = useDashboardPosts(user?.id, {
-    status: statusMap[activeTab],
+    status: !isBookmarkTab ? statusMap[activeTab as Exclude<DashboardTabType, 'bookmarks'>] : undefined,
     page,
     limit: 20,
   });
+
+  const {
+    data: bookmarksData,
+    isLoading: isBookmarksLoading,
+    isError: isBookmarksError,
+  } = useDashboardBookmarks(page, 20, isBookmarkTab);
 
   const { updateStatus, deletePost } = useDashboardMutations();
 
@@ -49,8 +59,12 @@ export function DashboardView() {
     return <DashboardSkeleton />;
   }
 
-  const posts = postsData?.data || [];
-  const totalPages = postsData?.meta?.totalPages || 1;
+  const posts = isBookmarkTab ? bookmarksData?.data || [] : postsData?.data || [];
+  const totalPages = isBookmarkTab
+    ? bookmarksData?.meta?.totalPages || 1
+    : postsData?.meta?.totalPages || 1;
+  const isLoadingActive = isBookmarkTab ? isBookmarksLoading : isPostsLoading;
+  const isErrorActive = isBookmarkTab ? isBookmarksError : isPostsError;
 
   const defaultMetrics = metrics || {
     totalAnalyses: 0,
@@ -107,7 +121,7 @@ export function DashboardView() {
           aria-labelledby={`tab-${activeTab}`}
           className="min-h-[300px]"
         >
-          {isPostsLoading ? (
+          {isLoadingActive ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
               {[1, 2, 3, 4].map((i) => (
                 <div
@@ -119,8 +133,8 @@ export function DashboardView() {
           ) : (
             <DashboardPostsList
               posts={posts}
-              isLoading={isPostsLoading}
-              isError={isPostsError}
+              isLoading={isLoadingActive}
+              isError={isErrorActive}
               activeTab={activeTab}
               page={page}
               totalPages={totalPages}

@@ -24,7 +24,7 @@ export class MediaService {
     const timestamp = Math.floor(Date.now() / 1000);
     const apiSecret = process.env.CLOUDINARY_API_SECRET || 'dev_secret_key_placeholder';
     const paramsToSign = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash('sha256').update(paramsToSign).digest('hex');
+    const signature = crypto.createHash('sha1').update(paramsToSign).digest('hex');
 
     return {
       timestamp,

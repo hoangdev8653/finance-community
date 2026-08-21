@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, integer } from 'drizzle-orm/pg-core';
 import { usersTable } from './users.schema';
 
 export const profilesTable = pgTable('profiles', {
@@ -11,6 +11,8 @@ export const profilesTable = pgTable('profiles', {
   displayName: varchar('display_name', { length: 100 }),
   avatarMediaId: uuid('avatar_media_id'),
   bio: text('bio'),
+  reputationScore: integer('reputation_score').notNull().default(0),
+  badge: varchar('badge', { length: 50 }).notNull().default('MEMBER'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });

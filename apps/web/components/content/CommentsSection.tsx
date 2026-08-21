@@ -33,8 +33,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   const updateMutation = useUpdateComment(postId);
   const deleteMutation = useDeleteComment(postId);
 
-  const handleCreateRoot = async (body: string) => {
-    await createMutation.mutateAsync({ body });
+  const handleCreateRoot = async (body: string, mediaId?: string) => {
+    await createMutation.mutateAsync({ body, mediaId });
   };
 
   const handleReply = async (parentId: string, body: string) => {

@@ -26,19 +26,32 @@ export class PostReactionsRepository {
   ): Promise<{ reacted: boolean; reactionType: string | null }> {
     const client = tx || this.db;
 
-    const inserted = await client
-      .insert(postReactionsTable)
-      .values({ userId, postId, reactionType })
-      .onConflictDoNothing({ target: [postReactionsTable.userId, postReactionsTable.postId] })
-      .returning();
+    const [existing] = await client
+      .select()
+      .from(postReactionsTable)
+      .where(and(eq(postReactionsTable.userId, userId), eq(postReactionsTable.postId, postId)));
 
-    if (inserted.length === 0) {
-      // Row already existed -> Atomic Delete (Unlike)
-      await client
-        .delete(postReactionsTable)
-        .where(and(eq(postReactionsTable.userId, userId), eq(postReactionsTable.postId, postId)));
-      return { reacted: false, reactionType: null };
+    if (existing) {
+      if (existing.reactionType === reactionType) {
+        // Same reaction type -> toggle off (Unlike)
+        await client
+          .delete(postReactionsTable)
+          .where(and(eq(postReactionsTable.userId, userId), eq(postReactionsTable.postId, postId)));
+        return { reacted: false, reactionType: null };
+      } else {
+        // Different reaction type -> update to new reaction type
+        await client
+          .update(postReactionsTable)
+          .set({ reactionType, createdAt: new Date() })
+          .where(and(eq(postReactionsTable.userId, userId), eq(postReactionsTable.postId, postId)));
+        return { reacted: true, reactionType };
+      }
     }
+
+    // New reaction
+    await client
+      .insert(postReactionsTable)
+      .values({ userId, postId, reactionType });
 
     return { reacted: true, reactionType };
   }

@@ -131,4 +131,35 @@ export const moderationService = {
       };
     }
   },
+
+  /**
+   * Get paginated post moderation queue
+   * GET /api/v1/moderation/posts
+   */
+  async getModerationPosts(params?: {
+    moderationStatus?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const response = await apiClient.get('/moderation/posts', { params });
+    return response.data;
+  },
+
+  /**
+   * Approve a post (mark as reviewed/approved)
+   * PATCH /api/v1/moderation/posts/:id/approve
+   */
+  async approvePost(id: string) {
+    const response = await apiClient.patch(`/moderation/posts/${id}/approve`);
+    return response.data;
+  },
+
+  /**
+   * Ban a post (mark as banned and hide from community)
+   * PATCH /api/v1/moderation/posts/:id/ban
+   */
+  async banPost(id: string, reason?: string) {
+    const response = await apiClient.patch(`/moderation/posts/${id}/ban`, { reason });
+    return response.data;
+  },
 };

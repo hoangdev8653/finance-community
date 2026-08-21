@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, ne } from 'drizzle-orm';
+import { eq, and, ne, sql } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { profilesTable } from '../schema/profiles.schema';
@@ -62,5 +62,16 @@ export class ProfilesRepository {
       .where(eq(profilesTable.userId, userId))
       .returning();
     return updated;
+  }
+
+  async incrementReputationScoreTx(tx: any, userId: string, points: number): Promise<void> {
+    const client = tx || this.db;
+    await client
+      .update(profilesTable)
+      .set({
+        reputationScore: sql`${profilesTable.reputationScore} + ${points}`,
+        updatedAt: new Date(),
+      })
+      .where(eq(profilesTable.userId, userId));
   }
 }

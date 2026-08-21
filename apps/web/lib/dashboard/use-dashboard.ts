@@ -38,6 +38,18 @@ export function useDashboardPosts(authorId?: string, params?: DashboardPostsPara
 }
 
 /**
+ * Hook to retrieve user's saved/bookmarked posts feed.
+ */
+export function useDashboardBookmarks(page = 1, limit = 20, enabled = true) {
+  return useQuery({
+    queryKey: ['dashboard', 'bookmarks', page, limit],
+    queryFn: () => postsService.getMyBookmarks(page, limit),
+    enabled,
+    staleTime: 30 * 1000,
+  });
+}
+
+/**
  * Hook for dashboard post lifecycle mutations (publish, archive, delete).
  */
 export function useDashboardMutations() {

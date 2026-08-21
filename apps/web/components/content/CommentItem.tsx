@@ -175,15 +175,36 @@ export function CommentItem({
           isLoading={isActionLoading}
         />
       ) : (
-        <p
-          className={`text-sm leading-relaxed ${
-            comment.isDeleted
-              ? 'italic text-muted-foreground'
-              : 'text-foreground/90 whitespace-pre-wrap font-sans'
-          }`}
-        >
-          {comment.body}
-        </p>
+        <div className="space-y-3">
+          <p
+            className={`text-sm leading-relaxed ${
+              comment.isDeleted
+                ? 'italic text-muted-foreground'
+                : 'text-foreground/90 whitespace-pre-wrap font-sans'
+            }`}
+          >
+            {comment.body}
+          </p>
+
+          {/* Attached Chart Media */}
+          {comment.media?.secureUrl && !comment.isDeleted && (
+            <div className="rounded-lg overflow-hidden border border-border max-w-md">
+              <a
+                href={comment.media.secureUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block group relative"
+                title="Bấm để xem ảnh kích thước đầy đủ"
+              >
+                <img
+                  src={comment.media.secureUrl}
+                  alt="Biểu đồ phân tích đính kèm"
+                  className="w-full h-auto object-cover max-h-72 transition-transform group-hover:scale-[1.01]"
+                />
+              </a>
+            </div>
+          )}
+        </div>
       )}
 
       {/* Actions Bar: Reactions & Reply Trigger Button */}
