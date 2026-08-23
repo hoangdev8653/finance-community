@@ -34,7 +34,7 @@ export function PostPreview({
       <div className="flex items-center gap-2 flex-wrap">
         <Badge
           variant={contentType === 'SERIES' ? 'default' : 'outline'}
-          className="font-mono text-2xs uppercase"
+          className="font-mono text-xs uppercase"
         >
           {contentType}
         </Badge>
@@ -46,7 +46,7 @@ export function PostPreview({
       </div>
 
       {/* Title */}
-      <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
+      <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
         {title || 'Untitled Financial Analysis'}
       </h1>
 
@@ -72,7 +72,7 @@ export function PostPreview({
       {tags.length > 0 && (
         <div className="pt-6 border-t border-border flex items-center gap-1.5 flex-wrap">
           {tags.map((tag) => (
-            <Badge key={tag} variant="outline" className="font-mono text-2xs py-0.5">
+            <Badge key={tag} variant="outline" className="font-mono text-xs py-0.5">
               #{tag}
             </Badge>
           ))}

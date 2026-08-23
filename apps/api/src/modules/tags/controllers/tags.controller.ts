@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { TagsService } from '../services/tags.service';
 import { CreateTagDto } from '../dto/create-tag.dto';
+import { UpdateTagDto } from '../dto/update-tag.dto';
 import { QueryTagsDto } from '../dto/query-tags.dto';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AccountStatusGuard } from '../../auth/guards/account-status.guard';
@@ -37,5 +38,21 @@ export class TagsController {
   @UseGuards(JwtAuthGuard, AccountStatusGuard)
   createTag(@Body() dto: CreateTagDto) {
     return this.tagsService.createTag(dto);
+  }
+
+  @Patch(':id')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update content tag' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  updateTag(@Param('id') id: string, @Body() dto: UpdateTagDto) {
+    return this.tagsService.updateTag(id, dto);
+  }
+
+  @Delete(':id')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Delete content tag' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
+  deleteTag(@Param('id') id: string) {
+    return this.tagsService.deleteTag(id);
   }
 }

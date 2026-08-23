@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAuditLogs } from '@/lib/admin/use-admin';
+import { AdminPagination } from './AdminPagination';
 import { AuditLogEntity } from '@/types/admin';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -33,7 +34,7 @@ export function AuditLogsTable() {
   });
 
   const logs = data?.data || [];
-  const meta = data?.meta;
+  const meta = data?.meta ?? { page: 1, limit: 15, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
 
   const handleResetFilters = () => {
     setFilterAction('');
@@ -46,7 +47,7 @@ export function AuditLogsTable() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-xl font-bold text-foreground">
+          <h2 className="font-heading text-xl font-bold text-foreground">
             Security & Governance Audit Logs
           </h2>
           <p className="text-xs text-muted-foreground font-mono">
@@ -63,7 +64,7 @@ export function AuditLogsTable() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label htmlFor="filter-action" className="text-2xs font-mono text-muted-foreground">
+            <label htmlFor="filter-action" className="text-xs font-mono text-muted-foreground">
               Action Name
             </label>
             <input
@@ -80,7 +81,7 @@ export function AuditLogsTable() {
           </div>
 
           <div>
-            <label htmlFor="filter-entity-type" className="text-2xs font-mono text-muted-foreground">
+            <label htmlFor="filter-entity-type" className="text-xs font-mono text-muted-foreground">
               Entity Type
             </label>
             <input
@@ -97,7 +98,7 @@ export function AuditLogsTable() {
           </div>
 
           <div>
-            <label htmlFor="filter-actor-id" className="text-2xs font-mono text-muted-foreground">
+            <label htmlFor="filter-actor-id" className="text-xs font-mono text-muted-foreground">
               Actor User UUID
             </label>
             <input
@@ -197,22 +198,22 @@ export function AuditLogsTable() {
                         </div>
                       </td>
 
-                      <td className="py-3 px-4 text-2xs text-muted-foreground">
-                        {log.actor_id ? `#${log.actor_id.slice(0, 8)}` : 'System'}
+                      <td className="py-3 px-4 text-xs text-muted-foreground">
+                        {log.actorEmail ?? 'System'}
                       </td>
 
-                      <td className="py-3 px-4 text-2xs">
+                      <td className="py-3 px-4 text-xs">
                         <span className="text-foreground">{log.entity_type}</span>
                         {log.entity_id && (
                           <span className="text-muted-foreground"> #{log.entity_id.slice(0, 8)}</span>
                         )}
                       </td>
 
-                      <td className="py-3 px-4 text-2xs text-muted-foreground font-sans max-w-xs truncate">
+                      <td className="py-3 px-4 text-xs text-muted-foreground font-sans max-w-xs truncate">
                         {log.reason || '-'}
                       </td>
 
-                      <td className="py-3 px-4 text-2xs text-muted-foreground">
+                      <td className="py-3 px-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           <span>{formattedDate}</span>
@@ -225,7 +226,7 @@ export function AuditLogsTable() {
                             variant="outline"
                             size="sm"
                             onClick={() => setSelectedLog(log)}
-                            className="text-2xs h-6 px-2 gap-1 font-mono"
+                            className="text-xs h-6 px-2 gap-1 font-mono"
                           >
                             <Code className="h-3 w-3" />
                             <span>JSON</span>
@@ -258,18 +259,18 @@ export function AuditLogsTable() {
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold text-foreground">{log.action}</span>
-                    <span className="text-2xs text-muted-foreground">{formattedDate}</span>
+                    <span className="text-xs text-muted-foreground">{formattedDate}</span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-2xs text-muted-foreground">
-                    <div>Actor: {log.actor_id ? `#${log.actor_id.slice(0, 8)}` : 'System'}</div>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div>Actor: {log.actorEmail ?? 'System'}</div>
                     <div>
                       Target: {log.entity_type} {log.entity_id ? `#${log.entity_id.slice(0, 8)}` : ''}
                     </div>
                   </div>
 
                   {log.reason && (
-                    <p className="text-2xs text-foreground/90 font-sans italic">
+                    <p className="text-xs text-foreground/90 font-sans italic">
                       "{log.reason}"
                     </p>
                   )}
@@ -280,7 +281,7 @@ export function AuditLogsTable() {
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedLog(log)}
-                        className="text-2xs h-6 px-2"
+                        className="text-xs h-6 px-2"
                       >
                         Inspect Metadata
                       </Button>
@@ -292,7 +293,8 @@ export function AuditLogsTable() {
           </div>
 
           {/* Pagination Controls */}
-          {meta && meta.totalPages > 1 && (
+          {meta && <AdminPagination meta={meta} itemLabel="events" onPageChange={setCurrentPage} />}
+          {meta && meta.totalPages > 1 && false && (
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-border text-xs font-mono text-muted-foreground">
               <div>
                 Page {meta.page} of {meta.totalPages} ({meta.totalItems} events)
@@ -337,7 +339,7 @@ export function AuditLogsTable() {
                 <h3 id="audit-meta-title" className="font-mono text-sm font-bold text-foreground">
                   Audit Event Metadata
                 </h3>
-                <p className="text-2xs font-mono text-muted-foreground">
+                <p className="text-xs font-mono text-muted-foreground">
                   {selectedLog.action} (Event #{selectedLog.id.slice(0, 8)})
                 </p>
               </div>
@@ -351,7 +353,7 @@ export function AuditLogsTable() {
               </button>
             </div>
 
-            <pre className="p-3 rounded-md bg-muted/30 border border-border text-2xs font-mono text-foreground overflow-x-auto max-h-80">
+            <pre className="p-3 rounded-md bg-muted/30 border border-border text-xs font-mono text-foreground overflow-x-auto max-h-80">
               {JSON.stringify(selectedLog.metadata, null, 2)}
             </pre>
 

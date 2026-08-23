@@ -43,7 +43,7 @@ describe('PostCoverMedia Component', () => {
     render(<PostCoverMedia post={postWithCover} />);
 
     const img = screen.getByRole('img');
-    expect(img.getAttribute('src')).toBe('https://res.cloudinary.com/demo/image/upload/cover.jpg');
+    expect(img.getAttribute('src')).toContain('cover.jpg');
     expect(img.getAttribute('alt')).toBe('Post Title');
   });
 

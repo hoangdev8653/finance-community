@@ -50,7 +50,7 @@ function SearchPageContent() {
             <Compass className="h-6 w-6" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl font-bold text-foreground">
+            <h1 className="font-heading text-2xl font-bold text-foreground">
               Market Discovery & Search
             </h1>
             <p className="text-xs text-muted-foreground font-mono">

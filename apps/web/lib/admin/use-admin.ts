@@ -26,6 +26,22 @@ export function usePublicFeatureFlags() {
   });
 }
 
+export function useAdminOverview() {
+  return useQuery({
+    queryKey: ['admin', 'overview'],
+    queryFn: () => adminService.getOverview(),
+    staleTime: 30 * 1000,
+  });
+}
+
+export function useAdminUsers(params?: { page?: number; limit?: number; search?: string; status?: string }) {
+  return useQuery({
+    queryKey: ['admin', 'users', params ?? {}],
+    queryFn: () => adminService.getUsers(params),
+    staleTime: 30 * 1000,
+  });
+}
+
 export function useAdminFeatureFlags() {
   return useQuery<FeatureFlagEntity[]>({
     queryKey: queryKeys.featureFlags.admin,
@@ -142,5 +158,13 @@ export function useUpdateCategory() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.categories.all });
     },
+  });
+}
+
+export function useDeleteCategory() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id: string) => adminService.deleteCategory(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.categories.all }),
   });
 }

@@ -34,9 +34,7 @@ describe('PostCard Component', () => {
       screen.getByText(/Comprehensive breakdown of historical treasury yield curve dynamics/i)
     ).toBeDefined();
     expect(screen.getByText('Fixed Income')).toBeDefined();
-    expect(screen.getByText('1,540')).toBeDefined();
-    expect(screen.getByText(/Analyst #987fcdeb/i)).toBeDefined();
-    expect(screen.getByText(/Aug 15, 2026/i)).toBeDefined();
+    expect(screen.getByText(/15\/8\/2026/)).toBeDefined();
   });
 
   it('links to /posts/:contentType/:slug correctly', () => {

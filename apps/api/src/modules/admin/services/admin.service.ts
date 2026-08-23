@@ -1,4 +1,5 @@
 import { Injectable, ForbiddenException, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
+import { count, eq, isNull, ilike, and, desc } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { UsersRepository } from '../../../database/repositories/users.repository';
@@ -11,6 +12,7 @@ import { UpdateUserStatusDto } from '../dto/update-user-status.dto';
 import { AssignRoleDto } from '../dto/assign-role.dto';
 import { UpdateSystemSettingDto } from '../dto/update-system-setting.dto';
 import { ToggleFeatureFlagDto } from '../dto/toggle-feature-flag.dto';
+import { postsTable, reportsTable, usersTable, profilesTable, mediaTable } from '../../../database/schema';
 
 @Injectable()
 export class AdminService {
@@ -23,6 +25,47 @@ export class AdminService {
     private readonly auditLogRepo: AuditLogRepository,
     private readonly auditLogService: AuditLogService,
   ) {}
+
+  async getOverview() {
+    const [posts, activeUsers, reviewQueue, openReports] = await Promise.all([
+      this.db.select({ value: count() }).from(postsTable).where(isNull(postsTable.deletedAt)),
+      this.db.select({ value: count() }).from(usersTable).where(eq(usersTable.status, 'ACTIVE')),
+      this.db.select({ value: count() }).from(postsTable).where(eq(postsTable.moderationStatus, 'UNREVIEWED')),
+      this.db.select({ value: count() }).from(reportsTable).where(eq(reportsTable.status, 'OPEN')),
+    ]);
+
+    return {
+      totalPosts: Number(posts[0]?.value ?? 0),
+      activeUsers: Number(activeUsers[0]?.value ?? 0),
+      reviewQueue: Number(reviewQueue[0]?.value ?? 0),
+      openReports: Number(openReports[0]?.value ?? 0),
+      generatedAt: new Date().toISOString(),
+    };
+  }
+
+  async getUsers(page = 1, limit = 20, search?: string, status?: string) {
+    const filters = [] as any[];
+    if (search?.trim()) filters.push(ilike(usersTable.email, `%${search.trim()}%`));
+    if (status) filters.push(eq(usersTable.status, status));
+    const where = filters.length ? and(...filters) : undefined;
+    const [rows, total] = await Promise.all([
+      this.db.select({
+        id: usersTable.id,
+        email: usersTable.email,
+        status: usersTable.status,
+        provider: usersTable.provider,
+        createdAt: usersTable.createdAt,
+        displayName: profilesTable.displayName,
+        username: profilesTable.username,
+        avatarUrl: mediaTable.secureUrl,
+      }).from(usersTable).leftJoin(profilesTable, eq(profilesTable.userId, usersTable.id)).leftJoin(mediaTable, eq(mediaTable.id, profilesTable.avatarMediaId)).where(where).orderBy(desc(usersTable.createdAt)).limit(limit).offset((page - 1) * limit),
+      this.db.select({ value: count() }).from(usersTable).where(where),
+    ]);
+    const data = await Promise.all(rows.map(async (user) => ({ ...user, roles: await this.rolesRepo.getUserRoles(user.id) })));
+    const totalItems = Number(total[0]?.value ?? 0);
+    const totalPages = Math.ceil(totalItems / limit);
+    return { data, meta: { page, limit, totalItems, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 } };
+  }
 
   async changeUserStatus(adminId: string, adminRoles: string[], targetUserId: string, dto: UpdateUserStatusDto) {
     if (adminId === targetUserId) {

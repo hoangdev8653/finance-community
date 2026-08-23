@@ -7,6 +7,7 @@ import {
   useDashboardMetrics,
   useDashboardPosts,
   useDashboardMutations,
+  useDashboardBookmarks,
 } from '@/lib/dashboard/use-dashboard';
 
 vi.mock('@/lib/auth/AuthContext');
@@ -82,13 +83,22 @@ describe('DashboardView Component', () => {
       deletePost: vi.fn().mockResolvedValue({}),
       isDeletingPost: false,
     });
+
+    vi.mocked(useDashboardBookmarks).mockReturnValue({
+      data: {
+        data: [],
+        meta: { page: 1, limit: 20, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false },
+      },
+      isLoading: false,
+      isError: false,
+    } as any);
   });
 
   it('renders page header, KPI metrics, tab bar, and author post cards', () => {
     render(<DashboardView />);
 
-    expect(screen.getByText('Research & Portfolio Dashboard')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /New Analysis/i })).toHaveAttribute(
+    expect(screen.getByText(/Bảng điều khiển & Quản lý Nghiên cứu/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Viết bài phân tích mới/i })).toHaveAttribute(
       'href',
       '/posts/create'
     );

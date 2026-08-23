@@ -114,6 +114,7 @@ export interface ModerationPostItem {
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  coverMedia?: { id: string; secureUrl: string } | null;
   author?: {
     username: string;
     displayName: string | null;

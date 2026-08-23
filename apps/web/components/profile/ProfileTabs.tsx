@@ -70,7 +70,7 @@ export function ProfileTabs({
               <span>{tab.label}</span>
               {typeof tab.count === 'number' && (
                 <span
-                  className={`px-1.5 py-0.5 rounded text-2xs ${
+                  className={`px-1.5 py-0.5 rounded text-xs ${
                     isActive ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                   }`}
                 >

@@ -158,6 +158,7 @@ export function PostStudio({ initialPost }: PostStudioProps) {
           body={body}
           metaTitle={metaTitle}
           metaDescription={metaDescription}
+          isAdmin={user?.roles?.includes('ADMIN')}
           onTitleChange={setTitle}
           onContentTypeChange={setContentType}
           onCategoryChange={setCategoryId}

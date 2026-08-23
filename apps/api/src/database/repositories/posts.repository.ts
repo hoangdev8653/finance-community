@@ -3,6 +3,7 @@ import { eq, and, isNull, desc, asc, count, sql, inArray } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { postsTable } from '../schema/posts.schema';
+import { mediaTable } from '../schema/media.schema';
 import { postTagsTable } from '../schema/post-tags.schema';
 import { profilesTable } from '../schema/profiles.schema';
 import { followsTable } from '../schema/follows.schema';
@@ -189,9 +190,14 @@ export class PostsRepository {
           avatarMediaId: profilesTable.avatarMediaId,
           badge: profilesTable.badge,
         },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
       })
       .from(postsTable)
       .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(whereClause)
       .orderBy(desc(postsTable.createdAt))
       .limit(safeLimit)
@@ -200,6 +206,7 @@ export class PostsRepository {
     const data = rows.map((r) => ({
       ...r.post,
       author: r.author,
+      coverMedia: r.coverMedia,
     }));
 
     return {

@@ -64,28 +64,28 @@ export function TagsDirectoryView() {
       {/* Header & Search Bar */}
       <div className="space-y-4">
         <div className="flex flex-col gap-2">
-          <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary font-mono">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800 px-3 py-1 rounded-md font-mono">
             <Tag className="h-3.5 w-3.5" />
-            <span>Market Taxonomy</span>
+            <span>Hệ thống Chủ đề Thị trường</span>
           </div>
-          <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            Market Tags & Research Topics
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
+            Chủ đề & Từ khóa Tài chính Thịnh hành
           </h1>
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            Explore institutional market taxonomy, asset classes, corporate tickers, and macro trends cataloged across community analyses and series.
+          <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
+            Khám phá các phân lớp tài sản, mã cổ phiếu doanh nghiệp, và xu hướng kinh tế vĩ mô được quan tâm nhiều nhất trong các bài phân tích.
           </p>
         </div>
 
         {/* Live Filter Input */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        <div className="relative max-w-lg">
+          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 pointer-events-none" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter market tags by keyword or ticker..."
+            placeholder="Tìm kiếm chủ đề theo từ khóa hoặc mã cổ phiếu (FPT, HPG, Fed...)..."
             aria-label="Filter market tags"
-            className="h-10 w-full rounded-md border border-border bg-surface pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-hidden focus:ring-1 focus:ring-primary transition-colors"
+            className="h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs transition-colors"
           />
         </div>
       </div>
@@ -96,8 +96,8 @@ export function TagsDirectoryView() {
       {/* Error State */}
       {isError && (
         <ErrorState
-          title="Unable to load taxonomy tags"
-          message={error instanceof Error ? error.message : 'An unexpected error occurred while fetching tags.'}
+          title="Không thể nạp danh sách chủ đề"
+          message={error instanceof Error ? error.message : 'Đã có lỗi xảy ra trong quá trình nạp dữ liệu.'}
           onRetry={() => refetch()}
         />
       )}
@@ -109,21 +109,21 @@ export function TagsDirectoryView() {
           {!searchQuery.trim() && popularTags.length > 0 && (
             <section className="space-y-3" aria-labelledby="popular-tags-heading">
               <div className="flex items-center gap-2">
-                <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                <h2 id="popular-tags-heading" className="text-sm font-semibold uppercase tracking-wider text-foreground">
-                  Popular Market Tags
+                <Flame className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
+                <h2 id="popular-tags-heading" className="text-sm font-bold uppercase tracking-wider text-slate-950 dark:text-slate-100 font-heading">
+                  Chủ đề Nổi bật & Phổ biến
                 </h2>
               </div>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2.5">
                 {popularTags.map((tag) => (
                   <Link
                     key={tag.id}
                     href={`/tags/${encodeURIComponent(tag.slug)}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/5 hover:text-primary"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 transition-all hover:border-emerald-500 hover:bg-emerald-50/60 dark:hover:bg-slate-700 hover:text-emerald-950 dark:hover:text-emerald-300 shadow-2xs"
                   >
-                    <Hash className="h-3 w-3 text-muted-foreground" />
+                    <Hash className="h-3.5 w-3.5 text-slate-500" />
                     <span>{tag.name}</span>
-                    <span className="ml-1 rounded-full bg-muted px-1.5 py-0.2 font-mono text-[10px] text-muted-foreground">
+                    <span className="ml-1 rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
                       {tag.usageCount}
                     </span>
                   </Link>

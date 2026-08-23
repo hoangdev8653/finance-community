@@ -127,7 +127,7 @@ export function ExecuteActionDialog({
               <ShieldAlert className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <h2 id="mod-action-title" className="font-serif text-lg font-bold text-foreground">
+              <h2 id="mod-action-title" className="font-heading text-lg font-bold text-foreground">
                 Execute Moderation Action
               </h2>
               <p className="text-xs text-muted-foreground font-mono">
@@ -194,7 +194,7 @@ export function ExecuteActionDialog({
                 <label htmlFor="action-reason" className="font-semibold text-foreground">
                   Enforcement Justification / Reason <span className="text-danger">*</span>
                 </label>
-                <span className="font-mono text-2xs text-muted-foreground">
+                <span className="font-mono text-xs text-muted-foreground">
                   {reason.length} / 500 (min 5)
                 </span>
               </div>

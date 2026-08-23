@@ -58,12 +58,12 @@ describe('ProfileHeader Component', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /Chief Macro Strategist/i })).toBeDefined();
     expect(screen.getByText(/@macro_analyst/i)).toBeDefined();
-    expect(screen.getByText(/Analyst #u-123456/i)).toBeDefined();
+    expect(screen.getByText(/Chuyên gia #u-123456/i)).toBeDefined();
     expect(screen.getByText(/Covering global sovereign debt/i)).toBeDefined();
     expect(screen.getByText('1250')).toBeDefined();
     expect(screen.getByText('42')).toBeDefined();
     expect(screen.getByText('18')).toBeDefined();
-    expect(screen.getByText(/Member since August 2026/i)).toBeDefined();
+    expect(screen.getByText(/Thành viên từ/i)).toBeDefined();
   });
 
   it('renders "Edit Profile" button on own profile instead of follow button', () => {
@@ -94,7 +94,7 @@ describe('ProfileHeader Component', () => {
       </QueryClientProvider>
     );
 
-    expect(screen.getByRole('button', { name: /Edit Profile/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Chỉnh sửa hồ sơ/i })).toBeDefined();
     expect(screen.queryByRole('button', { name: /^Follow$/i })).toBeNull();
   });
 });

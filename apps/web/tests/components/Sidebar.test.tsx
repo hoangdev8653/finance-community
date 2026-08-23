@@ -6,16 +6,16 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 describe('Sidebar Component', () => {
   it('renders all primary discovery navigation items with valid routes', () => {
     render(<Sidebar />);
-    expect(screen.getByRole('link', { name: /Home Feed/i })).toHaveAttribute('href', '/');
-    expect(screen.getByRole('link', { name: /Explore Posts/i })).toHaveAttribute('href', '/posts');
-    expect(screen.getByRole('link', { name: /Educational Series/i })).toHaveAttribute('href', '/series');
-    expect(screen.getByRole('link', { name: /Categories/i })).toHaveAttribute('href', '/categories');
-    expect(screen.getByRole('link', { name: /Market Tags/i })).toHaveAttribute('href', '/tags');
+    expect(screen.getByRole('link', { name: /Trang chủ|Home/i })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: /Khám phá|Explore/i })).toHaveAttribute('href', '/posts');
+    expect(screen.getByRole('link', { name: /Chuỗi bài|Series/i })).toHaveAttribute('href', '/series');
+    expect(screen.getByRole('link', { name: /Danh mục|Categories/i })).toHaveAttribute('href', '/categories');
+    expect(screen.getByRole('link', { name: /Thẻ chủ đề|Mã & Thẻ|Tags/i })).toHaveAttribute('href', '/tags');
   });
 
   it('renders personal workspace link to /dashboard', () => {
     render(<Sidebar />);
-    expect(screen.getByRole('link', { name: /My Workspace/i })).toHaveAttribute('href', '/dashboard');
+    expect(screen.getByRole('link', { name: /Không gian làm việc|Workspace/i })).toHaveAttribute('href', '/dashboard');
   });
 
   it('enforces dead-link protection by ensuring no /bookmarks or /subscriptions exist in DOM', () => {

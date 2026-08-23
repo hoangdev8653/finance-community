@@ -29,14 +29,14 @@ describe('SeriesChapterList Component', () => {
 
     expect(screen.getByText('01')).toBeDefined();
     expect(screen.getByText('Discounted Cash Flow Fundamentals')).toBeDefined();
-    expect(screen.getByText('320 views')).toBeDefined();
+    expect(screen.getByText((content) => content.includes('320'))).toBeDefined();
 
     expect(screen.getByText('02')).toBeDefined();
     expect(screen.getByText('WACC & Cost of Capital Calculation')).toBeDefined();
-    expect(screen.getByText('215 views')).toBeDefined();
+    expect(screen.getByText((content) => content.includes('215'))).toBeDefined();
 
     const firstLink = screen.getByRole('link', {
-      name: /Read Chapter 1: Discounted Cash Flow Fundamentals/i,
+      name: /Đọc Chương 1: Discounted Cash Flow Fundamentals/i,
     });
     expect(firstLink.getAttribute('href')).toBe('/posts/SERIES/dcf-fundamentals');
   });

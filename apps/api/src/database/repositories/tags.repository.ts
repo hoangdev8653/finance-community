@@ -96,4 +96,16 @@ export class TagsRepository {
     const existing = await this.findBySlug(slug);
     return existing!;
   }
+
+  async updateTx(tx: any, id: string, name: string, slug: string): Promise<TagEntity | undefined> {
+    const client = tx || this.db;
+    const [updated] = await client.update(tagsTable).set({ name, slug }).where(eq(tagsTable.id, id)).returning();
+    return updated;
+  }
+
+  async deleteTx(tx: any, id: string): Promise<boolean> {
+    const client = tx || this.db;
+    const deleted = await client.delete(tagsTable).where(eq(tagsTable.id, id)).returning({ id: tagsTable.id });
+    return deleted.length > 0;
+  }
 }

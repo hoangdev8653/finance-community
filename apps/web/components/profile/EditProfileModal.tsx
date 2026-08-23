@@ -72,7 +72,7 @@ export function EditProfileModal({
       <div className="relative w-full max-w-md rounded-lg border border-border bg-background p-6 shadow-xl space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border pb-4">
-          <h2 id="edit-profile-title" className="font-serif text-lg font-bold text-foreground">
+          <h2 id="edit-profile-title" className="font-heading text-lg font-bold text-foreground">
             Edit Analyst Profile
           </h2>
           <button

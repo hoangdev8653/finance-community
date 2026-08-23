@@ -113,7 +113,7 @@ export class AuthService {
     const userRecord = await this.jitService.ensureUserProvisioned({
       sub: userId,
       email: dto.email,
-      displayName: dto.username,
+      displayName: dto.displayName || dto.username,
     });
 
     // 5. Persist password hash permanently in PostgreSQL database
@@ -198,6 +198,15 @@ export class AuthService {
       }
     }
 
+    if (targetUserId && !passwordHash) {
+      throw new UnauthorizedException({
+        statusCode: 401,
+        error: 'Unauthorized',
+        message: 'Tài khoản này được liên kết qua Google. Vui lòng bấm nút "Tiếp tục sử dụng dịch vụ bằng Google" bên dưới để đăng nhập.',
+        code: 'SOCIAL_ACCOUNT_NO_PASSWORD',
+      });
+    }
+
     if (!passwordHash || !targetUserId) {
       throw new UnauthorizedException({
         statusCode: 401,
@@ -254,10 +263,16 @@ export class AuthService {
       name = mockName;
     } else {
       try {
-        const client = this.googleOAuthClient || new OAuth2Client(this.secConfig.googleClientId);
+        const validAudience = [
+          this.secConfig.googleClientId,
+          process.env.GOOGLE_CLIENT_ID,
+          '225699815882-1mlk7q74m7o5gt293vuq4dadojdo4cln.apps.googleusercontent.com',
+        ].filter((a): a is string => Boolean(a) && a !== 'mock-google-client-id.apps.googleusercontent.com');
+
+        const client = this.googleOAuthClient || new OAuth2Client();
         const ticket = await client.verifyIdToken({
           idToken: dto.idToken,
-          audience: this.secConfig.googleClientId,
+          audience: validAudience.length > 0 ? validAudience : undefined,
         });
 
         const payload = ticket.getPayload();

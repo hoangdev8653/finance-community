@@ -73,7 +73,7 @@ export function SystemSettingsView() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-xl font-bold text-foreground">
+          <h2 className="font-heading text-xl font-bold text-foreground">
             Runtime System Settings
           </h2>
           <p className="text-xs text-muted-foreground font-mono">
@@ -151,7 +151,7 @@ export function SystemSettingsView() {
                       {setting.key}
                     </h3>
                     {setting.description && !isEditing && (
-                      <p className="text-2xs text-muted-foreground pt-0.5">
+                      <p className="text-xs text-muted-foreground pt-0.5">
                         {setting.description}
                       </p>
                     )}
@@ -175,7 +175,7 @@ export function SystemSettingsView() {
                     <div className="space-y-1">
                       <label
                         htmlFor={`edit-desc-${setting.key}`}
-                        className="text-2xs font-semibold text-muted-foreground uppercase font-mono"
+                        className="text-xs font-semibold text-muted-foreground uppercase font-mono"
                       >
                         Description
                       </label>
@@ -191,7 +191,7 @@ export function SystemSettingsView() {
                     <div className="space-y-1">
                       <label
                         htmlFor={`edit-json-${setting.key}`}
-                        className="text-2xs font-semibold text-muted-foreground uppercase font-mono"
+                        className="text-xs font-semibold text-muted-foreground uppercase font-mono"
                       >
                         JSON Configuration Payload
                       </label>
@@ -230,7 +230,7 @@ export function SystemSettingsView() {
                     </div>
                   </div>
                 ) : (
-                  <pre className="p-3 rounded-md bg-background border border-border text-2xs font-mono text-foreground/90 overflow-x-auto">
+                  <pre className="p-3 rounded-md bg-background border border-border text-xs font-mono text-foreground/90 overflow-x-auto">
                     {JSON.stringify(setting.value, null, 2)}
                   </pre>
                 )}

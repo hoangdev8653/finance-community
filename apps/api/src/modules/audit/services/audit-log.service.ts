@@ -1,4 +1,4 @@
-import { Injectable, Logger, Optional } from '@nestjs/common';
+import { Injectable, Logger, Optional, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { AuditLogRepository } from '../../../database/repositories/audit-log.repository';
 
 export interface AuditLogEntry {
@@ -28,11 +28,31 @@ const isDbOffline = (err: any): boolean => {
 };
 
 @Injectable()
-export class AuditLogService {
+export class AuditLogService implements OnModuleInit, OnModuleDestroy {
   private readonly logger = new Logger(AuditLogService.name);
   private readonly logsStore: AuditLogEntry[] = [];
+  private cleanupTimer?: NodeJS.Timeout;
 
   constructor(@Optional() private readonly auditRepo?: AuditLogRepository) {}
+
+  async onModuleInit() {
+    await this.cleanupExpiredLogs();
+    this.cleanupTimer = setInterval(() => void this.cleanupExpiredLogs(), 24 * 60 * 60 * 1000);
+  }
+
+  onModuleDestroy() {
+    if (this.cleanupTimer) clearInterval(this.cleanupTimer);
+  }
+
+  private async cleanupExpiredLogs() {
+    if (!this.auditRepo) return;
+    try {
+      const deleted = await this.auditRepo.deleteOlderThan(7);
+      if (deleted > 0) this.logger.log(`Audit retention cleanup removed ${deleted} log(s) older than 7 days.`);
+    } catch (error: any) {
+      this.logger.warn(`Audit retention cleanup failed: ${error?.message || error}`);
+    }
+  }
 
   /**
    * Writes an immutable security/administrative record matching Phase 1 public.audit_logs schema.
@@ -53,7 +73,7 @@ export class AuditLogService {
     if (this.auditRepo) {
       try {
         const persisted = await this.auditRepo.insertLogTx(tx, {
-          actorId: record.actor_id,
+          actorId: record.actor_id as any,
           action: record.action,
           entityType: record.entity_type,
           entityId: record.entity_id,

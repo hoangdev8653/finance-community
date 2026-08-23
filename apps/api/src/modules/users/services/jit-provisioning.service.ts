@@ -203,13 +203,17 @@ export class JitProvisioningService {
             }
           }
 
-          return {
+          const userRecord: UserRecord = {
             id: user.id,
             email: user.email,
             status: user.status as any,
             created_at: user.createdAt,
             updated_at: user.updatedAt,
           };
+          this.usersStore.set(sub, userRecord);
+          this.assignRoleToUser(sub, 'MEMBER');
+
+          return userRecord;
         });
       } catch (err: any) {
         if (isDbOffline(err)) {
@@ -271,6 +275,7 @@ export class JitProvisioningService {
   // --- Helper Data Access Methods for Security Guards & Testing ---
 
   async getUserByIdAsync(userId: string): Promise<UserRecord | undefined> {
+    const memUser = this.usersStore.get(userId);
     if (this.usersRepo) {
       try {
         const user = await this.usersRepo.findById(userId);
@@ -278,7 +283,7 @@ export class JitProvisioningService {
           return {
             id: user.id,
             email: user.email,
-            status: user.status as UserRecord['status'],
+            status: (memUser?.status || user.status) as UserRecord['status'],
             created_at: user.createdAt,
             updated_at: user.updatedAt,
           };
@@ -287,21 +292,22 @@ export class JitProvisioningService {
         this.logger.warn(`Failed to retrieve user by ID from DB: ${err}`);
       }
     }
-    return this.usersStore.get(userId);
+    return memUser;
   }
 
   async getUserRolesAsync(userId: string): Promise<string[]> {
+    const memRoles = this.getUserRoles(userId);
     if (this.rolesRepo) {
       try {
         const dbRoles = await this.rolesRepo.getUserRoles(userId);
         if (dbRoles && dbRoles.length > 0) {
-          return dbRoles;
+          return Array.from(new Set([...dbRoles, ...memRoles]));
         }
       } catch (err) {
         this.logger.warn(`Failed to retrieve user roles from DB: ${err}`);
       }
     }
-    return this.getUserRoles(userId);
+    return memRoles;
   }
 
   getUserById(userId: string): UserRecord | undefined {
@@ -313,6 +319,9 @@ export class JitProvisioningService {
     if (user) {
       user.status = status;
       user.updated_at = new Date();
+    }
+    if (this.usersRepo) {
+      this.usersRepo.updateStatus(userId, status).catch(() => {});
     }
   }
 
@@ -335,6 +344,13 @@ export class JitProvisioningService {
     const role = this.rolesStore.get(roleName);
     if (role) {
       this.userRolesStore.add(`${userId}:${role.id}`);
+    }
+    if (this.rolesRepo) {
+      this.rolesRepo.findByName(roleName).then((dbRole) => {
+        if (dbRole) {
+          this.rolesRepo?.assignRole(userId, dbRole.id).catch(() => {});
+        }
+      }).catch(() => {});
     }
   }
 }

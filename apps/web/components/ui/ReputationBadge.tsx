@@ -54,7 +54,7 @@ export function ReputationBadge({
     <div className={`inline-flex items-center gap-1.5 flex-wrap ${className}`}>
       {badgeInfo && (
         <span
-          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-2xs font-mono font-semibold ${badgeInfo.color}`}
+          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border text-xs font-mono font-semibold ${badgeInfo.color}`}
           title={`Huy hiệu tác giả: ${badgeInfo.label}`}
         >
           <Icon className="h-3 w-3" />
@@ -64,7 +64,7 @@ export function ReputationBadge({
 
       {showScore && score > 0 && (
         <span
-          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-muted/60 text-muted-foreground font-mono text-2xs font-semibold"
+          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-muted/60 text-muted-foreground font-mono text-xs font-semibold"
           title={`Điểm uy tín đóng góp: ${score} rep`}
         >
           <span className="text-primary font-bold">+{score}</span>

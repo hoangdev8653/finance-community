@@ -14,16 +14,16 @@ describe('DashboardMetricsBar Component', () => {
 
     render(<DashboardMetricsBar metrics={mockMetrics} />);
 
-    expect(screen.getByText('Published Analyses')).toBeInTheDocument();
+    expect(screen.getByText('Bài viết đã đăng')).toBeInTheDocument();
     expect(screen.getByText('12')).toBeInTheDocument();
 
-    expect(screen.getByText('Research Drafts')).toBeInTheDocument();
+    expect(screen.getByText('Bản thảo nghiên cứu')).toBeInTheDocument();
     expect(screen.getByText('3')).toBeInTheDocument();
 
-    expect(screen.getByText('Total Views')).toBeInTheDocument();
+    expect(screen.getByText('Tổng lượt xem')).toBeInTheDocument();
     expect(screen.getByText('45,200')).toBeInTheDocument();
 
-    expect(screen.getByText('Followers')).toBeInTheDocument();
+    expect(screen.getByText('Người theo dõi')).toBeInTheDocument();
     expect(screen.getByText('180')).toBeInTheDocument();
   });
 

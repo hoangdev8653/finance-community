@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength, MaxLength, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterDto {
@@ -22,4 +22,9 @@ export class RegisterDto {
     message: 'Username must contain only letters, numbers, and underscores.',
   })
   username!: string;
+
+  @ApiProperty({ description: 'Optional display name', example: 'John Doe', required: false })
+  @IsString()
+  @IsOptional()
+  displayName?: string;
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Metadata } from 'next';
-import { PostModerationTable } from '@/components/admin/PostModerationTable';
+import { AdminPostsTable } from '@/components/admin/AdminPostsTable';
 
 export const metadata: Metadata = {
-  title: 'Post Moderation Queue | Finance Pulse Admin',
-  description: 'Manage post publication states, review new articles, and enforce community content policies.',
+  title: 'Posts | Finance Pulse Admin',
+  description: 'Manage all posts from the admin dashboard.',
   robots: {
     index: false,
     follow: false,
@@ -12,5 +12,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminPostsPage() {
-  return <PostModerationTable />;
+  return <AdminPostsTable />;
 }

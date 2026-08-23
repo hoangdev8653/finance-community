@@ -53,7 +53,7 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
       <div className="rounded-xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
         <SearchX className="h-10 w-10 text-muted-foreground mx-auto" />
         <div className="space-y-1">
-          <h3 className="text-sm font-serif font-bold text-foreground">
+          <h3 className="text-sm font-heading font-bold text-foreground">
             No Matching Financial Articles
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">

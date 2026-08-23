@@ -27,6 +27,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
     });
 
+    // Check for existing persistent session on mount
+    const token = tokenStore.getToken();
+    if (token) {
+      setIsLoading(true);
+      authService
+        .getCurrentUserMe()
+        .then((meData) => {
+          setUser({
+            id: meData.id,
+            email: meData.email,
+            username: meData.profile?.username || 'user',
+            displayName: meData.profile?.displayName || meData.email,
+            avatarUrl: meData.profile?.avatarUrl,
+            roles: meData.roles || ['MEMBER'],
+            status: meData.status || 'ACTIVE',
+          });
+        })
+        .catch(() => {
+          tokenStore.clearToken();
+          setUser(null);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+
     return () => {
       unsubscribe();
     };

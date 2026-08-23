@@ -89,7 +89,7 @@ export function NotificationBell() {
         {unreadCount > 0 && (
           <span
             data-testid="unread-badge"
-            className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-2xs font-mono font-bold text-primary-foreground leading-none animate-in zoom-in"
+            className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-xs font-mono font-bold text-primary-foreground leading-none animate-in zoom-in"
           >
             {displayCount}
           </span>
@@ -106,7 +106,7 @@ export function NotificationBell() {
         >
           {/* Header */}
           <div className="flex items-center justify-between border-b border-border pb-3">
-            <h3 className="font-serif text-sm font-bold text-foreground">
+            <h3 className="font-heading text-sm font-bold text-foreground">
               Notifications
             </h3>
 
@@ -116,7 +116,7 @@ export function NotificationBell() {
                 size="sm"
                 onClick={handleMarkAllRead}
                 disabled={markAllMutation.isPending}
-                className="font-mono text-2xs h-7 px-2 gap-1 text-muted-foreground hover:text-foreground"
+                className="font-mono text-xs h-7 px-2 gap-1 text-muted-foreground hover:text-foreground"
               >
                 <CheckCheck className="h-3 w-3" />
                 <span>Mark all as read</span>

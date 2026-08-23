@@ -31,6 +31,10 @@ export class RolesRepository {
     return records.map((r) => r.name);
   }
 
+  async assignRole(userId: string, roleId: string): Promise<void> {
+    return this.assignRoleTx(undefined, userId, roleId);
+  }
+
   async assignRoleTx(tx: any, userId: string, roleId: string): Promise<void> {
     const client = tx || this.db;
     await client

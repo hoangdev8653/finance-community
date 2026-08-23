@@ -149,28 +149,28 @@ export function DashboardPostCard({
           </div>
         </div>
 
-        <h3 className="font-serif text-lg font-bold tracking-tight text-foreground line-clamp-2">
-          <Link href={publicUrl} className="hover:text-primary transition-colors">
+        <h3 className="font-heading text-xl font-bold tracking-tight text-slate-950 dark:text-slate-100 line-clamp-2">
+          <Link href={publicUrl} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
             {post.title}
           </Link>
         </h3>
 
         {post.metaDescription && (
-          <p className="text-xs text-muted-foreground line-clamp-2">{post.metaDescription}</p>
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 line-clamp-2 font-normal leading-relaxed">{post.metaDescription}</p>
         )}
       </div>
 
-      <div className="flex items-center justify-between border-t border-border/60 pt-3 text-xs text-muted-foreground">
-        <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1 font-mono">
-            <Eye className="h-3.5 w-3.5" />
-            <span>{(post.viewCount || 0).toLocaleString()} views</span>
+      <div className="flex items-center justify-between border-t border-slate-200 dark:border-slate-800 pt-3 text-sm text-slate-600 dark:text-slate-400">
+        <div className="flex items-center gap-4 font-medium">
+          <span className="flex items-center gap-1 font-mono font-bold text-slate-800 dark:text-slate-200">
+            <Eye className="h-4 w-4 text-slate-500" />
+            <span>{(post.viewCount || 0).toLocaleString()} lượt xem</span>
           </span>
-          <span className="text-[11px]">{formattedDate}</span>
+          <span>{formattedDate}</span>
         </div>
 
-        <Button variant="ghost" size="sm" asChild className="h-7 text-xs">
-          <Link href={`/posts/${post.id}/edit`}>Edit</Link>
+        <Button variant="ghost" size="sm" asChild className="h-8 text-sm font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950">
+          <Link href={`/posts/${post.id}/edit`}>Chỉnh sửa</Link>
         </Button>
       </div>
 

@@ -47,7 +47,7 @@ export function NotificationsCenter() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
             Notification Center
           </h1>
           <p className="text-xs text-muted-foreground font-mono pt-1">
@@ -97,7 +97,7 @@ export function NotificationsCenter() {
           <span>Unread</span>
           {unreadCount > 0 && (
             <span
-              className={`px-1.5 py-0.2 rounded-full text-2xs ${
+              className={`px-1.5 py-0.2 rounded-full text-xs ${
                 activeFilter === 'unread'
                   ? 'bg-primary-foreground/20 text-primary-foreground'
                   : 'bg-muted text-muted-foreground'

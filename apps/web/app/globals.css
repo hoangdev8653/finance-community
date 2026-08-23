@@ -9,6 +9,9 @@
   --color-surface: hsl(var(--surface));
   --color-surface-elevated: hsl(var(--surface-elevated));
 
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
   --color-muted: hsl(var(--muted));
   --color-muted-foreground: hsl(var(--muted-foreground));
 
@@ -27,83 +30,99 @@
   --color-success: hsl(var(--success));
   --color-warning: hsl(var(--warning));
   --color-danger: hsl(var(--danger));
+  --color-destructive: hsl(var(--destructive));
   --color-info: hsl(var(--info));
+
+  --font-heading: var(--font-heading), system-ui, sans-serif;
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-mono: var(--font-mono), monospace;
 
   --radius-sm: 0.25rem;
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 }
 
 @layer base {
   :root {
-    --background: 216 45% 97.5%;
+    /* High contrast canvas: Slate-100 page background makes pure white cards pop crisply */
+    --background: 210 25% 95%;
     --foreground: 222.2 84% 4.9%;
 
     --surface: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --muted: 210 25% 92%;
+    --muted-foreground: 215.4 25% 35%;
 
-    /* PRIMARY — Deep Royal Blue */
-    --primary: 217 91% 50%;
+    --border: 214.3 20% 82%;
+    --input: 214.3 20% 82%;
+
+    /* PRIMARY — Industrial Slate (Trust & Precision) */
+    --primary: 215 35% 20%;
     --primary-foreground: 0 0% 100%;
 
-    /* ACCENT — Indigo */
-    --accent: 245 82% 67%;
+    /* ACCENT / CTA — Rich Forest Emerald Green */
+    --accent: 160 84% 30%;
     --accent-foreground: 0 0% 100%;
 
-    --secondary: 222.2 47.4% 11.2%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 215 25% 35%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* SUCCESS — Emerald Green */
-    --success: 142 76% 36%;
-    --warning: 38 92% 50%;
-    --danger: 0 84.2% 60.2%;
-    --info: 199 89% 48%;
+    /* STATUS TOKENS */
+    --success: 160 84% 30%;
+    --warning: 38 92% 42%;
+    --danger: 0 84.2% 52%;
+    --destructive: 0 84.2% 52%;
+    --info: 199 89% 40%;
 
     /* SHADOW TOKENS */
-    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-    --shadow-card-hover: 0 10px 25px -5px rgba(29, 111, 229, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
-    --shadow-glow: 0 0 25px hsla(217, 91%, 50%, 0.18);
+    --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+    --shadow-card-hover: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+    --shadow-elevated: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+    --shadow-glow: 0 0 25px hsla(160, 84%, 30%, 0.2);
   }
 
   .dark {
-    --background: 224 25% 6%;
+    --background: 220 36% 7%;
     --foreground: 210 40% 98%;
 
-    --surface: 224 22% 9%;
-    --surface-elevated: 224 20% 13%;
+    --surface: 221 39% 11%;
+    --surface-elevated: 219 36% 14%;
 
-    --muted: 224 16% 16%;
+    --card: 221 39% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --muted: 218 26% 18%;
     --muted-foreground: 217 19% 65%;
 
-    --border: 224 16% 18%;
-    --input: 224 16% 18%;
+    --border: 218 28% 21%;
+    --input: 218 28% 21%;
 
-    /* PRIMARY — Brightened for dark mode contrast */
-    --primary: 217 91% 60%;
+    /* PRIMARY — Brightened Slate Blue for Dark Mode */
+    --primary: 174 72% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --accent: 245 82% 72%;
-    --accent-foreground: 0 0% 100%;
+    /* ACCENT / CTA — Radiant Emerald */
+    --accent: 38 92% 50%;
+    --accent-foreground: 222 47% 11%;
 
     --secondary: 210 40% 98%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --success: 142 70% 45%;
+    --success: 142 71% 45%;
     --warning: 38 92% 50%;
     --danger: 0 72% 51%;
+    --destructive: 0 72% 51%;
     --info: 199 89% 48%;
 
-    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px hsla(217, 91%, 60%, 0.12);
-    --shadow-glow: 0 0 30px hsla(217, 91%, 60%, 0.25);
+    --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 1px 2px -1px rgba(0, 0, 0, 0.35);
+    --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px hsla(174, 72%, 38%, 0.1);
+    --shadow-glow: 0 0 30px hsla(174, 72%, 38%, 0.18);
   }
 
   * {
@@ -115,19 +134,26 @@
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
     font-family: var(--font-sans), system-ui, sans-serif;
-    font-weight: 450;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, .font-serif {
-    font-family: var(--font-serif), Georgia, serif;
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: var(--font-heading), system-ui, sans-serif;
+    letter-spacing: -0.015em;
   }
 
   .font-mono {
     font-family: var(--font-mono), monospace;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Crisp, Bold Lucide Icons across entire application */
+  svg.lucide,
+  svg[class*="lucide-"] {
+    stroke-width: 2.25px !important;
   }
 }
 
@@ -148,5 +174,46 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.05); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.65; transform: scale(1.08); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
 .animate-fade-in { animation: fade-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
 .animate-fade-up { animation: fade-up 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 75s linear infinite;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+.animate-float { animation: float-slow 7s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

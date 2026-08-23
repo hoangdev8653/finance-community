@@ -17,7 +17,7 @@ describe('TagCard Component', () => {
     render(<TagCard tag={mockTag} />);
 
     expect(screen.getByText('Semiconductors')).toBeInTheDocument();
-    expect(screen.getByText('14 analyses')).toBeInTheDocument();
+    expect(screen.getByText('14 bài')).toBeInTheDocument();
   });
 
   it('links to the exact /tags/[slug] taxonomy route', () => {

@@ -75,7 +75,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
             variant="ghost"
             size="sm"
             onClick={handleReset}
-            className="text-2xs font-mono h-6 px-2 gap-1 text-muted-foreground hover:text-foreground"
+            className="text-xs font-mono h-6 px-2 gap-1 text-muted-foreground hover:text-foreground"
           >
             <RotateCcw className="h-3 w-3" />
             <span>Reset</span>

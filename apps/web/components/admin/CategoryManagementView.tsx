@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCategories } from '@/lib/posts/use-posts-feed';
-import { useCreateCategory, useUpdateCategory } from '@/lib/admin/use-admin';
+import { useCreateCategory, useUpdateCategory, useDeleteCategory } from '@/lib/admin/use-admin';
 import { CategoryEntity } from '@/types/content';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -14,12 +14,16 @@ import {
   AlertCircle,
   CheckCircle2,
   Layers,
+  Trash2,
 } from 'lucide-react';
+import { AdminSearchInput } from './AdminSearchInput';
+import { AdminPagination } from './AdminPagination';
 
 export function CategoryManagementView() {
   const { data: categories, isLoading, isError, refetch } = useCategories();
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
+  const deleteCategoryMutation = useDeleteCategory();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryEntity | null>(null);
@@ -29,6 +33,9 @@ export function CategoryManagementView() {
   const [scope, setScope] = useState<'SERIES' | 'COMMUNITY'>('COMMUNITY');
   const [description, setDescription] = useState('');
   const [sortOrder, setSortOrder] = useState<number>(0);
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 8;
 
   const [feedback, setFeedback] = useState<{
     type: 'success' | 'error';
@@ -67,6 +74,11 @@ export function CategoryManagementView() {
       setSlug(generatedSlug);
     }
   };
+
+  const filteredCategories = (categories ?? []).filter((category) => `${category.name} ${category.slug} ${category.description ?? ''}`.toLowerCase().includes(search.toLowerCase().trim()));
+  const totalPages = Math.max(1, Math.ceil(filteredCategories.length / pageSize));
+  const visibleCategories = filteredCategories.slice((page - 1) * pageSize, page * pageSize);
+  const paginationMeta = { page: Math.min(page, totalPages), limit: pageSize, totalItems: filteredCategories.length, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,15 +130,25 @@ export function CategoryManagementView() {
     }
   };
 
+  const handleDelete = async (category: CategoryEntity) => {
+    if (!window.confirm(`Xóa danh mục “${category.name}”? Các bài viết thuộc danh mục này sẽ không bị xóa.`)) return;
+    try {
+      await deleteCategoryMutation.mutateAsync(category.id);
+      setFeedback({ type: 'success', message: `Đã xóa danh mục “${category.name}”.` });
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err?.response?.data?.message || err?.message || 'Không thể xóa danh mục.' });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-xl font-bold text-foreground">
-            Content Category Management
+          <h2 className="font-heading text-xl font-bold text-foreground">
+            Quản lý danh mục nội dung
           </h2>
           <p className="text-xs text-muted-foreground font-mono">
-            Define taxonomic categories for curriculum series and community discussions.
+            Thêm, chỉnh sửa và xóa danh mục cho chuỗi bài viết và cộng đồng.
           </p>
         </div>
         <Button
@@ -136,7 +158,7 @@ export function CategoryManagementView() {
           className="text-xs font-mono gap-1.5"
         >
           <Plus className="h-4 w-4" />
-          <span>New Category</span>
+          <span>Thêm danh mục</span>
         </Button>
       </div>
 
@@ -158,6 +180,11 @@ export function CategoryManagementView() {
         </div>
       )}
 
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
+        <AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" />
+      </div>
+
       {isLoading && (
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -175,10 +202,10 @@ export function CategoryManagementView() {
           className="p-8 text-center rounded-lg border border-danger/20 bg-danger/5 space-y-3"
         >
           <p className="text-sm font-medium text-foreground">
-            Failed to load categories.
+            Không thể tải danh sách danh mục.
           </p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
-            Retry
+            Thử lại
           </Button>
         </div>
       )}
@@ -186,35 +213,27 @@ export function CategoryManagementView() {
       {!isLoading && !isError && categories && categories.length === 0 && (
         <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
           <FolderTree className="h-8 w-8 text-muted-foreground mx-auto" />
-          <h3 className="text-sm font-semibold text-foreground">No Categories Defined</h3>
+          <h3 className="text-sm font-semibold text-foreground">Chưa có danh mục</h3>
           <p className="text-xs text-muted-foreground">
-            Get started by creating your first content category.
+            Bắt đầu bằng cách tạo danh mục nội dung đầu tiên.
           </p>
         </div>
       )}
 
       {!isLoading && !isError && categories && categories.length > 0 && (
-        <div className="rounded-lg border border-border bg-surface overflow-hidden">
+        <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+          <div className="grid grid-cols-[minmax(220px,1.5fr)_minmax(180px,1fr)_140px_140px_190px] border-b border-border bg-muted/50 px-4 py-3 text-xs font-mono uppercase text-muted-foreground"><span>Danh mục</span><span>Slug</span><span>Phạm vi</span><span>Ngày tạo</span><span className="text-right">Thao tác</span></div>
           <div className="divide-y divide-border">
-            {categories.map((cat) => (
+            {visibleCategories.map((cat) => (
               <div
                 key={cat.id}
-                className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors gap-4"
+                className="grid grid-cols-[minmax(220px,1.5fr)_minmax(180px,1fr)_140px_140px_190px] items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/30"
               >
-                <div className="space-y-1 min-w-0">
+                <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold text-sm text-foreground">
                       {cat.name}
                     </span>
-                    <Badge variant="outline" className="text-2xs font-mono">
-                      {cat.slug}
-                    </Badge>
-                    <Badge
-                      variant={cat.scope === 'SERIES' ? 'default' : 'secondary'}
-                      className="text-3xs font-mono"
-                    >
-                      {cat.scope}
-                    </Badge>
                   </div>
                   {cat.description && (
                     <p className="text-xs text-muted-foreground truncate max-w-md">
@@ -223,20 +242,38 @@ export function CategoryManagementView() {
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="truncate font-mono text-xs text-muted-foreground" title={cat.slug}>{cat.slug}</div>
+                <div><Badge variant={cat.scope === 'SERIES' ? 'default' : 'secondary'} className="font-mono text-xs">{cat.scope}</Badge></div>
+                <div className="text-xs text-muted-foreground">{new Date(cat.createdAt).toLocaleDateString('vi-VN')}</div>
+                <div className="flex items-center justify-end gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => openEditModal(cat)}
-                    className="text-xs h-7 px-2.5 gap-1 font-mono"
+                    className="h-9 px-3 gap-1 font-mono text-xs"
+                    title="Sửa danh mục"
+                    aria-label={`Sửa danh mục ${cat.name}`}
                   >
                     <Edit2 className="h-3 w-3" />
-                    <span>Edit</span>
+                    <span>Sửa</span>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => void handleDelete(cat)}
+                    disabled={deleteCategoryMutation.isPending}
+                    className="h-9 px-3 gap-1 font-mono text-xs text-danger hover:bg-danger/10"
+                    title="Xóa danh mục"
+                    aria-label={`Xóa danh mục ${cat.name}`}
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    <span>Xóa</span>
                   </Button>
                 </div>
               </div>
             ))}
           </div>
+          <AdminPagination meta={paginationMeta} itemLabel="danh mục" pageLabel="Trang" onPageChange={setPage} />
         </div>
       )}
 
@@ -252,8 +289,8 @@ export function CategoryManagementView() {
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
                 <Layers className="h-5 w-5 text-primary" />
-                <h3 id="category-modal-title" className="font-serif text-base font-bold text-foreground">
-                  {editingCategory ? 'Edit Content Category' : 'Create Content Category'}
+                <h3 id="category-modal-title" className="font-heading text-base font-bold text-foreground">
+                  {editingCategory ? 'Sửa danh mục' : 'Thêm danh mục'}
                 </h3>
               </div>
               <button
@@ -269,7 +306,7 @@ export function CategoryManagementView() {
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="space-y-1">
                 <label htmlFor="cat-name" className="text-xs font-semibold text-foreground">
-                  Category Name <span className="text-danger">*</span>
+                  Tên danh mục <span className="text-danger">*</span>
                 </label>
                 <input
                   id="cat-name"
@@ -298,7 +335,7 @@ export function CategoryManagementView() {
               {!editingCategory && (
                 <div className="space-y-1">
                   <label htmlFor="cat-scope" className="text-xs font-semibold text-foreground">
-                    Content Scope
+                    Phạm vi nội dung
                   </label>
                   <select
                     id="cat-scope"
@@ -314,7 +351,7 @@ export function CategoryManagementView() {
 
               <div className="space-y-1">
                 <label htmlFor="cat-desc" className="text-xs font-semibold text-foreground">
-                  Description
+                  Mô tả
                 </label>
                 <textarea
                   id="cat-desc"
@@ -328,7 +365,7 @@ export function CategoryManagementView() {
 
               <div className="space-y-1">
                 <label htmlFor="cat-sort" className="text-xs font-semibold text-foreground">
-                  Sort Order
+                  Thứ tự hiển thị
                 </label>
                 <input
                   id="cat-sort"
@@ -346,7 +383,7 @@ export function CategoryManagementView() {
                   size="sm"
                   onClick={() => setIsModalOpen(false)}
                 >
-                  Cancel
+                  Hủy
                 </Button>
                 <Button
                   type="submit"
@@ -357,7 +394,7 @@ export function CategoryManagementView() {
                     updateCategoryMutation.isPending
                   }
                 >
-                  {editingCategory ? 'Update Category' : 'Create Category'}
+                  {editingCategory ? 'Lưu thay đổi' : 'Tạo danh mục'}
                 </Button>
               </div>
             </form>

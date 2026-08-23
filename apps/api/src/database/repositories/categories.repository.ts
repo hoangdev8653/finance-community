@@ -53,4 +53,10 @@ export class CategoriesRepository {
       .returning();
     return updated;
   }
+
+  async deleteTx(tx: any, id: string): Promise<CategoryEntity | undefined> {
+    const client = tx || this.db;
+    const [deleted] = await client.delete(categoriesTable).where(eq(categoriesTable.id, id)).returning();
+    return deleted;
+  }
 }

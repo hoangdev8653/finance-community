@@ -26,6 +26,18 @@ vi.mock('@/lib/reactions/use-reactions', () => ({
   useToggleCommentReaction: () => ({ mutate: vi.fn(), isPending: false }),
 }));
 
+vi.mock('@/lib/media/use-media', () => ({
+  useUploadMedia: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+    uploadProgress: 0,
+  }),
+}));
+
+import { ToastProvider } from '@/lib/toast/ToastContext';
+
+const renderWithToast = (ui: React.ReactElement) => render(<ToastProvider>{ui}</ToastProvider>);
+
 describe('CommentsSection Component', () => {
   beforeEach(() => {
     vi.mocked(useCreateComment).mockReturnValue({
@@ -59,7 +71,7 @@ describe('CommentsSection Component', () => {
       refetch: vi.fn(),
     } as any);
 
-    render(<CommentsSection postId="post-1" />);
+    renderWithToast(<CommentsSection postId="post-1" />);
 
     expect(screen.getByRole('heading', { level: 2, name: /Discussion/i })).toBeDefined();
   });
@@ -72,7 +84,7 @@ describe('CommentsSection Component', () => {
       refetch: vi.fn(),
     } as any);
 
-    render(<CommentsSection postId="post-1" />);
+    renderWithToast(<CommentsSection postId="post-1" />);
 
     expect(screen.getByText(/No analytical comments yet/i)).toBeDefined();
   });
@@ -109,7 +121,7 @@ describe('CommentsSection Component', () => {
       refetch: vi.fn(),
     } as any);
 
-    render(<CommentsSection postId="post-1" />);
+    renderWithToast(<CommentsSection postId="post-1" />);
 
     expect(screen.getByRole('heading', { level: 2, name: /Discussion \(1\)/i })).toBeDefined();
     expect(screen.getByText(/Outstanding analysis of credit spreads./i)).toBeDefined();

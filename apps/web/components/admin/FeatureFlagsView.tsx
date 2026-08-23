@@ -38,7 +38,7 @@ export function FeatureFlagsView() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-serif text-xl font-bold text-foreground">
+          <h2 className="font-heading text-xl font-bold text-foreground">
             System Feature Flags
           </h2>
           <p className="text-xs text-muted-foreground font-mono">

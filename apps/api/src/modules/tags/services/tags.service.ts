@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { TagsRepository, TagEntity, TagWithUsageCount } from '../../../database/repositories/tags.repository';
 import { CreateTagDto } from '../dto/create-tag.dto';
+import { UpdateTagDto } from '../dto/update-tag.dto';
 
 @Injectable()
 export class TagsService {
@@ -36,5 +37,20 @@ export class TagsService {
     const name = dto.name.trim();
     const slug = this.slugify(name);
     return this.tagsRepo.createOrGetTx(tx, name, slug);
+  }
+
+  async updateTag(id: string, dto: UpdateTagDto, tx?: any): Promise<TagEntity> {
+    await this.getTagById(id);
+    const name = dto.name.trim();
+    const updated = await this.tagsRepo.updateTx(tx, id, name, this.slugify(name));
+    if (!updated) throw new NotFoundException(`Tag with ID '${id}' not found.`);
+    return updated;
+  }
+
+  async deleteTag(id: string, tx?: any): Promise<{ id: string; deleted: true }> {
+    await this.getTagById(id);
+    const deleted = await this.tagsRepo.deleteTx(tx, id);
+    if (!deleted) throw new NotFoundException(`Tag with ID '${id}' not found.`);
+    return { id, deleted: true };
   }
 }

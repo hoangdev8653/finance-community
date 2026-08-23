@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import {
   useChangeUserStatus,
   useAssignRole,
   useRevokeRole,
+  useAdminUsers,
 } from '@/lib/admin/use-admin';
 import { UserStatus, RoleName } from '@/types/admin';
 import { Button } from '@/components/ui/Button';
@@ -16,7 +17,13 @@ import {
   AlertCircle,
   CheckCircle2,
   Lock,
+  LockKeyhole,
+  ShieldPlus,
+  ShieldMinus,
+  Eye,
 } from 'lucide-react';
+import { AdminSearchInput } from './AdminSearchInput';
+import { AdminPagination } from './AdminPagination';
 
 export function UserManagementView() {
   const { user } = useAuth();
@@ -25,6 +32,13 @@ export function UserManagementView() {
   const [reason, setReason] = useState('');
   const [selectedRole, setSelectedRole] = useState<RoleName>('MODERATOR');
   const [confirmedDestructive, setConfirmedDestructive] = useState(false);
+  const [userSearch, setUserSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [userPage, setUserPage] = useState(1);
+  const [pendingStatusAction, setPendingStatusAction] = useState<{ id: string; status: UserStatus; email: string } | null>(null);
+  const [quickStatusReason, setQuickStatusReason] = useState('');
+  useEffect(() => { const timer = window.setTimeout(() => { setDebouncedSearch(userSearch); setUserPage(1); }, 350); return () => window.clearTimeout(timer); }, [userSearch]);
+  const { data: usersResponse, isLoading: usersLoading } = useAdminUsers({ page: userPage, limit: 10, search: debouncedSearch || undefined });
 
   const [feedback, setFeedback] = useState<{
     type: 'success' | 'error';
@@ -171,16 +185,60 @@ export function UserManagementView() {
     }
   };
 
+  const handleQuickStatus = async (id: string, nextStatus: UserStatus) => {
+    if (user?.id === id) return setFeedback({ type: 'error', message: 'Không thể thay đổi trạng thái tài khoản của chính mình.' });
+    const selected = usersResponse?.data.find((item) => item.id === id);
+    if (nextStatus !== 'ACTIVE') {
+      setPendingStatusAction({ id, status: nextStatus, email: selected?.email ?? id });
+      setQuickStatusReason('');
+      return;
+    }
+    try {
+      await changeStatusMutation.mutateAsync({ id, dto: { status: nextStatus, reason: 'Admin quick action' } });
+      setFeedback({ type: 'success', message: `Đã chuyển tài khoản sang ${nextStatus}.` });
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Không thể cập nhật trạng thái.' });
+    }
+  };
+
+  const confirmQuickStatus = async () => {
+    if (!pendingStatusAction) return;
+    try {
+      await changeStatusMutation.mutateAsync({ id: pendingStatusAction.id, dto: { status: pendingStatusAction.status, reason: quickStatusReason.trim() || 'Admin quick action' } });
+      setFeedback({ type: 'success', message: `Đã chuyển tài khoản sang ${pendingStatusAction.status}.` });
+      setPendingStatusAction(null);
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Không thể cập nhật trạng thái.' });
+    }
+  };
+
+  const handleQuickRole = async (id: string, action: 'assign' | 'revoke') => {
+    if (user?.id === id) return setFeedback({ type: 'error', message: 'Không thể thay đổi role của chính mình.' });
+    try {
+      if (action === 'assign') await assignRoleMutation.mutateAsync({ userId: id, roleName: 'MODERATOR' });
+      else await revokeRoleMutation.mutateAsync({ userId: id, roleName: 'MODERATOR' });
+      setFeedback({ type: 'success', message: action === 'assign' ? 'Đã gán role MODERATOR.' : 'Đã thu hồi role MODERATOR.' });
+    } catch (err: any) {
+      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Không thể cập nhật role.' });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-serif text-xl font-bold text-foreground">
+        <h2 className="font-heading text-xl font-bold text-foreground">
           User Account Governance & RBAC
         </h2>
         <p className="text-xs text-muted-foreground">
           Manage user lifecycle states, suspend accounts, and assign governance roles.
         </p>
       </div>
+
+      <section className="overflow-hidden rounded-xl border border-border bg-surface" aria-labelledby="admin-users-list">
+        <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between"><div><h3 id="admin-users-list" className="font-heading text-base font-bold text-foreground">Danh sách người dùng</h3><p className="text-xs text-muted-foreground">Chọn một user để thực hiện thao tác quản trị.</p></div><AdminSearchInput value={userSearch} onValueChange={setUserSearch} placeholder="Tìm theo email..." aria-label="Tìm kiếm user" /></div>
+        <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left text-xs"><thead className="border-b border-border bg-muted/50 font-mono uppercase text-muted-foreground"><tr><th className="px-4 py-3">Người dùng</th><th className="px-4 py-3">Role</th><th className="px-4 py-3">Trạng thái</th><th className="px-4 py-3">Ngày tạo</th><th className="px-4 py-3 text-right">Thao tác</th></tr></thead><tbody className="divide-y divide-border">{usersLoading ? <tr><td colSpan={5} className="py-8 text-center text-muted-foreground">Đang tải user...</td></tr> : (usersResponse?.data ?? []).map(item => <tr key={item.id} className="hover:bg-muted/20"><td className="px-4 py-3"><div className="flex items-center gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-primary/10 font-semibold text-primary">{item.avatarUrl ? <img src={item.avatarUrl} alt="" className="h-full w-full object-cover" /> : (item.displayName || item.username || item.email).slice(0, 1).toUpperCase()}</div><div className="min-w-0"><p className="truncate font-semibold text-foreground">{item.displayName || item.username || 'Chưa đặt tên'}</p><p className="truncate text-xs text-muted-foreground">{item.email}</p></div></div></td><td className="px-4 py-3 font-mono text-muted-foreground">{item.roles.join(', ') || 'MEMBER'}</td><td className="px-4 py-3"><span className="rounded-md bg-muted px-2 py-1 font-mono">{item.status}</span></td><td className="px-4 py-3 text-muted-foreground">{new Date(item.createdAt).toLocaleDateString('vi-VN')}</td><td className="px-4 py-3"><div className="flex justify-end gap-2"><Button size="sm" variant="outline" onClick={() => void handleQuickStatus(item.id, item.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')} disabled={item.id === user?.id || changeStatusMutation.isPending} title={item.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'} aria-label={item.status === 'ACTIVE' ? `Khóa tài khoản ${item.email}` : `Mở khóa tài khoản ${item.email}`} className="h-9 w-9 p-0 text-warning hover:bg-warning/10">{item.status === 'ACTIVE' ? <LockKeyhole className="h-4 w-4" /> : <Lock className="h-4 w-4" />}</Button><Button size="sm" variant="outline" onClick={() => void handleQuickRole(item.id, item.roles.includes('MODERATOR') ? 'revoke' : 'assign')} disabled={item.id === user?.id || assignRoleMutation.isPending || revokeRoleMutation.isPending} title={item.roles.includes('MODERATOR') ? 'Thu hồi Moderator' : 'Gán Moderator'} aria-label={item.roles.includes('MODERATOR') ? `Thu hồi Moderator ${item.email}` : `Gán Moderator ${item.email}`} className="h-9 w-9 p-0 text-primary hover:bg-primary/10">{item.roles.includes('MODERATOR') ? <ShieldMinus className="h-4 w-4" /> : <ShieldPlus className="h-4 w-4" />}</Button><Button size="sm" variant="ghost" onClick={() => setTargetUserId(item.id)} title="Xem chi tiết" aria-label={`Xem chi tiết ${item.email}`} className="h-9 w-9 p-0"><Eye className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>
+        {usersResponse?.meta && <AdminPagination meta={usersResponse.meta} itemLabel="user" pageLabel="Trang" onPageChange={setUserPage} />}
+      </section>
 
       {/* Global Feedback Banner */}
       {feedback && (
@@ -202,7 +260,7 @@ export function UserManagementView() {
       )}
 
       {/* Target User Identifier Card */}
-      <div className="rounded-lg border border-border bg-surface p-5 space-y-3">
+      <div className="hidden rounded-lg border border-border bg-surface p-5 space-y-3">
         <label
           htmlFor="target-user-id"
           className="text-xs font-semibold text-foreground flex items-center gap-1.5"
@@ -219,13 +277,16 @@ export function UserManagementView() {
           className="w-full rounded-md border border-input bg-background p-2.5 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
         />
         {isSelf && (
-          <div className="flex items-center gap-1 text-2xs text-warning font-mono">
+          <div className="flex items-center gap-1 text-xs text-warning font-mono">
             <Lock className="h-3 w-3" />
             <span>You cannot modify your own administrator account.</span>
           </div>
         )}
       </div>
 
+      {targetUserId && <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm">
+        <div className="w-full max-w-5xl space-y-3 rounded-2xl border border-border bg-background p-5 shadow-2xl">
+        <div className="flex items-center justify-between"><h3 className="font-heading text-base font-bold text-foreground">Chi tiết quản trị</h3><Button variant="ghost" size="sm" onClick={() => setTargetUserId('')}>Đóng</Button></div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Account Status Form */}
         <form
@@ -234,7 +295,7 @@ export function UserManagementView() {
         >
           <div className="flex items-center gap-2 border-b border-border pb-3">
             <UserX className="h-4 w-4 text-warning" />
-            <h3 className="text-sm font-serif font-bold text-foreground">
+            <h3 className="text-sm font-heading font-bold text-foreground">
               Account Status Management
             </h3>
           </div>
@@ -278,7 +339,7 @@ export function UserManagementView() {
 
           {isDestructive && (
             <div className="rounded-md border border-danger/30 bg-danger/5 p-3 space-y-1.5">
-              <p className="text-2xs text-danger font-medium">
+              <p className="text-xs text-danger font-medium">
                 Warning: Banning or Deactivating a user immediately revokes platform access.
               </p>
               <label className="flex items-center gap-2 text-xs text-foreground cursor-pointer">
@@ -309,7 +370,7 @@ export function UserManagementView() {
         <div className="rounded-lg border border-border bg-surface p-5 space-y-4">
           <div className="flex items-center gap-2 border-b border-border pb-3">
             <UserCheck className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-serif font-bold text-foreground">
+            <h3 className="text-sm font-heading font-bold text-foreground">
               Role Assignment & Revocation
             </h3>
           </div>
@@ -360,12 +421,14 @@ export function UserManagementView() {
           </div>
 
           {!isCallerSuperAdmin && (
-            <p className="text-2xs text-muted-foreground italic font-mono pt-1">
+            <p className="text-xs text-muted-foreground italic font-mono pt-1">
               Note: Only SUPER_ADMIN accounts can grant or revoke ADMIN and SUPER_ADMIN roles.
             </p>
           )}
         </div>
-      </div>
+      </div></div></div>}
+
+      {pendingStatusAction && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="status-confirm-title"><div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl"><div className="mb-4 flex items-start justify-between gap-4"><div><h3 id="status-confirm-title" className="font-heading text-lg font-bold text-foreground">Xác nhận khóa tài khoản</h3><p className="mt-1 text-xs text-muted-foreground">{pendingStatusAction.email}</p></div><Button variant="ghost" size="sm" onClick={() => setPendingStatusAction(null)}>Đóng</Button></div><p className="mb-4 text-sm text-foreground">Tài khoản sẽ chuyển sang trạng thái <strong>{pendingStatusAction.status}</strong> và bị hạn chế truy cập.</p><label className="block space-y-2 text-xs font-semibold text-foreground"><span>Lý do</span><textarea value={quickStatusReason} onChange={(event) => setQuickStatusReason(event.target.value)} rows={3} placeholder="Nhập lý do xử lý..." className="w-full rounded-lg border border-border bg-background p-3 text-sm font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" /></label><div className="mt-5 flex justify-end gap-2"><Button variant="outline" onClick={() => setPendingStatusAction(null)}>Hủy</Button><Button variant="destructive" onClick={() => void confirmQuickStatus()} isLoading={changeStatusMutation.isPending}>Xác nhận khóa</Button></div></div></div>}
     </div>
   );
 }

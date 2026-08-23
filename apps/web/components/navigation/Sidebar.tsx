@@ -33,9 +33,9 @@ export function Sidebar({ className }: { className?: string }) {
   return (
     <aside
       className={cn(
-        'w-[230px] shrink-0 select-none flex flex-col justify-between',
+        'w-60 xl:w-64 shrink-0 select-none flex flex-col justify-between',
         'bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800',
-        'h-[calc(100vh-4rem)] sticky top-16 overflow-hidden p-5',
+        'h-[calc(100vh-5rem)] sticky top-20 overflow-hidden p-5',
         className
       )}
     >
@@ -57,15 +57,15 @@ export function Sidebar({ className }: { className?: string }) {
                   className={cn(
                     'flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
-                      : 'text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   )}
                 >
                   <Icon
                     className={cn(
                       'h-[18px] w-[18px] shrink-0',
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400'
+                        ? 'text-emerald-600 dark:text-emerald-400'
                         : 'text-slate-500 dark:text-slate-400'
                     )}
                   />
@@ -95,15 +95,15 @@ export function Sidebar({ className }: { className?: string }) {
                   className={cn(
                     'flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
                     isActive
-                      ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 font-bold'
-                      : 'text-slate-800 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   )}
                 >
                   <Icon
                     className={cn(
                       'h-[18px] w-[18px] shrink-0',
                       isActive
-                        ? 'text-blue-600 dark:text-blue-400'
+                        ? 'text-emerald-600 dark:text-emerald-400'
                         : 'text-slate-500 dark:text-slate-400'
                     )}
                   />

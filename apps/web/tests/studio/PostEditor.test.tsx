@@ -37,6 +37,7 @@ describe('PostEditor Component', () => {
           onBodyChange={onBodyChange}
           onMetaTitleChange={vi.fn()}
           onMetaDescriptionChange={vi.fn()}
+          isAdmin={true}
         />
       </QueryClientProvider>
     );
@@ -51,7 +52,7 @@ describe('PostEditor Component', () => {
     expect((bodyTextarea as HTMLTextAreaElement).value).toBe('Yield curve inversion analysis.');
 
     // Switch to SERIES
-    const seriesBtn = screen.getByRole('button', { name: 'SERIES' });
+    const seriesBtn = screen.getByRole('button', { name: /SERIES/i });
     fireEvent.click(seriesBtn);
     expect(onContentTypeChange).toHaveBeenCalledWith('SERIES');
   });

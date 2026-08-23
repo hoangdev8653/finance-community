@@ -38,7 +38,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
           <ShieldCheck className="h-6 w-6" aria-hidden="true" />
         </div>
         <div className="space-y-1">
-          <h1 className="font-serif text-2xl font-bold text-foreground">
+          <h1 className="font-heading text-2xl font-bold text-foreground">
             Administrative Access Required
           </h1>
           <p className="text-xs text-muted-foreground">

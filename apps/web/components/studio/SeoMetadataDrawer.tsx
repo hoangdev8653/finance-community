@@ -44,7 +44,7 @@ export function SeoMetadataDrawer({
               >
                 Meta Title
               </label>
-              <span className="font-mono text-2xs text-muted-foreground">
+              <span className="font-mono text-xs text-muted-foreground">
                 {metaTitle.length} / 70
               </span>
             </div>
@@ -68,7 +68,7 @@ export function SeoMetadataDrawer({
               >
                 Meta Description
               </label>
-              <span className="font-mono text-2xs text-muted-foreground">
+              <span className="font-mono text-xs text-muted-foreground">
                 {metaDescription.length} / 160
               </span>
             </div>

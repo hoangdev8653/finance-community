@@ -1,8 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, count, desc } from 'drizzle-orm';
+import { eq, and, count, desc, lt } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { auditLogsTable } from '../schema/audit-logs.schema';
+import { usersTable } from '../schema/users.schema';
 
 export type AuditLogEntity = typeof auditLogsTable.$inferSelect;
 export type NewAuditLogEntity = typeof auditLogsTable.$inferInsert;
@@ -48,8 +49,20 @@ export class AuditLogRepository {
     const totalPages = Math.ceil(totalItems / safeLimit);
 
     const data = await this.db
-      .select()
+      .select({
+        id: auditLogsTable.id,
+        actorId: auditLogsTable.actorId,
+        actorEmail: usersTable.email,
+        action: auditLogsTable.action,
+        entityType: auditLogsTable.entityType,
+        entityId: auditLogsTable.entityId,
+        metadata: auditLogsTable.metadata,
+        ipAddress: auditLogsTable.ipAddress,
+        reason: auditLogsTable.reason,
+        createdAt: auditLogsTable.createdAt,
+      })
       .from(auditLogsTable)
+      .leftJoin(usersTable, eq(auditLogsTable.actorId, usersTable.id))
       .where(whereClause)
       .orderBy(desc(auditLogsTable.createdAt))
       .limit(safeLimit)
@@ -66,5 +79,11 @@ export class AuditLogRepository {
         hasPreviousPage: safePage > 1,
       },
     };
+  }
+
+  async deleteOlderThan(days = 7): Promise<number> {
+    const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    const deleted = await this.db.delete(auditLogsTable).where(lt(auditLogsTable.createdAt, cutoff)).returning({ id: auditLogsTable.id });
+    return deleted.length;
   }
 }

@@ -24,7 +24,7 @@ describe('SeriesCard Component', () => {
         'Masterclass on DCF models, WACC sensitivity, and terminal multiples.'
       )
     ).toBeDefined();
-    expect(screen.getByText('8 Chapters')).toBeDefined();
+    expect(screen.getByText('8 Bài học')).toBeDefined();
 
     const links = screen.getAllByRole('link', { name: /Advanced Equity Valuation/i });
     expect(links[0].getAttribute('href')).toBe('/series/advanced-equity-valuation');
@@ -37,6 +37,6 @@ describe('SeriesCard Component', () => {
     };
 
     render(<SeriesCard series={singleChapterSeries} />);
-    expect(screen.getByText('1 Chapter')).toBeDefined();
+    expect(screen.getByText('1 Bài học')).toBeDefined();
   });
 });

@@ -46,7 +46,7 @@ export function BanPostDialog({
               <ShieldBan className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <h2 id="ban-dialog-title" className="font-serif text-lg font-bold text-foreground">
+              <h2 id="ban-dialog-title" className="font-heading text-lg font-bold text-foreground">
                 Cấm & Tạm ẩn Bài viết
               </h2>
               <p className="text-xs text-muted-foreground font-mono">
@@ -65,7 +65,7 @@ export function BanPostDialog({
         </div>
 
         <div className="space-y-3 rounded-lg bg-muted/40 p-4 border border-border/60">
-          <div className="text-2xs font-mono font-semibold uppercase text-muted-foreground">
+          <div className="text-xs font-mono font-semibold uppercase text-muted-foreground">
             Thông tin bài viết vi phạm
           </div>
           <p className="text-sm font-semibold text-foreground line-clamp-2">

@@ -1,5 +1,30 @@
 export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'BANNED' | 'DEACTIVATED';
 
+export interface AdminOverviewEntity {
+  totalPosts: number;
+  activeUsers: number;
+  reviewQueue: number;
+  openReports: number;
+  generatedAt: string;
+}
+
+export interface AdminUserEntity {
+  id: string;
+  email: string;
+  status: UserStatus;
+  provider: string;
+  createdAt: string;
+  roles: RoleName[];
+  displayName?: string | null;
+  username?: string | null;
+  avatarUrl?: string | null;
+}
+
+export interface PaginatedAdminUsersResponse {
+  data: AdminUserEntity[];
+  meta: { page: number; limit: number; totalItems: number; totalPages: number; hasNextPage: boolean; hasPreviousPage: boolean };
+}
+
 export type RoleName = 'MEMBER' | 'MODERATOR' | 'ADMIN' | 'SUPER_ADMIN';
 
 export interface UpdateUserStatusDto {
@@ -55,6 +80,11 @@ export interface AuditLogEntity {
   ip_address: string | null;
   reason: string | null;
   created_at: string;
+  actorEmail?: string | null;
+  actorId?: string | null;
+  entityType?: string;
+  entityId?: string | null;
+  createdAt?: string;
 }
 
 export interface QueryAuditLogsParams {

@@ -64,11 +64,11 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
             href={`/posts/series/${navData.previousPost.slug}`}
             className="group rounded-xl border border-border bg-surface p-4 space-y-1 hover:border-primary/50 transition-all shadow-2xs flex flex-col justify-between"
           >
-            <span className="inline-flex items-center gap-1 text-2xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
+            <span className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
               <ChevronLeft className="h-3.5 w-3.5" />
               <span>Bài trước đó</span>
             </span>
-            <p className="text-sm font-serif font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+            <p className="text-sm font-heading font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
               {navData.previousPost.title}
             </p>
           </Link>
@@ -83,11 +83,11 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
             href={`/posts/series/${navData.nextPost.slug}`}
             className="group rounded-xl border border-border bg-surface p-4 space-y-1 hover:border-primary/50 transition-all shadow-2xs flex flex-col justify-between sm:text-right"
           >
-            <span className="inline-flex items-center justify-end gap-1 text-2xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
+            <span className="inline-flex items-center justify-end gap-1 text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
               <span>Bài tiếp theo</span>
               <ChevronRight className="h-3.5 w-3.5" />
             </span>
-            <p className="text-sm font-serif font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+            <p className="text-sm font-heading font-bold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
               {navData.nextPost.title}
             </p>
           </Link>
@@ -101,7 +101,7 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
       {/* Table of Contents Box */}
       <div className="rounded-xl border border-border bg-surface p-5 space-y-4 shadow-2xs">
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <div className="flex items-center gap-2 text-primary font-serif font-bold text-base">
+          <div className="flex items-center gap-2 text-primary font-heading font-bold text-base">
             <BookOpen className="h-5 w-5" />
             <span>Mục lục Chuỗi bài học: {navData.series.name}</span>
           </div>
@@ -122,13 +122,13 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
               }`}
             >
               <div className="flex items-center gap-2.5 truncate">
-                <span className="font-mono text-2xs w-5 shrink-0 opacity-75">
+                <span className="font-mono text-xs w-5 shrink-0 opacity-75">
                   #{item.index}
                 </span>
                 <span className="truncate">{item.title}</span>
               </div>
               {item.isCurrent && (
-                <span className="shrink-0 flex items-center gap-1 text-2xs font-mono text-primary font-semibold">
+                <span className="shrink-0 flex items-center gap-1 text-xs font-mono text-primary font-semibold">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Đang đọc</span>
                 </span>

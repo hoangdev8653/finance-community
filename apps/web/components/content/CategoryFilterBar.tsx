@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useCategories } from '@/lib/posts/use-posts-feed';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 import { cn } from '@/lib/utils/cn';
 
 interface CategoryFilterBarProps {
@@ -13,6 +14,7 @@ export function CategoryFilterBar({
   selectedCategoryId,
   onSelectCategory,
 }: CategoryFilterBarProps) {
+  const { t } = useTranslation();
   const { data: fetchedCategories = [], isLoading } = useCategories();
 
   // Only show COMMUNITY scope categories on home feed (exclude SERIES)
@@ -35,15 +37,15 @@ export function CategoryFilterBar({
         type="button"
         onClick={() => onSelectCategory(undefined)}
         aria-pressed={!selectedCategoryId}
-        aria-label="All Topics"
+        aria-label={t('common.all')}
         className={cn(
-          'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer',
+          'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer',
           !selectedCategoryId
-            ? 'bg-blue-600 text-white font-bold shadow-xs'
-            : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+            ? 'bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 font-bold shadow-xs'
+            : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
         )}
       >
-        All
+        {t('common.all')}
       </button>
 
       {categories.map((category) => {
@@ -55,10 +57,10 @@ export function CategoryFilterBar({
             onClick={() => onSelectCategory(category.id)}
             aria-pressed={isSelected}
             className={cn(
-              'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-600 cursor-pointer',
+              'px-5 py-2 text-sm font-semibold rounded-full whitespace-nowrap transition-all duration-150 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer',
               isSelected
-                ? 'bg-blue-600 text-white font-bold shadow-xs'
-                : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
+                ? 'bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 font-bold shadow-xs'
+                : 'border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/80'
             )}
           >
             {category.name}

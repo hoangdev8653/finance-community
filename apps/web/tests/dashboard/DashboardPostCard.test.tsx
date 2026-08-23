@@ -40,13 +40,13 @@ describe('DashboardPostCard Component', () => {
     expect(screen.getByText('Semiconductor Foundry Margin Analysis')).toBeInTheDocument();
     expect(screen.getByText('COMMUNITY')).toBeInTheDocument();
     expect(screen.getByText('PUBLISHED')).toBeInTheDocument();
-    expect(screen.getByText('1,420 views')).toBeInTheDocument();
+    expect(screen.getByText(/1,420 lượt xem/i)).toBeInTheDocument();
   });
 
   it('renders links to edit the post in Studio', () => {
     render(<DashboardPostCard post={mockPost} />);
 
-    const editLinks = screen.getAllByRole('link', { name: /Edit/i });
+    const editLinks = screen.getAllByRole('link', { name: /Chỉnh sửa/i });
     expect(editLinks.some((l) => l.getAttribute('href') === '/posts/post-101/edit')).toBe(true);
   });
 

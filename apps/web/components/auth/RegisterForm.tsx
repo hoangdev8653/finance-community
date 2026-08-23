@@ -73,7 +73,7 @@ export function RegisterForm() {
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
           Create your account
         </h1>
         <p className="text-sm text-muted-foreground">

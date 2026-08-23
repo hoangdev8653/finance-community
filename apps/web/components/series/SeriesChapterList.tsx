@@ -23,7 +23,7 @@ export function SeriesChapterList({
   if (chapters.length === 0) {
     return (
       <section className="space-y-4 pt-4">
-        <h2 className="font-serif text-xl font-bold text-foreground">
+        <h2 className="font-heading text-xl font-bold text-foreground">
           Curriculum Syllabus
         </h2>
         <EmptyState
@@ -38,7 +38,7 @@ export function SeriesChapterList({
   return (
     <section className="space-y-4 pt-4" aria-label="Curriculum Syllabus">
       <div className="flex items-center justify-between pb-2 border-b border-border">
-        <h2 className="font-serif text-xl font-bold text-foreground">
+        <h2 className="font-heading text-xl font-bold text-foreground">
           Curriculum Syllabus
         </h2>
         <span className="font-mono text-xs text-muted-foreground">

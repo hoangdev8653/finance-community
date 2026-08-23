@@ -37,10 +37,10 @@ export function StudioHeader({
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div>
-          <h1 className="font-serif text-xl sm:text-2xl font-bold text-foreground">
+          <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">
             {isEditing ? 'Edit Financial Analysis' : 'Publishing Studio'}
           </h1>
-          <p className="text-2xs text-muted-foreground font-mono">
+          <p className="text-xs text-muted-foreground font-mono">
             {isEditing ? 'Update published research or draft' : 'Draft and publish institutional-grade research notes'}
           </p>
         </div>

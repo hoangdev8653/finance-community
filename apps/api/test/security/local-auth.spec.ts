@@ -31,10 +31,11 @@ describe('Native Local Authentication (E2E)', () => {
     await app.close();
   });
 
+  const testSuffix = Math.random().toString(36).slice(2, 7);
   const testUser = {
-    email: 'local_native_user@finance.com',
+    email: `local_user_${testSuffix}@finance.com`,
     password: 'SecureLocalPass123!',
-    username: 'local_native_user',
+    username: `user_${testSuffix}`,
   };
 
   let token = '';

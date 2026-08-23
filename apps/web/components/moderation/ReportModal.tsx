@@ -93,7 +93,7 @@ export function ReportModal({
               <Flag className="h-4 w-4" aria-hidden="true" />
             </div>
             <div>
-              <h2 id="report-modal-title" className="font-serif text-lg font-bold text-foreground">
+              <h2 id="report-modal-title" className="font-heading text-lg font-bold text-foreground">
                 Report {targetLabel}
               </h2>
               {targetTitle && (
@@ -164,7 +164,7 @@ export function ReportModal({
                     />
                     <div className="space-y-0.5">
                       <div className="font-medium text-foreground">{r.label}</div>
-                      <div className="text-2xs text-muted-foreground">{r.description}</div>
+                      <div className="text-xs text-muted-foreground">{r.description}</div>
                     </div>
                   </label>
                 ))}
@@ -177,7 +177,7 @@ export function ReportModal({
                 <label htmlFor="report-description" className="font-medium text-foreground">
                   Additional Context (Optional)
                 </label>
-                <span className="font-mono text-2xs text-muted-foreground">
+                <span className="font-mono text-xs text-muted-foreground">
                   {description.length} / 1000
                 </span>
               </div>

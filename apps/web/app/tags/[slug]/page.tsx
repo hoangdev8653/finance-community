@@ -49,7 +49,7 @@ export default function TagExplorePage({ params }: TagPageProps) {
             <Tag className="h-6 w-6" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-foreground">
+            <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
               #{tag ? tag.name : decodedSlug}
             </h1>
             <p className="text-xs font-mono text-muted-foreground">

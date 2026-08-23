@@ -60,7 +60,7 @@ export function TagAutocompleteInput({
     <div ref={containerRef} className="space-y-2.5 relative">
       <label className="text-xs font-mono font-semibold text-foreground flex items-center justify-between">
         <span>Hashtags / Chủ đề ({selectedTags.length}/{maxTags})</span>
-        <span className="text-2xs text-muted-foreground">Nhấn Enter hoặc phẩy để thêm</span>
+        <span className="text-xs text-muted-foreground">Nhấn Enter hoặc phẩy để thêm</span>
       </label>
 
       {/* Selected Tags Chips & Input Box */}
@@ -112,7 +112,7 @@ export function TagAutocompleteInput({
                 <Plus className="h-3.5 w-3.5" />
                 <span>Tạo tag mới: #{inputQuery.trim().replace(/^#/, '')}</span>
               </div>
-              <span className="text-2xs text-muted-foreground font-normal">Mới</span>
+              <span className="text-xs text-muted-foreground font-normal">Mới</span>
             </button>
           )}
 
@@ -137,7 +137,7 @@ export function TagAutocompleteInput({
                   <span className="font-semibold">#{item.name}</span>
                 </div>
 
-                <div className="flex items-center gap-1 text-2xs font-mono text-muted-foreground">
+                <div className="flex items-center gap-1 text-xs font-mono text-muted-foreground">
                   <TrendingUp className="h-3 w-3 text-muted-foreground/70" />
                   <span>{usageCount.toLocaleString('vi-VN')} bài viết</span>
                 </div>

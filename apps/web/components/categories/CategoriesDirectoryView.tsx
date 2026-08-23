@@ -25,16 +25,16 @@ export function CategoriesDirectoryView() {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <div className="space-y-2">
-        <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary font-mono">
+      <div className="space-y-3">
+        <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800 px-3 py-1 rounded-md font-mono">
           <Grid className="h-3.5 w-3.5" />
-          <span>Research Sectors</span>
+          <span>Danh mục & Lĩnh vực nghiên cứu</span>
         </div>
-        <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Categories & Sectors
+        <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
+          Danh mục Tri thức & Khóa học
         </h1>
-        <p className="text-sm text-muted-foreground max-w-2xl">
-          Browse structured financial research tracks, asset classes, and structured educational curriculums authored across Finance Pulse.
+        <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
+          Khám phá các phân mục nghiên cứu tài chính có cấu trúc, các lớp tài sản đầu tư và hệ thống giáo trình đào tạo bài bản trên Finance Pulse.
         </p>
       </div>
 
@@ -55,8 +55,8 @@ export function CategoriesDirectoryView() {
       {/* Error State */}
       {isError && (
         <ErrorState
-          title="Unable to load categories"
-          message={error instanceof Error ? error.message : 'An unexpected error occurred while fetching categories.'}
+          title="Không thể tải danh mục"
+          message={error instanceof Error ? error.message : 'Đã có lỗi xảy ra trong quá trình nạp danh mục.'}
           onRetry={() => refetch()}
         />
       )}
@@ -66,24 +66,24 @@ export function CategoriesDirectoryView() {
         <>
           {categories.length === 0 ? (
             <EmptyState
-              title="No categories found"
-              description="No research categories or sectors are currently registered in the platform."
+              title="Chưa có danh mục nào"
+              description="Hiện chưa có danh mục nào được đăng ký trên hệ thống."
             />
           ) : (
             <div className="space-y-12">
               {/* Community Research Sectors */}
               {communityCategories.length > 0 && (
                 <section className="space-y-4" aria-labelledby="community-categories-heading">
-                  <div className="flex items-center gap-2 border-b border-border/60 pb-2">
-                    <Layers className="h-4 w-4 text-primary" />
+                  <div className="flex items-center gap-2 border-b border-slate-300 dark:border-slate-800 pb-3">
+                    <Layers className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                     <h2
                       id="community-categories-heading"
-                      className="font-serif text-xl font-bold tracking-tight text-foreground"
+                      className="font-heading text-2xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100"
                     >
-                      Community Research & Analysis Sectors
+                      Phân mục Nghiên cứu & Phân tích Thị trường
                     </h2>
-                    <span className="text-xs text-muted-foreground ml-auto font-mono">
-                      {communityCategories.length} {communityCategories.length === 1 ? 'sector' : 'sectors'}
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 ml-auto font-mono">
+                      {communityCategories.length} phân mục
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -97,16 +97,16 @@ export function CategoriesDirectoryView() {
               {/* Educational Series Curriculums */}
               {seriesCategories.length > 0 && (
                 <section className="space-y-4" aria-labelledby="series-categories-heading">
-                  <div className="flex items-center gap-2 border-b border-border/60 pb-2">
-                    <BookOpen className="h-4 w-4 text-primary" />
+                  <div className="flex items-center gap-2 border-b border-slate-300 dark:border-slate-800 pb-3">
+                    <BookOpen className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                     <h2
                       id="series-categories-heading"
-                      className="font-serif text-xl font-bold tracking-tight text-foreground"
+                      className="font-heading text-2xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100"
                     >
-                      Educational Curriculums & Series Tracks
+                      Giáo trình & Chuỗi bài Đào tạo Chuyên sâu
                     </h2>
-                    <span className="text-xs text-muted-foreground ml-auto font-mono">
-                      {seriesCategories.length} {seriesCategories.length === 1 ? 'track' : 'tracks'}
+                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 ml-auto font-mono">
+                      {seriesCategories.length} chuỗi bài
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -35,7 +35,7 @@ export function DashboardPostsList({
     return (
       <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3">
         <AlertCircle className="h-8 w-8 text-destructive mx-auto" />
-        <h4 className="font-serif font-bold text-foreground">Failed to Load Research Notes</h4>
+        <h4 className="font-heading font-bold text-foreground">Failed to Load Research Notes</h4>
         <p className="text-xs text-muted-foreground max-w-sm mx-auto">
           An error occurred while fetching your research portfolio. Please refresh or try again.
         </p>
@@ -78,7 +78,7 @@ export function DashboardPostsList({
           <FileText className="h-6 w-6" />
         </div>
         <div className="space-y-1">
-          <h4 className="font-serif text-lg font-bold text-foreground">{empty.title}</h4>
+          <h4 className="font-heading text-lg font-bold text-foreground">{empty.title}</h4>
           <p className="text-xs text-muted-foreground max-w-md mx-auto">{empty.description}</p>
         </div>
         <Button variant="primary" size="sm" asChild>

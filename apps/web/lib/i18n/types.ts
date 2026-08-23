@@ -60,4 +60,72 @@ export interface TranslationDictionary {
     featuredPosts: string;
     trending: string;
   };
+  home: {
+    heroTitle: string;
+    heroSubtitle: string;
+    exploreResearch: string;
+    joinCommunity: string;
+    statsArticles: string;
+    statsMembers: string;
+    statsSeries: string;
+    statsAccuracy: string;
+    featuredTopics: string;
+    curatedArticles: string;
+    filteredArticles: string;
+    editorialStandards: string;
+    editorialStandardsDesc: string;
+    topContributors: string;
+  };
+  macro: {
+    flashBadge: string;
+    leadBadge: string;
+    editorialDesk: string;
+    justUpdated: string;
+    macroHeadline: string;
+    macroSummary: string;
+    keyPoints: string;
+    point1: string;
+    point2: string;
+    point3: string;
+    readFullAnalysis: string;
+    viewMacroCharts: string;
+    macroSnapshot: string;
+    fedRate: string;
+    dxyIndex: string;
+    us10y: string;
+    oilBrent: string;
+    usdVnd: string;
+  };
+  editorial: {
+    dailyBriefing: string;
+    todayDispatches: string;
+    domesticNews: string;
+    internationalNews: string;
+    marketAnalysis: string;
+    featuredSeries: string;
+    startReading: string;
+    episodesCount: string;
+    communityDiscussions: string;
+    hotTopics: string;
+    activeVoices: string;
+    viewAllDispatches: string;
+    readLeadStory: string;
+    publishedTime: string;
+    minsRead: string;
+  };
+  newsletter: {
+    title: string;
+    desc: string;
+    placeholder: string;
+    subscribe: string;
+    subscribed: string;
+    privacyNote: string;
+  };
+  scope: {
+    all: string;
+    domestic: string;
+    international: string;
+    series: string;
+    community: string;
+  };
 }

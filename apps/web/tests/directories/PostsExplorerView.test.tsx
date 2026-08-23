@@ -79,10 +79,10 @@ describe('PostsExplorerView Component', () => {
   it('renders master research explorer title, filter header, and post cards', () => {
     render(<PostsExplorerView />);
 
-    expect(screen.getByText('Master Content & Research Explorer')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'All Content' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Analyses Only' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Educational Series' })).toBeInTheDocument();
+    expect(screen.getByText(/Khám phá Bài viết & Nghiên cứu Tài chính/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Tất cả nội dung' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bài phân tích' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Chuỗi bài Series' })).toBeInTheDocument();
 
     expect(screen.getByText('Semiconductor Foundry Free Cash Flow Forecast')).toBeInTheDocument();
   });
@@ -90,7 +90,7 @@ describe('PostsExplorerView Component', () => {
   it('triggers content type filter switch on segment button click', () => {
     render(<PostsExplorerView />);
 
-    const analysesBtn = screen.getByRole('button', { name: 'Analyses Only' });
+    const analysesBtn = screen.getByRole('button', { name: 'Bài phân tích' });
     fireEvent.click(analysesBtn);
 
     expect(analysesBtn).toHaveAttribute('aria-pressed', 'true');
@@ -105,7 +105,7 @@ describe('PostsExplorerView Component', () => {
     expect(categorySelect).toHaveValue('cat-tech');
 
     // Reset button appears when filters are active
-    const resetBtn = screen.getByRole('button', { name: /Reset/i });
+    const resetBtn = screen.getByRole('button', { name: /Đặt lại/i });
     fireEvent.click(resetBtn);
 
     expect(categorySelect).toHaveValue('');

@@ -137,12 +137,12 @@ export function AvatarPicker({
           )}
         </div>
 
-        <p className="text-2xs font-mono text-muted-foreground">
+        <p className="text-xs font-mono text-muted-foreground">
           PNG, JPG, WebP up to 10MB
         </p>
 
         {clientError && (
-          <div role="alert" className="flex items-center gap-1 text-2xs text-danger font-medium pt-0.5">
+          <div role="alert" className="flex items-center gap-1 text-xs text-danger font-medium pt-0.5">
             <AlertCircle className="h-3 w-3 shrink-0" />
             <span>{clientError}</span>
           </div>

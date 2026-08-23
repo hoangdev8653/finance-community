@@ -37,7 +37,7 @@ describe('Community Enhancements (Appeal, Feeds, Auto-Hide, Comment Media, Serie
 
     it('should allow author to request review after editing', async () => {
       const result = await postsService.requestPostReview('author-123', 'post-banned-1');
-      expect(result.moderationStatus).toBe('UNREVIEWED');
+      expect(result?.moderationStatus).toBe('UNREVIEWED');
       expect(mockPostsRepo.requestPostReviewTx).toHaveBeenCalledWith(undefined, 'post-banned-1');
     });
 

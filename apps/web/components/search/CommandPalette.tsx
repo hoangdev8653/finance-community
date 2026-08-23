@@ -128,14 +128,14 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                           {item.title}
                         </div>
                         {item.description && (
-                          <div className={`text-2xs truncate ${isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
+                          <div className={`text-xs truncate ${isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground'}`}>
                             {item.description}
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 text-2xs font-mono shrink-0">
+                    <div className="flex items-center gap-1 text-xs font-mono shrink-0">
                       <span className="hidden sm:inline opacity-70">Jump</span>
                       <CornerDownLeft className="h-3.5 w-3.5" />
                     </div>

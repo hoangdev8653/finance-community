@@ -55,7 +55,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
           <Badge
             key={tag}
             variant="outline"
-            className="gap-1 font-mono text-2xs py-0.5 px-2 bg-muted/50"
+            className="gap-1 font-mono text-xs py-0.5 px-2 bg-muted/50"
           >
             <span>#{tag}</span>
             <button
@@ -85,7 +85,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
       {/* Tag Suggestions */}
       {tagSuggestions.length > 0 && inputVal.trim().length > 1 && (
         <div className="flex flex-wrap gap-1 pt-1">
-          <span className="text-2xs text-muted-foreground self-center mr-1">
+          <span className="text-xs text-muted-foreground self-center mr-1">
             Suggestions:
           </span>
           {tagSuggestions.map((suggestion) => (
@@ -93,7 +93,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
               key={suggestion.id}
               type="button"
               onClick={() => addTag(suggestion.name)}
-              className="inline-flex items-center gap-1 text-2xs font-mono text-muted-foreground hover:text-primary bg-muted px-1.5 py-0.5 rounded transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground hover:text-primary bg-muted px-1.5 py-0.5 rounded transition-colors"
             >
               <Plus className="h-2.5 w-2.5" />
               <span>#{suggestion.name}</span>

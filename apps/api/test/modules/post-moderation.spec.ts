@@ -72,7 +72,7 @@ describe('Post Moderation Queue & Restricted Access Control', () => {
 
     it('should approve a post and mark moderationStatus as APPROVED', async () => {
       const updated = await moderationService.approvePost('admin-user-id', 'post-100');
-      expect(updated.moderationStatus).toBe('APPROVED');
+      expect(updated?.moderationStatus).toBe('APPROVED');
       expect(mockPostsRepo.updateModerationStatusTx).toHaveBeenCalledWith(
         expect.anything(),
         'post-100',
@@ -96,8 +96,8 @@ describe('Post Moderation Queue & Restricted Access Control', () => {
         'post-100',
         'Vi phạm chia sẻ link nhóm không được phép',
       );
-      expect(updated.status).toBe('HIDDEN');
-      expect(updated.moderationStatus).toBe('BANNED');
+      expect(updated?.status).toBe('HIDDEN');
+      expect(updated?.moderationStatus).toBe('BANNED');
       expect(mockNotificationsService.createNotification).toHaveBeenCalledWith(
         expect.objectContaining({
           userId: 'author-user-1',

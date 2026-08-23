@@ -1,15 +1,19 @@
+'use client';
+
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export function EditorialStandardsWidget() {
+  const { t } = useTranslation();
+
   return (
-    <div className="rounded-2xl border border-blue-200/80 dark:border-blue-900/60 bg-[#edf5fe] dark:bg-blue-950/40 p-5 space-y-3 shadow-card">
-      <div className="flex items-center gap-2 text-blue-950 dark:text-blue-200 font-bold text-base">
-        <ShieldCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-        <span>Editorial Standards</span>
-      </div>
-      <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
-        Every analysis published on Finance Pulse adheres to independent analytical integrity. Content is reviewed for factual rigor, data methodology, and source transparency.
+    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 sm:p-5 space-y-2">
+      <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-slate-100">
+        {t('home.editorialStandards')}
+      </h3>
+      <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+        {t('home.editorialStandardsDesc')}
       </p>
     </div>
   );

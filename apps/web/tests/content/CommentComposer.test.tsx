@@ -4,13 +4,25 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { CommentComposer } from '@/components/content/CommentComposer';
 import { useAuth } from '@/lib/auth/AuthContext';
 
+import { ToastProvider } from '@/lib/toast/ToastContext';
+
 vi.mock('@/lib/auth/AuthContext', () => ({
   useAuth: vi.fn(),
+}));
+
+vi.mock('@/lib/media/use-media', () => ({
+  useUploadMedia: () => ({
+    mutateAsync: vi.fn(),
+    isPending: false,
+    uploadProgress: 0,
+  }),
 }));
 
 vi.mock('next/navigation', () => ({
   usePathname: () => '/posts/community/test-post',
 }));
+
+const renderWithToast = (ui: React.ReactElement) => render(<ToastProvider>{ui}</ToastProvider>);
 
 describe('CommentComposer Component', () => {
   it('renders unauthenticated sign-in prompt when user is logged out', () => {
@@ -24,7 +36,7 @@ describe('CommentComposer Component', () => {
       isLoading: false,
     });
 
-    render(<CommentComposer onSubmit={vi.fn()} />);
+    renderWithToast(<CommentComposer onSubmit={vi.fn()} />);
 
     expect(screen.getByText(/Sign in to join the discussion/i)).toBeDefined();
     const loginLink = screen.getByRole('link', { name: /Sign In to Comment/i });
@@ -49,7 +61,7 @@ describe('CommentComposer Component', () => {
     });
 
     const onSubmitMock = vi.fn().mockResolvedValue(undefined);
-    render(<CommentComposer onSubmit={onSubmitMock} />);
+    renderWithToast(<CommentComposer onSubmit={onSubmitMock} />);
 
     expect(screen.getByText(/Commenting as/i)).toBeDefined();
     expect(screen.getByText(/@analyst/i)).toBeDefined();
@@ -67,7 +79,7 @@ describe('CommentComposer Component', () => {
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(onSubmitMock).toHaveBeenCalledWith('Solid DCF cash flow projection.');
+      expect(onSubmitMock).toHaveBeenCalledWith('Solid DCF cash flow projection.', undefined);
     });
   });
 });

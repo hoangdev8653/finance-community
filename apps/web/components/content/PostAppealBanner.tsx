@@ -51,10 +51,10 @@ export function PostAppealBanner({ post }: PostAppealBannerProps) {
         </div>
         <div className="space-y-1.5 flex-1">
           <div className="flex items-center gap-2">
-            <h3 className="font-serif text-base font-bold text-foreground">
+            <h3 className="font-heading text-base font-bold text-foreground">
               Bài viết đang ở trạng thái Tạm ẩn / Chưa được công khai
             </h3>
-            <span className="px-2 py-0.5 rounded-full bg-danger/15 text-danger font-mono text-2xs font-semibold">
+            <span className="px-2 py-0.5 rounded-full bg-danger/15 text-danger font-mono text-xs font-semibold">
               {post.moderationStatus === 'BANNED' ? 'BANNED' : 'HIDDEN'}
             </span>
           </div>

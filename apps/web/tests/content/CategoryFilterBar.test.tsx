@@ -43,7 +43,7 @@ describe('CategoryFilterBar Component', () => {
       />
     );
 
-    const allButton = screen.getByRole('button', { name: /All Topics/i });
+    const allButton = screen.getByRole('button', { name: /Tất cả|All/i });
     const macroButton = screen.getByRole('button', { name: /Macroeconomics/i });
     const equitiesButton = screen.getByRole('button', { name: /Equities/i });
 

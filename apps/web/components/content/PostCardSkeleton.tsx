@@ -3,29 +3,17 @@ import { Skeleton } from '@/components/ui/Skeleton';
 
 export function PostCardSkeleton() {
   return (
-    <div className="flex flex-col sm:flex-row items-stretch gap-4 sm:gap-5 rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-card">
+    <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 py-5 border-b border-dashed border-slate-200 dark:border-slate-800 last:border-b-0">
       {/* Thumbnail placeholder */}
-      <Skeleton className="w-full sm:w-44 md:w-48 h-32 sm:h-auto min-h-[110px] rounded-lg shrink-0" />
+      <Skeleton className="w-full sm:w-56 md:w-64 lg:w-72 h-44 sm:h-38 md:h-44 rounded-none shrink-0" />
 
-      {/* Content skeleton */}
-      <div className="flex flex-1 flex-col justify-between space-y-3 min-w-0">
-        <div className="flex items-center gap-2">
-          <Skeleton className="h-5 w-20 rounded" />
-          <Skeleton className="h-4 w-16" />
-        </div>
-
-        <div className="space-y-2">
-          <Skeleton className="h-6 w-5/6" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-
-        <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <div className="flex items-center gap-2">
-            <Skeleton className="h-5 w-5 rounded-full" />
-            <Skeleton className="h-3 w-28" />
-          </div>
-          <Skeleton className="h-3 w-20" />
+      {/* Content skeleton: Title -> Category & Time -> Excerpt */}
+      <div className="flex-1 min-w-0 space-y-2 pt-0.5 w-full">
+        <Skeleton className="h-6 w-5/6 rounded-none" />
+        <Skeleton className="h-4 w-1/3 rounded-none" />
+        <div className="space-y-1.5 pt-1">
+          <Skeleton className="h-4 w-full rounded-none" />
+          <Skeleton className="h-4 w-3/4 rounded-none" />
         </div>
       </div>
     </div>

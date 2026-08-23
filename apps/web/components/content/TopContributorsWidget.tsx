@@ -1,62 +1,117 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Award } from 'lucide-react';
+import { UserCheck, UserPlus } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
-const topContributors = [
+const TOP_CONTRIBUTORS = [
   {
+    id: 'c-1',
     name: 'Sarah Chen, CFA',
-    role: 'Wealth Strategist',
-    username: 'sarah_chen',
+    role: 'Trưởng nhóm Nghiên cứu & Định giá',
+    username: 'sarah_chen_cfa',
+    articlesCount: 14,
     avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=120&auto=format&fit=crop&q=80',
   },
   {
-    name: 'David Miller',
-    role: 'Financial Planner',
-    username: 'david_miller',
+    id: 'c-2',
+    name: 'Nguyễn Việt Cường',
+    role: 'Chuyên viên Phân tích Vĩ mô',
+    username: 'cuong_macro',
+    articlesCount: 9,
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
   },
   {
-    name: 'Elena Rostova',
-    role: 'Corporate Finance Lead',
-    username: 'elena_rostova',
-    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    id: 'c-3',
+    name: 'Trần Minh Hoàng',
+    role: 'Quản lý Quỹ & Thị trường vốn',
+    username: 'hoang_tran_fund',
+    articlesCount: 11,
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
+  },
+  {
+    id: 'c-4',
+    name: 'Lê Thu Trang',
+    role: 'Nghiên cứu Ngành Ngân hàng',
+    username: 'trang_banking',
+    articlesCount: 7,
+    avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80',
   },
 ];
 
 export function TopContributorsWidget() {
-  return (
-    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
-      <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-bold text-base">
-        <Award className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400" />
-        <span>Top Contributors</span>
-      </div>
+  const { t } = useTranslation();
+  const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
 
-      <div className="space-y-3.5">
-        {topContributors.map((contributor, idx) => (
-          <Link
-            key={idx}
-            href={`/profile/${contributor.username}`}
-            className="flex items-center gap-3.5 group p-1 -m-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors"
-          >
-            <Avatar
-              src={contributor.avatarUrl}
-              fallback={contributor.name.slice(0, 2).toUpperCase()}
-              size="md"
-              className="ring-1 ring-slate-200 dark:ring-slate-700 group-hover:ring-blue-500/50 transition-all"
-            />
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
-                {contributor.name}
-              </span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 truncate">
-                {contributor.role}
-              </span>
+  const toggleFollow = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setFollowingMap((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3.5 shadow-xs">
+      <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+        {t('editorial.activeVoices')}
+      </h3>
+
+      <div className="space-y-3">
+        {TOP_CONTRIBUTORS.map((contributor) => {
+          const isFollowing = !!followingMap[contributor.id];
+          return (
+            <div
+              key={contributor.id}
+              className="flex items-center justify-between gap-2.5 p-2 -mx-2 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+            >
+              <Link
+                href={`/profile/${contributor.username}`}
+                className="flex items-center gap-2.5 min-w-0 group"
+              >
+                <Avatar
+                  src={contributor.avatarUrl}
+                  fallback={contributor.name.slice(0, 2).toUpperCase()}
+                  size="md"
+                  className="ring-1 ring-slate-200 dark:ring-slate-700 shrink-0 rounded-full"
+                />
+                <div className="flex flex-col min-w-0">
+                  <span className="text-xs sm:text-sm font-bold text-slate-950 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors truncate">
+                    {contributor.name}
+                  </span>
+                  <span className="text-xs text-slate-600 dark:text-slate-400 font-medium line-clamp-1">
+                    {contributor.role}
+                  </span>
+                  <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">
+                    {contributor.articlesCount} bài viết
+                  </span>
+                </div>
+              </Link>
+
+              <button
+                type="button"
+                onClick={(e) => toggleFollow(contributor.id, e)}
+                className={`shrink-0 inline-flex h-8 items-center gap-1.5 px-3 text-xs font-bold rounded-lg transition-all cursor-pointer shadow-2xs ${
+                  isFollowing
+                    ? 'bg-teal-100 dark:bg-teal-950 text-teal-950 dark:text-teal-200 border border-teal-300 dark:border-teal-800'
+                    : 'bg-slate-900 dark:bg-[#162033] hover:bg-slate-800 text-white dark:text-slate-200'
+                }`}
+              >
+                {isFollowing ? (
+                  <>
+                    <UserCheck className="h-3 w-3 text-teal-700" />
+                    <span>Đang theo dõi</span>
+                  </>
+                ) : (
+                  <>
+                    <UserPlus className="h-3 w-3" />
+                    <span>Theo dõi</span>
+                  </>
+                )}
+              </button>
             </div>
-          </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

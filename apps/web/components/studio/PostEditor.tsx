@@ -16,6 +16,7 @@ interface PostEditorProps {
   body: string;
   metaTitle: string;
   metaDescription: string;
+  isAdmin?: boolean;
   onTitleChange: (val: string) => void;
   onContentTypeChange: (val: 'SERIES' | 'COMMUNITY') => void;
   onCategoryChange: (val: string) => void;
@@ -35,6 +36,7 @@ export function PostEditor({
   body,
   metaTitle,
   metaDescription,
+  isAdmin = false,
   onTitleChange,
   onContentTypeChange,
   onCategoryChange,
@@ -85,7 +87,7 @@ export function PostEditor({
               >
                 Analysis Title <span className="text-danger">*</span>
               </label>
-              <span className="font-mono text-2xs text-muted-foreground">
+              <span className="font-mono text-xs text-muted-foreground">
                 {title.length} / 300
               </span>
             </div>
@@ -96,7 +98,7 @@ export function PostEditor({
               onChange={(e) => onTitleChange(e.target.value)}
               maxLength={300}
               placeholder="e.g. Q3 2026 Sovereign Yield Curve Dynamics & Macro Implications..."
-              className="w-full h-10 rounded-md border border-input bg-background px-3 font-serif text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+              className="w-full h-10 rounded-md border border-input bg-background px-3 font-heading text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
 
@@ -105,30 +107,37 @@ export function PostEditor({
             <label className="block text-xs font-medium text-foreground">
               Scope
             </label>
-            <div className="flex items-center rounded-md border border-border bg-background p-0.5">
-              <button
-                type="button"
-                onClick={() => onContentTypeChange('COMMUNITY')}
-                className={`px-3 py-1.5 text-2xs font-mono rounded-sm transition-colors ${
-                  contentType === 'COMMUNITY'
-                    ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                COMMUNITY
-              </button>
-              <button
-                type="button"
-                onClick={() => onContentTypeChange('SERIES')}
-                className={`px-3 py-1.5 text-2xs font-mono rounded-sm transition-colors ${
-                  contentType === 'SERIES'
-                    ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                SERIES
-              </button>
-            </div>
+            {isAdmin ? (
+              <div className="flex items-center rounded-md border border-border bg-background p-0.5">
+                <button
+                  type="button"
+                  onClick={() => onContentTypeChange('COMMUNITY')}
+                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
+                    contentType === 'COMMUNITY'
+                      ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  COMMUNITY
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onContentTypeChange('SERIES')}
+                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
+                    contentType === 'SERIES'
+                      ? 'bg-emerald-600 text-white font-bold shadow-2xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  SERIES (Admin)
+                </button>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border bg-muted text-xs font-mono font-semibold text-foreground">
+                <span>COMMUNITY</span>
+                <span className="text-3xs font-sans text-muted-foreground">(Thảo luận cộng đồng)</span>
+              </div>
+            )}
           </div>
         </div>
 

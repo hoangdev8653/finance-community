@@ -54,9 +54,9 @@ describe('CategoriesDirectoryView Component', () => {
 
     render(<CategoriesDirectoryView />);
 
-    expect(screen.getByText('Categories & Sectors')).toBeInTheDocument();
-    expect(screen.getByText('Community Research & Analysis Sectors')).toBeInTheDocument();
-    expect(screen.getByText('Educational Curriculums & Series Tracks')).toBeInTheDocument();
+    expect(screen.getByText(/Danh mục Tri thức & Khóa học/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Phân mục Nghiên cứu & Phân tích Thị trường/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Giáo trình & Chuỗi bài Đào tạo Chuyên sâu/i })).toBeInTheDocument();
 
     expect(screen.getByText('Equity Valuation')).toBeInTheDocument();
     expect(screen.getByText('Macro Strategy')).toBeInTheDocument();
@@ -88,6 +88,6 @@ describe('CategoriesDirectoryView Component', () => {
 
     render(<CategoriesDirectoryView />);
 
-    expect(screen.getByText('No categories found')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 4, name: /Chưa có danh mục nào/i })).toBeInTheDocument();
   });
 });

@@ -1,21 +1,25 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { ChevronDown } from 'lucide-react';
+import { Flame } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Breadcrumb } from '@/components/navigation/Breadcrumb';
-import { HeroSection } from '@/components/content/HeroSection';
+import { DailyNewsStrip } from '@/components/content/DailyNewsStrip';
+import { EditorialHeroGrid } from '@/components/content/EditorialHeroGrid';
+import { ScopeNavigationTabs, ScopeFilter } from '@/components/content/ScopeNavigationTabs';
 import { CategoryFilterBar } from '@/components/content/CategoryFilterBar';
-import { TagFilterBar } from '@/components/content/TagFilterBar';
 import { FeedSorter, FeedSortOption } from '@/components/content/FeedSorter';
 import { FeedList } from '@/components/content/FeedList';
+import { FeaturedSeriesWidget } from '@/components/content/FeaturedSeriesWidget';
 import { TrendingTagsWidget } from '@/components/content/TrendingTagsWidget';
 import { TopContributorsWidget } from '@/components/content/TopContributorsWidget';
 import { EditorialStandardsWidget } from '@/components/content/EditorialStandardsWidget';
 import { LoadingState } from '@/components/feedback/LoadingState';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 function HomePageContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,7 +29,12 @@ function HomePageContent() {
   const currentSortParam = searchParams.get('sort');
   const currentSort: FeedSortOption = currentSortParam === 'recent' ? 'recent' : 'latest';
   const currentTypeParam = searchParams.get('type');
-  const currentType = currentTypeParam === 'SERIES' ? 'SERIES' : currentTypeParam === 'COMMUNITY' ? 'COMMUNITY' : undefined;
+  const currentType = currentTypeParam === 'SERIES' ? 'SERIES' : undefined;
+
+  // Local state for scope filter tab
+  const [currentScope, setCurrentScope] = useState<ScopeFilter>(
+    currentType === 'SERIES' ? 'SERIES' : 'ALL'
+  );
 
   const updateFilters = (params: Record<string, string | undefined>) => {
     const nextParams = new URLSearchParams(searchParams.toString());
@@ -37,6 +46,19 @@ function HomePageContent() {
       }
     });
     router.push(`${pathname}?${nextParams.toString()}`);
+  };
+
+  const handleSelectScope = (scope: ScopeFilter) => {
+    setCurrentScope(scope);
+    if (scope === 'SERIES') {
+      updateFilters({ type: 'SERIES', category: undefined, tag: undefined });
+    } else if (scope === 'DOMESTIC') {
+      updateFilters({ type: undefined, tag: 'corporate-finance' });
+    } else if (scope === 'GLOBAL') {
+      updateFilters({ type: undefined, tag: 'macroeconomics' });
+    } else {
+      updateFilters({ type: undefined, category: undefined, tag: undefined });
+    }
   };
 
   const handleSelectCategory = (categoryId?: string) => {
@@ -52,6 +74,7 @@ function HomePageContent() {
   };
 
   const handleResetFilters = () => {
+    setCurrentScope('ALL');
     router.push(pathname);
   };
 
@@ -59,6 +82,7 @@ function HomePageContent() {
 
   const rightSidebar = (
     <div className="space-y-6">
+      <FeaturedSeriesWidget />
       <TrendingTagsWidget />
       <TopContributorsWidget />
       <EditorialStandardsWidget />
@@ -67,46 +91,20 @@ function HomePageContent() {
 
   return (
     <AppShell showRightSidebar={true} rightSidebar={rightSidebar}>
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Breadcrumb Navigation */}
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: currentType === 'SERIES' ? 'Educational Series' : 'Editorial Feed' },
+            { label: t('navigation.home'), href: '/' },
+            { label: currentType === 'SERIES' ? t('navigation.series') : t('navigation.feedsAndDiscover') },
           ]}
         />
 
-        {/* Hero Section Banner */}
-        <HeroSection />
+        {/* Daily Financial Pulse & Dispatches Strip with Controls */}
+        <DailyNewsStrip />
 
-        {/* Category Filter Pills */}
-        <CategoryFilterBar
-          selectedCategoryId={currentCategory}
-          onSelectCategory={handleSelectCategory}
-        />
-
-        {/* Tag Filter Bar */}
-        <TagFilterBar
-          selectedTagId={currentTag}
-          onSelectTag={handleSelectTag}
-        />
-
-        {/* Feed Controls: Header label & Sort */}
-        <div className="flex items-center justify-between gap-4 pt-1">
-          <div className="flex items-center gap-2 text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
-            <span>
-              {currentCategory || currentTag
-                ? 'Filtered Articles'
-                : 'Curated Articles & Insights'}
-            </span>
-            <ChevronDown className="h-4.5 w-4.5 text-slate-600 dark:text-slate-400" />
-          </div>
-
-          <FeedSorter
-            currentSort={currentSort}
-            onSortChange={handleSortChange}
-          />
-        </div>
+        {/* Editorial Lead Story & Today's Latest Wire Grid */}
+        <EditorialHeroGrid />
 
         {/* Feed List Stream */}
         <FeedList
@@ -122,11 +120,12 @@ function HomePageContent() {
 }
 
 export default function HomePage() {
+  const { t } = useTranslation();
   return (
     <Suspense
       fallback={
         <div className="py-20">
-          <LoadingState message="Loading curated financial insights..." />
+          <LoadingState message={t('common.loading')} />
         </div>
       }
     >

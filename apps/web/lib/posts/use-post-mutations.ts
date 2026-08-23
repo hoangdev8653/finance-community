@@ -39,3 +39,14 @@ export function useDeletePost(postId: string) {
     },
   });
 }
+
+export function useDeletePostFromAdmin() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (postId: string) => postsService.deletePost(postId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['moderation-posts'] });
+    },
+  });
+}

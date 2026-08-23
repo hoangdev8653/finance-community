@@ -43,8 +43,13 @@ export function LoginForm() {
       await login(data);
       router.push(targetRedirect);
     } catch (err: any) {
-      if (err.statusCode === 401 || err.code === 'INVALID_CREDENTIALS') {
-        setErrorMessage('Invalid email or password credentials.');
+      if (err.code === 'SOCIAL_ACCOUNT_NO_PASSWORD') {
+        setErrorMessage(
+          err.message ||
+            'Tài khoản này được liên kết qua Google. Vui lòng bấm nút "Tiếp tục sử dụng dịch vụ bằng Google" bên dưới để đăng nhập.'
+        );
+      } else if (err.statusCode === 401 || err.code === 'INVALID_CREDENTIALS') {
+        setErrorMessage(err.message || 'Invalid email or password credentials.');
       } else {
         setErrorMessage(
           typeof err.message === 'string'
@@ -64,7 +69,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-md mx-auto space-y-6">
       <div className="space-y-2 text-center">
-        <h1 className="font-serif text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
           Sign in to your account
         </h1>
         <p className="text-sm text-muted-foreground">

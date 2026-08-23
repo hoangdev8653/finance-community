@@ -5,12 +5,12 @@ import { Header } from '@/components/navigation/Header';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 
 describe('Header Component', () => {
-  it('renders brand title Finance Pulse', () => {
+  it('renders brand logo link with Finance Pulse label', () => {
     render(
       <AuthProvider>
         <Header />
       </AuthProvider>
     );
-    expect(screen.getByText('Finance Pulse')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Finance Pulse/i })).toBeInTheDocument();
   });
 });

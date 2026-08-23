@@ -6,7 +6,7 @@ export const auditLogsTable = pgTable('audit_logs', {
   actorId: uuid('actor_id').references(() => usersTable.id, { onDelete: 'set null' }),
   action: varchar('action', { length: 100 }).notNull(),
   entityType: varchar('entity_type', { length: 50 }).notNull(),
-  entityId: uuid('entity_id'),
+  entityId: varchar('entity_id', { length: 100 }),
   metadata: jsonb('metadata'),
   ipAddress: varchar('ip_address', { length: 45 }),
   reason: text('reason'),

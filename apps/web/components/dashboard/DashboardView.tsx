@@ -76,27 +76,28 @@ export function DashboardView() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-6">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs font-mono text-primary font-medium">
-            <LayoutDashboard className="h-4 w-4" />
-            <span className="uppercase tracking-widest">Creator Workspace</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-300 dark:border-slate-800 pb-6">
+        <div className="space-y-2">
+          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800 px-3 py-1 rounded-md font-mono">
+            <LayoutDashboard className="h-3.5 w-3.5" />
+            <span>Không gian Nhà sáng tạo</span>
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-            Research & Portfolio Dashboard
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
+            Bảng điều khiển & Quản lý Nghiên cứu
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl">
-            Manage your financial publications, track reader engagement, and draft in-depth valuation models.
+          <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
+            Quản lý các ấn phẩm tài chính của bạn, theo dõi lượng tương tác độc giả và tạo các bài phân tích chuyên sâu.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="primary" size="sm" asChild>
-            <Link href="/posts/create" className="inline-flex items-center gap-1.5 shadow-xs">
-              <PenSquare className="h-4 w-4" />
-              <span>New Analysis</span>
-            </Link>
-          </Button>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/posts/create"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-950 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 px-5 py-3 text-sm font-bold text-white transition-all shadow-sm"
+          >
+            <PenSquare className="h-4.5 w-4.5" />
+            <span>Viết bài phân tích mới</span>
+          </Link>
         </div>
       </div>
 

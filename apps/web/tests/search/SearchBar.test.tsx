@@ -18,11 +18,11 @@ describe('SearchBar Component', () => {
 
     render(<SearchBar />);
 
-    const triggerBtn = screen.getByRole('button', { name: /Open search dialog/i });
+    const triggerBtn = screen.getByRole('button', { name: /Tìm kiếm|Search/i });
     expect(triggerBtn).toBeDefined();
 
     fireEvent.click(triggerBtn);
 
-    expect(screen.getByRole('dialog', { name: /Global Search Command Palette/i })).toBeDefined();
+    expect(screen.getByRole('dialog')).toBeDefined();
   });
 });

@@ -28,8 +28,8 @@ describe('TagsDirectoryView Component', () => {
 
     render(<TagsDirectoryView />);
 
-    expect(screen.getByText('Market Tags & Research Topics')).toBeInTheDocument();
-    expect(screen.getByText('Popular Market Tags')).toBeInTheDocument();
+    expect(screen.getByText(/Chủ đề & Từ khóa/i)).toBeInTheDocument();
+    expect(screen.getByText(/Chủ đề Nổi bật & Phổ biến/i)).toBeInTheDocument();
 
     // Alphabetical headers
     expect(screen.getByText('M')).toBeInTheDocument();

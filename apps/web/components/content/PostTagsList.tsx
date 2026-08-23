@@ -7,10 +7,15 @@ interface PostTagsListProps {
   tags: PostTagItem[];
 }
 
+const VISIBLE_POST_TAG_COUNT = 4;
+
 export function PostTagsList({ tags }: PostTagsListProps) {
   if (!tags || tags.length === 0) {
     return null;
   }
+
+  const visibleTags = tags.slice(0, VISIBLE_POST_TAG_COUNT);
+  const hiddenTagCount = tags.length - visibleTags.length;
 
   return (
     <div className="pt-6 border-t border-border mt-10">
@@ -20,7 +25,7 @@ export function PostTagsList({ tags }: PostTagsListProps) {
           Topics:
         </span>
 
-        {tags.map((tag) => (
+        {visibleTags.map((tag) => (
           <Link
             key={tag.id}
             href={`/?tag=${encodeURIComponent(tag.id)}`}
@@ -29,6 +34,12 @@ export function PostTagsList({ tags }: PostTagsListProps) {
             #{tag.name}
           </Link>
         ))}
+
+        {hiddenTagCount > 0 && (
+          <span className="text-xs font-mono text-muted-foreground">
+            +{hiddenTagCount} more
+          </span>
+        )}
       </div>
     </div>
   );

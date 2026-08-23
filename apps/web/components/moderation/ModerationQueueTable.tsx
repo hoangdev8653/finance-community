@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useModerationQueue } from '@/lib/moderation/use-moderation';
 import { ReportItem, ReportStatus } from '@/types/moderation';
 import { ExecuteActionDialog } from './ExecuteActionDialog';
+import { AdminPagination } from '@/components/admin/AdminPagination';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import {
@@ -31,7 +32,7 @@ export function ModerationQueueTable() {
   });
 
   const reports = data?.data || [];
-  const meta = data?.meta;
+  const meta = data?.meta ?? { page: 1, limit: 10, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
 
   const handleStatusTab = (status: string) => {
     setSelectedStatus(status);
@@ -52,6 +53,13 @@ export function ModerationQueueTable() {
         return 'outline';
     }
   };
+
+  const getStatusLabel = (status: ReportStatus) => ({
+    OPEN: 'Mở',
+    REVIEWING: 'Đang xem xét',
+    RESOLVED: 'Đã xử lý',
+    DISMISSED: 'Đã bỏ qua',
+  })[status] ?? status;
 
   const getTargetIcon = (report: ReportItem) => {
     if (report.reportedPostId) {
@@ -80,11 +88,11 @@ export function ModerationQueueTable() {
         <div className="flex items-center gap-2">
           <ShieldAlert className="h-6 w-6 text-primary" aria-hidden="true" />
           <div>
-            <h2 className="font-serif text-xl font-bold text-foreground">
-              Moderation Queue
+            <h2 className="font-heading text-xl font-bold text-foreground">
+              Hàng đợi báo cáo
             </h2>
             <p className="text-xs text-muted-foreground font-mono">
-              {meta ? `${meta.totalItems} total reports logged` : 'Loading queue...'}
+              {meta ? `${meta.totalItems} báo cáo trong hệ thống` : 'Đang tải hàng đợi...'}
             </p>
           </div>
         </div>
@@ -96,13 +104,13 @@ export function ModerationQueueTable() {
               key={status}
               type="button"
               onClick={() => handleStatusTab(status)}
-              className={`px-3 py-1.5 text-2xs font-mono rounded-md transition-colors ${
+              className={`px-3 py-1.5 text-xs font-mono rounded-md transition-colors ${
                 selectedStatus === status
                   ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
               }`}
             >
-              {status}
+              {{ OPEN: 'Mở', REVIEWING: 'Đang xem xét', RESOLVED: 'Đã xử lý', DISMISSED: 'Đã bỏ qua', ALL: 'Tất cả' }[status]}
             </button>
           ))}
         </div>
@@ -128,10 +136,10 @@ export function ModerationQueueTable() {
         >
           <AlertCircle className="h-8 w-8 text-danger" aria-hidden="true" />
           <p className="text-sm font-medium text-foreground">
-            Failed to load moderation queue.
+            Không thể tải hàng đợi báo cáo.
           </p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
-            Retry
+            Thử lại
           </Button>
         </div>
       )}
@@ -141,11 +149,11 @@ export function ModerationQueueTable() {
         <div className="flex flex-col items-center justify-center p-12 rounded-lg border border-dashed border-border bg-surface text-center space-y-3">
           <CheckCircle2 className="h-10 w-10 text-success/70" aria-hidden="true" />
           <div className="space-y-1">
-            <h3 className="font-serif text-base font-bold text-foreground">
-              Queue is Clear
+            <h3 className="font-heading text-base font-bold text-foreground">
+              Hàng đợi đang trống
             </h3>
             <p className="text-xs text-muted-foreground">
-              No reports found matching status filter "{selectedStatus}".
+              Không có báo cáo phù hợp với bộ lọc “{selectedStatus}”.
             </p>
           </div>
         </div>
@@ -158,12 +166,12 @@ export function ModerationQueueTable() {
             <table className="w-full text-left text-xs">
               <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-3xs">
                 <tr>
-                  <th className="py-3 px-4">Target</th>
-                  <th className="py-3 px-4">Reason / Description</th>
-                  <th className="py-3 px-4">Reporter</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Reported At</th>
-                  <th className="py-3 px-4 text-right">Action</th>
+                  <th className="py-3 px-4">Đối tượng</th>
+                  <th className="py-3 px-4">Lý do / Mô tả</th>
+                  <th className="py-3 px-4">Người báo cáo</th>
+                  <th className="py-3 px-4">Trạng thái</th>
+                  <th className="py-3 px-4">Thời gian</th>
+                  <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -180,7 +188,7 @@ export function ModerationQueueTable() {
                         <div className="flex items-center gap-1.5">
                           {getTargetIcon(report)}
                           <span className="font-semibold text-foreground">{target.type}</span>
-                          <span className="text-muted-foreground text-2xs">
+                          <span className="text-muted-foreground text-xs">
                             #{target.id.slice(0, 8)}
                           </span>
                         </div>
@@ -190,24 +198,24 @@ export function ModerationQueueTable() {
                         <div className="space-y-0.5">
                           <div className="font-medium text-foreground">{report.reason}</div>
                           {report.description && (
-                            <div className="text-2xs text-muted-foreground truncate">
+                            <div className="text-xs text-muted-foreground truncate">
                               "{report.description}"
                             </div>
                           )}
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground text-2xs">
+                      <td className="py-3.5 px-4 font-mono text-muted-foreground text-xs">
                         {report.reporterId ? `#${report.reporterId.slice(0, 8)}` : 'Anonymous'}
                       </td>
 
                       <td className="py-3.5 px-4">
                         <Badge variant={getStatusBadgeVariant(report.status)} className="text-3xs font-mono">
-                          {report.status}
+                          {getStatusLabel(report.status)}
                         </Badge>
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono text-2xs text-muted-foreground">
+                      <td className="py-3.5 px-4 font-mono text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           <span>{formattedDate}</span>
@@ -221,7 +229,7 @@ export function ModerationQueueTable() {
                           onClick={() => setSelectedReport(report)}
                           className="text-xs h-7 px-2.5 font-mono"
                         >
-                          Review
+                          Xem xét
                         </Button>
                       </td>
                     </tr>
@@ -251,24 +259,24 @@ export function ModerationQueueTable() {
                     <div className="flex items-center gap-1.5 font-mono text-xs font-semibold text-foreground">
                       {getTargetIcon(report)}
                       <span>{target.type}</span>
-                      <span className="text-muted-foreground text-2xs font-normal">
+                      <span className="text-muted-foreground text-xs font-normal">
                         #{target.id.slice(0, 8)}
                       </span>
                     </div>
 
                     <Badge variant={getStatusBadgeVariant(report.status)} className="text-3xs font-mono">
-                      {report.status}
+                      {getStatusLabel(report.status)}
                     </Badge>
                   </div>
 
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-foreground">{report.reason}</p>
                     {report.description && (
-                      <p className="text-2xs text-muted-foreground italic">"{report.description}"</p>
+                      <p className="text-xs text-muted-foreground italic">"{report.description}"</p>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/60 text-2xs text-muted-foreground font-mono">
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/60 text-xs text-muted-foreground font-mono">
                     <span>{formattedDate}</span>
                     <Button
                       variant="outline"
@@ -285,7 +293,8 @@ export function ModerationQueueTable() {
           </div>
 
           {/* Pagination Bar */}
-          {meta && meta.totalPages > 1 && (
+          {meta && <AdminPagination meta={meta} itemLabel="items" onPageChange={setCurrentPage} />}
+          {meta && meta.totalPages > 1 && false && (
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-border text-xs font-mono text-muted-foreground">
               <div>
                 Page {meta.page} of {meta.totalPages} ({meta.totalItems} items)

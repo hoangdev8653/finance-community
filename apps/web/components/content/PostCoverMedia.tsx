@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { PostDetailResponse } from '@/types/content';
+import { resolveMediaUrl } from '@/lib/utils/media';
 
 interface PostCoverMediaProps {
   post: PostDetailResponse;
@@ -22,14 +23,16 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
     coverMedia = post.media[0];
   }
 
-  if (!coverMedia || !coverMedia.secureUrl) {
+  const resolvedUrl = coverMedia?.secureUrl || (post.coverMediaId ? resolveMediaUrl(post.coverMediaId) : null);
+
+  if (!resolvedUrl) {
     return null;
   }
 
   return (
     <div className="relative w-full overflow-hidden rounded-xl border border-border bg-muted my-6 aspect-video sm:aspect-21/9 shadow-sm">
       <Image
-        src={coverMedia.secureUrl}
+        src={resolvedUrl}
         alt={post.title}
         fill
         priority={priority}

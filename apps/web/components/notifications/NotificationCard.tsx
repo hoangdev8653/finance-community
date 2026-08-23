@@ -96,7 +96,7 @@ export function NotificationCard({
           </p>
         )}
 
-        <p className="text-2xs text-muted-foreground font-mono pt-1">
+        <p className="text-xs text-muted-foreground font-mono pt-1">
           {formattedDate}
         </p>
       </div>

@@ -23,6 +23,9 @@ import { PermissionGuard } from '../../auth/guards/permission.guard';
 import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
+import { QueryAdminUsersDto } from '../dto/query-admin-users.dto';
+
+import { Public } from '../../auth/decorators/public.decorator';
 
 @ApiTags('Admin')
 @Controller()
@@ -32,7 +35,26 @@ export class AdminController {
     private readonly jitService: JitProvisioningService,
   ) {}
 
+  @Get('admin/overview')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get live admin dashboard overview metrics' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getOverview() {
+    return this.adminService.getOverview();
+  }
+
+  @Get('admin/users')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'List users for admin governance' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getUsers(@Query() query: QueryAdminUsersDto) {
+    return this.adminService.getUsers(query.page, query.limit, query.search, query.status);
+  }
+
   // PUBLIC ENDPOINT: Feature Flag Map for UI client rendering
+  @Public()
   @Get('feature-flags')
   @ApiTags('Feature Flags')
   @ApiOperation({ summary: 'Get active public feature flags map for UI client rendering' })

@@ -1,22 +1,21 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
+import { Lexend, Source_Sans_3, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { ToastProvider } from '@/components/ui/Toast';
-import { Header } from '@/components/navigation/Header';
-import { MobileNavigation } from '@/components/navigation/MobileNavigation';
+import { SiteChrome } from '@/components/layout/SiteChrome';
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
+const lexend = Lexend({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-heading',
+  weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-serif',
-  weight: ['400', '500', '600', '700', '800'],
-  style: ['normal', 'italic'],
+const sourceSans = Source_Sans_3({
+  subsets: ['latin', 'vietnamese'],
+  variable: '--font-sans',
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -63,16 +62,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning className={`${inter.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
+    <html lang="vi" suppressHydrationWarning className={`${sourceSans.variable} ${lexend.variable} ${jetbrainsMono.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>
           <ToastProvider>
-            <Header />
-            <div className="flex-1">
-              {children}
-            </div>
-            <MobileNavigation />
+            <SiteChrome>{children}</SiteChrome>
           </ToastProvider>
         </Providers>
       </body>

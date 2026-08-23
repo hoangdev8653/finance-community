@@ -59,7 +59,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       <div className="flex items-center justify-between">
         <h2
           id="comments-heading"
-          className="font-serif text-2xl font-bold text-foreground flex items-center gap-2"
+          className="font-heading text-2xl font-bold text-foreground flex items-center gap-2"
         >
           <MessageSquare className="h-5 w-5 text-primary" aria-hidden="true" />
           <span>Discussion ({totalItems})</span>
