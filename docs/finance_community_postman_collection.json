@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "78a6c7c6-6e68-4419-b86a-16b7c80dc827",
     "name": "Finance Community API",
-    "description": "Clean, human-readable Postman collection for the Finance Community Platform (NestJS v1).",
+    "description": "Comprehensive Postman collection for the Finance Community Platform (NestJS v11 & PostgreSQL). Covers 100% of available REST endpoints.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -106,7 +106,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"displayName\": \"Hoang Investment Specialist\",\n  \"bio\": \"Chuyên gia phân tích thị trường & định giá doanh nghiệp.\",\n  \"avatarUrl\": \"https://res.cloudinary.com/demo/avatar.png\",\n  \"websiteUrl\": \"https://financepulse.community\"\n}"
+              "raw": "{\n  \"displayName\": \"Hoang Investment Specialist\",\n  \"bio\": \"Chuyên gia phân tích thị trường & định giá doanh nghiệp.\",\n  \"avatarMediaId\": null\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/users/me/profile",
@@ -140,16 +140,52 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&sort=LATEST&contentType=COMMUNITY",
+              "raw": "{{baseUrl}}/api/v1/posts?page=1&limit=10&sortBy=publishedAt&order=DESC&contentType=COMMUNITY",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "posts"],
               "query": [
                 { "key": "page", "value": "1" },
                 { "key": "limit", "value": "10" },
-                { "key": "sort", "value": "LATEST" },
-                { "key": "contentType", "value": "COMMUNITY" },
+                { "key": "sortBy", "value": "publishedAt" },
+                { "key": "order", "value": "DESC" },
+                { "key": "contentType", "value": "COMMUNITY", "description": "COMMUNITY | NEWS | SERIES" },
+                { "key": "sourceType", "value": "USER", "disabled": true, "description": "AI_CURATED | EDITORIAL | USER" },
                 { "key": "categoryId", "value": "", "disabled": true },
-                { "key": "tagId", "value": "", "disabled": true }
+                { "key": "tagId", "value": "", "disabled": true },
+                { "key": "authorId", "value": "", "disabled": true },
+                { "key": "status", "value": "PUBLISHED", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Following Feed",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/following?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "following"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bookmarked Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/bookmarks?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "bookmarks"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
               ]
             }
           }
@@ -174,7 +210,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Phân tích định giá cổ phiếu Ngân hàng VCB 2026\",\n  \"content\": \"Nội dung phân tích tài chính chuyên sâu với các mô hình định giá...\",\n  \"excerpt\": \"Tóm tắt tiềm năng tăng trưởng và định giá P/B của VCB.\",\n  \"contentType\": \"COMMUNITY\",\n  \"categoryId\": \"CAT_UUID_HERE\",\n  \"tagIds\": [\"TAG_UUID_1\"],\n  \"status\": \"PUBLISHED\",\n  \"coverImageUrl\": \"https://res.cloudinary.com/demo/vcb.jpg\"\n}"
+              "raw": "{\n  \"title\": \"Phân tích định giá cổ phiếu Ngân hàng VCB 2026\",\n  \"contentType\": \"COMMUNITY\",\n  \"body\": \"Nội dung phân tích tài chính chuyên sâu với các mô hình định giá...\",\n  \"categoryId\": null,\n  \"tags\": [\"dinh-gia\", \"ngan-hang\"],\n  \"coverMediaId\": null,\n  \"status\": \"PUBLISHED\",\n  \"metaTitle\": \"Định giá cổ phiếu VCB\",\n  \"metaDescription\": \"Tóm tắt tiềm năng tăng trưởng và định giá P/B của VCB.\",\n  \"sourceType\": \"USER\",\n  \"sourceUrl\": null,\n  \"sourceName\": null\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts",
@@ -190,7 +226,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Cập nhật mới phân tích VCB\",\n  \"content\": \"Nội dung mới cập nhật...\"\n}"
+              "raw": "{\n  \"title\": \"Cập nhật mới phân tích VCB 2026\",\n  \"body\": \"Nội dung phân tích đã được cập nhật số liệu mới nhất...\",\n  \"status\": \"PUBLISHED\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE",
@@ -210,6 +246,30 @@
               "path": ["api", "v1", "posts", "POST_UUID_HERE"]
             }
           }
+        },
+        {
+          "name": "Bookmark Post",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "bookmarks"]
+            }
+          }
+        },
+        {
+          "name": "Remove Bookmark from Post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/bookmarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "bookmarks"]
+            }
+          }
         }
       ]
     },
@@ -223,9 +283,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/categories",
+              "raw": "{{baseUrl}}/api/v1/categories?scope=COMMUNITY",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "categories"]
+              "path": ["api", "v1", "categories"],
+              "query": [
+                { "key": "scope", "value": "COMMUNITY", "description": "COMMUNITY | NEWS | SERIES" }
+              ]
             }
           }
         },
@@ -249,7 +312,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Định giá doanh nghiệp\",\n  \"slug\": \"dinh-gia-doanh-nghiep\",\n  \"description\": \"Chuyên mục phân tích định giá DCF, P/E, P/B\",\n  \"icon\": \"Calculator\"\n}"
+              "raw": "{\n  \"name\": \"Định giá doanh nghiệp\",\n  \"slug\": \"dinh-gia-doanh-nghiep\",\n  \"scope\": \"COMMUNITY\",\n  \"description\": \"Chuyên mục phân tích định giá DCF, P/E, P/B\",\n  \"sortOrder\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/categories",
@@ -259,15 +322,47 @@
           }
         },
         {
-          "name": "List All Tags",
+          "name": "Update Category (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Định giá & Phân tích\",\n  \"description\": \"Chuyên mục cập nhật mô hình định giá\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/CAT_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "CAT_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories/CAT_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "categories", "CAT_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Search & List Tags",
           "request": {
             "auth": { "type": "noauth" },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/tags",
+              "raw": "{{baseUrl}}/api/v1/tags?search=fpt&limit=20",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "tags"]
+              "path": ["api", "v1", "tags"],
+              "query": [
+                { "key": "search", "value": "fpt" },
+                { "key": "limit", "value": "20" }
+              ]
             }
           }
         },
@@ -299,6 +394,34 @@
               "path": ["api", "v1", "tags"]
             }
           }
+        },
+        {
+          "name": "Update Tag",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"VN30 Index\",\n  \"description\": \"Top 30 cổ phiếu dẫn dắt thị trường\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/TAG_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "TAG_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Tag",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/tags/TAG_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "tags", "TAG_UUID_HERE"]
+            }
+          }
         }
       ]
     },
@@ -312,9 +435,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/series",
+              "raw": "{{baseUrl}}/api/v1/series?page=1&limit=10",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "series"]
+              "path": ["api", "v1", "series"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
             }
           }
         },
@@ -325,9 +452,26 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/series/nhap-mon-dinh-gia-co-phieu",
+              "raw": "{{baseUrl}}/api/v1/series/nhap-mon-dinh-gia-co-phieu?page=1&limit=20",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "series", "nhap-mon-dinh-gia-co-phieu"]
+              "path": ["api", "v1", "series", "nhap-mon-dinh-gia-co-phieu"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Series Navigation for Post",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/series/posts/POST_UUID_HERE/navigation",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "series", "posts", "POST_UUID_HERE", "navigation"]
             }
           }
         }
@@ -356,7 +500,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Góc nhìn phân tích rất hay và thực tế!\",\n  \"parentId\": null\n}"
+              "raw": "{\n  \"body\": \"Góc nhìn phân tích rất hay và thực tế!\",\n  \"parentId\": null\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/comments",
@@ -372,7 +516,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Nội dung bình luận đã chỉnh sửa...\"\n}"
+              "raw": "{\n  \"body\": \"Nội dung bình luận đã chỉnh sửa...\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/comments/COMMENT_UUID_HERE",
@@ -399,7 +543,7 @@
       "name": "7. Reactions & Social",
       "item": [
         {
-          "name": "Toggle Post Like",
+          "name": "Toggle Post Reaction",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -415,7 +559,19 @@
           }
         },
         {
-          "name": "Toggle Comment Like",
+          "name": "Remove Post Reaction",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/reactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "posts", "POST_UUID_HERE", "reactions"]
+            }
+          }
+        },
+        {
+          "name": "Toggle Comment Reaction",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -431,15 +587,14 @@
           }
         },
         {
-          "name": "Get Post Reactions Summary",
+          "name": "Remove Comment Reaction",
           "request": {
-            "auth": { "type": "noauth" },
-            "method": "GET",
+            "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE/reactions",
+              "raw": "{{baseUrl}}/api/v1/comments/COMMENT_UUID_HERE/reactions",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "posts", "POST_UUID_HERE", "reactions"]
+              "path": ["api", "v1", "comments", "COMMENT_UUID_HERE", "reactions"]
             }
           }
         },
@@ -515,6 +670,18 @@
           }
         },
         {
+          "name": "Get Unread Notifications Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "notifications", "unread-count"]
+            }
+          }
+        },
+        {
           "name": "Mark Single Notification as Read",
           "request": {
             "method": "PATCH",
@@ -529,7 +696,7 @@
         {
           "name": "Mark All Notifications as Read",
           "request": {
-            "method": "POST",
+            "method": "PATCH",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/notifications/read-all",
@@ -560,13 +727,13 @@
           }
         },
         {
-          "name": "Save Uploaded Media Record",
+          "name": "Register Uploaded Media Record",
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"url\": \"https://res.cloudinary.com/demo/image.png\",\n  \"publicId\": \"posts/image123\",\n  \"format\": \"png\",\n  \"bytes\": 102400,\n  \"resourceType\": \"image\"\n}"
+              "raw": "{\n  \"cloudinaryPublicId\": \"posts/image123\",\n  \"secureUrl\": \"https://res.cloudinary.com/demo/image.png\",\n  \"resourceType\": \"image\",\n  \"format\": \"png\",\n  \"width\": 1200,\n  \"height\": 630,\n  \"fileSize\": 102400,\n  \"purpose\": \"content\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/media",
@@ -578,7 +745,20 @@
         {
           "name": "Get Media Details",
           "request": {
+            "auth": { "type": "noauth" },
             "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/media/MEDIA_UUID_HERE",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "media", "MEDIA_UUID_HERE"]
+            }
+          }
+        },
+        {
+          "name": "Delete Media",
+          "request": {
+            "method": "DELETE",
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/media/MEDIA_UUID_HERE",
@@ -609,14 +789,19 @@
           }
         },
         {
-          "name": "Get Moderation Reports Queue",
+          "name": "Get Moderation Queue",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/moderation/reports",
+              "raw": "{{baseUrl}}/api/v1/moderation/queue?status=PENDING&page=1&limit=20",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "moderation", "reports"]
+              "path": ["api", "v1", "moderation", "queue"],
+              "query": [
+                { "key": "status", "value": "PENDING" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
             }
           }
         },
@@ -627,12 +812,28 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"reportId\": \"REPORT_UUID_HERE\",\n  \"action\": \"DISMISS\",\n  \"notes\": \"Đã xem xét và không vi phạm tiêu chuẩn cộng đồng.\"\n}"
+              "raw": "{\n  \"targetType\": \"POST\",\n  \"targetId\": \"POST_UUID_HERE\",\n  \"action\": \"DISMISS\",\n  \"reason\": \"Đã xem xét và không vi phạm tiêu chuẩn cộng đồng.\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/moderation/actions",
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "moderation", "actions"]
+            }
+          }
+        },
+        {
+          "name": "Get Moderation History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/moderation/history?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "moderation", "history"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
             }
           }
         }
@@ -642,7 +843,85 @@
       "name": "11. Admin & Governance",
       "item": [
         {
-          "name": "Get Public Feature Flags",
+          "name": "Get Live Admin Overview Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "overview"]
+            }
+          }
+        },
+        {
+          "name": "List Users for Admin Governance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users?page=1&limit=20&search=hoang",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" },
+                { "key": "search", "value": "hoang" },
+                { "key": "status", "value": "ACTIVE", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Change User Account Status",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SUSPENDED\",\n  \"reason\": \"Vi phạm quy định nhiều lần.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/users/USER_UUID_HERE/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "users", "USER_UUID_HERE", "status"]
+            }
+          }
+        },
+        {
+          "name": "Assign RBAC Role to User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USER_UUID_HERE\",\n  \"roleName\": \"MODERATOR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/roles/assign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "roles", "assign"]
+            }
+          }
+        },
+        {
+          "name": "Revoke RBAC Role from User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"USER_UUID_HERE\",\n  \"roleName\": \"MODERATOR\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/roles/revoke",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "roles", "revoke"]
+            }
+          }
+        },
+        {
+          "name": "Get Public Feature Flags Map",
           "request": {
             "auth": { "type": "noauth" },
             "method": "GET",
@@ -695,18 +974,34 @@
           }
         },
         {
-          "name": "Change User Status (Active/Suspended/Banned)",
+          "name": "Update System Setting",
           "request": {
             "method": "PATCH",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"status\": \"SUSPENDED\",\n  \"reason\": \"Vi phạm quy định nhiều lần.\"\n}"
+              "raw": "{\n  \"value\": \"Finance Pulse & Community Platform\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/admin/users/USER_UUID_HERE/status",
+              "raw": "{{baseUrl}}/api/v1/admin/settings/PLATFORM_NAME",
               "host": ["{{baseUrl}}"],
-              "path": ["api", "v1", "admin", "users", "USER_UUID_HERE", "status"]
+              "path": ["api", "v1", "admin", "settings", "PLATFORM_NAME"]
+            }
+          }
+        },
+        {
+          "name": "Query Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/admin/audit-logs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
             }
           }
         }
