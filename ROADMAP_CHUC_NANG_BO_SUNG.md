@@ -5,7 +5,7 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 
 ---
 
-## 📌 TỔNG HỢP 8 TÍNH NĂNG TRỌNG TÂM
+## 📌 TỔNG HỢP 9 TÍNH NĂNG TRỌNG TÂM
 
 ```text
 ┌────┬───────────────────────────────────────────┬─────────────┬───────────────────────────┐
@@ -20,6 +20,7 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 │ 6  │ 🔵 Đăng Nhập 1-Chạm Bằng Facebook         │ ⭐ Trung    │ Auth Module (FE + BE)     │
 │ 7  │ 🗂️ Phân Định Rạch Ròi 3 Loại Nội Dung    │ 💎 Đã xong  │ Backend Schema & UI Feed  │
 │ 8  │ 🎓 AI Soạn Thảo Series Bài Học Tài Chính  │ ⭐ Trung    │ AI Studio & Series Engine │
+│ 9  │ 🖼️ Hệ Thống Tối Ưu, Nén & Caching Ảnh     │ ⚡ Cao      │ Frontend Upload + Cloud   │
 └────┴───────────────────────────────────────────┴─────────────┴───────────────────────────┘
 ```
 
@@ -107,21 +108,31 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 
 ---
 
+### 9. 🖼️ Hệ Thống Tối Ưu, Nén & Caching Ảnh (Image Compression & CDN Pipeline)
+* **Mục tiêu**: Giảm 95% dung lượng ảnh tải lên, tăng tốc độ upload gấp 20 lần và tiết kiệm tối đa chi phí Cloudinary.
+* **Cơ chế hoạt động**:
+  * **Nén ảnh tại Trình duyệt (Client-side Compression)**: Dùng `browser-image-compression` tự động nén ảnh từ 5MB–10MB xuống còn **~150KB - 300KB WebP** trước khi upload lên Cloudinary.
+  * **Chống Upload trùng lặp (Image Hash Caching)**: Tính mã băm `SHA-256` của file ảnh, nếu đã có trong DB thì tái sử dụng `secureUrl` cũ ngay lập tức (0 giây) mà không tốn credit Cloudinary.
+  * **Tối ưu phân phối CDN**: Gắn tự động tham số `f_auto,q_auto,w_800` của Cloudinary khi hiển thị trên các thẻ `PostCard`, `EditorialHeroGrid`.
+
+---
+
 ## 📅 LỘ TRÌNH THỰC HIỆN ĐỀ XUẤT
 
 ```mermaid
 gantt
     title Lộ Trình Phát Triển Nền Tảng Finance Pulse
     dateFormat  YYYY-MM-DD
-    section Giai Đoạn 1 (Trải Nghiệm UX)
+    section Giai Đoạn 1 (Trải Nghiệm UX & Tools)
     Thanh Market Ticker Real-time       :active, p1, 2026-08-25, 1d
     Mục Lục Trượt Mượt (TOC)            :p2, after p1, 1d
     Bảng Tính Lãi Kép & Định Giá        :p3, after p2, 1d
+    Hệ Thống Nén & Caching Ảnh          :p4, after p3, 1d
     section Giai Đoạn 2 (Tương Tác & Auth)
-    Khung Đăng Nhanh Mạng Xã Hội        :p4, after p3, 1d
-    Đăng Nhập 1-Chạm Facebook           :p5, after p4, 1d
+    Khung Đăng Nhanh Mạng Xã Hội        :p5, after p4, 1d
+    Đăng Nhập 1-Chạm Facebook           :p6, after p5, 1d
     section Giai Đoạn 3 (Tự Động Hóa AI)
-    Module Tòa Soạn News Curation (BE)  :p6, after p5, 2d
-    Trang Quản Trị /admin/news-curation :p7, after p6, 1d
-    AI Soạn Thảo Series Bài Học         :p8, after p7, 1d
+    Module Tòa Soạn News Curation (BE)  :p7, after p6, 2d
+    Trang Quản Trị /admin/news-curation :p8, after p7, 1d
+    AI Soạn Thảo Series Bài Học         :p9, after p8, 1d
 ```
