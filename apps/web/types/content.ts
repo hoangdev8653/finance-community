@@ -1,7 +1,7 @@
 export interface PostEntity {
   id: string;
   authorId: string;
-  contentType: 'SERIES' | 'COMMUNITY';
+  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   title: string;
   slug: string;
   body: string | null;
@@ -14,6 +14,9 @@ export interface PostEntity {
   moderationReason?: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
+  sourceUrl?: string | null;
+  sourceName?: string | null;
   viewCount: number;
   publishedAt: string | null;
   createdAt: string;
@@ -23,7 +26,7 @@ export interface PostEntity {
 
 export interface CreatePostDto {
   title: string;
-  contentType: 'SERIES' | 'COMMUNITY';
+  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   body?: string;
   categoryId?: string;
   coverMediaId?: string;
@@ -32,6 +35,9 @@ export interface CreatePostDto {
   status: 'DRAFT' | 'PUBLISHED';
   metaTitle?: string;
   metaDescription?: string;
+  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
+  sourceUrl?: string;
+  sourceName?: string;
 }
 
 export interface UpdatePostDto {
@@ -44,6 +50,9 @@ export interface UpdatePostDto {
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
   metaTitle?: string;
   metaDescription?: string;
+  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
+  sourceUrl?: string;
+  sourceName?: string;
 }
 
 export interface PostMediaItem {

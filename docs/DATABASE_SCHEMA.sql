@@ -215,6 +215,9 @@ CREATE TABLE posts (
     status              VARCHAR(20)     NOT NULL DEFAULT 'DRAFT',
     meta_title          VARCHAR(70)     NULL,
     meta_description    VARCHAR(160)    NULL,
+    source_type         VARCHAR(20)     NOT NULL DEFAULT 'USER',
+    source_url          VARCHAR(500)    NULL,
+    source_name         VARCHAR(100)    NULL,
     view_count          INTEGER         NOT NULL DEFAULT 0,
     published_at        TIMESTAMPTZ     NULL,
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
@@ -237,7 +240,10 @@ CREATE TABLE posts (
         UNIQUE (content_type, slug),
 
     CONSTRAINT chk_posts_content_type
-        CHECK (content_type IN ('SERIES', 'COMMUNITY')),
+        CHECK (content_type IN ('SERIES', 'COMMUNITY', 'NEWS')),
+
+    CONSTRAINT chk_posts_source_type
+        CHECK (source_type IN ('AI_CURATED', 'EDITORIAL', 'USER')),
 
     CONSTRAINT chk_posts_status
         CHECK (status IN ('DRAFT', 'PUBLISHED', 'ARCHIVED', 'HIDDEN')),

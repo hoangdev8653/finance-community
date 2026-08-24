@@ -4,8 +4,13 @@ import { Type } from 'class-transformer';
 export class QueryPostsDto {
   @IsOptional()
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY'])
-  contentType?: 'SERIES' | 'COMMUNITY';
+  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
+  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['AI_CURATED', 'EDITORIAL', 'USER'])
+  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
 
   @IsOptional()
   @IsUUID()

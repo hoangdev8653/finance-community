@@ -13,6 +13,7 @@ export type NewPostEntity = typeof postsTable.$inferInsert;
 
 export interface PostFeedFilterOptions {
   contentType?: string;
+  sourceType?: string;
   categoryId?: string;
   tagId?: string;
   authorId?: string;
@@ -86,6 +87,9 @@ export class PostsRepository {
 
     if (options.contentType) {
       conditions.push(eq(postsTable.contentType, options.contentType));
+    }
+    if (options.sourceType) {
+      conditions.push(eq(postsTable.sourceType, options.sourceType));
     }
     if (options.categoryId) {
       conditions.push(eq(postsTable.categoryId, options.categoryId));

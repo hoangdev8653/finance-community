@@ -177,6 +177,9 @@ export class PostsService {
             status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
+            sourceType: dto.sourceType || 'USER',
+            sourceUrl: dto.sourceUrl || null,
+            sourceName: dto.sourceName || null,
             publishedAt,
           });
         };
@@ -203,6 +206,9 @@ export class PostsService {
             status: dto.status,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
+            sourceType: dto.sourceType || 'USER',
+            sourceUrl: dto.sourceUrl || null,
+            sourceName: dto.sourceName || null,
             publishedAt,
           });
         } else {
@@ -482,6 +488,7 @@ export class PostsService {
   async findFeedPaginated(query: QueryPostsDto): Promise<any> {
     const options = {
       contentType: query.contentType,
+      sourceType: query.sourceType,
       categoryId: query.categoryId,
       tagId: query.tagId,
       authorId: query.authorId,
