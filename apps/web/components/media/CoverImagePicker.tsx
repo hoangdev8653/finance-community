@@ -9,18 +9,26 @@ import { ImageIcon } from 'lucide-react';
 interface CoverImagePickerProps {
   value: string | null;
   onChange: (mediaId: string | null) => void;
+  fallbackPreviewUrl?: string | null;
   className?: string;
+}
+
+const previewRegistry = new Map<string, string>();
+
+export function registerCoverPreview(mediaId: string | null | undefined, url: string | null | undefined) {
+  if (mediaId && url) previewRegistry.set(mediaId, url);
 }
 
 export function CoverImagePicker({
   value,
   onChange,
+  fallbackPreviewUrl = null,
   className = '',
 }: CoverImagePickerProps) {
   const { data: existingMedia } = useMediaDetail(value);
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
 
-  const previewUrl = localPreviewUrl || existingMedia?.secureUrl || null;
+  const previewUrl = localPreviewUrl || existingMedia?.secureUrl || fallbackPreviewUrl || (value ? previewRegistry.get(value) : null) || null;
 
   const handleUploadSuccess = (media: MediaItem) => {
     setLocalPreviewUrl(media.secureUrl);

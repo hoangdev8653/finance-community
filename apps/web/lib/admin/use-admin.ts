@@ -15,6 +15,7 @@ import {
   PaginatedAuditLogsResponse,
   CreateCategoryDto,
   UpdateCategoryDto,
+  PaginatedAdminUsersResponse,
 } from '../../types/admin';
 import { CategoryEntity } from '../../types/content';
 
@@ -104,8 +105,22 @@ export function useChangeUserStatus() {
 
   return useMutation<any, Error, { id: string; dto: UpdateUserStatusDto }>({
     mutationFn: ({ id, dto }) => adminService.changeUserStatus(id, dto),
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
+      queryClient.setQueriesData<PaginatedAdminUsersResponse>(
+        { queryKey: ['admin', 'users'] },
+        (current) => current
+          ? {
+              ...current,
+              data: current.data.map((item) =>
+                item.id === variables.id
+                  ? { ...item, status: variables.dto.status }
+                  : item,
+              ),
+            }
+          : current,
+      );
       queryClient.invalidateQueries({ queryKey: queryKeys.users.me });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'auditLogs'] });
     },
   });

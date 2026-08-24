@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
-import { count, eq, isNull, ilike, and, desc } from 'drizzle-orm';
+import { count, eq, isNull, ilike, and, or, desc } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { UsersRepository } from '../../../database/repositories/users.repository';
@@ -45,7 +45,15 @@ export class AdminService {
 
   async getUsers(page = 1, limit = 20, search?: string, status?: string) {
     const filters = [] as any[];
-    if (search?.trim()) filters.push(ilike(usersTable.email, `%${search.trim()}%`));
+    if (search?.trim()) {
+      const term = `%${search.trim()}%`;
+      filters.push(or(
+        ilike(usersTable.email, term),
+        ilike(usersTable.id, term),
+        ilike(profilesTable.username, term),
+        ilike(profilesTable.displayName, term),
+      ));
+    }
     if (status) filters.push(eq(usersTable.status, status));
     const where = filters.length ? and(...filters) : undefined;
     const [rows, total] = await Promise.all([

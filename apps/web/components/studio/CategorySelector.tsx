@@ -6,7 +6,7 @@ import { postsService } from '@/lib/posts/posts-service';
 
 interface CategorySelectorProps {
   value?: string;
-  scope: 'SERIES' | 'COMMUNITY';
+  scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
   onChange: (categoryId: string) => void;
 }
 

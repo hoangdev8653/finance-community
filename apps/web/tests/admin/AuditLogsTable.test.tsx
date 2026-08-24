@@ -16,6 +16,7 @@ describe('AuditLogsTable Component', () => {
       {
         id: 'audit-log-1',
         actor_id: 'admin-uuid-1',
+        actor_email: 'admin@example.com',
         action: 'ROLE_ASSIGN',
         entity_type: 'users',
         entity_id: 'target-user-1',
@@ -47,7 +48,7 @@ describe('AuditLogsTable Component', () => {
 
     expect(screen.getByText('Security & Governance Audit Logs')).toBeDefined();
     expect(screen.getAllByText('ROLE_ASSIGN').length).toBeGreaterThan(0);
-    expect(screen.getAllByText(/#admin-uu/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('System').length).toBeGreaterThan(0);
 
     // Open metadata modal
     const jsonBtn = screen.getByRole('button', { name: /JSON/i });

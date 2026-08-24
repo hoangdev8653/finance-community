@@ -9,7 +9,7 @@ import { CoverImagePicker } from '@/components/media/CoverImagePicker';
 
 interface PostEditorProps {
   title: string;
-  contentType: 'SERIES' | 'COMMUNITY';
+  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   categoryId?: string;
   tags: string[];
   coverMediaId?: string | null;
@@ -18,7 +18,7 @@ interface PostEditorProps {
   metaDescription: string;
   isAdmin?: boolean;
   onTitleChange: (val: string) => void;
-  onContentTypeChange: (val: 'SERIES' | 'COMMUNITY') => void;
+  onContentTypeChange: (val: 'SERIES' | 'COMMUNITY' | 'NEWS') => void;
   onCategoryChange: (val: string) => void;
   onTagsChange: (val: string[]) => void;
   onCoverMediaChange?: (val: string | null) => void;
@@ -130,6 +130,17 @@ export function PostEditor({
                   }`}
                 >
                   SERIES (Admin)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onContentTypeChange('NEWS')}
+                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
+                    contentType === 'NEWS'
+                      ? 'bg-amber-500 text-slate-950 font-bold shadow-2xs'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  NEWS (Admin)
                 </button>
               </div>
             ) : (

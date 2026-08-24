@@ -217,3 +217,55 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* Keep Admin Posts content-type filters aligned with the badges in the table. */
+select[aria-label="Lọc loại nội dung"] option,
+select[aria-label="Lọc trạng thái bài"] option,
+select[aria-label="Lọc trạng thái kiểm duyệt"] option { font-weight: 700; }
+select[aria-label="Lọc loại nội dung"] option[value="COMMUNITY"] { color: #cbd5e1; }
+select[aria-label="Lọc loại nội dung"] option[value="SERIES"] { color: #2dd4bf; }
+select[aria-label="Lọc loại nội dung"] option[value="NEWS"] { color: #fbbf24; }
+select[aria-label="Lọc trạng thái bài"] option[value="PUBLISHED"] { color: #34d399; }
+select[aria-label="Lọc trạng thái bài"] option[value="HIDDEN"] { color: #f87171; }
+select[aria-label="Lọc trạng thái bài"] option[value="DRAFT"],
+select[aria-label="Lọc trạng thái bài"] option[value="ARCHIVED"] { color: #94a3b8; }
+select[aria-label="Lọc trạng thái kiểm duyệt"] option[value="APPROVED"] { color: #34d399; }
+select[aria-label="Lọc trạng thái kiểm duyệt"] option[value="BANNED"] { color: #f87171; }
+select[aria-label="Lọc trạng thái kiểm duyệt"] option[value="UNREVIEWED"] { color: #fbbf24; }
+/* Admin post filters also support compact select markup without aria selectors. */
+select option[value="COMMUNITY"] { color: #cbd5e1; font-weight: 700; }
+select option[value="SERIES"] { color: #2dd4bf; font-weight: 700; }
+select option[value="NEWS"] { color: #fbbf24; font-weight: 700; }
+select option[value="PUBLISHED"],
+select option[value="APPROVED"],
+select option[value="ACTIVE"] { color: #34d399; font-weight: 700; }
+select option[value="HIDDEN"],
+select option[value="BANNED"] { color: #f87171; font-weight: 700; }
+select option[value="DRAFT"],
+select option[value="ARCHIVED"],
+select option[value="DEACTIVATED"] { color: #94a3b8; font-weight: 700; }
+select option[value="UNREVIEWED"],
+select option[value="SUSPENDED"] { color: #fbbf24; font-weight: 700; }
+select[aria-label="Status filter"] option[value="ACTIVE"] { color: #34d399; font-weight: 700; }
+select[aria-label="Status filter"] option[value="SUSPENDED"] { color: #fbbf24; font-weight: 700; }
+select[aria-label="Status filter"] option[value="BANNED"] { color: #f87171; font-weight: 700; }
+select[aria-label="Status filter"] option[value="DEACTIVATED"] { color: #94a3b8; font-weight: 700; }
+select[aria-label="Role filter"] option[value="MODERATOR"] { color: #a78bfa; font-weight: 700; }
+select[aria-label="Role filter"] option[value="ADMIN"] { color: #fb923c; font-weight: 700; }
+select[aria-label="Role filter"] option[value="SUPER_ADMIN"] { color: #f87171; font-weight: 700; }
+select[aria-label="Login method filter"] option[value="GOOGLE"] { color: #60a5fa; font-weight: 700; }
+select[aria-label="Login method filter"] option[value="LOCAL"] { color: #cbd5e1; font-weight: 700; }
+select[aria-label="Lọc theo trạng thái"] option { font-weight: 700; }
+select[aria-label="Lọc theo trạng thái"] option[value="ACTIVE"] { color: #34d399; }
+select[aria-label="Lọc theo trạng thái"] option[value="SUSPENDED"] { color: #fbbf24; }
+select[aria-label="Lọc theo trạng thái"] option[value="BANNED"] { color: #f87171; }
+select[aria-label="Lọc theo trạng thái"] option[value="DEACTIVATED"] { color: #94a3b8; }
+
+/* Preserve cover aspect ratio in Admin Posts preview/edit modals. */
+.fixed[role="dialog"] img {
+  width: 100%;
+  height: auto;
+  max-height: 20rem;
+  object-fit: contain;
+  background: hsl(var(--background) / 0.6);
+}

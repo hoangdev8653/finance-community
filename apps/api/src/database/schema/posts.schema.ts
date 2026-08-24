@@ -23,7 +23,7 @@ export const postsTable = pgTable(
     moderationReason: text('moderation_reason'),
     metaTitle: varchar('meta_title', { length: 70 }),
     metaDescription: varchar('meta_description', { length: 160 }),
-    sourceType: varchar('source_type', { length: 20 }).default('USER'),
+    sourceType: varchar('source_type', { length: 20 }).notNull().default('USER'),
     sourceUrl: varchar('source_url', { length: 500 }),
     sourceName: varchar('source_name', { length: 100 }),
     viewCount: integer('view_count').notNull().default(0),

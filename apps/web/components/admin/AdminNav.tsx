@@ -22,7 +22,7 @@ export function AdminNav() {
   const [collapsed, setCollapsed] = useState(false);
   const isActive = (href: string, exact?: boolean) => exact ? pathname === href : pathname.startsWith(href);
 
-  return <aside className={`group/sidebar fixed left-0 top-[72px] z-30 hidden h-[calc(100vh-72px)] shrink-0 flex-col overflow-hidden border-r border-border bg-background/95 py-5 transition-[width] duration-200 lg:flex ${collapsed ? 'w-[76px] px-3' : 'w-[248px] px-4'}`}>
+  return <aside className={`group/sidebar fixed left-0 top-16 z-30 hidden h-[calc(100vh-4rem)] shrink-0 flex-col overflow-hidden border-r border-border bg-background/95 py-5 transition-[width] duration-200 lg:flex ${collapsed ? 'w-[76px] px-3' : 'w-[248px] px-4'}`}>
     <div className={`mb-6 flex items-center ${collapsed ? 'justify-center' : 'justify-between px-2'}`}>
       {!collapsed && <div><p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">Finance Pulse</p><p className="mt-1 text-xs text-muted-foreground">Admin workspace</p></div>}
       <button type="button" onClick={() => setCollapsed(value => !value)} className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-surface hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={collapsed ? 'Expand admin sidebar' : 'Collapse admin sidebar'}>{collapsed ? <ChevronRight className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}</button>

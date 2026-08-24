@@ -11,11 +11,13 @@ vi.mock('@/lib/admin/use-admin');
 describe('CategoryManagementView Component', () => {
   const mockCreateCategory = vi.fn();
   const mockUpdateCategory = vi.fn();
+  const mockDeleteCategory = vi.fn();
 
   beforeEach(() => {
     vi.restoreAllMocks();
     mockCreateCategory.mockReset();
     mockUpdateCategory.mockReset();
+    mockDeleteCategory.mockReset();
 
     vi.mocked(adminHooks.useCreateCategory).mockReturnValue({
       mutateAsync: mockCreateCategory,
@@ -26,6 +28,7 @@ describe('CategoryManagementView Component', () => {
       mutateAsync: mockUpdateCategory,
       isPending: false,
     } as any);
+    vi.mocked(adminHooks.useDeleteCategory).mockReturnValue({ mutateAsync: mockDeleteCategory, isPending: false } as any);
   });
 
   it('renders categories list and creates new category', async () => {
@@ -62,19 +65,19 @@ describe('CategoryManagementView Component', () => {
 
     render(<CategoryManagementView />);
 
-    expect(screen.getByText('Content Category Management')).toBeDefined();
+    expect(screen.getByText('Quản lý danh mục nội dung')).toBeDefined();
     expect(screen.getByText('Equity Derivatives')).toBeDefined();
 
     // Open New Category Modal
-    const newBtn = screen.getByRole('button', { name: /New Category/i });
+    const newBtn = screen.getByRole('button', { name: /Thêm danh mục/i });
     fireEvent.click(newBtn);
 
-    expect(screen.getByRole('heading', { name: 'Create Content Category' })).toBeDefined();
+    expect(screen.getByRole('heading', { name: /Thêm danh mục/i })).toBeDefined();
 
-    const nameInput = screen.getByLabelText(/Category Name/i);
+    const nameInput = screen.getByLabelText(/Tên danh mục/i);
     fireEvent.change(nameInput, { target: { value: 'Commodities & FX' } });
 
-    const submitBtn = screen.getByRole('button', { name: 'Create Category' });
+    const submitBtn = screen.getByRole('button', { name: /Tạo danh mục/i });
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
@@ -85,7 +88,7 @@ describe('CategoryManagementView Component', () => {
         description: undefined,
         sortOrder: 0,
       });
-      expect(screen.getByText(/Category 'Commodities & FX' created successfully/i)).toBeDefined();
+      expect(screen.getByText("Category 'Commodities & FX' created successfully.")).toBeDefined();
     });
   });
 });

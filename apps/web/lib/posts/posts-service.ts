@@ -71,7 +71,7 @@ export const postsService = {
    * Get content categories directly from Backend API
    * GET /api/v1/categories
    */
-  async getCategories(scope?: 'SERIES' | 'COMMUNITY'): Promise<CategoryEntity[]> {
+  async getCategories(scope?: 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
     const response = await apiClient.get<CategoryEntity[]>('/categories', {
       params: scope ? { scope } : undefined,
     });

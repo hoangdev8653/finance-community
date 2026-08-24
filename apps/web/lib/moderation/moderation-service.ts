@@ -58,7 +58,11 @@ export const moderationService = {
     page?: number;
     limit?: number;
   }) {
-    const response = await apiClient.get('/moderation/posts', { params });
+    const response = await apiClient.get('/moderation/posts', {
+      params: params
+        ? { status: params.moderationStatus, page: params.page, limit: params.limit }
+        : undefined,
+    });
     return response.data;
   },
 

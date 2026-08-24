@@ -7,7 +7,7 @@ import { Calendar, User } from 'lucide-react';
 
 interface PostPreviewProps {
   title: string;
-  contentType: 'SERIES' | 'COMMUNITY';
+  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   categoryName?: string;
   tags: string[];
   body: string;

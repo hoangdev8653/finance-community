@@ -11,7 +11,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/moderation';
 
   return <>
-    <Header />
+    {!isAdmin && <Header />}
     <div className="flex-1">{children}</div>
     {!isAdmin && <Footer />}
     {!isAdmin && <MobileNavigation />}

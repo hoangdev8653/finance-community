@@ -38,6 +38,9 @@ describe('PostsService (Content Engine)', () => {
         status: data.status,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
+        sourceType: data.sourceType || 'USER',
+        sourceUrl: data.sourceUrl || null,
+        sourceName: data.sourceName || null,
         viewCount: 0,
         publishedAt: data.publishedAt || null,
         createdAt: new Date(),
@@ -56,6 +59,9 @@ describe('PostsService (Content Engine)', () => {
         status: data.status || 'DRAFT',
         metaTitle: null,
         metaDescription: null,
+        sourceType: data.sourceType || 'USER',
+        sourceUrl: data.sourceUrl || null,
+        sourceName: data.sourceName || null,
         viewCount: 0,
         publishedAt: data.publishedAt !== undefined ? data.publishedAt : null,
         createdAt: new Date(),
@@ -205,6 +211,45 @@ describe('PostsService (Content Engine)', () => {
     expect(post.body).not.toContain('<script>');
     expect(post.body).toContain('<h1>Title</h1>');
     expect(post.body).toContain('<p>Safe content</p>');
+  });
+
+  it('34.4a: should create and update NEWS source metadata', async () => {
+    const created = await postsService.createPost('author-uuid-1', {
+      title: 'Market News',
+      contentType: 'NEWS',
+      body: 'News body',
+      status: 'DRAFT',
+      sourceType: 'EDITORIAL',
+      sourceUrl: 'https://example.com/market-news',
+      sourceName: 'Example Finance',
+    });
+
+    expect(mockPostsRepo.createTx).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        contentType: 'NEWS',
+        sourceType: 'EDITORIAL',
+        sourceUrl: 'https://example.com/market-news',
+        sourceName: 'Example Finance',
+      }),
+    );
+    expect(created.contentType).toBe('NEWS');
+
+    await postsService.updatePost('author-uuid-1', ['MEMBER'], 'post-uuid-1', {
+      sourceType: 'AI_CURATED',
+      sourceUrl: 'https://example.com/updated-news',
+      sourceName: 'Updated Source',
+    });
+
+    expect(mockPostsRepo.updateTx).toHaveBeenCalledWith(
+      expect.anything(),
+      'post-uuid-1',
+      expect.objectContaining({
+        sourceType: 'AI_CURATED',
+        sourceUrl: 'https://example.com/updated-news',
+        sourceName: 'Updated Source',
+      }),
+    );
   });
 
   it('34.5: should generate unique slug and handle collision with SAVEPOINT fallback', async () => {

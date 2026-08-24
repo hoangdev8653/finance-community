@@ -1,0 +1,17 @@
+'use client';
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
+import { PostEditor } from '@/components/studio/PostEditor';
+import { useCreatePost } from '@/lib/posts/use-post-mutations';
+import { useToast } from '@/lib/toast/ToastContext';
+import { Button } from '../ui/Button';
+
+interface Props { open: boolean; onClose: () => void; onCreated: () => Promise<unknown> | void; }
+export function AdminCreatePostModal({ open, onClose, onCreated }: Props) {
+  const createMutation = useCreatePost(); const { toast } = useToast();
+  const [title, setTitle] = useState(''); const [contentType, setContentType] = useState<'SERIES'|'COMMUNITY'|'NEWS'>('COMMUNITY'); const [categoryId, setCategoryId] = useState<string>(); const [tags, setTags] = useState<string[]>([]); const [coverMediaId, setCoverMediaId] = useState<string|null>(null); const [body, setBody] = useState(''); const [metaTitle, setMetaTitle] = useState(''); const [metaDescription, setMetaDescription] = useState('');
+  if (!open) return null;
+  const close = () => { if (createMutation.isPending) return; onClose(); };
+  const submit = async (status: 'DRAFT'|'PUBLISHED') => { if (!title.trim()) { toast.error('Vui lòng nhập tiêu đề bài viết.'); return; } try { await createMutation.mutateAsync({ title: title.trim(), contentType, categoryId, tags: tags.length ? tags : undefined, coverMediaId: coverMediaId || undefined, body: body.trim() || undefined, status, metaTitle: metaTitle.trim() || undefined, metaDescription: metaDescription.trim() || undefined }); toast.success(status === 'DRAFT' ? 'Đã lưu bản nháp.' : 'Đã tạo và xuất bản bài viết.'); await onCreated(); onClose(); } catch (error: any) { toast.error(error?.response?.data?.message || 'Không thể tạo bài viết.'); } };
+  return <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4" role="dialog" aria-modal="true" aria-labelledby="admin-create-post-title"><div className="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl"><div className="flex shrink-0 items-center justify-between border-b border-border p-5"><div><h2 id="admin-create-post-title" className="font-heading text-lg font-bold">Thêm bài viết</h2><p className="mt-1 text-xs text-muted-foreground">Tạo bài viết với đầy đủ trường như trang tạo bài viết.</p></div><button type="button" onClick={close} aria-label="Đóng modal" className="rounded-md p-2 hover:bg-muted"><X className="h-5 w-5" /></button></div><div className="min-h-0 overflow-y-auto p-5"><PostEditor title={title} contentType={contentType} categoryId={categoryId} tags={tags} coverMediaId={coverMediaId} body={body} metaTitle={metaTitle} metaDescription={metaDescription} isAdmin onTitleChange={setTitle} onContentTypeChange={v => { setContentType(v); setCategoryId(undefined); }} onCategoryChange={setCategoryId} onTagsChange={setTags} onCoverMediaChange={setCoverMediaId} onBodyChange={setBody} onMetaTitleChange={setMetaTitle} onMetaDescriptionChange={setMetaDescription} /></div><div className="flex shrink-0 justify-end gap-2 border-t border-border p-4"><Button type="button" variant="outline" onClick={close} disabled={createMutation.isPending}>Hủy</Button><Button type="button" variant="outline" onClick={() => void submit('DRAFT')} isLoading={createMutation.isPending}>Lưu nháp</Button><Button type="button" onClick={() => void submit('PUBLISHED')} isLoading={createMutation.isPending}>Xuất bản</Button></div></div></div>;
+}

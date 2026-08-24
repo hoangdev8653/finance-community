@@ -23,7 +23,7 @@ export function PostStudio({ initialPost }: PostStudioProps) {
 
   // Form State
   const [title, setTitle] = useState(initialPost?.title || '');
-  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY'>(
+  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>(
     initialPost?.contentType || 'COMMUNITY'
   );
   const [categoryId, setCategoryId] = useState<string | undefined>(

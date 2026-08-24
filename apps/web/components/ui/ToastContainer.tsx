@@ -41,14 +41,14 @@ export function ToastContainer() {
     <div
       aria-live="polite"
       aria-atomic="true"
-      className="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+      className="fixed right-5 top-5 z-50 flex w-[min(92vw,24rem)] flex-col gap-2.5 pointer-events-none"
     >
       {toasts.map((t) => (
         <div
           key={t.id}
           className={`pointer-events-auto flex items-center justify-between gap-3 p-3.5 rounded-xl border ${getToastBorder(
             t.type
-          )} bg-surface shadow-lg text-xs font-sans text-foreground backdrop-blur-xs animate-in slide-in-from-bottom-2 fade-in duration-200`}
+          )} bg-surface shadow-lg text-xs font-sans text-foreground backdrop-blur-xs animate-in slide-in-from-right-5 fade-in duration-300`}
         >
           <div className="flex items-center gap-2.5">
             {getToastIcon(t.type)}

@@ -78,7 +78,7 @@ export interface CategoryEntity {
   name: string;
   slug: string;
   description: string | null;
-  scope: 'SERIES' | 'COMMUNITY';
+  scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
   icon: string | null;
   sortOrder: number;
   createdAt: string;

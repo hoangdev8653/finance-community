@@ -110,7 +110,7 @@ export interface PaginatedAuditLogsResponse {
 export interface CreateCategoryDto {
   name: string;
   slug: string;
-  scope: 'SERIES' | 'COMMUNITY';
+  scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
   description?: string;
   sortOrder?: number;
 }

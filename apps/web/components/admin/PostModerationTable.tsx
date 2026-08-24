@@ -254,6 +254,7 @@ export function PostModerationTable() {
                             variant="primary"
                             onClick={() => handleApprove(post)}
                             disabled={approveMutation.isPending}
+                            isLoading={approveMutation.isPending}
                             className="inline-flex items-center gap-1 text-xs h-7 px-2.5"
                           >
                             <ShieldCheck className="h-3.5 w-3.5" />
@@ -329,7 +330,7 @@ export function PostModerationTable() {
           <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
             <div className="flex items-start justify-between gap-4 border-b border-border p-5 sm:p-6"><div className="min-w-0"><p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">Post preview · {selectedPost.contentType}</p><h2 id="post-preview-title" className="text-xl font-bold text-foreground sm:text-2xl">{selectedPost.title}</h2><p className="mt-2 text-xs text-muted-foreground">{selectedPost.author?.username || selectedPost.authorId} · {selectedPost.publishedAt || selectedPost.createdAt ? new Date(selectedPost.publishedAt || selectedPost.createdAt).toLocaleString('vi-VN') : '—'}</p></div><button type="button" onClick={() => setSelectedPost(null)} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="Đóng xem trước bài viết"><X className="h-5 w-5" /></button></div>
             <div className="overflow-y-auto p-5 sm:p-8"><PostContentRenderer body={(selectedPost as ModerationPostItem & { body?: string | null }).body ?? null} /></div>
-            <div className="flex items-center justify-end gap-2 border-t border-border bg-background/40 p-4"><Button variant="outline" onClick={() => setSelectedPost(null)}>Đóng</Button>{selectedPost.moderationStatus !== 'APPROVED' && <Button variant="primary" onClick={() => { void handleApprove(selectedPost); setSelectedPost(null); }} disabled={approveMutation.isPending}><ShieldCheck className="h-4 w-4" />Duyệt</Button>}{selectedPost.moderationStatus !== 'BANNED' && <Button variant="destructive" onClick={() => { setPostToBan(selectedPost); setSelectedPost(null); }} disabled={banMutation.isPending}><ShieldBan className="h-4 w-4" />Cấm</Button>}</div>
+            <div className="flex items-center justify-end gap-2 border-t border-border bg-background/40 p-4"><Button variant="outline" onClick={() => setSelectedPost(null)}>Đóng</Button>{selectedPost.moderationStatus !== 'APPROVED' && <Button variant="primary" onClick={() => { void handleApprove(selectedPost); setSelectedPost(null); }} disabled={approveMutation.isPending} isLoading={approveMutation.isPending}><ShieldCheck className="h-4 w-4" />Duyệt</Button>}{selectedPost.moderationStatus !== 'BANNED' && <Button variant="destructive" onClick={() => { setPostToBan(selectedPost); setSelectedPost(null); }} disabled={banMutation.isPending}><ShieldBan className="h-4 w-4" />Cấm</Button>}</div>
           </div>
         </div>
       )}

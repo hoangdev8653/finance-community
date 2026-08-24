@@ -340,6 +340,9 @@ export class PostsService {
       if (dto.status !== undefined) updateData.status = dto.status;
       if (dto.metaTitle !== undefined) updateData.metaTitle = dto.metaTitle || null;
       if (dto.metaDescription !== undefined) updateData.metaDescription = dto.metaDescription || null;
+      if (dto.sourceType !== undefined) updateData.sourceType = dto.sourceType;
+      if (dto.sourceUrl !== undefined) updateData.sourceUrl = dto.sourceUrl || null;
+      if (dto.sourceName !== undefined) updateData.sourceName = dto.sourceName || null;
       if (publishedAt !== undefined) updateData.publishedAt = publishedAt;
 
       const updated = await this.postsRepo.updateTx(tx, id, updateData);

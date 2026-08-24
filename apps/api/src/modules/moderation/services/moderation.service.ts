@@ -40,6 +40,7 @@ export class ModerationService {
 
     return await this.db.transaction(async (tx) => {
       const updated = await this.postsRepo.updateModerationStatusTx(tx, postId, {
+        status: 'PUBLISHED',
         moderationStatus: 'APPROVED',
         moderatedBy: moderatorId,
       });

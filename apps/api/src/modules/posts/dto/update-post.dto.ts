@@ -52,4 +52,19 @@ export class UpdatePostDto {
   @IsString()
   @MaxLength(160)
   metaDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['AI_CURATED', 'EDITORIAL', 'USER'])
+  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  sourceUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  sourceName?: string;
 }
