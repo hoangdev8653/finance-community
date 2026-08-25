@@ -4,12 +4,13 @@ import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Market Discovery & Search',
+  title: 'Tra Cứu & Khám Phá Thị Trường',
   description:
-    'Explore and discover institutional financial analyses, research notes, and market models.',
+    'Tìm kiếm và khám phá các bài phân tích tài chính, ghi chú nghiên cứu và mô hình định giá chuyên sâu.',
   noIndex: true,
   noFollow: false,
 });
+
 
 export default function SearchLayout({
   children,

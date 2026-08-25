@@ -5,13 +5,14 @@ import { ModerationQueueTable } from '@/components/moderation/ModerationQueueTab
 import { AdminNav } from '@/components/admin/AdminNav';
 
 export const metadata: Metadata = {
-  title: 'Moderation Console | Finance Pulse',
-  description: 'Community content governance and policy compliance moderation console.',
+  title: 'Bàn Kiểm Duyệt Nội Dung | Finance Pulse',
+  description: 'Hệ thống kiểm duyệt và quản trị an toàn nội dung cộng đồng Finance Pulse.',
   robots: {
     index: false,
     follow: false,
   },
 };
+
 
 export default function ModerationPage() {
   return (

@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import { ArrowLeft, TrendingUp } from 'lucide-react';
 
 export default function AuthLayout({
   children,
@@ -6,10 +8,39 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="min-h-[calc(100vh-4rem)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-surface/50">
-      <div className="w-full max-w-md bg-surface border border-border rounded-lg p-6 sm:p-8 shadow-xs">
-        {children}
-      </div>
-    </main>
+    <div className="min-h-screen w-full flex flex-col justify-between bg-slate-100 dark:bg-[#0b0f17] py-6 px-4 sm:px-6 lg:px-8">
+      {/* Top Bar with Brand & Back to Home Button */}
+      <header className="w-full max-w-5xl mx-auto flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-xs transition-transform group-hover:scale-105">
+            <TrendingUp className="h-5 w-5" />
+          </div>
+          <span className="font-heading text-lg font-extrabold tracking-tight text-foreground">
+            Finance<span className="text-primary">Pulse</span>
+          </span>
+        </Link>
+
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-lg border border-border bg-surface px-3.5 py-2 shadow-xs hover:bg-surface-elevated"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span>Về Trang chủ</span>
+        </Link>
+      </header>
+
+      {/* Main Auth Form Container */}
+      <main className="my-auto flex items-center justify-center py-6">
+        <div className="w-full max-w-md bg-surface border border-border rounded-2xl p-6 sm:p-8 shadow-card">
+          {children}
+        </div>
+      </main>
+
+      {/* Bottom Minimal Copyright */}
+      <footer className="text-center text-xs text-muted-foreground">
+        © {new Date().getFullYear()} Finance Pulse Platform. Bảo lưu mọi quyền.
+      </footer>
+    </div>
   );
 }
+

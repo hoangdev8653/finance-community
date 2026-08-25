@@ -11,23 +11,24 @@ import { PostCardSkeleton } from '@/components/content/PostCardSkeleton';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Research Archives & Financial Analyses',
+  title: 'Kho Phân Tích & Nghiên Cứu Tài Chính',
   description:
-    'Search, filter, and read through institutional macroeconomic research, equity valuation models, and educational curriculums on Finance Pulse.',
+    'Tra cứu, chọn lọc và đón đọc các bài phân tích kinh tế vĩ mô, định giá cổ phiếu và giáo trình đầu tư chuyên sâu trên Finance Pulse.',
   canonicalPath: '/posts',
 });
 
 export default function PostsPage() {
   const collectionSchema = generateCollectionPageJsonLd(
-    'Financial Research Archives',
-    'Complete repository of published community financial analyses, market insights, and educational series tracks.',
+    'Kho Nghiên Cứu Tài Chính',
+    'Kho lưu trữ toàn diện các bài phân tích tài chính cộng đồng, nhận định thị trường và chuỗi bài học chuyên ngành.',
     '/posts'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Research Archives', url: '/posts' },
+    { name: 'Trang chủ', url: '/' },
+    { name: 'Kho Phân Tích', url: '/posts' },
   ]);
+
 
   return (
     <AppShell>

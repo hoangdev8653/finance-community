@@ -3,13 +3,14 @@ import { Metadata } from 'next';
 import { AdminPostsTable } from '@/components/admin/AdminPostsTable';
 
 export const metadata: Metadata = {
-  title: 'Posts | Finance Pulse Admin',
-  description: 'Manage all posts from the admin dashboard.',
+  title: 'Quản Lý Bài Viết | Finance Pulse Admin',
+  description: 'Quản lý toàn bộ danh sách bài viết từ bảng điều khiển quản trị.',
   robots: {
     index: false,
     follow: false,
   },
 };
+
 
 export default function AdminPostsPage() {
   return <AdminPostsTable />;

@@ -5,13 +5,14 @@ import { AdminNav } from '@/components/admin/AdminNav';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export const metadata: Metadata = {
-  title: 'Admin & Governance Console | Finance Pulse',
-  description: 'Platform administration, security audit logs, and runtime governance console.',
+  title: 'Bảng Điều Khiển Quản Trị Hệ Thống | Finance Pulse Admin',
+  description: 'Quản trị nền tảng, nhật ký kiểm toán bảo mật và phân quyền tài khoản.',
   robots: {
     index: false,
     follow: false,
   },
 };
+
 
 export default function AdminLayout({
   children,

@@ -19,10 +19,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     const data = await seriesService.getBySlug(slug, { page: 1, limit: 1 });
-    const title = `${data.series.name} | Educational Series`;
+    const title = `${data.series.name} | Chuỗi Bài Học Tài Chính`;
     const description =
       data.series.description ||
-      'Structured financial research and analytical curriculum on Finance Pulse.';
+      'Chuỗi nghiên cứu tài chính và giáo trình phân tích đầu tư bài bản trên Finance Pulse.';
     const canonicalPath = `/series/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return buildPageMetadata({
-      title: 'Series Not Found',
+      title: 'Không Tìm Thấy Chuỗi Bài Học',
       noIndex: true,
     });
   }
@@ -57,13 +57,14 @@ export default async function SeriesDetailPage({ params }: PageProps) {
   // Schema.org ItemList and Breadcrumbs JSON-LD
   const itemListJsonLd = generateSeriesItemListJsonLd(seriesDetail);
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Educational Series', url: '/series' },
+    { name: 'Trang chủ', url: '/' },
+    { name: 'Chuỗi Bài Học', url: '/series' },
     {
       name: seriesDetail.series.name,
       url: `/series/${encodeURIComponent(slug)}`,
     },
   ]);
+
 
   return (
     <>

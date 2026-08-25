@@ -3,10 +3,11 @@ import { Metadata } from 'next';
 import { PostModerationTable } from '@/components/admin/PostModerationTable';
 
 export const metadata: Metadata = {
-  title: 'Post Moderation | Finance Pulse Admin',
-  description: 'Review and approve or reject submitted posts.',
+  title: 'Kiểm Duyệt Bài Viết | Finance Pulse Admin',
+  description: 'Xem xét, phê duyệt hoặc từ chối các bài viết được gửi lên hệ thống.',
   robots: { index: false, follow: false },
 };
+
 
 export default function AdminModerationPage() {
   return <PostModerationTable />;

@@ -20,10 +20,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     const profile = await usersService.getPublicProfile(username);
-    const title = `${profile.displayName || profile.username} (@${profile.username}) | Analyst Profile`;
+    const title = `${profile.displayName || profile.username} (@${profile.username}) | Hồ Sơ Nhà Phân Tích`;
     const description =
       profile.bio ||
-      'Verified financial analyst and contributor on the Finance Pulse research platform.';
+      'Hồ sơ nhà phân tích và cộng tác viên nghiên cứu tài chính trên nền tảng Finance Pulse.';
     const canonicalPath = `/profile/${encodeURIComponent(username)}`;
 
     return buildPageMetadata({
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return buildPageMetadata({
-      title: 'Analyst Profile Not Found',
+      title: 'Không Tìm Thấy Hồ Sơ Nhà Phân Tích',
       noIndex: true,
     });
   }
@@ -58,12 +58,13 @@ export default async function ProfilePage({ params }: PageProps) {
   // Schema.org ProfilePage / Person & Breadcrumbs JSON-LD
   const profileJsonLd = generateProfileJsonLd(profile);
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
+    { name: 'Trang chủ', url: '/' },
     {
       name: `@${profile.username}`,
       url: `/profile/${encodeURIComponent(username)}`,
     },
   ]);
+
 
   return (
     <AppShell>

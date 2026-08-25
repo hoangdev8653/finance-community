@@ -4,13 +4,14 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { PostStudio } from '@/components/studio/PostStudio';
 
 export const metadata: Metadata = {
-  title: 'Edit Analysis | Finance Pulse Studio',
-  description: 'Edit your published research or draft.',
+  title: 'Chỉnh Sửa Bài Viết | Finance Pulse Studio',
+  description: 'Chỉnh sửa bài nghiên cứu đã xuất bản hoặc bản nháp của bạn.',
   robots: {
     index: false,
     follow: false,
   },
 };
+
 
 export default function EditPostPage() {
   return (

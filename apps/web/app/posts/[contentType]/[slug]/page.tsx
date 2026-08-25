@@ -19,9 +19,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
 
-  if (normalizedType !== 'community' && normalizedType !== 'series') {
+  if (normalizedType !== 'community' && normalizedType !== 'series' && normalizedType !== 'news') {
     return buildPageMetadata({
-      title: 'Article Not Found',
+      title: 'Không Tìm Thấy Bài Viết',
       noIndex: true,
     });
   }
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = post.metaTitle || post.title;
     const description =
       post.metaDescription ||
-      'In-depth financial analysis, valuation models, and market intelligence on Finance Pulse.';
+      'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên Finance Pulse.';
     const canonicalPath = `/posts/${normalizedType}/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return buildPageMetadata({
-      title: 'Article Not Found',
+      title: 'Không Tìm Thấy Bài Viết',
       noIndex: true,
     });
   }
@@ -61,7 +61,7 @@ export default async function PostDetailPage({ params }: PageProps) {
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
 
-  if (normalizedType !== 'community' && normalizedType !== 'series') {
+  if (normalizedType !== 'community' && normalizedType !== 'series' && normalizedType !== 'news') {
     notFound();
   }
 
@@ -78,17 +78,31 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD
   const articleJsonLd = generateArticleJsonLd(post);
+  const sectionLabel =
+    post.contentType === 'NEWS'
+      ? 'Tin Tức Thị Trường'
+      : post.contentType === 'SERIES'
+      ? 'Chuỗi Bài Học'
+      : 'Cộng Đồng Phân Tích';
+  const sectionUrl =
+    post.contentType === 'NEWS'
+      ? '/posts?type=NEWS'
+      : post.contentType === 'SERIES'
+      ? '/series'
+      : '/posts';
+
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
+    { name: 'Trang chủ', url: '/' },
     {
-      name: post.contentType === 'SERIES' ? 'Educational Series' : 'Community Analyses',
-      url: post.contentType === 'SERIES' ? '/series' : '/',
+      name: sectionLabel,
+      url: sectionUrl,
     },
     {
       name: post.title,
       url: `/posts/${normalizedType}/${encodeURIComponent(slug)}`,
     },
   ]);
+
 
   return (
     <>

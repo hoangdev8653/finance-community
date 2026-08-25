@@ -12,9 +12,9 @@ import { AppShell } from '@/components/layout/AppShell';
 import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Educational Series & Curriculums',
+  title: 'Chuỗi Bài Học & Giáo Trình Đầu Tư',
   description:
-    'Explore curated institutional financial research curricula, valuation masterclasses, and macroeconomic tracks.',
+    'Khám phá các chuỗi bài học tài chính chọn lọc, khóa học định giá doanh nghiệp và lộ trình đầu tư từ cơ bản đến chuyên sâu trên Finance Pulse.',
   canonicalPath: '/series',
   ogType: 'website',
   twitterCard: 'summary',
@@ -30,14 +30,14 @@ export default async function SeriesPage() {
   }
 
   const collectionJsonLd = generateCollectionPageJsonLd(
-    'Educational Series & Curriculums',
-    'Explore curated institutional financial research curricula, valuation masterclasses, and macroeconomic tracks on Finance Pulse.',
+    'Chuỗi Bài Học & Giáo Trình Đầu Tư',
+    'Khám phá các chuỗi bài học tài chính chọn lọc, khóa học định giá doanh nghiệp và lộ trình đầu tư trên Finance Pulse.',
     '/series'
   );
 
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Educational Series', url: '/series' },
+    { name: 'Trang chủ', url: '/' },
+    { name: 'Chuỗi Bài Học', url: '/series' },
   ]);
 
   return (
@@ -48,10 +48,11 @@ export default async function SeriesPage() {
         {/* Page Header */}
         <PageHeader
           icon={BookOpen}
-          label="Educational Tracks"
-          title="Curated Research Series"
-          subtitle="Deep-dive, multi-part investment research curricula structured into comprehensive chapters."
+          label="Giáo trình Đào tạo"
+          title="Chuỗi Bài Phân Tích Chọn Lọc"
+          subtitle="Giáo trình nghiên cứu đầu tư chuyên sâu, được cấu trúc mạch lạc thành từng chương bài học dễ tiếp cận."
         />
+
 
         {/* Series Grid */}
         <Suspense fallback={<SeriesSkeleton variant="grid" />}>

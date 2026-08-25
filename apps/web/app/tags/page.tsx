@@ -10,23 +10,24 @@ import { TagsDirectoryView } from '@/components/tags/TagsDirectoryView';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Market Taxonomy & Financial Tags',
+  title: 'Thư Mục Thẻ Chủ Đề & Mã Cổ Phiếu',
   description:
-    'Browse all financial taxonomy tags, sector markers, and market topics cataloged across community analyses and educational series on Finance Pulse.',
+    'Tra cứu toàn bộ thẻ chủ đề tài chính, mã chứng khoán và từ khóa thị trường được phân loại trên Finance Pulse.',
   canonicalPath: '/tags',
 });
 
 export default function TagsPage() {
   const collectionSchema = generateCollectionPageJsonLd(
-    'Market Taxonomy & Research Tags',
-    'Complete catalog of market tags, asset classes, and financial topics on Finance Pulse.',
+    'Thư Mục Thẻ Chủ Đề & Mã Cổ Phiếu',
+    'Danh mục thẻ phân loại thị trường, nhóm tài sản và chủ đề tài chính trên Finance Pulse.',
     '/tags'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Market Tags', url: '/tags' },
+    { name: 'Trang chủ', url: '/' },
+    { name: 'Thẻ Chủ Đề', url: '/tags' },
   ]);
+
 
   return (
     <AppShell>

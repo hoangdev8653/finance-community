@@ -4,13 +4,14 @@ import { LoginForm } from '@/components/auth/LoginForm';
 import { LoadingState } from '@/components/feedback/LoadingState';
 
 export const metadata: Metadata = {
-  title: 'Sign In',
-  description: 'Sign in to your Finance Pulse account to access editorial research and discussions.',
+  title: 'Đăng Nhập Tài Khoản',
+  description: 'Đăng nhập tài khoản Finance Pulse để truy cập các bài nghiên cứu chuyên sâu và thảo luận cùng cộng đồng.',
   robots: {
     index: false,
     follow: false,
   },
 };
+
 
 export default function LoginPage() {
   return (

@@ -6,11 +6,12 @@ import { DashboardView } from '@/components/dashboard/DashboardView';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Analyst Dashboard',
-  description: 'Manage your financial publications, track reader engagement, and draft in-depth valuation models.',
+  title: 'Bàn Làm Việc Nhà Phân Tích',
+  description: 'Quản lý các ấn phẩm tài chính, theo dõi mức độ tương tác của độc giả và soạn thảo mô hình định giá.',
   noIndex: true,
   noFollow: true,
 });
+
 
 export default function DashboardPage() {
   return (

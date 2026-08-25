@@ -10,23 +10,24 @@ import { CategoriesDirectoryView } from '@/components/categories/CategoriesDirec
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Research Sectors & Categories',
+  title: 'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
   description:
-    'Explore financial research sectors, macroeconomic categories, and structured educational curriculums authored across Finance Pulse.',
+    'Khám phá các lĩnh vực nghiên cứu tài chính, danh mục kinh tế vĩ mô và chuỗi bài học chuyên ngành trên Finance Pulse.',
   canonicalPath: '/categories',
 });
 
 export default function CategoriesPage() {
   const collectionSchema = generateCollectionPageJsonLd(
-    'Research Categories & Sectors',
-    'Structured catalog of financial research sectors and educational curriculums on Finance Pulse.',
+    'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
+    'Danh mục phân loại có cấu trúc về các lĩnh vực nghiên cứu tài chính và chuỗi bài học trên Finance Pulse.',
     '/categories'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
-    { name: 'Home', url: '/' },
-    { name: 'Categories', url: '/categories' },
+    { name: 'Trang chủ', url: '/' },
+    { name: 'Danh Mục', url: '/categories' },
   ]);
+
 
   return (
     <AppShell>

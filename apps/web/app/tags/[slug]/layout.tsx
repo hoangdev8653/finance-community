@@ -29,8 +29,8 @@ export async function generateMetadata({
     tagName = decodedSlug;
   }
 
-  const title = `#${tagName} Analyses & Research Notes`;
-  const description = `Curated institutional publications, financial breakdown, and discussion under the #${tagName} topic on Finance Pulse.`;
+  const title = `#${tagName} — Phân Tích & Nghiên Cứu Thị Trường`;
+  const description = `Các bài viết nghiên cứu, phân tích tài chính và thảo luận chuyên sâu về chủ đề #${tagName} trên Finance Pulse.`;
   const canonicalPath = `/tags/${encodeURIComponent(slug)}`;
 
   return buildPageMetadata({
@@ -39,6 +39,7 @@ export async function generateMetadata({
     canonicalPath,
     ogType: 'website',
   });
+
 }
 
 export default function TagLayout({ children }: TagLayoutProps) {
