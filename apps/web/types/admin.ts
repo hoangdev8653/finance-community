@@ -1,10 +1,28 @@
 export type UserStatus = 'ACTIVE' | 'SUSPENDED' | 'BANNED' | 'DEACTIVATED';
 
+export interface TimeSeriesPoint {
+  date: string;
+  label: string;
+  count: number;
+}
+
 export interface AdminOverviewEntity {
   totalPosts: number;
   activeUsers: number;
   reviewQueue: number;
   openReports: number;
+  userGrowthSeries?: TimeSeriesPoint[];
+  userStatusBreakdown?: {
+    active: number;
+    suspended: number;
+    pending: number;
+  };
+  postGrowthSeries?: TimeSeriesPoint[];
+  postStatusBreakdown?: {
+    published: number;
+    draft: number;
+    unreviewed: number;
+  };
   generatedAt: string;
 }
 

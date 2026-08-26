@@ -43,15 +43,15 @@ export function getSiteUrlObject(): URL {
  * Global site identity defaults.
  */
 export const siteConfig: SiteConfig = {
-  name: 'Finance Pulse',
-  shortName: 'FinancePulse',
+  name: 'MorningView',
+  shortName: 'MorningView',
   description:
-    'Nền tảng kiến thức & cộng đồng tài chính chuyên sâu về nghiên cứu thị trường, mô hình định giá và phân tích chuyên gia.',
+    'Nền tảng tri thức & phân tích thị trường chuyên sâu về nghiên cứu vĩ mô, mô hình định giá doanh nghiệp và chuỗi bài học đầu tư.',
   get url() {
     return getSiteUrl();
   },
-  ogImage: '/images/og-default.png',
-  twitterHandle: '@financepulse',
+  ogImage: '/images/logo.png',
+  twitterHandle: '@morningview',
   locale: 'vi_VN',
 };
 

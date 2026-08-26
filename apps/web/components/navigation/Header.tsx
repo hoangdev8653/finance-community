@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
   TrendingUp,
@@ -126,17 +127,27 @@ export function Header() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md">
       <div className="max-w-[1440px] mx-auto flex h-18 items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* 1. Left: Brand Logo (Icon Only) */}
+        {/* 1. Left: Brand Logo */}
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            title="Finance Pulse"
-            aria-label="Finance Pulse"
-            className="flex items-center group"
+            title="MorningView"
+            aria-label="MorningView"
+            className="flex items-center gap-2.5 group"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950 dark:bg-teal-500 text-white dark:text-slate-950 font-bold shadow-sm ring-1 ring-slate-900/5 group-hover:scale-105 transition-transform">
-              <TrendingUp className="h-5 w-5 text-teal-400 dark:text-slate-950" />
+            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+              <Image
+                src="/images/logo.png"
+                alt="MorningView"
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain"
+                priority
+              />
             </div>
+            <span className="font-heading text-xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
+              Morning<span className="text-teal-600 dark:text-teal-400">View</span>
+            </span>
           </Link>
         </div>
 

@@ -121,4 +121,24 @@ describe('AdminService (Governance & RBAC Management)', () => {
       enable_maintenance: false,
     });
   });
+
+  it('should return aggregated overview with 7-day time series and status breakdown', async () => {
+    mockDb.select = jest.fn().mockImplementation(() => ({
+      from: jest.fn().mockImplementation(() => ({
+        where: jest.fn().mockResolvedValue([{ value: 10 }]),
+        groupBy: jest.fn().mockResolvedValue([{ status: 'ACTIVE', count: 10 }]),
+      })),
+    }));
+
+    const overview = await adminService.getOverview();
+
+    expect(overview).toHaveProperty('totalPosts');
+    expect(overview).toHaveProperty('activeUsers');
+    expect(overview).toHaveProperty('reviewQueue');
+    expect(overview).toHaveProperty('openReports');
+    expect(overview.userGrowthSeries).toHaveLength(7);
+    expect(overview.postGrowthSeries).toHaveLength(7);
+    expect(overview.userStatusBreakdown).toBeDefined();
+    expect(overview.postStatusBreakdown).toBeDefined();
+  });
 });

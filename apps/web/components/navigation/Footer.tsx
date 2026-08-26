@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowUpRight,
   BookOpen,
@@ -24,26 +25,26 @@ const marketLinks = [
     href: '/posts?tag=macroeconomics',
     label: 'Tài chính Quốc tế & Vĩ mô Fed',
     icon: Globe,
-    className: 'text-blue-500',
+    className: 'text-sky-500',
   },
   {
-    href: '/posts?tag=commodities',
-    label: 'Thị trường Vàng & Hàng hóa',
+    href: '/posts?tag=banking-nims',
+    label: 'Ngành Ngân hàng & Tín dụng',
     icon: Coins,
     className: 'text-emerald-500',
   },
   {
-    href: '/categories/valuation',
-    label: 'Mô hình Định giá DCF & P/E',
-    icon: ArrowUpRight,
-    className: 'text-slate-400',
+    href: '/series',
+    label: 'Giáo trình & Khóa học Phân tích',
+    icon: BookOpen,
+    className: 'text-indigo-500',
   },
 ];
 
 const learningLinks = [
   { href: '/series', label: 'Chuỗi bài Series', icon: BookOpen },
-  { href: '/series', label: 'Đọc hiểu Báo cáo tài chính' },
-  { href: '/series', label: 'Quản trị Dòng tiền Cá nhân' },
+  { href: '/series', label: 'Đọc hiểu BCTC' },
+  { href: '/series', label: 'Mô hình DCF & Định giá' },
   { href: '/dashboard', label: 'Không gian làm việc' },
 ];
 
@@ -60,12 +61,18 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
           <div className="space-y-3 lg:col-span-4">
             <Link href="/" className="group inline-flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white shadow-xs transition-transform group-hover:scale-105 dark:bg-emerald-500 dark:text-slate-950">
-                <TrendingUp className="h-5 w-5 text-emerald-400 dark:text-slate-950" />
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden shadow-xs transition-transform group-hover:scale-105">
+                <Image
+                  src="/images/logo.png"
+                  alt="MorningView"
+                  width={40}
+                  height={40}
+                  className="h-10 w-10 object-contain"
+                />
               </div>
               <div className="flex flex-col">
-                <span className="font-heading text-xl font-bold leading-none tracking-tight text-slate-900 transition-colors group-hover:text-emerald-600 dark:text-slate-100 dark:group-hover:text-emerald-400">
-                  Finance Pulse
+                <span className="font-heading text-xl font-bold leading-none tracking-tight text-slate-900 transition-colors group-hover:text-teal-600 dark:text-slate-100 dark:group-hover:text-teal-400">
+                  Morning<span className="text-teal-600 dark:text-teal-400">View</span>
                 </span>
                 <span className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
                   Biên tập & Phân tích thị trường

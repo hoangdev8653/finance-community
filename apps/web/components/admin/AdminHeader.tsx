@@ -22,11 +22,15 @@ export function AdminHeader() {
   return (
     <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-          <ShieldCheck className="h-5 w-5" aria-hidden="true" />
+        <div className="relative flex h-9 w-9 items-center justify-center rounded-lg overflow-hidden shrink-0">
+          <img
+            src="/images/logo.png"
+            alt="MorningView"
+            className="h-9 w-9 object-contain"
+          />
         </div>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">Finance Pulse</p>
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">MorningView</p>
           <p className="text-sm font-semibold text-foreground">Admin workspace</p>
         </div>
       </div>

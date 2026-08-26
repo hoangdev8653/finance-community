@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
-import { count, eq, isNull, ilike, and, or, desc } from 'drizzle-orm';
+import { count, eq, isNull, ilike, and, or, desc, gte } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { UsersRepository } from '../../../database/repositories/users.repository';
@@ -27,18 +27,94 @@ export class AdminService {
   ) {}
 
   async getOverview() {
-    const [posts, activeUsers, reviewQueue, openReports] = await Promise.all([
+    // Generate 7-day day buckets
+    const days: { start: Date; end: Date; dateStr: string; label: string }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().slice(0, 10);
+      const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
+      const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
+      const label = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(d);
+      days.push({ start, end, dateStr, label });
+    }
+    const sevenDaysAgo = days[0].start;
+
+    const [
+      posts,
+      activeUsers,
+      reviewQueue,
+      openReports,
+      recentUsers,
+      allUsersByStatus,
+      recentPosts,
+      publishedPosts,
+      draftPosts,
+    ] = await Promise.all([
       this.db.select({ value: count() }).from(postsTable).where(isNull(postsTable.deletedAt)),
       this.db.select({ value: count() }).from(usersTable).where(eq(usersTable.status, 'ACTIVE')),
       this.db.select({ value: count() }).from(postsTable).where(eq(postsTable.moderationStatus, 'UNREVIEWED')),
       this.db.select({ value: count() }).from(reportsTable).where(eq(reportsTable.status, 'OPEN')),
+      this.db.select({ createdAt: usersTable.createdAt }).from(usersTable).where(gte(usersTable.createdAt, sevenDaysAgo)),
+      this.db.select({ status: usersTable.status, count: count() }).from(usersTable).groupBy(usersTable.status),
+      this.db.select({ createdAt: postsTable.createdAt }).from(postsTable).where(and(isNull(postsTable.deletedAt), gte(postsTable.createdAt, sevenDaysAgo))),
+      this.db.select({ value: count() }).from(postsTable).where(and(isNull(postsTable.deletedAt), eq(postsTable.status, 'PUBLISHED'))),
+      this.db.select({ value: count() }).from(postsTable).where(and(isNull(postsTable.deletedAt), eq(postsTable.status, 'DRAFT'))),
     ]);
+
+    // Aggregate user growth series
+    const userGrowthSeries = days.map((day) => {
+      const matching = (recentUsers || []).filter((u) => {
+        const time = new Date(u.createdAt).getTime();
+        return time >= day.start.getTime() && time <= day.end.getTime();
+      });
+      return {
+        date: day.dateStr,
+        label: day.label,
+        count: matching.length,
+      };
+    });
+
+    // Aggregate post growth series
+    const postGrowthSeries = days.map((day) => {
+      const matching = (recentPosts || []).filter((p) => {
+        const time = new Date(p.createdAt).getTime();
+        return time >= day.start.getTime() && time <= day.end.getTime();
+      });
+      return {
+        date: day.dateStr,
+        label: day.label,
+        count: matching.length,
+      };
+    });
+
+    // User status breakdown
+    const userStatusBreakdown = {
+      active: 0,
+      suspended: 0,
+      pending: 0,
+    };
+    (allUsersByStatus || []).forEach((row) => {
+      const st = String(row.status || '').toUpperCase();
+      const val = Number(row.count ?? 0);
+      if (st === 'ACTIVE') userStatusBreakdown.active += val;
+      else if (st === 'SUSPENDED') userStatusBreakdown.suspended += val;
+      else userStatusBreakdown.pending += val;
+    });
 
     return {
       totalPosts: Number(posts[0]?.value ?? 0),
       activeUsers: Number(activeUsers[0]?.value ?? 0),
       reviewQueue: Number(reviewQueue[0]?.value ?? 0),
       openReports: Number(openReports[0]?.value ?? 0),
+      userGrowthSeries,
+      userStatusBreakdown,
+      postGrowthSeries,
+      postStatusBreakdown: {
+        published: Number(publishedPosts[0]?.value ?? 0),
+        draft: Number(draftPosts[0]?.value ?? 0),
+        unreviewed: Number(reviewQueue[0]?.value ?? 0),
+      },
       generatedAt: new Date().toISOString(),
     };
   }
