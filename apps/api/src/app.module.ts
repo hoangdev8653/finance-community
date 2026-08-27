@@ -6,6 +6,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { securityConfig } from './config/security.config';
 import { rateLimitConfig } from './config/rate-limit.config';
 import { databaseConfig } from './config/database.config';
+import { newsSourcesConfig } from './config/news-sources.config';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -38,7 +39,7 @@ import { DomainsModule } from './modules/domains/domains.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [securityConfig, rateLimitConfig, databaseConfig],
+      load: [securityConfig, rateLimitConfig, databaseConfig, newsSourcesConfig],
     }),
     DatabaseModule,
     ThrottlerModule.forRoot([

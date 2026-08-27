@@ -1,23 +1,63 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CategoryManagementView } from '@/components/admin/CategoryManagementView';
 import * as postsFeedHooks from '@/lib/posts/use-posts-feed';
 import * as adminHooks from '@/lib/admin/use-admin';
+import { postsService } from '@/lib/posts/posts-service';
 
 vi.mock('@/lib/posts/use-posts-feed');
 vi.mock('@/lib/admin/use-admin');
+vi.mock('@/lib/posts/posts-service', () => ({
+  postsService: {
+    getDomains: vi.fn().mockResolvedValue([
+      {
+        id: 'domain-money',
+        code: 'MONEY',
+        slug: 'money',
+        name: 'Money',
+        nameVi: null,
+        nameEn: null,
+        description: null,
+        sortOrder: 1,
+        isActive: true,
+        isPromoted: true,
+        createdAt: '',
+        updatedAt: '',
+      },
+    ]),
+  },
+}));
 
 describe('CategoryManagementView Component', () => {
   const mockCreateCategory = vi.fn();
   const mockUpdateCategory = vi.fn();
   const mockDeleteCategory = vi.fn();
+  let queryClient: QueryClient;
 
   beforeEach(() => {
+    queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     vi.restoreAllMocks();
     mockCreateCategory.mockReset();
     mockUpdateCategory.mockReset();
     mockDeleteCategory.mockReset();
+    vi.mocked(postsService.getDomains).mockResolvedValue([
+      {
+        id: 'domain-money',
+        code: 'MONEY',
+        slug: 'money',
+        name: 'Money',
+        nameVi: null,
+        nameEn: null,
+        description: null,
+        sortOrder: 1,
+        isActive: true,
+        isPromoted: true,
+        createdAt: '',
+        updatedAt: '',
+      },
+    ]);
 
     vi.mocked(adminHooks.useCreateCategory).mockReturnValue({
       mutateAsync: mockCreateCategory,
@@ -63,7 +103,11 @@ describe('CategoryManagementView Component', () => {
       updatedAt: '2026-08-16T00:00:00Z',
     });
 
-    render(<CategoryManagementView />);
+    render(
+      <QueryClientProvider client={queryClient}>
+        <CategoryManagementView />
+      </QueryClientProvider>
+    );
 
     expect(screen.getByText('Quản lý danh mục nội dung')).toBeDefined();
     expect(screen.getByText('Equity Derivatives')).toBeDefined();
@@ -77,6 +121,10 @@ describe('CategoryManagementView Component', () => {
     const nameInput = screen.getByLabelText(/Tên danh mục/i);
     fireEvent.change(nameInput, { target: { value: 'Commodities & FX' } });
 
+    const domainSelect = await screen.findByLabelText(/Domain/i);
+    await screen.findByRole('option', { name: 'Money' });
+    fireEvent.change(domainSelect, { target: { value: 'domain-money' } });
+
     const submitBtn = screen.getByRole('button', { name: /Tạo danh mục/i });
     fireEvent.click(submitBtn);
 
@@ -85,6 +133,8 @@ describe('CategoryManagementView Component', () => {
         name: 'Commodities & FX',
         slug: 'commodities-fx',
         scope: 'COMMUNITY',
+        domainId: 'domain-money',
+        contentTypes: ['COMMUNITY'],
         description: undefined,
         sortOrder: 0,
       });

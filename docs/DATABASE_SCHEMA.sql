@@ -71,16 +71,48 @@ INSERT INTO roles (name, description) VALUES
     ('SUPER_ADMIN', 'System-level access with role management');
 
 -- ============================================================================
+-- 2.1 domains
+-- Top-level editorial areas.
+-- ============================================================================
+CREATE TABLE domains (
+    id              UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
+    code            VARCHAR(50)     NOT NULL,
+    slug            VARCHAR(80)     NOT NULL,
+    name            VARCHAR(120)    NOT NULL,
+    name_vi         VARCHAR(120)    NULL,
+    name_en         VARCHAR(120)    NULL,
+    description     TEXT            NULL,
+    sort_order      INTEGER         NOT NULL DEFAULT 0,
+    is_active       BOOLEAN         NOT NULL DEFAULT TRUE,
+    is_promoted     BOOLEAN         NOT NULL DEFAULT FALSE,
+    created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT uq_domains_code
+        UNIQUE (code),
+
+    CONSTRAINT uq_domains_slug
+        UNIQUE (slug)
+);
+
+-- ============================================================================
 -- 3. categories
--- Content categorization scoped by content type.
+-- Content categorization within a domain.
 -- ============================================================================
 CREATE TABLE categories (
     id              UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
     name            VARCHAR(100)    NOT NULL,
     slug            VARCHAR(120)    NOT NULL,
     scope           VARCHAR(20)     NOT NULL,
+    domain_id       UUID            NULL,
+    parent_id       UUID            NULL,
+    name_vi         VARCHAR(100)    NULL,
+    name_en         VARCHAR(100)    NULL,
+    content_types   JSONB           NOT NULL DEFAULT '[]'::jsonb,
     description     TEXT            NULL,
     sort_order      INTEGER         NOT NULL DEFAULT 0,
+    is_active       BOOLEAN         NOT NULL DEFAULT TRUE,
+    is_promoted     BOOLEAN         NOT NULL DEFAULT FALSE,
     created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
 
@@ -90,9 +122,53 @@ CREATE TABLE categories (
     CONSTRAINT uq_categories_scope_name
         UNIQUE (scope, name),
 
-    CONSTRAINT chk_categories_scope
-        CHECK (scope IN ('SERIES', 'COMMUNITY'))
+    CONSTRAINT fk_categories_domain
+        FOREIGN KEY (domain_id) REFERENCES domains (id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_categories_parent
+        FOREIGN KEY (parent_id) REFERENCES categories (id)
+        ON DELETE SET NULL
 );
+
+CREATE INDEX idx_categories_domain_id ON categories (domain_id);
+CREATE INDEX idx_categories_parent_id ON categories (parent_id);
+
+-- ============================================================================
+-- 3.1 topics
+-- Reusable concepts within a domain and optionally a category.
+-- ============================================================================
+CREATE TABLE topics (
+    id              UUID            PRIMARY KEY DEFAULT gen_random_uuid(),
+    domain_id       UUID            NOT NULL,
+    category_id     UUID            NULL,
+    parent_id       UUID            NULL,
+    name            VARCHAR(120)    NOT NULL,
+    slug            VARCHAR(140)    NOT NULL,
+    description     TEXT            NULL,
+    sort_order      INTEGER         NOT NULL DEFAULT 0,
+    is_active       BOOLEAN         NOT NULL DEFAULT TRUE,
+    created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT fk_topics_domain
+        FOREIGN KEY (domain_id) REFERENCES domains (id)
+        ON DELETE RESTRICT,
+
+    CONSTRAINT fk_topics_category
+        FOREIGN KEY (category_id) REFERENCES categories (id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT fk_topics_parent
+        FOREIGN KEY (parent_id) REFERENCES topics (id)
+        ON DELETE SET NULL,
+
+    CONSTRAINT uq_topics_domain_slug
+        UNIQUE (domain_id, slug)
+);
+
+CREATE INDEX idx_topics_domain_id ON topics (domain_id);
+CREATE INDEX idx_topics_category_id ON topics (category_id);
 
 -- ============================================================================
 -- 4. tags
@@ -212,6 +288,7 @@ CREATE TABLE posts (
     body                TEXT            NULL,
     cover_media_id      UUID            NULL,
     category_id         UUID            NULL,
+    domain_id           UUID            NULL,
     status              VARCHAR(20)     NOT NULL DEFAULT 'DRAFT',
     meta_title          VARCHAR(70)     NULL,
     meta_description    VARCHAR(160)    NULL,
@@ -236,6 +313,10 @@ CREATE TABLE posts (
         FOREIGN KEY (category_id) REFERENCES categories (id)
         ON DELETE SET NULL,
 
+    CONSTRAINT fk_posts_domain
+        FOREIGN KEY (domain_id) REFERENCES domains (id)
+        ON DELETE SET NULL,
+
     CONSTRAINT uq_posts_content_type_slug
         UNIQUE (content_type, slug),
 
@@ -255,6 +336,7 @@ CREATE TABLE posts (
 CREATE INDEX idx_posts_feed ON posts (content_type, status, published_at DESC);
 CREATE INDEX idx_posts_author ON posts (author_id, created_at DESC);
 CREATE INDEX idx_posts_category ON posts (category_id);
+CREATE INDEX idx_posts_domain_id ON posts (domain_id);
 
 -- ============================================================================
 -- 9. post_tags
@@ -279,6 +361,31 @@ CREATE TABLE post_tags (
 );
 
 CREATE INDEX idx_post_tags_tag ON post_tags (tag_id);
+
+-- ============================================================================
+-- 9.1 post_topics
+-- Junction table: posts <-> topics.
+-- Depends on: posts, topics
+-- ============================================================================
+CREATE TABLE post_topics (
+    post_id         UUID            NOT NULL,
+    topic_id        UUID            NOT NULL,
+    created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
+
+    CONSTRAINT pk_post_topics
+        PRIMARY KEY (post_id, topic_id),
+
+    CONSTRAINT fk_post_topics_post
+        FOREIGN KEY (post_id) REFERENCES posts (id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_post_topics_topic
+        FOREIGN KEY (topic_id) REFERENCES topics (id)
+        ON DELETE CASCADE
+);
+
+CREATE INDEX idx_post_topics_topic_id ON post_topics (topic_id);
+CREATE INDEX idx_post_topics_post_id ON post_topics (post_id);
 
 -- ============================================================================
 -- 10. comments

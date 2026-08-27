@@ -47,6 +47,12 @@ export class CreatePostDto {
   @IsUUID(undefined, { each: true })
   mediaIds?: string[];
 
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsUUID(undefined, { each: true })
+  topics?: string[];
+
   @IsString()
   @IsIn(['DRAFT', 'PUBLISHED'])
   status!: 'DRAFT' | 'PUBLISHED';

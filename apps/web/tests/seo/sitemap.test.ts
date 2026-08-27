@@ -30,6 +30,7 @@ describe('Dynamic Sitemap Generator', () => {
       ],
       meta: { page: 1, limit: 100, totalItems: 1, totalPages: 1, hasNextPage: false, hasPreviousPage: false },
     });
+    vi.mocked(postsService.getDomains).mockResolvedValueOnce([]);
 
     vi.mocked(seriesService.getAllSeries).mockResolvedValueOnce({
       data: [
@@ -73,6 +74,7 @@ describe('Dynamic Sitemap Generator', () => {
     const baseUrl = getSiteUrl();
 
     vi.mocked(postsService.getFeed).mockRejectedValueOnce(new Error('Network error'));
+    vi.mocked(postsService.getDomains).mockRejectedValueOnce(new Error('Network error'));
     vi.mocked(seriesService.getAllSeries).mockRejectedValueOnce(new Error('Network error'));
     vi.mocked(searchService.searchTags).mockRejectedValueOnce(new Error('Network error'));
 

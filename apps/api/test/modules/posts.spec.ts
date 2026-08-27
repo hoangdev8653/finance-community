@@ -1,6 +1,8 @@
 import { PostsService } from '../../src/modules/posts/services/posts.service';
 import { PostsRepository } from '../../src/database/repositories/posts.repository';
 import { PostTagsRepository } from '../../src/database/repositories/post-tags.repository';
+import { PostTopicsRepository } from '../../src/database/repositories/post-topics.repository';
+import { TopicsRepository } from '../../src/database/repositories/topics.repository';
 import { PostMediaRepository } from '../../src/database/repositories/post-media.repository';
 import { CategoriesService } from '../../src/modules/categories/services/categories.service';
 import { MediaService } from '../../src/modules/media/services/media.service';
@@ -11,6 +13,8 @@ describe('PostsService (Content Engine)', () => {
   let mockDb: any;
   let mockPostsRepo: jest.Mocked<PostsRepository>;
   let mockPostTagsRepo: jest.Mocked<PostTagsRepository>;
+  let mockPostTopicsRepo: jest.Mocked<PostTopicsRepository>;
+  let mockTopicsRepo: jest.Mocked<TopicsRepository>;
   let mockPostMediaRepo: jest.Mocked<PostMediaRepository>;
   let mockCategoriesService: jest.Mocked<CategoriesService>;
   let mockMediaService: jest.Mocked<MediaService>;
@@ -35,6 +39,7 @@ describe('PostsService (Content Engine)', () => {
         body: data.body || null,
         coverMediaId: data.coverMediaId || null,
         categoryId: data.categoryId || null,
+        domainId: data.domainId || null,
         status: data.status,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
@@ -56,6 +61,7 @@ describe('PostsService (Content Engine)', () => {
         body: data.body || null,
         coverMediaId: data.coverMediaId || null,
         categoryId: data.categoryId || null,
+        domainId: data.domainId || null,
         status: data.status || 'DRAFT',
         metaTitle: null,
         metaDescription: null,
@@ -77,6 +83,7 @@ describe('PostsService (Content Engine)', () => {
         body: 'Original Body',
         coverMediaId: null,
         categoryId: null,
+        domainId: null,
         status: 'DRAFT',
         metaTitle: null,
         metaDescription: null,
@@ -101,6 +108,29 @@ describe('PostsService (Content Engine)', () => {
       getTagsForPost: jest.fn().mockResolvedValue([]),
     } as any;
 
+    mockPostTopicsRepo = {
+      syncTopicsTx: jest.fn().mockResolvedValue(undefined),
+      getTopicsForPost: jest.fn().mockResolvedValue([]),
+    } as any;
+
+    mockTopicsRepo = {
+      findByIds: jest.fn().mockImplementation(async (ids: string[]) =>
+        ids.map((id) => ({
+          id,
+          domainId: 'domain-money',
+          categoryId: null,
+          parentId: null,
+          name: `Topic ${id}`,
+          slug: `topic-${id}`,
+          description: null,
+          sortOrder: 0,
+          isActive: true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })),
+      ),
+    } as any;
+
     mockPostMediaRepo = {
       syncMediaTx: jest.fn().mockResolvedValue(undefined),
       findByPostId: jest.fn().mockResolvedValue([]),
@@ -113,6 +143,9 @@ describe('PostsService (Content Engine)', () => {
         name: 'Market News',
         slug: 'market-news',
         scope: 'COMMUNITY',
+        domainId: 'domain-money',
+        parentId: null,
+        contentTypes: ['COMMUNITY'],
         description: null,
         sortOrder: 0,
         createdAt: new Date(),
@@ -156,6 +189,10 @@ describe('PostsService (Content Engine)', () => {
       mockCategoriesService,
       mockMediaService,
       mockTagsService,
+      undefined,
+      undefined,
+      mockPostTopicsRepo,
+      mockTopicsRepo,
     );
   });
 
@@ -228,6 +265,7 @@ describe('PostsService (Content Engine)', () => {
       expect.anything(),
       expect.objectContaining({
         contentType: 'NEWS',
+        domainId: null,
         sourceType: 'EDITORIAL',
         sourceUrl: 'https://example.com/market-news',
         sourceName: 'Example Finance',
@@ -268,6 +306,7 @@ describe('PostsService (Content Engine)', () => {
         body: null,
         coverMediaId: null,
         categoryId: null,
+        domainId: null,
         status: 'DRAFT',
         moderationStatus: 'UNREVIEWED',
         moderatedBy: null,
@@ -303,6 +342,46 @@ describe('PostsService (Content Engine)', () => {
         status: 'DRAFT',
       }),
     ).rejects.toThrow('Tag sync database failure');
+  });
+
+  it('34.6a: should reject post domain when it does not match category domain', async () => {
+    await expect(
+      postsService.createPost('author-uuid-1', {
+        title: 'Cross Domain Post',
+        contentType: 'COMMUNITY',
+        categoryId: 'cat-uuid-1',
+        domainId: 'domain-tech',
+        status: 'DRAFT',
+      }),
+    ).rejects.toThrow();
+  });
+
+  it('34.6b: should sync validated topics on create', async () => {
+    await postsService.createPost('author-uuid-1', {
+      title: 'Topic Post',
+      contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      topics: ['topic-1', 'topic-2'],
+      status: 'DRAFT',
+    });
+
+    expect(mockTopicsRepo.findByIds).toHaveBeenCalledWith(['topic-1', 'topic-2']);
+    expect(mockPostTopicsRepo.syncTopicsTx).toHaveBeenCalledWith(expect.anything(), 'post-uuid-1', [
+      'topic-1',
+      'topic-2',
+    ]);
+  });
+
+  it('34.6c: should reject topics from a different domain', async () => {
+    await expect(
+      postsService.createPost('author-uuid-1', {
+        title: 'Invalid Topic Domain',
+        contentType: 'COMMUNITY',
+        domainId: 'domain-tech',
+        topics: ['topic-1'],
+        status: 'DRAFT',
+      }),
+    ).rejects.toThrow();
   });
 
   it('34.7: should soft delete post setting deletedAt timestamp', async () => {

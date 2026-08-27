@@ -8,7 +8,7 @@ export const topicsTable = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     domainId: uuid('domain_id').notNull().references(() => domainsTable.id, { onDelete: 'restrict' }),
     categoryId: uuid('category_id').references(() => categoriesTable.id, { onDelete: 'set null' }),
-    parentId: uuid('parent_id'),
+    parentId: uuid('parent_id').references((): any => topicsTable.id, { onDelete: 'set null' }),
     name: varchar('name', { length: 120 }).notNull(),
     slug: varchar('slug', { length: 140 }).notNull(),
     description: text('description'),

@@ -9,9 +9,10 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { Button } from '@/components/ui/Button';
 
 interface FeedListProps {
-  contentType?: 'SERIES' | 'COMMUNITY';
+  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
   categoryId?: string;
   tagId?: string;
+  topicId?: string;
   sortBy?: 'publishedAt' | 'createdAt';
   onResetFilters: () => void;
 }
@@ -20,6 +21,7 @@ export function FeedList({
   contentType,
   categoryId,
   tagId,
+  topicId,
   sortBy = 'publishedAt',
   onResetFilters,
 }: FeedListProps) {
@@ -36,6 +38,7 @@ export function FeedList({
     contentType,
     categoryId,
     tagId,
+    topicId,
     sortBy,
     order: 'DESC',
     limit: 10,

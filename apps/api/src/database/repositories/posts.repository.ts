@@ -5,6 +5,7 @@ import type { DrizzleDB } from '../database.module';
 import { postsTable } from '../schema/posts.schema';
 import { mediaTable } from '../schema/media.schema';
 import { postTagsTable } from '../schema/post-tags.schema';
+import { postTopicsTable } from '../schema/post-topics.schema';
 import { profilesTable } from '../schema/profiles.schema';
 import { followsTable } from '../schema/follows.schema';
 import { domainsTable } from '../schema/domains.schema';
@@ -18,6 +19,7 @@ export interface PostFeedFilterOptions {
   categoryId?: string;
   domainId?: string;
   tagId?: string;
+  topicId?: string;
   authorId?: string;
   status?: string;
   page?: number;
@@ -114,6 +116,13 @@ export class PostsRepository {
         .from(postTagsTable)
         .where(eq(postTagsTable.tagId, options.tagId));
       conditions.push(inArray(postsTable.id, taggedPostIds));
+    }
+    if (options.topicId) {
+      const topicPostIds = this.db
+        .select({ postId: postTopicsTable.postId })
+        .from(postTopicsTable)
+        .where(eq(postTopicsTable.topicId, options.topicId));
+      conditions.push(inArray(postsTable.id, topicPostIds));
     }
     if (options.authorId) {
       conditions.push(eq(postsTable.authorId, options.authorId));

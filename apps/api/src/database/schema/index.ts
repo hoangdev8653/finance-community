@@ -22,6 +22,7 @@ import { authCredentialsTable } from './auth-credentials.schema';
 import { postBookmarksTable } from './post-bookmarks.schema';
 import { domainsTable } from './domains.schema';
 import { topicsTable } from './topics.schema';
+import { postTopicsTable } from './post-topics.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -47,6 +48,7 @@ export * from './auth-credentials.schema';
 export * from './post-bookmarks.schema';
 export * from './domains.schema';
 export * from './topics.schema';
+export * from './post-topics.schema';
 
 export const schema = {
   users: usersTable,
@@ -73,4 +75,5 @@ export const schema = {
   postBookmarks: postBookmarksTable,
   domains: domainsTable,
   topics: topicsTable,
+  postTopics: postTopicsTable,
 };

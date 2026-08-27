@@ -10,6 +10,8 @@ import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { PostsRepository, PostEntity } from '../../../database/repositories/posts.repository';
 import { PostTagsRepository } from '../../../database/repositories/post-tags.repository';
+import { PostTopicsRepository } from '../../../database/repositories/post-topics.repository';
+import { TopicsRepository, TopicEntity } from '../../../database/repositories/topics.repository';
 import { PostMediaRepository } from '../../../database/repositories/post-media.repository';
 import { PostBookmarksRepository } from '../../../database/repositories/post-bookmarks.repository';
 import { CategoriesService } from '../../categories/services/categories.service';
@@ -24,6 +26,7 @@ import { QueryPostsDto } from '../dto/query-posts.dto';
 
 export interface PostDetailResponse extends PostEntity {
   tags: Array<{ id: string; name: string; slug: string }>;
+  topics: Array<{ id: string; name: string; slug: string; domainId: string; categoryId: string | null }>;
   media: Array<{ id: string; secureUrl: string; purpose: string; sortOrder: number }>;
 }
 
@@ -42,6 +45,8 @@ export class PostsService {
     private readonly tagsService: TagsService,
     @Optional() private readonly postBookmarksRepo?: PostBookmarksRepository,
     @Optional() private readonly auditLogService?: AuditLogService,
+    @Optional() private readonly postTopicsRepo?: PostTopicsRepository,
+    @Optional() private readonly topicsRepo?: TopicsRepository,
   ) {}
 
   public incrementViewCountDebounced(postId: string, viewerIdentifier = 'anonymous'): void {
@@ -81,6 +86,81 @@ export class PostsService {
     return `${truncatedBase}-${suffix}`;
   }
 
+  private assertMatchingDomain(
+    postDomainId: string | null | undefined,
+    relatedDomainId: string | null | undefined,
+    code: string,
+    message: string,
+  ): void {
+    if (postDomainId && relatedDomainId && postDomainId !== relatedDomainId) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message,
+        code,
+      });
+    }
+  }
+
+  private async resolveAndValidateTopics(topicIds: string[] | undefined, postDomainId: string | null): Promise<{
+    topicIds: string[];
+    topics: TopicEntity[];
+    effectiveDomainId: string | null;
+  }> {
+    const uniqueTopicIds = Array.from(new Set(topicIds || []));
+    if (uniqueTopicIds.length === 0) {
+      return { topicIds: [], topics: [], effectiveDomainId: postDomainId };
+    }
+
+    if (!this.topicsRepo) {
+      throw new BadRequestException('Topics repository is not available.');
+    }
+
+    const topics = await this.topicsRepo.findByIds(uniqueTopicIds);
+    if (topics.length !== uniqueTopicIds.length) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'One or more topics do not exist.',
+        code: 'INVALID_TOPICS',
+      });
+    }
+
+    const domainIds = Array.from(new Set(topics.map((topic) => topic.domainId)));
+    if (domainIds.length > 1) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'All topics attached to a post must belong to the same domain.',
+        code: 'CROSS_DOMAIN_TOPICS',
+      });
+    }
+
+    const topicDomainId = domainIds[0];
+    this.assertMatchingDomain(
+      postDomainId,
+      topicDomainId,
+      'INVALID_TOPIC_DOMAIN',
+      'Topic domain must match post domain.',
+    );
+
+    return {
+      topicIds: uniqueTopicIds,
+      topics,
+      effectiveDomainId: postDomainId || topicDomainId,
+    };
+  }
+
+  private async syncTopicsTx(tx: any, postId: string, topicIds: string[]): Promise<void> {
+    if (!this.postTopicsRepo) return;
+    await this.postTopicsRepo.syncTopicsTx(tx, postId, topicIds);
+  }
+
+  private async getTopicsForPost(postId: string): Promise<Array<{ id: string; name: string; slug: string; domainId: string; categoryId: string | null }>> {
+    if (!this.postTopicsRepo) return [];
+    return this.postTopicsRepo.getTopicsForPost(postId);
+  }
+
   public async generateUniqueSlugPg(
     tx: any,
     contentType: string,
@@ -110,6 +190,16 @@ export class PostsService {
         });
       }
     }
+
+    this.assertMatchingDomain(
+      dto.domainId || null,
+      categoryDomainId,
+      'INVALID_POST_CATEGORY_DOMAIN',
+      'Post domain must match category domain.',
+    );
+
+    const resolvedTopics = await this.resolveAndValidateTopics(dto.topics, dto.domainId || categoryDomainId);
+    const effectiveDomainId = resolvedTopics.effectiveDomainId;
 
     // 2. Validate Cover Media if provided
     if (dto.coverMediaId) {
@@ -176,7 +266,7 @@ export class PostsService {
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
             categoryId: dto.categoryId || null,
-            domainId: dto.domainId || categoryDomainId,
+            domainId: effectiveDomainId,
             status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
@@ -206,7 +296,7 @@ export class PostsService {
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
             categoryId: dto.categoryId || null,
-            domainId: dto.domainId || categoryDomainId,
+            domainId: effectiveDomainId,
             status: dto.status,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
@@ -227,6 +317,8 @@ export class PostsService {
       // Sync Post Tags atomically
       await this.postTagsRepo.syncTagsTx(tx, postRecord.id, resolvedTagIds);
 
+      await this.syncTopicsTx(tx, postRecord.id, resolvedTopics.topicIds);
+
       // Sync Post Media atomically
       const mediaItems = (dto.mediaIds || []).map((mId, idx) => ({
         mediaId: mId,
@@ -235,11 +327,13 @@ export class PostsService {
       await this.postMediaRepo.syncMediaTx(tx, postRecord.id, mediaItems);
 
       const tags = await this.postTagsRepo.getTagsForPost(postRecord.id);
+      const topics = await this.getTopicsForPost(postRecord.id);
       const media = await this.postMediaRepo.getMediaForPost(postRecord.id);
 
       return {
         ...postRecord,
         tags,
+        topics,
         media,
       };
     });
@@ -269,8 +363,10 @@ export class PostsService {
     }
 
     // 1. Validate Category if updating
-    if (dto.categoryId) {
-      const category = await this.categoriesService.getCategoryById(dto.categoryId);
+    let categoryDomainId: string | null = null;
+    if (dto.categoryId !== undefined ? dto.categoryId : existing.categoryId) {
+      const category = await this.categoriesService.getCategoryById((dto.categoryId || existing.categoryId)!);
+      categoryDomainId = category.domainId;
       if (!category.contentTypes.includes(existing.contentType) && category.scope !== existing.contentType) {
         throw new BadRequestException({
           statusCode: 400,
@@ -280,6 +376,18 @@ export class PostsService {
         });
       }
     }
+
+    const requestedDomainId = dto.domainId !== undefined ? dto.domainId || null : existing.domainId || null;
+    this.assertMatchingDomain(
+      requestedDomainId,
+      categoryDomainId,
+      'INVALID_POST_CATEGORY_DOMAIN',
+      'Post domain must match category domain.',
+    );
+
+    const resolvedTopics = dto.topics !== undefined
+      ? await this.resolveAndValidateTopics(dto.topics, requestedDomainId || categoryDomainId)
+      : undefined;
 
     // 2. Validate Cover Media if updating
     if (dto.coverMediaId) {
@@ -341,6 +449,10 @@ export class PostsService {
       if (sanitizedBody !== undefined) updateData.body = sanitizedBody;
       if (dto.categoryId !== undefined) updateData.categoryId = dto.categoryId || null;
       if (dto.domainId !== undefined) updateData.domainId = dto.domainId || null;
+      if (dto.domainId === undefined && dto.categoryId && categoryDomainId) updateData.domainId = categoryDomainId;
+      if (resolvedTopics && dto.domainId === undefined && !updateData.domainId) {
+        updateData.domainId = resolvedTopics.effectiveDomainId;
+      }
       if (dto.coverMediaId !== undefined) updateData.coverMediaId = dto.coverMediaId || null;
       if (dto.status !== undefined) updateData.status = dto.status;
       if (dto.metaTitle !== undefined) updateData.metaTitle = dto.metaTitle || null;
@@ -356,12 +468,17 @@ export class PostsService {
         await this.postTagsRepo.syncTagsTx(tx, id, resolvedTagIds);
       }
 
+      if (resolvedTopics !== undefined) {
+        await this.syncTopicsTx(tx, id, resolvedTopics.topicIds);
+      }
+
       if (dto.mediaIds !== undefined) {
         const mediaItems = dto.mediaIds.map((mId, idx) => ({ mediaId: mId, sortOrder: idx }));
         await this.postMediaRepo.syncMediaTx(tx, id, mediaItems);
       }
 
       const tags = await this.postTagsRepo.getTagsForPost(id);
+      const topics = await this.getTopicsForPost(id);
       const media = await this.postMediaRepo.getMediaForPost(id);
 
       if (this.auditLogService && dto.status && dto.status !== existing.status) {
@@ -377,6 +494,7 @@ export class PostsService {
       return {
         ...updated!,
         tags,
+        topics,
         media,
       };
     });
@@ -420,11 +538,13 @@ export class PostsService {
     }
 
     const tags = await this.postTagsRepo.getTagsForPost(post.id);
+    const topics = await this.getTopicsForPost(post.id);
     const media = await this.postMediaRepo.getMediaForPost(post.id);
 
     return {
       ...post,
       tags,
+      topics,
       media,
     };
   }
@@ -448,8 +568,9 @@ export class PostsService {
 
     this.incrementViewCountDebounced(post.id, viewerIdentifier);
     const tags = await this.postTagsRepo.getTagsForPost(post.id);
+    const topics = await this.getTopicsForPost(post.id);
     const media = await this.postMediaRepo.getMediaForPost(post.id);
-    return { ...post, tags, media };
+    return { ...post, tags, topics, media };
   }
 
   async getPostById(id: string, viewerUserId?: string, viewerRoles?: string[]): Promise<PostDetailResponse> {
@@ -479,11 +600,13 @@ export class PostsService {
     }
 
     const tags = await this.postTagsRepo.getTagsForPost(post.id);
+    const topics = await this.getTopicsForPost(post.id);
     const media = await this.postMediaRepo.getMediaForPost(post.id);
 
     return {
       ...post,
       tags,
+      topics,
       media,
     };
   }
@@ -523,6 +646,7 @@ export class PostsService {
       categoryId: query.categoryId,
       domainId: query.domainId,
       tagId: query.tagId,
+      topicId: query.topicId,
       authorId: query.authorId,
       status: query.status || 'PUBLISHED',
       page: query.page,

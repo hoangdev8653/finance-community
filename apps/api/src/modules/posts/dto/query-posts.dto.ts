@@ -26,6 +26,10 @@ export class QueryPostsDto {
 
   @IsOptional()
   @IsUUID()
+  topicId?: string;
+
+  @IsOptional()
+  @IsUUID()
   authorId?: string;
 
   @IsOptional()

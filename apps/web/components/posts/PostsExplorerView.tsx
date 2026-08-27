@@ -9,9 +9,9 @@ import { FeedList } from '@/components/content/FeedList';
 export function PostsExplorerView() {
   const searchParams = useSearchParams();
   const urlCategoryId = searchParams?.get('categoryId') || undefined;
-  const urlContentType = (searchParams?.get('contentType') as 'SERIES' | 'COMMUNITY') || undefined;
+  const urlContentType = (searchParams?.get('contentType') as 'SERIES' | 'COMMUNITY' | 'NEWS') || undefined;
 
-  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY' | undefined>(urlContentType);
+  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY' | 'NEWS' | undefined>(urlContentType);
   const [categoryId, setCategoryId] = useState<string | undefined>(urlCategoryId);
   const [sortBy, setSortBy] = useState<'publishedAt' | 'createdAt'>('publishedAt');
 

@@ -5,6 +5,8 @@ import { PostsRepository } from '../../database/repositories/posts.repository';
 import { PostTagsRepository } from '../../database/repositories/post-tags.repository';
 import { PostMediaRepository } from '../../database/repositories/post-media.repository';
 import { PostBookmarksRepository } from '../../database/repositories/post-bookmarks.repository';
+import { PostTopicsRepository } from '../../database/repositories/post-topics.repository';
+import { TopicsRepository } from '../../database/repositories/topics.repository';
 import { DatabaseModule } from '../../database/database.module';
 import { CategoriesModule } from '../categories/categories.module';
 import { MediaModule } from '../media/media.module';
@@ -28,6 +30,8 @@ import { AuditModule } from '../audit/audit.module';
     PostTagsRepository,
     PostMediaRepository,
     PostBookmarksRepository,
+    PostTopicsRepository,
+    TopicsRepository,
   ],
   exports: [
     PostsService,
@@ -35,6 +39,8 @@ import { AuditModule } from '../audit/audit.module';
     PostTagsRepository,
     PostMediaRepository,
     PostBookmarksRepository,
+    PostTopicsRepository,
+    TopicsRepository,
   ],
 })
 export class PostsModule {}

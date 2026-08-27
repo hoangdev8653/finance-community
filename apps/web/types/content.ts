@@ -18,6 +18,7 @@ export interface PostEntity {
   sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
   sourceUrl?: string | null;
   sourceName?: string | null;
+  topics?: PostTopicItem[];
   viewCount: number;
   publishedAt: string | null;
   createdAt: string;
@@ -34,6 +35,7 @@ export interface CreatePostDto {
   coverMediaId?: string;
   tags?: string[];
   mediaIds?: string[];
+  topics?: string[];
   status: 'DRAFT' | 'PUBLISHED';
   metaTitle?: string;
   metaDescription?: string;
@@ -50,6 +52,7 @@ export interface UpdatePostDto {
   coverMediaId?: string;
   tags?: string[];
   mediaIds?: string[];
+  topics?: string[];
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
   metaTitle?: string;
   metaDescription?: string;
@@ -71,8 +74,17 @@ export interface PostTagItem {
   slug: string;
 }
 
+export interface PostTopicItem {
+  id: string;
+  name: string;
+  slug: string;
+  domainId: string;
+  categoryId: string | null;
+}
+
 export interface PostDetailResponse extends PostEntity {
   tags: PostTagItem[];
+  topics?: PostTopicItem[];
   media: PostMediaItem[];
 }
 
@@ -122,6 +134,7 @@ export interface PostsFeedParams {
   categoryId?: string;
   domainId?: string;
   tagId?: string;
+  topicId?: string;
   authorId?: string;
   status?: string;
   page?: number;

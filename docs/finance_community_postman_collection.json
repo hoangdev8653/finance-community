@@ -150,7 +150,9 @@
                 { "key": "order", "value": "DESC" },
                 { "key": "contentType", "value": "COMMUNITY", "description": "COMMUNITY | NEWS | SERIES" },
                 { "key": "sourceType", "value": "USER", "disabled": true, "description": "AI_CURATED | EDITORIAL | USER" },
+                { "key": "domainId", "value": "", "disabled": true },
                 { "key": "categoryId", "value": "", "disabled": true },
+                { "key": "topicId", "value": "", "disabled": true },
                 { "key": "tagId", "value": "", "disabled": true },
                 { "key": "authorId", "value": "", "disabled": true },
                 { "key": "status", "value": "PUBLISHED", "disabled": true }
@@ -210,7 +212,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Phân tích định giá cổ phiếu Ngân hàng VCB 2026\",\n  \"contentType\": \"COMMUNITY\",\n  \"body\": \"Nội dung phân tích tài chính chuyên sâu với các mô hình định giá...\",\n  \"categoryId\": null,\n  \"tags\": [\"dinh-gia\", \"ngan-hang\"],\n  \"coverMediaId\": null,\n  \"status\": \"PUBLISHED\",\n  \"metaTitle\": \"Định giá cổ phiếu VCB\",\n  \"metaDescription\": \"Tóm tắt tiềm năng tăng trưởng và định giá P/B của VCB.\",\n  \"sourceType\": \"USER\",\n  \"sourceUrl\": null,\n  \"sourceName\": null\n}"
+              "raw": "{\n  \"title\": \"Phân tích định giá cổ phiếu Ngân hàng VCB 2026\",\n  \"contentType\": \"COMMUNITY\",\n  \"body\": \"Nội dung phân tích tài chính chuyên sâu với các mô hình định giá...\",\n  \"domainId\": null,\n  \"categoryId\": null,\n  \"topics\": [],\n  \"tags\": [\"dinh-gia\", \"ngan-hang\"],\n  \"coverMediaId\": null,\n  \"status\": \"PUBLISHED\",\n  \"metaTitle\": \"Định giá cổ phiếu VCB\",\n  \"metaDescription\": \"Tóm tắt tiềm năng tăng trưởng và định giá P/B của VCB.\",\n  \"sourceType\": \"USER\",\n  \"sourceUrl\": null,\n  \"sourceName\": null\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts",
@@ -226,7 +228,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Cập nhật mới phân tích VCB 2026\",\n  \"body\": \"Nội dung phân tích đã được cập nhật số liệu mới nhất...\",\n  \"status\": \"PUBLISHED\"\n}"
+              "raw": "{\n  \"title\": \"Cập nhật mới phân tích VCB 2026\",\n  \"body\": \"Nội dung phân tích đã được cập nhật số liệu mới nhất...\",\n  \"topics\": [],\n  \"status\": \"PUBLISHED\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/POST_UUID_HERE",
@@ -312,7 +314,7 @@
             "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Định giá doanh nghiệp\",\n  \"slug\": \"dinh-gia-doanh-nghiep\",\n  \"scope\": \"COMMUNITY\",\n  \"description\": \"Chuyên mục phân tích định giá DCF, P/E, P/B\",\n  \"sortOrder\": 0\n}"
+              "raw": "{\n  \"name\": \"Định giá doanh nghiệp\",\n  \"slug\": \"dinh-gia-doanh-nghiep\",\n  \"scope\": \"COMMUNITY\",\n  \"domainId\": \"DOMAIN_UUID_HERE\",\n  \"contentTypes\": [\"COMMUNITY\"],\n  \"description\": \"Chuyên mục phân tích định giá DCF, P/E, P/B\",\n  \"sortOrder\": 0\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/categories",

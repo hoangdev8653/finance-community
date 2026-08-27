@@ -1,7 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useCategories } from '@/lib/posts/use-posts-feed';
+import { postsService } from '@/lib/posts/posts-service';
 import { useCreateCategory, useUpdateCategory, useDeleteCategory } from '@/lib/admin/use-admin';
 import { CategoryEntity } from '@/types/content';
 import { Badge } from '@/components/ui/Badge';
@@ -20,15 +22,21 @@ import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
 
 export function CategoryManagementView() {
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY'>('ALL');
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'>('ALL');
   const { data: categories, isLoading, isError, refetch } = useCategories(scopeFilter === 'ALL' ? undefined : scopeFilter);
+  const { data: domains = [] } = useQuery({
+    queryKey: ['domains'],
+    queryFn: () => postsService.getDomains(),
+    staleTime: 15 * 60 * 1000,
+  });
   const createCategoryMutation = useCreateCategory();
   const updateCategoryMutation = useUpdateCategory();
   const deleteCategoryMutation = useDeleteCategory();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryEntity | null>(null);
-  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY'>('COMMUNITY');
+  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>('COMMUNITY');
+  const [domainId, setDomainId] = useState('');
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
@@ -49,6 +57,7 @@ export function CategoryManagementView() {
     setName('');
     setSlug('');
     setScope('COMMUNITY');
+    setDomainId(domains[0]?.id || '');
     setDescription('');
     setSortOrder(0);
     setIsModalOpen(true);
@@ -59,7 +68,8 @@ export function CategoryManagementView() {
     setEditingCategory(cat);
     setName(cat.name);
     setSlug(cat.slug);
-    setScope(cat.scope as 'SERIES' | 'COMMUNITY');
+    setScope(cat.scope as 'SERIES' | 'COMMUNITY' | 'NEWS');
+    setDomainId(cat.domainId || '');
     setDescription(cat.description || '');
     setSortOrder(cat.sortOrder || 0);
     setIsModalOpen(true);
@@ -95,6 +105,11 @@ export function CategoryManagementView() {
       return;
     }
 
+    if (!domainId) {
+      setFeedback({ type: 'error', message: 'Category domain is required.' });
+      return;
+    }
+
     try {
       if (editingCategory) {
         await updateCategoryMutation.mutateAsync({
@@ -102,6 +117,7 @@ export function CategoryManagementView() {
           dto: {
             name: name.trim(),
             slug: slug.trim(),
+            domainId,
             description: description.trim() || undefined,
             sortOrder,
           },
@@ -115,6 +131,8 @@ export function CategoryManagementView() {
           name: name.trim(),
           slug: slug.trim(),
           scope,
+          domainId,
+          contentTypes: [scope],
           description: description.trim() || undefined,
           sortOrder,
         });
@@ -183,7 +201,7 @@ export function CategoryManagementView() {
 
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
-        <div className="flex flex-col gap-2 sm:flex-row"><select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="SERIES">SERIES</option></select><AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
+        <div className="flex flex-col gap-2 sm:flex-row"><select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="NEWS">NEWS</option><option value="SERIES">SERIES</option></select><AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
       </div>
 
       {isLoading && (
@@ -341,14 +359,34 @@ export function CategoryManagementView() {
                   <select
                     id="cat-scope"
                     value={scope}
-                    onChange={(e) => setScope(e.target.value as 'SERIES' | 'COMMUNITY')}
+                    onChange={(e) => setScope(e.target.value as 'SERIES' | 'COMMUNITY' | 'NEWS')}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
                   >
                     <option value="COMMUNITY">COMMUNITY (Community Discussions)</option>
+                    <option value="NEWS">NEWS (Editorial News)</option>
                     <option value="SERIES">SERIES (Curriculum Series)</option>
                   </select>
                 </div>
               )}
+
+              <div className="space-y-1">
+                <label htmlFor="cat-domain" className="text-xs font-semibold text-foreground">
+                  Domain <span className="text-danger">*</span>
+                </label>
+                <select
+                  id="cat-domain"
+                  value={domainId}
+                  onChange={(e) => setDomainId(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+                >
+                  <option value="">Select domain...</option>
+                  {domains.map((domain) => (
+                    <option key={domain.id} value={domain.id}>
+                      {domain.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="space-y-1">
                 <label htmlFor="cat-desc" className="text-xs font-semibold text-foreground">

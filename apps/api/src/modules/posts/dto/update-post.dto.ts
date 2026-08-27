@@ -43,6 +43,12 @@ export class UpdatePostDto {
   mediaIds?: string[];
 
   @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsUUID(undefined, { each: true })
+  topics?: string[];
+
+  @IsOptional()
   @IsString()
   @IsIn(['DRAFT', 'PUBLISHED', 'ARCHIVED', 'HIDDEN'])
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';

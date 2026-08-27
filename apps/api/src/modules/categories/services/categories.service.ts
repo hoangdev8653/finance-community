@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, Optional } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, Optional, BadRequestException } from '@nestjs/common';
 import { CategoriesRepository, CategoryEntity } from '../../../database/repositories/categories.repository';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
@@ -29,6 +29,15 @@ export class CategoriesService {
     return category;
   }
 
+  private throwInvalidCategoryDomain(message: string, code: string): never {
+    throw new BadRequestException({
+      statusCode: 400,
+      error: 'Bad Request',
+      message,
+      code,
+    });
+  }
+
   async createCategory(adminId: string, dto: CreateCategoryDto, tx?: any): Promise<CategoryEntity> {
     const existing = await this.categoriesRepo.findByScopeAndSlug(dto.scope, dto.slug);
     if (existing) {
@@ -40,11 +49,30 @@ export class CategoriesService {
       });
     }
 
+    let effectiveDomainId = dto.domainId || null;
+    if (dto.parentId) {
+      const parent = await this.getCategoryById(dto.parentId);
+      if (!parent.domainId) {
+        this.throwInvalidCategoryDomain('Parent category must belong to a domain.', 'INVALID_PARENT_CATEGORY_DOMAIN');
+      }
+      if (effectiveDomainId && parent.domainId !== effectiveDomainId) {
+        this.throwInvalidCategoryDomain(
+          'Child category domain must match parent category domain.',
+          'INVALID_PARENT_CATEGORY_DOMAIN',
+        );
+      }
+      effectiveDomainId = effectiveDomainId || parent.domainId;
+    }
+
+    if (!effectiveDomainId) {
+      this.throwInvalidCategoryDomain('Category must belong to a domain.', 'CATEGORY_DOMAIN_REQUIRED');
+    }
+
     const record = await this.categoriesRepo.createTx(tx, {
       name: dto.name,
       slug: dto.slug,
       scope: dto.scope,
-      domainId: dto.domainId || null,
+      domainId: effectiveDomainId,
       parentId: dto.parentId || null,
       nameVi: dto.nameVi || null,
       nameEn: dto.nameEn || null,
@@ -71,10 +99,30 @@ export class CategoriesService {
   async updateCategory(adminId: string, id: string, dto: UpdateCategoryDto, tx?: any): Promise<CategoryEntity> {
     const category = await this.getCategoryById(id);
 
+    const effectiveDomainId = dto.domainId !== undefined ? dto.domainId : category.domainId;
+    const effectiveParentId = dto.parentId !== undefined ? dto.parentId : category.parentId;
+
+    if (!effectiveDomainId) {
+      this.throwInvalidCategoryDomain('Category must belong to a domain.', 'CATEGORY_DOMAIN_REQUIRED');
+    }
+
+    if (effectiveParentId) {
+      if (effectiveParentId === id) {
+        this.throwInvalidCategoryDomain('Category cannot be its own parent.', 'INVALID_PARENT_CATEGORY');
+      }
+      const parent = await this.getCategoryById(effectiveParentId);
+      if (!parent.domainId || parent.domainId !== effectiveDomainId) {
+        this.throwInvalidCategoryDomain(
+          'Child category domain must match parent category domain.',
+          'INVALID_PARENT_CATEGORY_DOMAIN',
+        );
+      }
+    }
+
     const updated = await this.categoriesRepo.updateTx(tx, id, {
       name: dto.name,
       description: dto.description,
-      domainId: dto.domainId,
+      domainId: effectiveDomainId,
       parentId: dto.parentId,
       nameVi: dto.nameVi,
       nameEn: dto.nameEn,

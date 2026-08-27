@@ -9,7 +9,7 @@ export const categoriesTable = pgTable(
     slug: varchar('slug', { length: 120 }).notNull(),
     scope: varchar('scope', { length: 20 }).notNull(),
     domainId: uuid('domain_id').references(() => domainsTable.id, { onDelete: 'restrict' }),
-    parentId: uuid('parent_id'),
+    parentId: uuid('parent_id').references((): any => categoriesTable.id, { onDelete: 'set null' }),
     nameVi: varchar('name_vi', { length: 100 }),
     nameEn: varchar('name_en', { length: 100 }),
     contentTypes: jsonb('content_types').$type<string[]>().notNull().default([]),
