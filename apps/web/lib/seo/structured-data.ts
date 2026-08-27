@@ -44,9 +44,11 @@ export function generateOrganizationJsonLd(): SchemaOrgEntity {
 /**
  * Generate Schema.org Article (NewsArticle or EducationalArticle) JSON-LD.
  */
-export function generateArticleJsonLd(post: PostDetailResponse): SchemaOrgEntity {
+export function generateArticleJsonLd(post: PostDetailResponse, canonicalPath?: string): SchemaOrgEntity {
   const normalizedType = post.contentType.toLowerCase();
-  const canonicalUrl = buildCanonicalUrl(`/posts/${normalizedType}/${encodeURIComponent(post.slug)}`);
+  const canonicalUrl = buildCanonicalUrl(
+    canonicalPath || `/posts/${normalizedType}/${encodeURIComponent(post.slug)}`
+  );
   const isEducational = post.contentType === 'SERIES';
 
   const coverMedia = post.coverMediaId

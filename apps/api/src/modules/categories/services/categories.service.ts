@@ -11,8 +11,9 @@ export class CategoriesService {
     @Optional() private readonly auditLogService?: AuditLogService,
   ) {}
 
-  async getCategories(scope?: string): Promise<CategoryEntity[]> {
-    return this.categoriesRepo.findAllByScope(scope);
+  async getCategories(filtersOrScope: { scope?: string; domainId?: string; contentType?: string; parentId?: string; isActive?: boolean } | string = {}): Promise<CategoryEntity[]> {
+    const filters = typeof filtersOrScope === 'string' ? { scope: filtersOrScope } : filtersOrScope;
+    return this.categoriesRepo.findAll(filters);
   }
 
   async getCategoryById(id: string): Promise<CategoryEntity> {
@@ -43,8 +44,15 @@ export class CategoriesService {
       name: dto.name,
       slug: dto.slug,
       scope: dto.scope,
+      domainId: dto.domainId || null,
+      parentId: dto.parentId || null,
+      nameVi: dto.nameVi || null,
+      nameEn: dto.nameEn || null,
+      contentTypes: dto.contentTypes?.length ? dto.contentTypes : [dto.scope],
       description: dto.description || null,
       sortOrder: dto.sortOrder ?? 0,
+      isActive: dto.isActive ?? true,
+      isPromoted: dto.isPromoted ?? false,
     });
 
     if (this.auditLogService) {
@@ -66,7 +74,14 @@ export class CategoriesService {
     const updated = await this.categoriesRepo.updateTx(tx, id, {
       name: dto.name,
       description: dto.description,
+      domainId: dto.domainId,
+      parentId: dto.parentId,
+      nameVi: dto.nameVi,
+      nameEn: dto.nameEn,
+      contentTypes: dto.contentTypes,
       sortOrder: dto.sortOrder,
+      isActive: dto.isActive,
+      isPromoted: dto.isPromoted,
     });
 
     if (!updated) {

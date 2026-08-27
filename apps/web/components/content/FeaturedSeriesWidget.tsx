@@ -90,13 +90,15 @@ export function FeaturedSeriesWidget() {
                   isActive ? 'h-28 opacity-100 translate-y-0' : 'h-0 opacity-0 -translate-y-1'
                 }`}
               >
-                <Image
-                  src={series.image}
-                  alt={series.title}
-                  fill
-                  sizes="340px"
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
+                {isActive && (
+                  <Image
+                    src={series.image}
+                    alt={series.title}
+                    fill
+                    sizes="340px"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                )}
               </div>
 
               <div

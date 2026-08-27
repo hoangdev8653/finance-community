@@ -107,6 +107,21 @@ export class PostsController {
   }
 
   @Public()
+  @Get('domain/:domainSlug/bai-viet/:slug')
+  @ApiOperation({ summary: 'Get published post detail by domain slug and post slug' })
+  @ApiResponse({ status: 200, description: 'Post detail object with tags and media' })
+  getPostByDomainSlug(
+    @Param('domainSlug') domainSlug: string,
+    @Param('slug') slug: string,
+    @Req() req: any,
+  ) {
+    const viewerIdentifier = req.ip || req.headers['x-forwarded-for'] || 'anonymous';
+    const viewerUserId = req.user?.sub;
+    const viewerRoles = viewerUserId ? this.jitService.getUserRoles(viewerUserId) : undefined;
+    return this.postsService.getPostByDomainSlug(domainSlug, slug, viewerIdentifier, viewerUserId, viewerRoles);
+  }
+
+  @Public()
   @Get(':contentType/:slug')
   @ApiOperation({ summary: 'Get published post detail by content type and slug' })
   @ApiResponse({ status: 200, description: 'Post detail object with tags and media' })

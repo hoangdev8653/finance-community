@@ -21,7 +21,7 @@ export class CategoriesController {
   @ApiOperation({ summary: 'Get list of content categories' })
   @ApiResponse({ status: 200, description: 'Array of CategoryEntity objects' })
   getCategories(@Query() query: QueryCategoriesDto) {
-    return this.categoriesService.getCategories(query.scope);
+    return this.categoriesService.getCategories(query);
   }
 
   @Public()

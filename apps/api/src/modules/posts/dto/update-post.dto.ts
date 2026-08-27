@@ -24,6 +24,10 @@ export class UpdatePostDto {
 
   @IsOptional()
   @IsUUID()
+  domainId?: string;
+
+  @IsOptional()
+  @IsUUID()
   coverMediaId?: string;
 
   @IsOptional()

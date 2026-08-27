@@ -20,6 +20,8 @@ import { systemSettingsTable } from './system-settings.schema';
 import { featureFlagsTable } from './feature-flags.schema';
 import { authCredentialsTable } from './auth-credentials.schema';
 import { postBookmarksTable } from './post-bookmarks.schema';
+import { domainsTable } from './domains.schema';
+import { topicsTable } from './topics.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -43,6 +45,8 @@ export * from './system-settings.schema';
 export * from './feature-flags.schema';
 export * from './auth-credentials.schema';
 export * from './post-bookmarks.schema';
+export * from './domains.schema';
+export * from './topics.schema';
 
 export const schema = {
   users: usersTable,
@@ -67,4 +71,6 @@ export const schema = {
   featureFlags: featureFlagsTable,
   authCredentials: authCredentialsTable,
   postBookmarks: postBookmarksTable,
+  domains: domainsTable,
+  topics: topicsTable,
 };

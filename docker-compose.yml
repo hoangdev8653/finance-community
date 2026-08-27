@@ -16,6 +16,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
       # Automatically initialize all 20 database tables on container creation
       - ./docs/DATABASE_SCHEMA.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      # Extend the baseline schema with the multi-domain content architecture
+      - ./apps/api/migrations/0003_generalize_content_taxonomy.sql:/docker-entrypoint-initdb.d/02_generalize_content_taxonomy.sql:ro
+      # Align the database with the moderation fields used by the API schema
+      - ./apps/api/migrations/0004_add_post_moderation_columns.sql:/docker-entrypoint-initdb.d/03_add_post_moderation_columns.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
       interval: 5s

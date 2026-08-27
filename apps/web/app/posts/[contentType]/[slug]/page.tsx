@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { postsService } from '@/lib/posts/posts-service';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
 import { generateArticleJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/structured-data';
@@ -74,6 +74,12 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   if (!post || post.status !== 'PUBLISHED') {
     notFound();
+  }
+
+  const domains = await postsService.getDomains().catch(() => []);
+  const domain = post.domainId ? domains.find((item) => item.id === post.domainId) : undefined;
+  if (domain) {
+    permanentRedirect(`/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`);
   }
 
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD

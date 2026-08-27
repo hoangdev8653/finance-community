@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, Matches, IsIn, IsOptional, IsInt, Min } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, Matches, IsIn, IsOptional, IsInt, Min, IsUUID, IsArray, ArrayUnique } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -15,8 +15,32 @@ export class CreateCategoryDto {
   slug!: string;
 
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY'])
-  scope!: 'SERIES' | 'COMMUNITY';
+  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
+  scope!: 'SERIES' | 'COMMUNITY' | 'NEWS';
+
+  @IsOptional()
+  @IsUUID()
+  domainId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  parentId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayUnique()
+  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'], { each: true })
+  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  nameVi?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  nameEn?: string;
 
   @IsOptional()
   @IsString()
@@ -26,4 +50,10 @@ export class CreateCategoryDto {
   @IsInt()
   @Min(0)
   sortOrder?: number;
+
+  @IsOptional()
+  isActive?: boolean;
+
+  @IsOptional()
+  isPromoted?: boolean;
 }

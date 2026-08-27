@@ -32,6 +32,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { ReportsModule } from './modules/reports/reports.module';
 import { ModerationModule } from './modules/moderation/moderation.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { DomainsModule } from './modules/domains/domains.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { AdminModule } from './modules/admin/admin.module';
     PostsModule,
     ModerationModule,
     AdminModule,
+    DomainsModule,
   ],
   controllers: [AppController, TestSecurityController],
   providers: [

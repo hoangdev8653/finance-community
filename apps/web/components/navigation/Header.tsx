@@ -32,6 +32,8 @@ import { UserMenu } from '@/components/auth/UserMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { cn } from '@/lib/utils/cn';
+import { postsService } from '@/lib/posts/posts-service';
+import { useQuery } from '@tanstack/react-query';
 
 interface CategoryDropdownItem {
   title: string;
@@ -93,6 +95,11 @@ export function Header() {
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const { data: domains = [] } = useQuery({
+    queryKey: ['domains'],
+    queryFn: () => postsService.getDomains(),
+    staleTime: 15 * 60 * 1000,
+  });
   const dropdownRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -250,24 +257,24 @@ export function Header() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-1.5">
-                    {CATEGORY_ITEMS.map((item) => {
-                      const Icon = item.icon;
+                    {domains.map((domain, index) => {
+                      const Icon = [Building2, Globe, Coins, BookOpen, BarChart3, Wallet][index % 6];
                       return (
                         <Link
-                          key={item.title}
-                          href={item.href}
+                          key={domain.id}
+                          href={`/${encodeURIComponent(domain.slug)}`}
                           onClick={() => setIsCategoryOpen(false)}
                           className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-all group"
                         >
-                          <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg border shrink-0', item.color)}>
+                          <div className={cn('flex h-8 w-8 items-center justify-center rounded-lg border shrink-0', ['text-amber-500 bg-amber-500/10 border-amber-500/20', 'text-blue-500 bg-blue-500/10 border-blue-500/20', 'text-teal-500 bg-teal-500/10 border-teal-500/20', 'text-purple-500 bg-purple-500/10 border-purple-500/20', 'text-sky-500 bg-sky-500/10 border-sky-500/20', 'text-rose-500 bg-rose-500/10 border-rose-500/20'][index % 6])}>
                             <Icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-xs font-bold text-slate-900 dark:text-slate-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors block truncate">
-                              {item.title}
+                              {domain.name}
                             </span>
                             <span className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
-                              {item.desc}
+                              {domain.description || domain.name}
                             </span>
                           </div>
                         </Link>

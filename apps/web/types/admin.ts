@@ -129,13 +129,27 @@ export interface CreateCategoryDto {
   name: string;
   slug: string;
   scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  domainId?: string;
+  parentId?: string;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  nameVi?: string;
+  nameEn?: string;
   description?: string;
   sortOrder?: number;
+  isActive?: boolean;
+  isPromoted?: boolean;
 }
 
 export interface UpdateCategoryDto {
   name?: string;
   slug?: string;
+  domainId?: string | null;
+  parentId?: string | null;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  nameVi?: string;
+  nameEn?: string;
   description?: string;
   sortOrder?: number;
+  isActive?: boolean;
+  isPromoted?: boolean;
 }

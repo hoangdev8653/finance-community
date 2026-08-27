@@ -7,6 +7,7 @@ export interface PostEntity {
   body: string | null;
   coverMediaId: string | null;
   categoryId: string | null;
+  domainId?: string | null;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
   moderationStatus?: 'UNREVIEWED' | 'APPROVED' | 'BANNED';
   moderatedBy?: string | null;
@@ -29,6 +30,7 @@ export interface CreatePostDto {
   contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   body?: string;
   categoryId?: string;
+  domainId?: string;
   coverMediaId?: string;
   tags?: string[];
   mediaIds?: string[];
@@ -44,6 +46,7 @@ export interface UpdatePostDto {
   title?: string;
   body?: string;
   categoryId?: string;
+  domainId?: string;
   coverMediaId?: string;
   tags?: string[];
   mediaIds?: string[];
@@ -79,9 +82,17 @@ export interface CategoryEntity {
   slug: string;
   description: string | null;
   scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
-  icon: string | null;
+  icon?: string | null;
+  domainId?: string | null;
+  parentId?: string | null;
+  nameVi?: string | null;
+  nameEn?: string | null;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  isActive?: boolean;
+  isPromoted?: boolean;
   sortOrder: number;
   createdAt: string;
+  updatedAt?: string;
 }
 
 export interface TagEntity {
@@ -107,8 +118,9 @@ export interface PaginatedResult<T> {
 }
 
 export interface PostsFeedParams {
-  contentType?: 'SERIES' | 'COMMUNITY';
+  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
   categoryId?: string;
+  domainId?: string;
   tagId?: string;
   authorId?: string;
   status?: string;
@@ -116,4 +128,19 @@ export interface PostsFeedParams {
   limit?: number;
   sortBy?: 'publishedAt' | 'createdAt';
   order?: 'ASC' | 'DESC';
+}
+
+export interface DomainEntity {
+  id: string;
+  code: string;
+  slug: string;
+  name: string;
+  nameVi: string | null;
+  nameEn: string | null;
+  description: string | null;
+  sortOrder: number;
+  isActive: boolean;
+  isPromoted: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -18,6 +18,10 @@ export class QueryPostsDto {
 
   @IsOptional()
   @IsUUID()
+  domainId?: string;
+
+  @IsOptional()
+  @IsUUID()
   tagId?: string;
 
   @IsOptional()

@@ -8,6 +8,7 @@ import {
   PostsFeedParams,
   CreatePostDto,
   UpdatePostDto,
+  DomainEntity,
 } from '../../types/content';
 
 export const postsService = {
@@ -71,10 +72,28 @@ export const postsService = {
    * Get content categories directly from Backend API
    * GET /api/v1/categories
    */
-  async getCategories(scope?: 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
+  async getCategories(paramsOrScope?: {
+    scope?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    domainId?: string;
+    contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    parentId?: string;
+  } | 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
+    const params = typeof paramsOrScope === 'string' ? { scope: paramsOrScope } : paramsOrScope;
     const response = await apiClient.get<CategoryEntity[]>('/categories', {
-      params: scope ? { scope } : undefined,
+      params,
     });
+    return response.data;
+  },
+
+  async getByDomainSlug(domainSlug: string, slug: string): Promise<PostDetailResponse> {
+    const response = await apiClient.get<PostDetailResponse>(
+      `/posts/domain/${encodeURIComponent(domainSlug)}/bai-viet/${encodeURIComponent(slug)}`
+    );
+    return response.data;
+  },
+
+  async getDomains(): Promise<DomainEntity[]> {
+    const response = await apiClient.get<DomainEntity[]>('/domains');
     return response.data;
   },
 

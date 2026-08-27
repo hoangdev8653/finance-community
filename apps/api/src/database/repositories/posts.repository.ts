@@ -7,6 +7,7 @@ import { mediaTable } from '../schema/media.schema';
 import { postTagsTable } from '../schema/post-tags.schema';
 import { profilesTable } from '../schema/profiles.schema';
 import { followsTable } from '../schema/follows.schema';
+import { domainsTable } from '../schema/domains.schema';
 
 export type PostEntity = typeof postsTable.$inferSelect;
 export type NewPostEntity = typeof postsTable.$inferInsert;
@@ -15,6 +16,7 @@ export interface PostFeedFilterOptions {
   contentType?: string;
   sourceType?: string;
   categoryId?: string;
+  domainId?: string;
   tagId?: string;
   authorId?: string;
   status?: string;
@@ -78,6 +80,15 @@ export class PostsRepository {
     return record;
   }
 
+  async findByDomainSlug(domainSlug: string, slug: string): Promise<PostEntity | undefined> {
+    const [record] = await this.db
+      .select({ post: postsTable })
+      .from(postsTable)
+      .innerJoin(domainsTable, eq(postsTable.domainId, domainsTable.id))
+      .where(and(eq(domainsTable.slug, domainSlug), eq(postsTable.slug, slug), isNull(postsTable.deletedAt)));
+    return record?.post;
+  }
+
   async findFeedPaginated(options: PostFeedFilterOptions): Promise<PaginatedResult<PostEntity>> {
     const page = Math.max(1, options.page || 1);
     const limit = Math.min(100, Math.max(1, options.limit || 20));
@@ -93,6 +104,9 @@ export class PostsRepository {
     }
     if (options.categoryId) {
       conditions.push(eq(postsTable.categoryId, options.categoryId));
+    }
+    if (options.domainId) {
+      conditions.push(eq(postsTable.domainId, options.domainId));
     }
     if (options.tagId) {
       const taggedPostIds = this.db

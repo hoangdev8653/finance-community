@@ -2,6 +2,7 @@ import { pgTable, uuid, varchar, text, integer, timestamp, unique } from 'drizzl
 import { usersTable } from './users.schema';
 import { mediaTable } from './media.schema';
 import { categoriesTable } from './categories.schema';
+import { domainsTable } from './domains.schema';
 
 export const postsTable = pgTable(
   'posts',
@@ -16,6 +17,7 @@ export const postsTable = pgTable(
     body: text('body'),
     coverMediaId: uuid('cover_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
     categoryId: uuid('category_id').references(() => categoriesTable.id, { onDelete: 'set null' }),
+    domainId: uuid('domain_id').references(() => domainsTable.id, { onDelete: 'set null' }),
     status: varchar('status', { length: 20 }).notNull().default('DRAFT'),
     moderationStatus: varchar('moderation_status', { length: 20 }).notNull().default('UNREVIEWED'),
     moderatedBy: uuid('moderated_by').references(() => usersTable.id, { onDelete: 'set null' }),

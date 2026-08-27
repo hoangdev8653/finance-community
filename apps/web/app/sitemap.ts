@@ -44,17 +44,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Fetch published posts
   let postRoutes: MetadataRoute.Sitemap = [];
+  let domains = await postsService.getDomains().catch(() => []);
   try {
     const postsResult = await postsService.getFeed({ limit: 100 });
     if (postsResult && Array.isArray(postsResult.data)) {
       postRoutes = postsResult.data
         .filter((post) => post.status === 'PUBLISHED' && post.slug)
-        .map((post) => ({
-          url: `${baseUrl}/posts/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`,
+        .map((post) => {
+          const domain = domains.find((item) => item.id === post.domainId);
+          const path = domain
+            ? `/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`
+            : `/posts/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`;
+          return {
+          url: `${baseUrl}${path}`,
           lastModified: new Date(post.updatedAt || post.publishedAt || post.createdAt),
           changeFrequency: 'weekly',
           priority: 0.9,
-        }));
+          };
+        });
     }
   } catch {
     postRoutes = [];

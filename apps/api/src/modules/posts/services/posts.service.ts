@@ -97,9 +97,11 @@ export class PostsService {
 
   async createPost(authorId: string, dto: CreatePostDto): Promise<PostDetailResponse> {
     // 1. Validate Category if provided
+    let categoryDomainId: string | null = null;
     if (dto.categoryId) {
       const category = await this.categoriesService.getCategoryById(dto.categoryId);
-      if (category.scope !== dto.contentType) {
+      categoryDomainId = category.domainId;
+      if (!category.contentTypes.includes(dto.contentType) && category.scope !== dto.contentType) {
         throw new BadRequestException({
           statusCode: 400,
           error: 'Bad Request',
@@ -174,6 +176,7 @@ export class PostsService {
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
             categoryId: dto.categoryId || null,
+            domainId: dto.domainId || categoryDomainId,
             status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
@@ -203,6 +206,7 @@ export class PostsService {
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
             categoryId: dto.categoryId || null,
+            domainId: dto.domainId || categoryDomainId,
             status: dto.status,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
@@ -267,7 +271,7 @@ export class PostsService {
     // 1. Validate Category if updating
     if (dto.categoryId) {
       const category = await this.categoriesService.getCategoryById(dto.categoryId);
-      if (category.scope !== existing.contentType) {
+      if (!category.contentTypes.includes(existing.contentType) && category.scope !== existing.contentType) {
         throw new BadRequestException({
           statusCode: 400,
           error: 'Bad Request',
@@ -336,6 +340,7 @@ export class PostsService {
       if (dto.title !== undefined) updateData.title = dto.title;
       if (sanitizedBody !== undefined) updateData.body = sanitizedBody;
       if (dto.categoryId !== undefined) updateData.categoryId = dto.categoryId || null;
+      if (dto.domainId !== undefined) updateData.domainId = dto.domainId || null;
       if (dto.coverMediaId !== undefined) updateData.coverMediaId = dto.coverMediaId || null;
       if (dto.status !== undefined) updateData.status = dto.status;
       if (dto.metaTitle !== undefined) updateData.metaTitle = dto.metaTitle || null;
@@ -424,6 +429,29 @@ export class PostsService {
     };
   }
 
+  async getPostByDomainSlug(
+    domainSlug: string,
+    slug: string,
+    viewerIdentifier?: string,
+    viewerUserId?: string,
+    viewerRoles?: string[],
+  ): Promise<PostDetailResponse> {
+    const post = await this.postsRepo.findByDomainSlug(domainSlug, slug);
+    if (!post || post.status !== 'PUBLISHED') {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Published post '${slug}' in domain '${domainSlug}' not found.`,
+        code: 'POST_NOT_FOUND',
+      });
+    }
+
+    this.incrementViewCountDebounced(post.id, viewerIdentifier);
+    const tags = await this.postTagsRepo.getTagsForPost(post.id);
+    const media = await this.postMediaRepo.getMediaForPost(post.id);
+    return { ...post, tags, media };
+  }
+
   async getPostById(id: string, viewerUserId?: string, viewerRoles?: string[]): Promise<PostDetailResponse> {
     const post = await this.postsRepo.findById(id);
     if (!post) {
@@ -493,6 +521,7 @@ export class PostsService {
       contentType: query.contentType,
       sourceType: query.sourceType,
       categoryId: query.categoryId,
+      domainId: query.domainId,
       tagId: query.tagId,
       authorId: query.authorId,
       status: query.status || 'PUBLISHED',

@@ -21,10 +21,15 @@ export const searchService = {
    * Get taxonomy categories directly from Backend API
    * GET /api/v1/categories
    */
-  async getCategories(scope?: 'SERIES' | 'COMMUNITY'): Promise<CategoryEntity[]> {
+  async getCategories(paramsOrScope?: {
+    scope?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    domainId?: string;
+    contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  } | 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
+    const params = typeof paramsOrScope === 'string' ? { scope: paramsOrScope } : paramsOrScope;
     const response = await apiClient.get<CategoryEntity[]>('/categories', {
       params: {
-        scope: scope || undefined,
+        ...(params || {}),
       },
     });
     return response.data;
@@ -46,6 +51,9 @@ export const searchService = {
     }
     if (filters.categoryId) {
       params.categoryId = filters.categoryId;
+    }
+    if (filters.domainId) {
+      params.domainId = filters.domainId;
     }
     if (filters.tagId) {
       params.tagId = filters.tagId;
@@ -99,7 +107,7 @@ export const searchService = {
           id: cat.id,
           title: cat.name,
           slug: cat.slug,
-          contentType: cat.scope as 'SERIES' | 'COMMUNITY',
+          contentType: cat.contentTypes?.[0] || cat.scope,
           description: cat.description || `${cat.scope} category`,
           url: `/?category=${encodeURIComponent(cat.id)}`,
         });
