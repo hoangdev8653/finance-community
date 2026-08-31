@@ -1,0 +1,3 @@
+UPDATE posts SET cover_media_id='00000000-0000-4000-8000-00000000002b' WHERE id='91000000-0000-4000-8000-000000000001';
+INSERT INTO post_tags (post_id,tag_id) VALUES ('91000000-0000-4000-8000-000000000001','91d46d37-ea70-4132-bd10-587f537f6ecb'),('91000000-0000-4000-8000-000000000001','49e08290-dc51-460e-81e1-81b2dae73379') ON CONFLICT DO NOTHING;
+INSERT INTO quiz_questions (quiz_id,prompt,options,explanation,sort_order) SELECT q.id,'Cau hoi mau','[{"label":"Dap an dung","isCorrect":true},{"label":"Dap an sai","isCorrect":false}]'::jsonb,'Giai thich mau',0 FROM quizzes q WHERE q.post_id='91000000-0000-4000-8000-000000000001' AND NOT EXISTS (SELECT 1 FROM quiz_questions x WHERE x.quiz_id=q.id);
