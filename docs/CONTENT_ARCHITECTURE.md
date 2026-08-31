@@ -1,5 +1,11 @@
 # Content Architecture
 
+## Product priority
+
+The primary product is a multi-domain Learning platform. Finance is one category among many; it is not a hard-coded product boundary. Learning content is organized as `Category -> Series -> Lesson` and is distinct from News ingestion and Community posts.
+
+For the current product direction, News/RSS is removed from the runtime. Learning content must be original, licensed, or otherwise explicitly permitted for reuse.
+
 The platform treats finance as the first content domain, not as a permanent product boundary.
 
 ## Taxonomy model
@@ -39,12 +45,6 @@ Post
 - Existing auth, social, moderation, media, and post relationships remain unchanged.
 - Domain deletion is restricted when categories or posts still reference it.
 
-## RSS source registry
-
-RSS curation is configured through `newsSourcesConfig`.
-
-- `NEWS_RSS_FEEDS` remains available for legacy jobs that only know a comma-separated URL list.
-- `NEWS_RSS_SOURCE_REGISTRY` is the preferred structured JSON override.
 - Each structured source carries `domainCode`, `topicSlug`, `sourceName`, `url`, and `language`.
 - The default registry now covers MONEY, BUSINESS, TECH, CAREER, LIFE, and SPORTS instead of finance-only feeds.
 - A future ingest worker should resolve `domainCode` and `topicSlug` to database IDs before creating `NEWS` posts and `post_topics` rows.

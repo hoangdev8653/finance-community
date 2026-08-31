@@ -1,4 +1,16 @@
-# 🏦 Finance Pulse & Community Platform
+# Finance Community — Knowledge & Learning Platform
+
+Nền tảng học kiến thức thực tế qua các series bài học ngắn. Tài chính là một nhóm chủ đề chính, cùng với kỹ năng sống, sức khỏe, công việc, công nghệ và các kiến thức đời sống khác.
+
+Sản phẩm tập trung vào nội dung Learning do nền tảng tự biên soạn hoặc có quyền sử dụng rõ ràng. Luồng RSS/News đã được loại khỏi runtime hiện tại.
+
+Các content type chính:
+
+- `SERIES` / `LESSON`: nội dung học tập có cấu trúc.
+- `COMMUNITY`: thảo luận và nội dung do người dùng tạo.
+- `NEWS`: tùy chọn phụ, tách khỏi quy trình xuất bản Learning.
+
+Kiến trúc taxonomy dùng `Category → Series → Lesson`, giúp thêm chủ đề mới mà không cần tạo module riêng.
 
 A high-precision financial knowledge and community platform for editorial research, valuation models, and collaborative market intelligence.
 
@@ -125,3 +137,7 @@ cd apps/web && npm run typecheck
 # Chạy Unit Tests Frontend
 cd apps/web && npm run test
 ```
+
+
+cd D:\Web_Projects\finance-community
+docker compose up -d --build --force-recreate api
