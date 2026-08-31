@@ -49,6 +49,7 @@ export const PERMISSION_MATRIX: Record<RoleName, string[]> = {
     'users:ban',
     'audit_logs:read',
     'admin:full',
+    'learning:manage',
   ],
   SUPER_ADMIN: [
     'posts:read:published',
@@ -72,5 +73,6 @@ export const PERMISSION_MATRIX: Record<RoleName, string[]> = {
     'users:assign_role',
     'audit_logs:read',
     'admin:full',
+    'learning:manage',
   ],
 };

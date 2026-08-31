@@ -19,6 +19,7 @@ export const postsTable = pgTable(
     categoryId: uuid('category_id').references(() => categoriesTable.id, { onDelete: 'set null' }),
     domainId: uuid('domain_id').references(() => domainsTable.id, { onDelete: 'set null' }),
     status: varchar('status', { length: 20 }).notNull().default('DRAFT'),
+    editorialStatus: varchar('editorial_status', { length: 20 }).notNull().default('DRAFT'),
     moderationStatus: varchar('moderation_status', { length: 20 }).notNull().default('UNREVIEWED'),
     moderatedBy: uuid('moderated_by').references(() => usersTable.id, { onDelete: 'set null' }),
     moderatedAt: timestamp('moderated_at', { withTimezone: true }),

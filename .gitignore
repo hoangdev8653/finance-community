@@ -59,6 +59,10 @@ Thumbs.db
 .eslintcache
 scratch/
 
+# Local database backups and visual snapshots (kept locally, not committed)
+backup_before_*.sql
+dashboard_example.png
+
 # Agent skills & generated design systems / docs
 .agents/skills/
 skills/

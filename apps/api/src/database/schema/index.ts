@@ -23,6 +23,9 @@ import { postBookmarksTable } from './post-bookmarks.schema';
 import { domainsTable } from './domains.schema';
 import { topicsTable } from './topics.schema';
 import { postTopicsTable } from './post-topics.schema';
+import { quizzesTable, quizQuestionsTable, learningProgressTable } from './learning.schema';
+import { learningSourcesTable } from './learning-sources.schema';
+import { learningSeriesTable, learningSeriesPostsTable } from './learning-series.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -49,6 +52,9 @@ export * from './post-bookmarks.schema';
 export * from './domains.schema';
 export * from './topics.schema';
 export * from './post-topics.schema';
+export * from './learning.schema';
+export * from './learning-sources.schema';
+export * from './learning-series.schema';
 
 export const schema = {
   users: usersTable,
@@ -76,4 +82,10 @@ export const schema = {
   domains: domainsTable,
   topics: topicsTable,
   postTopics: postTopicsTable,
+  quizzes: quizzesTable,
+  quizQuestions: quizQuestionsTable,
+  learningProgress: learningProgressTable,
+  learningSources: learningSourcesTable,
+  learningSeries: learningSeriesTable,
+  learningSeriesPosts: learningSeriesPostsTable,
 };

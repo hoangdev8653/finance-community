@@ -20,6 +20,22 @@ services:
       - ./apps/api/migrations/0003_generalize_content_taxonomy.sql:/docker-entrypoint-initdb.d/02_generalize_content_taxonomy.sql:ro
       # Align the database with the moderation fields used by the API schema
       - ./apps/api/migrations/0004_add_post_moderation_columns.sql:/docker-entrypoint-initdb.d/03_add_post_moderation_columns.sql:ro
+      - ./apps/api/migrations/0005_add_post_topics_and_taxonomy_integrity.sql:/docker-entrypoint-initdb.d/04_add_post_topics_and_taxonomy_integrity.sql:ro
+      - ./apps/api/migrations/0011_enforce_post_taxonomy.sql:/docker-entrypoint-initdb.d/05_enforce_post_taxonomy.sql:ro
+      - ./apps/api/migrations/0012_add_general_domain.sql:/docker-entrypoint-initdb.d/06_add_general_domain.sql:ro
+      - ./apps/api/migrations/0013_add_general_categories.sql:/docker-entrypoint-initdb.d/07_add_general_categories.sql:ro
+      - ./apps/api/migrations/0014_localize_finance_categories.sql:/docker-entrypoint-initdb.d/08_localize_finance_categories.sql:ro
+      - ./apps/api/migrations/0015_add_learning_assessments.sql:/docker-entrypoint-initdb.d/09_add_learning_assessments.sql:ro
+      - ./apps/api/migrations/0016_add_learning_editorial_status.sql:/docker-entrypoint-initdb.d/10_add_learning_editorial_status.sql:ro
+      - ./apps/api/migrations/0017_add_learning_sources.sql:/docker-entrypoint-initdb.d/11_add_learning_sources.sql:ro
+      - ./apps/api/migrations/0018_seed_learning_taxonomy.sql:/docker-entrypoint-initdb.d/12_seed_learning_taxonomy.sql:ro
+      - ./apps/api/migrations/0019_remove_legacy_rss_pipeline.sql:/docker-entrypoint-initdb.d/09_remove_legacy_rss_pipeline.sql:ro
+      - ./apps/api/migrations/0020_localize_learning_taxonomy.sql:/docker-entrypoint-initdb.d/13_localize_learning_taxonomy.sql:ro
+      - ./apps/api/migrations/0021_fix_learning_taxonomy_utf8.sql:/docker-entrypoint-initdb.d/14_fix_learning_taxonomy_utf8.sql:ro
+      - ./apps/api/migrations/0022_remove_unused_legacy_categories.sql:/docker-entrypoint-initdb.d/15_remove_unused_legacy_categories.sql:ro
+      - ./apps/api/migrations/0023_fix_learning_domains_utf8.sql:/docker-entrypoint-initdb.d/16_fix_learning_domains_utf8.sql:ro
+      - ./apps/api/migrations/0024_finalize_learning_taxonomy.sql:/docker-entrypoint-initdb.d/17_finalize_learning_taxonomy.sql:ro
+      - ./apps/api/migrations/0025_add_learning_series.sql:/docker-entrypoint-initdb.d/18_add_learning_series.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
       interval: 5s
@@ -35,6 +51,8 @@ services:
       dockerfile: Dockerfile
     container_name: finance-community-api
     restart: always
+    env_file:
+      - ./apps/api/.env
     ports:
       - "4000:4000"
     environment:
