@@ -42,4 +42,9 @@ export class AuthController {
   authenticateGoogle(@Body() dto: GoogleAuthDto) {
     return this.authService.authenticateGoogleUser(dto);
   }
+
+  @Public()
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  refresh(@Body() dto: { refreshToken: string }) { return this.authService.refresh(dto.refreshToken); }
 }

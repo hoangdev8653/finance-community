@@ -48,6 +48,19 @@ export class AuthService {
     }
   }
 
+  private issueTokens(userId: string, email: string) {
+    const payload = { sub: userId, email };
+    return { accessToken: this.jwtService.sign(payload, { secret: this.secConfig.jwtSecret, expiresIn: '15m' }), refreshToken: this.jwtService.sign({ ...payload, type: 'refresh' }, { secret: this.secConfig.jwtSecret, expiresIn: '30d' }), tokenType: 'Bearer' };
+  }
+
+  async refresh(refreshToken: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync<{ sub: string; email: string; type?: string }>(refreshToken, { secret: this.secConfig.jwtSecret });
+      if (payload.type !== 'refresh') throw new Error('wrong token type');
+      return this.issueTokens(payload.sub, payload.email);
+    } catch { throw new UnauthorizedException('Refresh token expired or invalid.'); }
+  }
+
   async register(dto: RegisterDto) {
     const emailKey = dto.email.toLowerCase();
 
@@ -138,9 +151,11 @@ export class AuthService {
       { sub: userRecord.id, email: userRecord.email },
       { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
     );
+    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
 
     return {
       accessToken,
+      refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,
@@ -237,9 +252,11 @@ export class AuthService {
       { sub: userRecord.id, email: userRecord.email },
       { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
     );
+    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
 
     return {
       accessToken,
+      refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,
@@ -313,9 +330,11 @@ export class AuthService {
       { sub: userRecord.id, email: userRecord.email },
       { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
     );
+    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
 
     return {
       accessToken,
+      refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,

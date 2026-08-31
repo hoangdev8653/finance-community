@@ -12,7 +12,7 @@ import { UpdateUserStatusDto } from '../dto/update-user-status.dto';
 import { AssignRoleDto } from '../dto/assign-role.dto';
 import { UpdateSystemSettingDto } from '../dto/update-system-setting.dto';
 import { ToggleFeatureFlagDto } from '../dto/toggle-feature-flag.dto';
-import { postsTable, reportsTable, usersTable, profilesTable, mediaTable } from '../../../database/schema';
+import { postsTable, reportsTable, usersTable, profilesTable, mediaTable, commentsTable, categoriesTable, tagsTable, domainsTable } from '../../../database/schema';
 
 @Injectable()
 export class AdminService {
@@ -50,6 +50,10 @@ export class AdminService {
       recentPosts,
       publishedPosts,
       draftPosts,
+      comments,
+      media,
+      categories,
+      tags,
     ] = await Promise.all([
       this.db.select({ value: count() }).from(postsTable).where(isNull(postsTable.deletedAt)),
       this.db.select({ value: count() }).from(usersTable).where(eq(usersTable.status, 'ACTIVE')),
@@ -60,6 +64,10 @@ export class AdminService {
       this.db.select({ createdAt: postsTable.createdAt }).from(postsTable).where(and(isNull(postsTable.deletedAt), gte(postsTable.createdAt, sevenDaysAgo))),
       this.db.select({ value: count() }).from(postsTable).where(and(isNull(postsTable.deletedAt), eq(postsTable.status, 'PUBLISHED'))),
       this.db.select({ value: count() }).from(postsTable).where(and(isNull(postsTable.deletedAt), eq(postsTable.status, 'DRAFT'))),
+      this.db.select({ value: count() }).from(commentsTable).where(isNull(commentsTable.deletedAt)),
+      this.db.select({ value: count() }).from(mediaTable).where(isNull(mediaTable.deletedAt)),
+      this.db.select({ value: count() }).from(categoriesTable).where(eq(categoriesTable.isActive, true)),
+      this.db.select({ value: count() }).from(tagsTable),
     ]);
 
     // Aggregate user growth series
@@ -115,8 +123,70 @@ export class AdminService {
         draft: Number(draftPosts[0]?.value ?? 0),
         unreviewed: Number(reviewQueue[0]?.value ?? 0),
       },
+      totalComments: Number(comments[0]?.value ?? 0),
+      totalMedia: Number(media[0]?.value ?? 0),
+      activeCategories: Number(categories[0]?.value ?? 0),
+      activeTags: Number(tags[0]?.value ?? 0),
       generatedAt: new Date().toISOString(),
     };
+  }
+
+  async getPopularPosts(limit = 5) {
+    const domainLabels: Record<string, string> = { MONEY: 'Tài chính', BUSINESS: 'Kinh doanh', TECH: 'Công nghệ', CAREER: 'Nghề nghiệp & Học tập', LIFE: 'Đời sống', SPORTS: 'Thể thao', GENERAL: 'Khác' };
+    const categoryLabels: Record<string, string> = { 'stock-market': 'Chứng khoán', ai: 'Trí tuệ nhân tạo', 'tai-chinh-ca-nhan': 'Tài chính cá nhân', career: 'Nghề nghiệp', macroeconomics: 'Vĩ mô', football: 'Bóng đá', business: 'Doanh nghiệp', startup: 'Khởi nghiệp', software: 'Phần mềm', health: 'Sức khỏe' };
+    return this.db.select({
+      id: postsTable.id, title: postsTable.title, slug: postsTable.slug, contentType: postsTable.contentType, viewCount: postsTable.viewCount,
+      authorName: profilesTable.displayName, authorUsername: profilesTable.username,
+      categoryName: categoriesTable.name, categorySlug: categoriesTable.slug, categoryNameVi: categoriesTable.nameVi,
+      domainCode: domainsTable.code, domainName: domainsTable.name, domainNameVi: domainsTable.nameVi,
+      commentCount: count(commentsTable.id),
+    }).from(postsTable)
+      .leftJoin(profilesTable, eq(profilesTable.userId, postsTable.authorId))
+      .leftJoin(categoriesTable, eq(categoriesTable.id, postsTable.categoryId))
+      .leftJoin(domainsTable, eq(domainsTable.id, postsTable.domainId))
+      .leftJoin(commentsTable, eq(commentsTable.postId, postsTable.id))
+      .where(and(isNull(postsTable.deletedAt), eq(postsTable.status, 'PUBLISHED')))
+      .groupBy(postsTable.id, profilesTable.displayName, profilesTable.username, categoriesTable.name, categoriesTable.slug, categoriesTable.nameVi, domainsTable.code, domainsTable.name, domainsTable.nameVi)
+      .orderBy(desc(postsTable.viewCount)).limit(limit)
+      .then((posts) => posts.map((post) => ({ ...post, domainNameVi: domainLabels[post.domainCode || ''] || post.domainNameVi || post.domainName, categoryNameVi: categoryLabels[post.categorySlug || ''] || post.categoryNameVi || post.categoryName })));
+  }
+
+  async getPostCategoryStats() {
+    const domainLabels: Record<string, string> = {
+      MONEY: 'Tài chính', BUSINESS: 'Kinh doanh', TECH: 'Công nghệ', CAREER: 'Nghề nghiệp & Học tập', LIFE: 'Đời sống', SPORTS: 'Thể thao', GENERAL: 'Khác',
+    };
+    const rows = await this.db.select({
+      domainId: domainsTable.id,
+      domainCode: domainsTable.code,
+      domainName: domainsTable.name,
+      domainNameVi: domainsTable.nameVi,
+      categoryId: categoriesTable.id,
+      categoryName: categoriesTable.name,
+      categoryNameVi: categoriesTable.nameVi,
+      postCount: count(postsTable.id),
+    }).from(domainsTable)
+      .leftJoin(categoriesTable, and(eq(categoriesTable.domainId, domainsTable.id), eq(categoriesTable.isActive, true)))
+      .leftJoin(postsTable, and(eq(postsTable.categoryId, categoriesTable.id), eq(postsTable.status, 'PUBLISHED'), isNull(postsTable.deletedAt)))
+      .where(eq(domainsTable.isActive, true))
+      .groupBy(domainsTable.id, domainsTable.code, domainsTable.name, domainsTable.nameVi, categoriesTable.id, categoriesTable.name, categoriesTable.nameVi)
+      .orderBy(desc(count(postsTable.id)), domainsTable.sortOrder);
+    const grouped = new Map<string, any>();
+    for (const row of rows) {
+      if (!grouped.has(row.domainId)) grouped.set(row.domainId, { domainId: row.domainId, domainCode: row.domainCode, domainName: row.domainName, domainNameVi: row.domainNameVi, postCount: 0, categories: [] });
+      const domain = grouped.get(row.domainId);
+      const postCount = Number(row.postCount);
+      domain.postCount += postCount;
+      if (row.categoryId) domain.categories.push({ categoryId: row.categoryId, categoryName: row.categoryName, categoryNameVi: row.categoryNameVi, postCount });
+    }
+    return Array.from(grouped.values()).map((domain) => ({
+      categoryId: domain.domainId,
+      categoryName: domainLabels[domain.domainCode] || domain.domainName,
+      postCount: domain.postCount,
+      domainId: domain.domainId,
+      domainCode: domain.domainCode,
+      domainName: domain.domainNameVi || domain.domainName,
+      categories: domain.categories,
+    }));
   }
 
   async getUsers(page = 1, limit = 20, search?: string, status?: string) {

@@ -31,6 +31,7 @@ import { AuthCredentialsRepository } from '../../database/repositories/auth-cred
     AccountStatusGuard,
     EmailVerificationGuard,
     PermissionGuard,
+    UsersModule,
   ],
   exports: [
     AuthService,
@@ -42,6 +43,7 @@ import { AuthCredentialsRepository } from '../../database/repositories/auth-cred
     AccountStatusGuard,
     EmailVerificationGuard,
     PermissionGuard,
+    UsersModule,
   ],
 })
 export class AuthModule {}

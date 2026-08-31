@@ -44,6 +44,22 @@ export class AdminController {
     return this.adminService.getOverview();
   }
 
+  @Get('admin/analytics/popular-posts')
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getPopularPosts(@Query('limit') limit?: string) {
+    return this.adminService.getPopularPosts(Math.min(Number(limit) || 5, 20));
+  }
+
+  @Get('admin/analytics/posts-by-category')
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getPostCategoryStats() {
+    return this.adminService.getPostCategoryStats();
+  }
+
   @Get('admin/users')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'List users for admin governance' })

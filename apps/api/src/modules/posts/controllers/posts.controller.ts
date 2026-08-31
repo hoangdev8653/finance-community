@@ -26,6 +26,8 @@ import { JitProvisioningService } from '../../users/services/jit-provisioning.se
 
 import { RateLimit } from '../../../common/decorators/rate-limit.decorator';
 import { RateLimitGuard } from '../../../common/guards/rate-limit.guard';
+import { PermissionGuard } from '../../auth/guards/permission.guard';
+import { RequirePermission } from '../../auth/decorators/require-permission.decorator';
 
 @ApiTags('Posts')
 @Controller('posts')
@@ -79,6 +81,13 @@ export class PostsController {
   ) {
     return this.postsService.getMyBookmarkedPosts(user.sub, Number(page), Number(limit));
   }
+
+  @Get('admin/:id')
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('learning:manage')
+  @ApiOperation({ summary: 'Get a post for Learning editorial editing' })
+  getAdminPost(@Param('id') id: string, @CurrentUser() user: any) { return this.postsService.getPostById(id, user.sub); }
 
   @Post(':id/bookmark')
   @HttpCode(HttpStatus.OK)
@@ -148,7 +157,8 @@ export class PostsController {
   @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
   @RateLimit({ limit: 5, ttlSeconds: 3600, keyPrefix: 'create_post' })
   createPost(@CurrentUser() user: any, @Body() dto: CreatePostDto) {
-    return this.postsService.createPost(user.sub, dto);
+    const roles = this.jitService.getUserRoles(user.sub);
+    return this.postsService.createPost(user.sub, dto, roles);
   }
 
   @Patch(':id')

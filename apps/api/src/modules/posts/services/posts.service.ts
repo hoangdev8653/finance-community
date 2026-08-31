@@ -175,7 +175,15 @@ export class PostsService {
     return this.generateDeterministicSlug(title, authorId);
   }
 
-  async createPost(authorId: string, dto: CreatePostDto): Promise<PostDetailResponse> {
+  async createPost(authorId: string, dto: CreatePostDto, userRoles: string[] = ['MEMBER']): Promise<PostDetailResponse> {
+    const isPrivileged = userRoles.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role));
+    const allowedContentTypes = isPrivileged ? ['COMMUNITY', 'NEWS', 'SERIES'] : ['COMMUNITY'];
+    if (!allowedContentTypes.includes(dto.contentType)) {
+      throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: 'Your role is not allowed to create this content type.', code: 'CONTENT_TYPE_NOT_ALLOWED' });
+    }
+    if (!dto.domainId || !dto.categoryId) {
+      throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'Domain and category are required for every post.', code: 'DOMAIN_CATEGORY_REQUIRED' });
+    }
     // 1. Validate Category if provided
     let categoryDomainId: string | null = null;
     if (dto.categoryId) {
