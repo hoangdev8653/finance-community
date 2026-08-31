@@ -46,8 +46,17 @@ apiClient.interceptors.response.use(
       error.config?.url?.includes('/auth/register') ||
       error.config?.url?.includes('/auth/google');
 
-    if (error.response?.status === 401 && !isAuthEndpoint) {
-      tokenStore.notifyUnauthorized();
+    if (error.response?.status === 401 && !isAuthEndpoint && error.config && !(error.config as any)._retry) {
+      const refreshToken = tokenStore.getRefreshToken();
+      if (refreshToken) {
+        try {
+          const response = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
+          tokenStore.setToken(response.data.accessToken);
+          tokenStore.setRefreshToken(response.data.refreshToken);
+          (error.config as any)._retry = true;
+          return apiClient.request(error.config);
+        } catch { tokenStore.notifyUnauthorized(); }
+      } else tokenStore.notifyUnauthorized();
     }
 
     return Promise.reject(normalizedError);

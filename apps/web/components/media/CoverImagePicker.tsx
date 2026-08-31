@@ -44,7 +44,7 @@ export function CoverImagePicker({
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
         <ImageIcon className="h-4 w-4 text-primary" aria-hidden="true" />
-        <span>Cover Image (Optional)</span>
+        <span>Ảnh đại diện (không bắt buộc)</span>
       </div>
 
       <MediaUploader

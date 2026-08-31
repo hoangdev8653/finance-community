@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = `${data.series.name} | Chuỗi Bài Học Tài Chính`;
     const description =
       data.series.description ||
-      'Chuỗi nghiên cứu tài chính và giáo trình phân tích đầu tư bài bản trên Finance Pulse.';
+      'Chuỗi bài học thực tế được xây dựng theo lộ trình rõ ràng trên Finance Community.';
     const canonicalPath = `/series/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({

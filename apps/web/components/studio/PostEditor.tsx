@@ -6,11 +6,15 @@ import { CategorySelector } from './CategorySelector';
 import { TagInput } from './TagInput';
 import { SeoMetadataDrawer } from './SeoMetadataDrawer';
 import { CoverImagePicker } from '@/components/media/CoverImagePicker';
+import { DomainSelector } from './DomainSelector';
+import { SeriesSelector } from './SeriesSelector';
+import { Sparkles } from 'lucide-react';
 
 interface PostEditorProps {
   title: string;
   contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
   categoryId?: string;
+  domainId?: string;
   tags: string[];
   coverMediaId?: string | null;
   body: string;
@@ -20,9 +24,16 @@ interface PostEditorProps {
   onTitleChange: (val: string) => void;
   onContentTypeChange: (val: 'SERIES' | 'COMMUNITY' | 'NEWS') => void;
   onCategoryChange: (val: string) => void;
+  onDomainChange?: (val: string) => void;
+  seriesId?: string;
+  lessonOrder?: number;
+  onSeriesChange?: (val: string) => void;
+  onLessonOrderChange?: (val: number) => void;
   onTagsChange: (val: string[]) => void;
   onCoverMediaChange?: (val: string | null) => void;
   onBodyChange: (val: string) => void;
+  onGenerateDraft?: () => void;
+  isGeneratingDraft?: boolean;
   onMetaTitleChange: (val: string) => void;
   onMetaDescriptionChange: (val: string) => void;
 }
@@ -31,6 +42,7 @@ export function PostEditor({
   title,
   contentType,
   categoryId,
+  domainId,
   tags,
   coverMediaId,
   body,
@@ -40,9 +52,16 @@ export function PostEditor({
   onTitleChange,
   onContentTypeChange,
   onCategoryChange,
+  onDomainChange,
+  seriesId,
+  lessonOrder = 1,
+  onSeriesChange,
+  onLessonOrderChange,
   onTagsChange,
   onCoverMediaChange,
   onBodyChange,
+  onGenerateDraft,
+  isGeneratingDraft = false,
   onMetaTitleChange,
   onMetaDescriptionChange,
 }: PostEditorProps) {
@@ -85,7 +104,7 @@ export function PostEditor({
                 htmlFor="post-title-input"
                 className="font-medium text-foreground"
               >
-                Analysis Title <span className="text-danger">*</span>
+                Tiêu đề bài học <span className="text-danger">*</span>
               </label>
               <span className="font-mono text-xs text-muted-foreground">
                 {title.length} / 300
@@ -97,56 +116,19 @@ export function PostEditor({
               value={title}
               onChange={(e) => onTitleChange(e.target.value)}
               maxLength={300}
-              placeholder="e.g. Q3 2026 Sovereign Yield Curve Dynamics & Macro Implications..."
+              placeholder="Ví dụ: Lãi kép là gì và cách áp dụng trong thực tế?"
               className="w-full h-10 rounded-md border border-input bg-background px-3 font-heading text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
 
-          {/* Content Type Radio / Switch */}
+          {/* Learning content type is fixed to SERIES. */}
           <div className="space-y-1.5 shrink-0">
-            <label className="block text-xs font-medium text-foreground">
-              Scope
-            </label>
+            <label className="block text-xs font-medium text-foreground">Loại nội dung</label>
             {isAdmin ? (
-              <div className="flex items-center rounded-md border border-border bg-background p-0.5">
-                <button
-                  type="button"
-                  onClick={() => onContentTypeChange('COMMUNITY')}
-                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
-                    contentType === 'COMMUNITY'
-                      ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  COMMUNITY
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onContentTypeChange('SERIES')}
-                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
-                    contentType === 'SERIES'
-                      ? 'bg-emerald-600 text-white font-bold shadow-2xs'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  SERIES (Admin)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onContentTypeChange('NEWS')}
-                  className={`px-3 py-1.5 text-xs font-mono rounded-sm transition-colors cursor-pointer ${
-                    contentType === 'NEWS'
-                      ? 'bg-amber-500 text-slate-950 font-bold shadow-2xs'
-                      : 'text-muted-foreground hover:text-foreground'
-                  }`}
-                >
-                  NEWS (Admin)
-                </button>
-              </div>
+              <div className="inline-flex items-center rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-emerald-400">BÀI HỌC / SERIES</div>
             ) : (
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border bg-muted text-xs font-mono font-semibold text-foreground">
-                <span>COMMUNITY</span>
-                <span className="text-3xs font-sans text-muted-foreground">(Thảo luận cộng đồng)</span>
+                <span>BÀI HỌC / SERIES</span>
               </div>
             )}
           </div>
@@ -154,11 +136,14 @@ export function PostEditor({
 
         {/* Category & Tags Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border/60">
+          <DomainSelector value={domainId} onChange={onDomainChange ?? (() => undefined)} />
           <CategorySelector
             value={categoryId}
             scope={contentType}
+            domainId={domainId}
             onChange={onCategoryChange}
           />
+          <SeriesSelector value={seriesId} lessonOrder={lessonOrder} domainId={domainId} onChange={onSeriesChange ?? (() => undefined)} onOrderChange={onLessonOrderChange ?? (() => undefined)} />
           <TagInput tags={tags} onChange={onTagsChange} />
         </div>
 
@@ -175,11 +160,12 @@ export function PostEditor({
 
       {/* Markdown Body Editor */}
       <div className="space-y-1.5">
+        {onGenerateDraft && <div className="flex justify-end"><button type="button" onClick={onGenerateDraft} disabled={isGeneratingDraft} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-primary/40 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20 disabled:opacity-60"><Sparkles className="h-4 w-4" />{isGeneratingDraft ? 'Đang tạo bản nháp...' : 'AI tạo bản nháp'}</button></div>}
         <label
           htmlFor="post-body-input"
           className="block text-xs font-medium text-foreground"
         >
-          Research Content & Valuation Body
+          Nội dung bài học
         </label>
         <div className="rounded-lg shadow-2xs">
           <EditorToolbar onInsert={handleToolbarInsert} />
@@ -189,7 +175,7 @@ export function PostEditor({
             value={body}
             onChange={(e) => onBodyChange(e.target.value)}
             rows={16}
-            placeholder="Structure your institutional investment thesis, valuation tables, DCF assumptions, risk factors..."
+            placeholder="Viết nội dung bài học, ví dụ minh họa, các bước thực hành và phần tổng kết..."
             className="w-full rounded-b-lg border border-input bg-background p-4 font-mono text-xs leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary resize-y"
           />
         </div>

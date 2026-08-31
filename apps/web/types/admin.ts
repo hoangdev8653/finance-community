@@ -11,6 +11,10 @@ export interface AdminOverviewEntity {
   activeUsers: number;
   reviewQueue: number;
   openReports: number;
+  totalComments?: number;
+  totalMedia?: number;
+  activeCategories?: number;
+  activeTags?: number;
   userGrowthSeries?: TimeSeriesPoint[];
   userStatusBreakdown?: {
     active: number;

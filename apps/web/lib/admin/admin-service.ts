@@ -21,6 +21,8 @@ export const adminService = {
     const response = await apiClient.get<AdminOverviewEntity>('/admin/overview');
     return response.data;
   },
+  async getPopularPosts(limit = 5) { return (await apiClient.get('/admin/analytics/popular-posts', { params: { limit } })).data; },
+  async getPostCategoryStats() { return (await apiClient.get('/admin/analytics/posts-by-category')).data; },
   async getUsers(params?: { page?: number; limit?: number; search?: string; status?: string }): Promise<PaginatedAdminUsersResponse> {
     const response = await apiClient.get<PaginatedAdminUsersResponse>('/admin/users', { params });
     return response.data;

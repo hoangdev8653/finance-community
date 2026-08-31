@@ -88,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authService.login(dto);
       tokenStore.setToken(response.accessToken);
+      tokenStore.setRefreshToken(response.refreshToken);
       await syncUserProfile(response.user);
     } finally {
       setIsLoading(false);
@@ -99,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authService.register(dto);
       tokenStore.setToken(response.accessToken);
+      tokenStore.setRefreshToken(response.refreshToken);
       await syncUserProfile(response.user);
     } finally {
       setIsLoading(false);
@@ -110,6 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authService.loginWithGoogle(idToken);
       tokenStore.setToken(response.accessToken);
+      tokenStore.setRefreshToken(response.refreshToken);
       await syncUserProfile(response.user);
     } finally {
       setIsLoading(false);

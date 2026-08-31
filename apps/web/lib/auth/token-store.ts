@@ -1,6 +1,7 @@
 type UnauthorizedListener = () => void;
 
 const TOKEN_KEY = 'finance_community_token';
+const REFRESH_TOKEN_KEY = 'finance_community_refresh_token';
 let runtimeAccessToken: string | null = null;
 const unauthorizedListeners: Set<UnauthorizedListener> = new Set();
 
@@ -35,12 +36,15 @@ export const tokenStore = {
       }
     }
   },
+  getRefreshToken: (): string | null => typeof window !== 'undefined' ? localStorage.getItem(REFRESH_TOKEN_KEY) : null,
+  setRefreshToken: (token: string | null): void => { if (typeof window !== 'undefined') { if (token) localStorage.setItem(REFRESH_TOKEN_KEY, token); else localStorage.removeItem(REFRESH_TOKEN_KEY); } },
 
   clearToken: (): void => {
     runtimeAccessToken = null;
     if (typeof window !== 'undefined') {
       try {
         localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(REFRESH_TOKEN_KEY);
       } catch {
         // localStorage not accessible
       }
@@ -58,7 +62,8 @@ export const tokenStore = {
     runtimeAccessToken = null;
     if (typeof window !== 'undefined') {
       try {
-        localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(REFRESH_TOKEN_KEY);
       } catch {
         // Ignore
       }
@@ -72,4 +77,3 @@ export const tokenStore = {
     });
   },
 };
-

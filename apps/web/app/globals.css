@@ -45,6 +45,31 @@
 }
 
 @layer base {
+  /* Admin uses the requested light workspace layout without changing the public theme. */
+  .admin-light-mode {
+    --background: 210 25% 95%;
+    --foreground: 222.2 84% 4.9%;
+    --surface: 0 0% 100%;
+    --surface-elevated: 0 0% 100%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --muted: 210 25% 92%;
+    --muted-foreground: 215.4 25% 27%;
+    --border: 214.3 20% 82%;
+    --input: 214.3 20% 82%;
+    --primary: 160 84% 30%;
+    --primary-foreground: 0 0% 100%;
+    --accent: 160 84% 30%;
+    --accent-foreground: 0 0% 100%;
+    --secondary: 215 25% 35%;
+    --secondary-foreground: 0 0% 100%;
+    --success: 160 84% 30%;
+    --warning: 38 92% 42%;
+    --danger: 0 84.2% 52%;
+    --destructive: 0 84.2% 52%;
+    --info: 199 89% 40%;
+  }
+
   :root {
     /* High contrast canvas: Slate-100 page background makes pure white cards pop crisply */
     --background: 210 25% 95%;
@@ -268,4 +293,57 @@ select[aria-label="Lọc theo trạng thái"] option[value="DEACTIVATED"] { colo
   max-height: 20rem;
   object-fit: contain;
   background: hsl(var(--background) / 0.6);
+}
+
+.mt-5.whitespace-pre-wrap table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
+.mt-5.whitespace-pre-wrap th, .mt-5.whitespace-pre-wrap td { border: 1px solid hsl(var(--border)); padding: .75rem; text-align: left; }
+.mt-5.whitespace-pre-wrap th { background: hsl(var(--primary) / .12); font-weight: 700; }
+.mt-5.whitespace-pre-wrap tr:nth-child(even) { background: hsl(var(--surface) / .6); }
+.mt-5.whitespace-pre-wrap p { margin: 1rem 0; }
+.mt-5.whitespace-pre-wrap img { display: block; max-width: 100%; height: auto; margin: 1.25rem auto; border-radius: .75rem; }
+.mt-5.whitespace-pre-wrap a { color: hsl(var(--primary)); text-decoration: underline; }
+.whitespace-pre-wrap {
+  white-space: normal;
+}
+
+.whitespace-pre-wrap figure {
+  margin: 1.5rem auto;
+  text-align: center;
+}
+
+.whitespace-pre-wrap figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.whitespace-pre-wrap figure figcaption,
+.whitespace-pre-wrap figure figcaption p {
+  margin: 0.5rem auto 0;
+  color: rgb(148 163 184);
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Readable type scale for the Learning editor. */
+.learning-editor label,
+.learning-editor select,
+.learning-editor input,
+.learning-editor button,
+.learning-editor p {
+  font-size: 0.9375rem;
+}
+
+.learning-editor textarea {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.learning-editor input::placeholder,
+.learning-editor textarea::placeholder {
+  font-size: 0.9375rem;
 }

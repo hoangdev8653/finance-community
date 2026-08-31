@@ -46,7 +46,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
         htmlFor="post-tags-input"
         className="block text-xs font-medium text-foreground"
       >
-        Tags
+        Thẻ chủ đề
       </label>
 
       {/* Selected Tags Chips */}
@@ -76,7 +76,7 @@ export function TagInput({ tags, onChange }: TagInputProps) {
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={tags.length === 0 ? 'Type tag and press Enter...' : ''}
+            placeholder={tags.length === 0 ? 'Nhập thẻ và nhấn Enter...' : ''}
             className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden"
           />
         </div>

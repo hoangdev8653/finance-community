@@ -39,7 +39,7 @@ export function FeatureFlagsView() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-heading text-xl font-bold text-foreground">
-            System Feature Flags
+            Tính năng hệ thống
           </h2>
           <p className="text-xs text-muted-foreground font-mono">
             Toggle platform features and experimental capabilities in real time.
@@ -52,7 +52,7 @@ export function FeatureFlagsView() {
           className="text-xs font-mono gap-1.5"
         >
           <RefreshCw className="h-3.5 w-3.5" />
-          <span>Refresh</span>
+          <span>Làm mới</span>
         </Button>
       </div>
 
@@ -94,7 +94,7 @@ export function FeatureFlagsView() {
       {!isLoading && !isError && flags && flags.length === 0 && (
         <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
           <Flag className="h-8 w-8 text-muted-foreground mx-auto" />
-          <h3 className="text-sm font-semibold text-foreground">No Feature Flags Configured</h3>
+          <h3 className="text-sm font-semibold text-foreground">Chưa cấu hình tính năng</h3>
           <p className="text-xs text-muted-foreground">
             No system feature flags are currently defined in the database.
           </p>

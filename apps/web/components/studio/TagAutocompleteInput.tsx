@@ -59,7 +59,7 @@ export function TagAutocompleteInput({
   return (
     <div ref={containerRef} className="space-y-2.5 relative">
       <label className="text-xs font-mono font-semibold text-foreground flex items-center justify-between">
-        <span>Hashtags / Chủ đề ({selectedTags.length}/{maxTags})</span>
+        <span>Thẻ chủ đề ({selectedTags.length}/{maxTags})</span>
         <span className="text-xs text-muted-foreground">Nhấn Enter hoặc phẩy để thêm</span>
       </label>
 
@@ -93,7 +93,7 @@ export function TagAutocompleteInput({
             }}
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
-            placeholder={selectedTags.length === 0 ? "Gõ tìm tag (ví dụ: #ChungKhoan, #BCTC)..." : "Thêm tag..."}
+            placeholder={selectedTags.length === 0 ? "Tìm thẻ (ví dụ: tài chính, kỹ năng sống)..." : "Thêm thẻ..."}
             className="flex-1 min-w-[120px] bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden px-1.5 py-0.5 font-sans"
           />
         )}

@@ -38,6 +38,10 @@ export const postsService = {
     );
     return response.data;
   },
+  async getById(id: string): Promise<PostDetailResponse> {
+    const response = await apiClient.get<PostDetailResponse>(`/posts/admin/${encodeURIComponent(id)}`);
+    return response.data;
+  },
 
   /**
    * Create new post draft or publish immediately

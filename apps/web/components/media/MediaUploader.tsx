@@ -194,7 +194,7 @@ export function MediaUploader({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-foreground">
-                  <span className="text-primary hover:underline">Click to upload</span> or drag and drop
+                  <span className="text-primary hover:underline">Nhấn để tải ảnh lên</span> hoặc kéo thả
                 </p>
                 <p className="text-xs text-muted-foreground font-mono">
                   PNG, JPG, WebP, GIF up to 10MB

@@ -9,6 +9,7 @@ export interface PostEntity {
   categoryId: string | null;
   domainId?: string | null;
   status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
+  editorialStatus?: 'DRAFT' | 'REVIEW' | 'PUBLISHED' | 'NEEDS_UPDATE' | 'ARCHIVED';
   moderationStatus?: 'UNREVIEWED' | 'APPROVED' | 'BANNED';
   moderatedBy?: string | null;
   moderatedAt?: string | null;

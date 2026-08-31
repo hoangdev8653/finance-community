@@ -12,7 +12,7 @@ interface TagFilterBarProps {
 
 const DEFAULT_TAGS = [
   { id: 'tag-investing', name: 'investing' },
-  { id: 'tag-personal-finance', name: 'personal-finance' },
+  { id: 'tag-tai-chinh-ca-nhan', name: 'tai-chinh-ca-nhan' },
   { id: 'tag-stock-market', name: 'stock-market' },
   { id: 'tag-crypto', name: 'crypto' },
   { id: 'tag-valuation', name: 'valuation' },

@@ -72,21 +72,21 @@ export function AdminContentTrendChart({
               </span>
               <h2
                 id="content-analytics-heading"
-                className="font-heading text-base font-bold text-foreground"
+                className="font-heading text-lg font-extrabold text-foreground"
               >
-                Editorial & Content Pipeline
+                Xuất bản & nội dung
               </h2>
             </div>
-            <p className="text-xs text-muted-foreground">
-              Publication velocity, drafts created, and moderation flow over the last 7 days.
+            <p className="text-sm font-medium text-muted-foreground">
+              Tốc độ xuất bản, bản nháp và quy trình kiểm duyệt trong 7 ngày qua.
             </p>
           </div>
 
           <Link
             href="/admin/posts"
-            className="group inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="group inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
           >
-            <span>Manage posts</span>
+            <span>Quản lý bài viết</span>
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </Link>
         </div>
@@ -94,50 +94,50 @@ export function AdminContentTrendChart({
         {/* Highlight Stats Row */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-border bg-background/50 p-3">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <div className="flex items-center gap-1.5 text-base text-foreground font-semibold">
               <PenTool className="h-3.5 w-3.5 text-emerald-400" />
-              <span>7-Day Published</span>
+            <span>Đã xuất bản 7 ngày</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-foreground">
               {isLoading ? '…' : `+${totalNewPosts}`}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
-              {totalNewPosts > 0 ? 'New research articles' : 'No posts this week'}
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
+              {totalNewPosts > 0 ? 'Bài viết mới' : 'Chưa có bài viết tuần này'}
             </span>
           </div>
 
           <div className="rounded-xl border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <FileCheck2 className="h-3.5 w-3.5 text-amber-400" />
-              <span>Review Queue</span>
+              <span>Hàng chờ duyệt</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-amber-500 dark:text-amber-400">
               {isLoading ? '…' : postStatusBreakdown.unreviewed}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
-              Awaiting editorial check
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
+              Chờ biên tập kiểm tra
             </span>
           </div>
 
           <div className="col-span-2 sm:col-span-1 rounded-xl border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <Layers className="h-3.5 w-3.5 text-teal-400" />
-              <span>Draft Pipeline</span>
+              <span>Luồng bản nháp</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-foreground">
               {isLoading ? '…' : postStatusBreakdown.draft}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
-              In-progress drafts
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
+              Bản nháp đang xử lý
             </span>
           </div>
         </div>
 
         {/* 7-Day Real SVG Area Chart */}
         <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Content Production Trend</span>
-            <span className="font-mono text-[11px]">Realtime DB aggregation</span>
+          <div className="flex items-center justify-between pb-3 border-b border-border text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">Xu hướng sản xuất nội dung</span>
+            <span className="font-mono text-xs">Dữ liệu theo thời gian thực</span>
           </div>
 
           <div className="relative mt-4 h-36 w-full">
@@ -232,11 +232,11 @@ export function AdminContentTrendChart({
 
       {/* Footer Info */}
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-[11px] text-muted-foreground">
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 text-sm font-medium">
           <i className="h-2 w-2 rounded-full bg-emerald-500" />
-          <span>Total published articles: {postStatusBreakdown.published}</span>
+          <span>Tổng bài viết đã xuất bản: {postStatusBreakdown.published}</span>
         </span>
-        <span className="font-mono">Total DB posts: {totalPosts}</span>
+        <span className="font-mono">Tổng bài viết trong hệ thống: {totalPosts}</span>
       </div>
     </section>
   );

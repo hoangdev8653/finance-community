@@ -47,7 +47,7 @@ export function PostPreview({
 
       {/* Title */}
       <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-foreground">
-        {title || 'Untitled Financial Analysis'}
+          {title || 'Bài học chưa có tiêu đề'}
       </h1>
 
       {/* Meta Bar */}

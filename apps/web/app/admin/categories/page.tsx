@@ -1,6 +1,5 @@
-import React from 'react';
-import { CategoryManagementView } from '@/components/admin/CategoryManagementView';
+import { redirect } from 'next/navigation';
 
 export default function AdminCategoriesPage() {
-  return <CategoryManagementView />;
+  redirect('/admin/learning/categories');
 }

@@ -74,10 +74,10 @@ export function SystemSettingsView() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="font-heading text-xl font-bold text-foreground">
-            Runtime System Settings
+            Cài đặt hệ thống
           </h2>
           <p className="text-xs text-muted-foreground font-mono">
-            Configure system runtime parameters, rate limits, and operational thresholds.
+            Cấu hình tham số vận hành, giới hạn truy cập và ngưỡng hoạt động của hệ thống.
           </p>
         </div>
       </div>
@@ -117,7 +117,7 @@ export function SystemSettingsView() {
           className="p-8 text-center rounded-lg border border-danger/20 bg-danger/5 space-y-3"
         >
           <p className="text-sm font-medium text-foreground">
-            Failed to load system settings.
+            Không thể tải cài đặt hệ thống.
           </p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             Retry
@@ -128,9 +128,9 @@ export function SystemSettingsView() {
       {!isLoading && !isError && settings && settings.length === 0 && (
         <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
           <Sliders className="h-8 w-8 text-muted-foreground mx-auto" />
-          <h3 className="text-sm font-semibold text-foreground">No Settings Configured</h3>
+          <h3 className="text-sm font-semibold text-foreground">Chưa có cài đặt</h3>
           <p className="text-xs text-muted-foreground">
-            No system runtime configuration keys are currently stored.
+            Hiện chưa có cấu hình vận hành nào được lưu.
           </p>
         </div>
       )}

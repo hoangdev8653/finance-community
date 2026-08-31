@@ -38,10 +38,10 @@ export function StudioHeader({
         </Link>
         <div>
           <h1 className="font-heading text-xl sm:text-2xl font-bold text-foreground">
-            {isEditing ? 'Edit Financial Analysis' : 'Publishing Studio'}
+            {isEditing ? 'Chỉnh sửa bài học' : 'Tạo bài học'}
           </h1>
           <p className="text-xs text-muted-foreground font-mono">
-            {isEditing ? 'Update published research or draft' : 'Draft and publish institutional-grade research notes'}
+            {isEditing ? 'Cập nhật nội dung bài học hoặc bản nháp' : 'Soạn thảo và xuất bản nội dung học tập'}
           </p>
         </div>
       </div>
@@ -58,12 +58,12 @@ export function StudioHeader({
           {isPreview ? (
             <>
               <EyeOff className="h-3.5 w-3.5" />
-              <span>Exit Preview</span>
+              <span>Thoát xem trước</span>
             </>
           ) : (
             <>
               <Eye className="h-3.5 w-3.5" />
-              <span>Live Preview</span>
+              <span>Xem trước</span>
             </>
           )}
         </Button>
@@ -79,7 +79,7 @@ export function StudioHeader({
           className="font-mono text-xs gap-1.5"
         >
           <Save className="h-3.5 w-3.5" />
-          <span>Save Draft</span>
+          <span>Lưu nháp</span>
         </Button>
 
         {/* Publish */}
@@ -93,7 +93,7 @@ export function StudioHeader({
           className="font-mono text-xs gap-1.5"
         >
           <Send className="h-3.5 w-3.5" />
-          <span>{isEditing ? 'Update Post' : 'Publish Now'}</span>
+          <span>{isEditing ? 'Cập nhật' : 'Gửi duyệt'}</span>
         </Button>
       </div>
     </header>

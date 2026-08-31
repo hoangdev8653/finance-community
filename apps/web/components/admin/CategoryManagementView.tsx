@@ -21,9 +21,10 @@ import {
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
 
-export function CategoryManagementView() {
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'>('ALL');
-  const { data: categories, isLoading, isError, refetch } = useCategories(scopeFilter === 'ALL' ? undefined : scopeFilter);
+export function CategoryManagementView({ learningOnly = false }: { learningOnly?: boolean } = {}) {
+  const domainLabels: Record<string, string> = { MONEY: 'Tài chính', BUSINESS: 'Kinh doanh', TECH: 'Công nghệ', CAREER: 'Nghề nghiệp & Học tập', LIFE: 'Đời sống', SPORTS: 'Thể thao', GENERAL: 'Khác' };
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'>(learningOnly ? 'SERIES' : 'ALL');
+  const { data: categories, isLoading, isError, refetch } = useCategories(learningOnly ? 'SERIES' : scopeFilter === 'ALL' ? undefined : scopeFilter);
   const { data: domains = [] } = useQuery({
     queryKey: ['domains'],
     queryFn: () => postsService.getDomains(),
@@ -35,7 +36,7 @@ export function CategoryManagementView() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryEntity | null>(null);
-  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>('COMMUNITY');
+  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>(learningOnly ? 'SERIES' : 'COMMUNITY');
   const [domainId, setDomainId] = useState('');
 
   const [name, setName] = useState('');
@@ -44,6 +45,7 @@ export function CategoryManagementView() {
   const [sortOrder, setSortOrder] = useState<number>(0);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [expandedDomains, setExpandedDomains] = useState<Record<string, boolean>>({});
   const pageSize = 8;
 
   const [feedback, setFeedback] = useState<{
@@ -56,7 +58,7 @@ export function CategoryManagementView() {
     setEditingCategory(null);
     setName('');
     setSlug('');
-    setScope('COMMUNITY');
+    setScope(learningOnly ? 'SERIES' : 'COMMUNITY');
     setDomainId(domains[0]?.id || '');
     setDescription('');
     setSortOrder(0);
@@ -201,7 +203,7 @@ export function CategoryManagementView() {
 
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
-        <div className="flex flex-col gap-2 sm:flex-row"><select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="NEWS">NEWS</option><option value="SERIES">SERIES</option></select><AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
+        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="NEWS">NEWS</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
       </div>
 
       {isLoading && (
@@ -240,7 +242,24 @@ export function CategoryManagementView() {
       )}
 
       {!isLoading && !isError && categories && categories.length > 0 && (
-        <div className="overflow-x-auto rounded-lg border border-border bg-surface">
+        <div className="space-y-2 rounded-lg border border-border bg-surface p-2">
+          {domains.map((domain) => {
+            const domainCategories = filteredCategories.filter((category) => category.domainId === domain.id);
+            if (!domainCategories.length) return null;
+            const expanded = expandedDomains[domain.id] ?? false;
+            return <div key={domain.id} className="overflow-hidden rounded-lg border border-border">
+              <button type="button" onClick={() => setExpandedDomains((current) => ({ ...current, [domain.id]: !expanded }))} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/40">
+                <span><span className="font-semibold text-foreground">{domainLabels[domain.code] || domain.nameVi || domain.name}</span><span className="ml-2 text-xs text-muted-foreground">{domainCategories.length} danh mục</span></span>
+                <span className="text-lg text-muted-foreground">{expanded ? '−' : '+'}</span>
+              </button>
+              {expanded && <div className="grid gap-2 border-t border-border bg-background/30 p-3 sm:grid-cols-2">{domainCategories.map((category) => <div key={category.id} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"><div className="min-w-0"><p className="truncate text-sm font-semibold text-foreground">{category.name}</p><p className="truncate font-mono text-[11px] text-muted-foreground">{category.slug}</p></div><div className="flex shrink-0 items-center gap-1.5"><Button variant="outline" size="sm" onClick={() => openEditModal(category)} className="h-7 px-2 text-xs">Sửa</Button><Button variant="outline" size="sm" onClick={() => void handleDelete(category)} className="h-7 px-2 text-xs text-danger">Xóa</Button></div></div>)}</div>}
+            </div>;
+          })}
+        </div>
+      )}
+
+      {!isLoading && !isError && categories && categories.length > 0 && (
+        <div className="hidden overflow-x-auto rounded-lg border border-border bg-surface">
           <div className="grid grid-cols-[minmax(220px,1.5fr)_minmax(180px,1fr)_140px_140px_190px] border-b border-border bg-muted/50 px-4 py-3 text-xs font-mono uppercase text-muted-foreground"><span>Danh mục</span><span>Slug</span><span>Phạm vi</span><span>Ngày tạo</span><span className="text-right">Thao tác</span></div>
           <div className="divide-y divide-border">
             {visibleCategories.map((cat) => (
@@ -351,7 +370,7 @@ export function CategoryManagementView() {
                 />
               </div>
 
-              {!editingCategory && (
+              {!editingCategory && !learningOnly && (
                 <div className="space-y-1">
                   <label htmlFor="cat-scope" className="text-xs font-semibold text-foreground">
                     Phạm vi nội dung

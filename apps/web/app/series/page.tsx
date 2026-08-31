@@ -12,9 +12,9 @@ import { AppShell } from '@/components/layout/AppShell';
 import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: 'Chuỗi Bài Học & Giáo Trình Đầu Tư',
+  title: 'Chuỗi Bài Học & Kiến Thức Thực Tế',
   description:
-    'Khám phá các chuỗi bài học tài chính chọn lọc, khóa học định giá doanh nghiệp và lộ trình đầu tư từ cơ bản đến chuyên sâu trên Finance Pulse.',
+    'Khám phá các chuỗi bài học thực tế về tài chính, sức khỏe, kỹ năng sống, công việc và nhiều chủ đề hữu ích khác.',
   canonicalPath: '/series',
   ogType: 'website',
   twitterCard: 'summary',
@@ -30,8 +30,8 @@ export default async function SeriesPage() {
   }
 
   const collectionJsonLd = generateCollectionPageJsonLd(
-    'Chuỗi Bài Học & Giáo Trình Đầu Tư',
-    'Khám phá các chuỗi bài học tài chính chọn lọc, khóa học định giá doanh nghiệp và lộ trình đầu tư trên Finance Pulse.',
+    'Chuỗi Bài Học & Kiến Thức Thực Tế',
+    'Khám phá các chuỗi bài học thực tế được tổ chức theo chủ đề và lộ trình dễ học.',
     '/series'
   );
 
@@ -48,9 +48,9 @@ export default async function SeriesPage() {
         {/* Page Header */}
         <PageHeader
           icon={BookOpen}
-          label="Giáo trình Đào tạo"
-          title="Chuỗi Bài Phân Tích Chọn Lọc"
-          subtitle="Giáo trình nghiên cứu đầu tư chuyên sâu, được cấu trúc mạch lạc thành từng chương bài học dễ tiếp cận."
+          label="Học theo lộ trình"
+          title="Kiến thức thực tế, học dễ hiểu"
+          subtitle="Các series ngắn được cấu trúc thành từng bài học, ví dụ và hoạt động luyện tập để bạn học và áp dụng từng bước."
         />
 
 

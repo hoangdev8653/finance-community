@@ -82,7 +82,7 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
   {
     title: 'Tài chính Cá nhân',
     desc: 'Xây dựng dòng tiền tự do, Phân bổ tài sản & Quản trị rủi ro',
-    href: '/categories/personal-finance',
+    href: '/categories/tai-chinh-ca-nhan',
     icon: Wallet,
     color: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
   },

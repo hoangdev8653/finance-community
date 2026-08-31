@@ -12,6 +12,7 @@ import {
 
 vi.mock('@/lib/auth/AuthContext');
 vi.mock('@/lib/dashboard/use-dashboard');
+vi.mock('@/components/learning/LearningProgressPanel', () => ({ LearningProgressPanel: () => <div data-testid="learning-progress-panel" /> }));
 
 describe('DashboardView Component', () => {
   const mockUser = {
@@ -97,10 +98,10 @@ describe('DashboardView Component', () => {
   it('renders page header, KPI metrics, tab bar, and author post cards', () => {
     render(<DashboardView />);
 
-    expect(screen.getByText(/Bảng điều khiển & Quản lý Nghiên cứu/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Viết bài phân tích mới/i })).toHaveAttribute(
+    expect(screen.getByText(/Bảng điều khiển Học tập/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Khám phá series/i })).toHaveAttribute(
       'href',
-      '/posts/create'
+      '/series'
     );
 
     // KPI Metrics

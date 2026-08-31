@@ -28,6 +28,7 @@ describe('AuthContext', () => {
   it('login() sets token in tokenStore, synchronizes user profile, and updates auth state', async () => {
     vi.spyOn(authService, 'login').mockResolvedValueOnce({
       accessToken: 'login_jwt_token',
+      refreshToken: 'login_refresh_token',
       tokenType: 'Bearer',
       user: {
         id: 'u-1',

@@ -9,12 +9,20 @@ import { useCreatePost, useUpdatePost } from '@/lib/posts/use-post-mutations';
 import { StudioHeader } from './StudioHeader';
 import { PostEditor } from './PostEditor';
 import { PostPreview } from './PostPreview';
+import { LearningSourceManager } from '@/components/learning/LearningSourceManager';
+import { LearningQuizManager } from '@/components/learning/LearningQuizManager';
+import { learningService } from '@/lib/learning/learning-service';
+import { LearningAuditHistory } from '@/components/learning/LearningAuditHistory';
+import { SeriesSelector } from './SeriesSelector';
+import { learningSeriesService } from '@/lib/learning/learning-series-service';
+import { apiClient } from '@/lib/api/client';
 
 interface PostStudioProps {
   initialPost?: PostEntity;
+  defaultContentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
 }
 
-export function PostStudio({ initialPost }: PostStudioProps) {
+export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostStudioProps) {
   const router = useRouter();
   const { user } = useAuth();
   const categoryMap = useCategoryMap();
@@ -24,11 +32,14 @@ export function PostStudio({ initialPost }: PostStudioProps) {
   // Form State
   const [title, setTitle] = useState(initialPost?.title || '');
   const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>(
-    initialPost?.contentType || 'COMMUNITY'
+    initialPost?.contentType || defaultContentType
   );
   const [categoryId, setCategoryId] = useState<string | undefined>(
     initialPost?.categoryId || undefined
   );
+  const [domainId, setDomainId] = useState<string | undefined>(initialPost?.domainId || undefined);
+  const [seriesId, setSeriesId] = useState<string>();
+  const [lessonOrder, setLessonOrder] = useState(1);
   const [tags, setTags] = useState<string[]>([]);
   const [coverMediaId, setCoverMediaId] = useState<string | null>(
     initialPost?.coverMediaId || null
@@ -48,12 +59,22 @@ export function PostStudio({ initialPost }: PostStudioProps) {
 
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
+  const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
+  const generateDraft = async () => {
+    if (!title.trim() || !domainId || !categoryId) { setError('Vui lòng nhập tiêu đề, lĩnh vực và chủ đề trước khi tạo bản nháp.'); return; }
+    setIsGeneratingDraft(true); setError(null);
+    try { const { data } = await apiClient.post<{ body: string }>('/ai-editorial/draft', { title: title.trim(), domain: domainId, category: categoryId, series: seriesId, lessonOrder }); setBody(data.body); }
+    catch { setError('Không thể tạo bản nháp AI. Vui lòng kiểm tra cấu hình AI hoặc thử lại.'); }
+    finally { setIsGeneratingDraft(false); }
+  };
 
   const validate = (): boolean => {
     if (!title.trim()) {
-      setError('Analysis title is required.');
+      setError('Vui lòng nhập tiêu đề bài học.');
       return false;
     }
+    if (!domainId) { setError('Vui lòng chọn lĩnh vực học tập.'); return false; }
+    if (!categoryId) { setError('Vui lòng chọn chủ đề học tập.'); return false; }
     if (title.length > 300) {
       setError('Title cannot exceed 300 characters.');
       return false;
@@ -73,10 +94,16 @@ export function PostStudio({ initialPost }: PostStudioProps) {
 
     try {
       if (isEditing && initialPost) {
+        if (status === 'PUBLISHED' && contentType === 'SERIES' && !user?.roles?.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role))) {
+          await learningService.submitForReview(initialPost.id);
+          router.push('/admin/learning');
+          return;
+        }
         const updated = await updateMutation.mutateAsync({
           title: title.trim(),
           body: body.trim() || undefined,
           categoryId: categoryId || undefined,
+          domainId: domainId || undefined,
           tags: tags.length > 0 ? tags : undefined,
           coverMediaId: coverMediaId || undefined,
           status,
@@ -95,12 +122,15 @@ export function PostStudio({ initialPost }: PostStudioProps) {
           contentType,
           body: body.trim() || undefined,
           categoryId: categoryId || undefined,
+          domainId: domainId || undefined,
           tags: tags.length > 0 ? tags : undefined,
           coverMediaId: coverMediaId || undefined,
           status,
           metaTitle: metaTitle.trim() || undefined,
           metaDescription: metaDescription.trim() || undefined,
         });
+
+        if (seriesId) await learningSeriesService.addLesson(seriesId, created.id, lessonOrder);
 
         if (status === 'PUBLISHED') {
           router.push(`/posts/${created.contentType}/${created.slug}`);
@@ -119,7 +149,7 @@ export function PostStudio({ initialPost }: PostStudioProps) {
   const categoryName = categoryId ? categoryMap[categoryId]?.name : undefined;
 
   return (
-    <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 space-y-6">
+    <div className="learning-editor mx-auto w-full max-w-none px-0 py-4 space-y-6">
       {/* Studio Top Action Bar */}
       <StudioHeader
         isEditing={isEditing}
@@ -137,6 +167,9 @@ export function PostStudio({ initialPost }: PostStudioProps) {
           {error}
         </div>
       )}
+      {isEditing && initialPost?.contentType === 'SERIES' && <LearningSourceManager postId={initialPost.id} />}
+      {isEditing && initialPost?.contentType === 'SERIES' && <LearningQuizManager postId={initialPost.id} />}
+      {isEditing && initialPost?.contentType === 'SERIES' && user?.roles?.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role)) && <LearningAuditHistory postId={initialPost.id} />}
 
       {/* Workspace */}
       {isPreview ? (
@@ -153,6 +186,9 @@ export function PostStudio({ initialPost }: PostStudioProps) {
           title={title}
           contentType={contentType}
           categoryId={categoryId}
+          domainId={domainId}
+          seriesId={seriesId}
+          lessonOrder={lessonOrder}
           tags={tags}
           coverMediaId={coverMediaId}
           body={body}
@@ -162,9 +198,14 @@ export function PostStudio({ initialPost }: PostStudioProps) {
           onTitleChange={setTitle}
           onContentTypeChange={setContentType}
           onCategoryChange={setCategoryId}
+          onDomainChange={(value) => { setDomainId(value); setCategoryId(undefined); }}
+          onSeriesChange={setSeriesId}
+          onLessonOrderChange={setLessonOrder}
           onTagsChange={setTags}
           onCoverMediaChange={setCoverMediaId}
           onBodyChange={setBody}
+          onGenerateDraft={generateDraft}
+          isGeneratingDraft={isGeneratingDraft}
           onMetaTitleChange={setMetaTitle}
           onMetaDescriptionChange={setMetaDescription}
         />

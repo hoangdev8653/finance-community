@@ -28,7 +28,7 @@ export function SeoMetadataDrawer({
       >
         <div className="flex items-center gap-2">
           <Globe className="h-4 w-4 text-primary" />
-          <span>SEO & Search Engine Preview</span>
+          <span>Xem trước SEO trên công cụ tìm kiếm</span>
         </div>
         {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
       </button>
@@ -42,7 +42,7 @@ export function SeoMetadataDrawer({
                 htmlFor="seo-meta-title"
                 className="font-medium text-foreground"
               >
-                Meta Title
+                Tiêu đề SEO
               </label>
               <span className="font-mono text-xs text-muted-foreground">
                 {metaTitle.length} / 70
@@ -54,7 +54,7 @@ export function SeoMetadataDrawer({
               value={metaTitle}
               onChange={(e) => onMetaTitleChange(e.target.value)}
               maxLength={70}
-              placeholder="Custom title for Google search results..."
+              placeholder="Nhập tiêu đề hiển thị trên kết quả tìm kiếm Google..."
               className="w-full h-8 rounded-md border border-input bg-background px-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
@@ -66,7 +66,7 @@ export function SeoMetadataDrawer({
                 htmlFor="seo-meta-desc"
                 className="font-medium text-foreground"
               >
-                Meta Description
+                Mô tả SEO
               </label>
               <span className="font-mono text-xs text-muted-foreground">
                 {metaDescription.length} / 160
@@ -78,7 +78,7 @@ export function SeoMetadataDrawer({
               onChange={(e) => onMetaDescriptionChange(e.target.value)}
               maxLength={160}
               rows={2}
-              placeholder="Summary description for search snippets..."
+              placeholder="Nhập mô tả ngắn hiển thị trong kết quả tìm kiếm..."
               className="w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary resize-y"
             />
           </div>

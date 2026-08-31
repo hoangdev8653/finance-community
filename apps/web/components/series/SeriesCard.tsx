@@ -40,7 +40,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
 
         {/* Description — Enlarged Font Size & Weight */}
         <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 font-medium leading-relaxed line-clamp-3">
-          {series.description || 'Chương trình đào tạo tài chính chuyên sâu, cung cấp khung phân tích và mô hình thực chiến.'}
+          {series.description || 'Lộ trình bài học ngắn, dễ hiểu và có thể áp dụng vào cuộc sống.'}
         </p>
       </div>
 

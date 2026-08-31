@@ -46,19 +46,19 @@ export function AdminUserGrowthChart({
               </span>
               <h2
                 id="user-analytics-heading"
-                className="font-heading text-base font-bold text-foreground"
+                className="font-heading text-lg font-extrabold text-foreground"
               >
-                User Growth & Demographics
+                Tăng trưởng người dùng
               </h2>
             </div>
-            <p className="text-xs text-muted-foreground">
-              New account sign-ups and user health status over the last 7 days.
+            <p className="text-sm font-medium text-muted-foreground">
+              Người dùng mới và trạng thái tài khoản trong 7 ngày qua.
             </p>
           </div>
 
           <Link
             href="/admin/users"
-            className="group inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+            className="group inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
           >
             <span>Manage users</span>
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -68,14 +68,14 @@ export function AdminUserGrowthChart({
         {/* Highlight Stats Row */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-border bg-background/50 p-3">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+            <div className="flex items-center gap-1.5 text-base text-foreground font-semibold">
               <UserPlus className="h-3.5 w-3.5 text-sky-400" />
-              <span>7-Day Sign-ups</span>
+              <span>Đăng ký 7 ngày</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-foreground">
               {isLoading ? '…' : `+${totalNewUsers}`}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
               {totalNewUsers > 0 ? 'Active onboardings' : 'No new sign-ups'}
             </span>
           </div>
@@ -83,12 +83,12 @@ export function AdminUserGrowthChart({
           <div className="rounded-xl border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
-              <span>Active Ratio</span>
+              <span>Tỷ lệ hoạt động</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-emerald-500 dark:text-emerald-400">
               {isLoading ? '…' : `${activeRate}%`}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
               {statusBreakdown.active} active accounts
             </span>
           </div>
@@ -96,12 +96,12 @@ export function AdminUserGrowthChart({
           <div className="col-span-2 sm:col-span-1 rounded-xl border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
-              <span>Suspended</span>
+              <span>Tạm khóa</span>
             </div>
             <div className="mt-1 font-heading text-xl font-bold tracking-tight text-foreground">
               {isLoading ? '…' : statusBreakdown.suspended}
             </div>
-            <span className="mt-0.5 block text-[11px] text-muted-foreground">
+            <span className="mt-0.5 block text-sm font-medium text-muted-foreground">
               Policy restricted
             </span>
           </div>
@@ -109,13 +109,12 @@ export function AdminUserGrowthChart({
 
         {/* 7-Day Real Column/Bar Chart */}
         <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
-          <div className="flex items-center justify-between pb-3 border-b border-border text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">Daily Registrations</span>
-            <span className="font-mono text-[11px]">Realtime DB aggregation</span>
+          <div className="flex items-center justify-between pb-3 border-b border-border text-sm text-muted-foreground">
+            <span className="font-semibold text-foreground">Đăng ký hằng ngày</span>
+            <span className="font-mono text-xs">Dữ liệu theo thời gian thực</span>
           </div>
 
-          {/* Bar Chart Grid */}
-          <div className="relative mt-4 flex h-36 items-end justify-between gap-2 sm:gap-4 pt-4">
+          {series.length === 0 ? <div className="mt-4 flex h-36 items-center justify-center rounded-lg bg-muted/30 text-xs text-muted-foreground">Chưa có đủ dữ liệu đăng ký trong khoảng thời gian này.</div> : <div className="relative mt-4 flex h-36 items-end justify-between gap-2 sm:gap-4 pt-4">
             {/* Horizontal Grid lines */}
             <div className="pointer-events-none absolute inset-x-0 inset-y-0 flex flex-col justify-between text-[9px] text-muted-foreground/60">
               <div className="border-b border-dashed border-border/60 pb-0.5">
@@ -175,13 +174,13 @@ export function AdminUserGrowthChart({
                 </div>
               );
             })}
-          </div>
+          </div>}
         </div>
       </div>
 
       {/* Footer Info */}
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-[11px] text-muted-foreground">
-        <span className="flex items-center gap-1.5">
+        <span className="flex items-center gap-1.5 text-sm font-medium">
           <i className="h-2 w-2 rounded-full bg-sky-500" />
           <span>New sign-ups trend</span>
         </span>

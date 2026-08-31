@@ -16,7 +16,7 @@ export function SeriesGrid({ series }: SeriesGridProps) {
       <EmptyState
         icon={BookOpen}
         title="No educational series published yet."
-        description="Check back soon for curated financial research curricula and structured courses."
+        description="Các series bài học đang được xây dựng. Hãy quay lại sớm để khám phá những chủ đề hữu ích mới."
       />
     );
   }

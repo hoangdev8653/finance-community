@@ -15,6 +15,8 @@ import { PostReactionsBar } from '@/components/reactions/PostReactionsBar';
 import { PostAppealBanner } from './PostAppealBanner';
 import { SeriesNavigationWidget } from '@/components/series/SeriesNavigationWidget';
 import { PostDetailSidebar } from './PostDetailSidebar';
+import { LearningActions } from '@/components/learning/LearningActions';
+import { LearningQuiz } from '@/components/learning/LearningQuiz';
 
 interface PostDetailViewProps {
   initialPost: PostDetailResponse;
@@ -61,6 +63,8 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
             <PostHeader post={post} categoryName={categoryName} />
             <PostCoverMedia post={post} />
             <PostContentRenderer body={post.body} />
+            {post.contentType === 'SERIES' && <div className="mt-8"><LearningActions postId={post.id} /></div>}
+            {post.contentType === 'SERIES' && <LearningQuiz postId={post.id} />}
             <PostTagsList tags={post.tags} />
             <PostReactionsBar postId={post.id} />
             {isSeries && <SeriesNavigationWidget postId={post.id} />}

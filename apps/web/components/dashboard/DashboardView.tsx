@@ -16,6 +16,7 @@ import { DashboardTabs } from './DashboardTabs';
 import { DashboardPostsList } from './DashboardPostsList';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { Button } from '../ui/Button';
+import { LearningProgressPanel } from '../learning/LearningProgressPanel';
 
 export function DashboardView() {
   const { user } = useAuth();
@@ -75,28 +76,29 @@ export function DashboardView() {
 
   return (
     <div className="space-y-8">
+      <LearningProgressPanel />
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-300 dark:border-slate-800 pb-6">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800 px-3 py-1 rounded-md font-mono">
             <LayoutDashboard className="h-3.5 w-3.5" />
-            <span>Không gian Nhà sáng tạo</span>
+            <span>Không gian Học tập</span>
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
-            Bảng điều khiển & Quản lý Nghiên cứu
+            Bảng điều khiển Học tập
           </h1>
           <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            Quản lý các ấn phẩm tài chính của bạn, theo dõi lượng tương tác độc giả và tạo các bài phân tích chuyên sâu.
+            Theo dõi những gì bạn đang học, khám phá series mới và duy trì tiến độ mỗi ngày.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           <Link
-            href="/posts/create"
+            href="/series"
             className="inline-flex items-center gap-2 rounded-xl bg-slate-950 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 px-5 py-3 text-sm font-bold text-white transition-all shadow-sm"
           >
             <PenSquare className="h-4.5 w-4.5" />
-            <span>Viết bài phân tích mới</span>
+            <span>Khám phá series</span>
           </Link>
         </div>
       </div>
