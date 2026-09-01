@@ -1,1 +1,3 @@
-export interface LearningSeries { id: string; title: string; slug: string; description: string | null; domainId: string; categoryId: string; }
+export interface LearningSeries { id: string; title: string; slug: string; description: string | null; domainId: string; categoryId: string; isPublished?: boolean; }
+export interface LearningPathDetail { series: LearningSeries; lessons: Array<{ id: string; title: string; slug: string; lessonOrder: number; isRequired: boolean }>; }
+export interface LearningPathProgress { seriesId: string; completedCount: number; totalCount: number; requiredCompletedCount: number; requiredCount: number; percentage: number; nextLesson: { id: string; title: string; slug: string; lessonOrder: number } | null; lessons: Array<{ id: string; completed: boolean; locked: boolean }>; }

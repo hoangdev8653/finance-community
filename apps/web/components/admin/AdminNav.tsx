@@ -2,13 +2,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileCheck2, Users, Flag, Sliders, FileSearch, FolderTree, ShieldAlert } from 'lucide-react';
+import { LayoutDashboard, FileCheck2, Users, Flag, Sliders, FileSearch, FolderTree, ShieldAlert, Route } from 'lucide-react';
 
 const ADMIN_LINKS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true, group: 'Không gian làm việc' },
   { href: '/admin/posts', label: 'Tất cả bài học', icon: FileCheck2, exact: true, group: 'Nội dung' },
   { href: '/admin/learning', label: 'Duyệt bài học', icon: FileCheck2, exact: true, group: 'Nội dung' },
   { href: '/admin/learning/create', label: 'Tạo bài học', icon: FileCheck2, exact: true, group: 'Nội dung' },
+  { href: '/admin/learning/paths', label: 'Lộ trình học', icon: Route, exact: true, group: 'Nội dung' },
   { href: '/admin/moderation', label: 'Kiểm duyệt bài viết', icon: ShieldAlert, group: 'Nội dung' },
   { href: '/moderation', label: 'Hàng chờ báo cáo', icon: ShieldAlert, group: 'Cộng đồng' },
   { href: '/admin/users', label: 'Quản lý người dùng', icon: Users, group: 'Cộng đồng' },

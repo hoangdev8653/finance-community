@@ -80,13 +80,15 @@ export class LearningService {
     });
   }
 
-  async submitQuiz(postId: string, dto: SubmitQuizDto) {
+  async submitQuiz(postId: string, dto: SubmitQuizDto, userId?: string) {
     const [quiz] = await this.db.select({ id: quizzesTable.id }).from(quizzesTable).where(eq(quizzesTable.postId, postId)).limit(1);
     if (!quiz) throw new NotFoundException('Quiz not found.');
     const questions = await this.db.select().from(quizQuestionsTable).where(eq(quizQuestionsTable.quizId, quiz.id));
     const answerMap = new Map(dto.answers.map((answer) => [answer.questionId, answer.optionId]));
     const correct = questions.filter((question) => (question.options as Array<{ id: string; isCorrect: boolean }>).some((option) => option.id === answerMap.get(question.id) && option.isCorrect)).length;
-    return { score: correct, total: questions.length, percentage: questions.length ? Math.round((correct / questions.length) * 100) : 0 };
+    const result = { score: correct, total: questions.length, percentage: questions.length ? Math.round((correct / questions.length) * 100) : 0 };
+    if (userId && result.percentage >= 70) await this.updateProgress(userId, postId, { completed: true });
+    return result;
   }
 
   async updateProgress(userId: string, postId: string, dto: UpdateProgressDto) {

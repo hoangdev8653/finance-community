@@ -15,6 +15,10 @@ export const learningService = {
     const response = await apiClient.get<LearningQuiz>(`/learning/posts/${encodeURIComponent(postId)}/quiz`);
     return response.data;
   },
+  async submitQuiz(postId: string, answers: Array<{ questionId: string; optionId: string }>) {
+    const response = await apiClient.post<{ score: number; total: number; percentage: number }>(`/learning/posts/${encodeURIComponent(postId)}/quiz/submit`, { answers });
+    return response.data;
+  },
   async getProgress(postId: string) {
     const response = await apiClient.get<LearningProgress | null>(`/learning/posts/${encodeURIComponent(postId)}/progress`);
     return response.data;

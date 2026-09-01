@@ -54,7 +54,7 @@ export class LearningController {
   @Post('posts/:postId/quiz/submit')
   @Public()
   @ApiOperation({ summary: 'Grade a quiz submission without exposing correct answers' })
-  submitQuiz(@Param('postId') postId: string, @Body() dto: SubmitQuizDto) { return this.learningService.submitQuiz(postId, dto); }
+  submitQuiz(@CurrentUser() user: any, @Param('postId') postId: string, @Body() dto: SubmitQuizDto) { return this.learningService.submitQuiz(postId, dto, user?.sub); }
 
   @Patch('admin/posts/:postId/quiz')
   @ApiBearerAuth('JWT-auth')
