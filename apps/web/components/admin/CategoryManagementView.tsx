@@ -23,7 +23,7 @@ import { AdminPagination } from './AdminPagination';
 
 export function CategoryManagementView({ learningOnly = false }: { learningOnly?: boolean } = {}) {
   const domainLabels: Record<string, string> = { MONEY: 'Tài chính', BUSINESS: 'Kinh doanh', TECH: 'Công nghệ', CAREER: 'Nghề nghiệp & Học tập', LIFE: 'Đời sống', SPORTS: 'Thể thao', GENERAL: 'Khác' };
-  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'>(learningOnly ? 'SERIES' : 'ALL');
+  const [scopeFilter, setScopeFilter] = useState<'ALL' | 'SERIES' | 'COMMUNITY'>(learningOnly ? 'SERIES' : 'ALL');
   const { data: categories, isLoading, isError, refetch } = useCategories(learningOnly ? 'SERIES' : scopeFilter === 'ALL' ? undefined : scopeFilter);
   const { data: domains = [] } = useQuery({
     queryKey: ['domains'],
@@ -36,7 +36,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryEntity | null>(null);
-  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>(learningOnly ? 'SERIES' : 'COMMUNITY');
+  const [scope, setScope] = useState<'SERIES' | 'COMMUNITY'>(learningOnly ? 'SERIES' : 'COMMUNITY');
   const [domainId, setDomainId] = useState('');
 
   const [name, setName] = useState('');
@@ -70,7 +70,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
     setEditingCategory(cat);
     setName(cat.name);
     setSlug(cat.slug);
-    setScope(cat.scope as 'SERIES' | 'COMMUNITY' | 'NEWS');
+    setScope(cat.scope as 'SERIES' | 'COMMUNITY');
     setDomainId(cat.domainId || '');
     setDescription(cat.description || '');
     setSortOrder(cat.sortOrder || 0);
@@ -203,7 +203,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
 
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
-        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY' | 'NEWS'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="NEWS">NEWS</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
+        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
       </div>
 
       {isLoading && (
@@ -378,11 +378,11 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
                   <select
                     id="cat-scope"
                     value={scope}
-                    onChange={(e) => setScope(e.target.value as 'SERIES' | 'COMMUNITY' | 'NEWS')}
+                    onChange={(e) => setScope(e.target.value as 'SERIES' | 'COMMUNITY')}
                     className="w-full rounded-md border border-input bg-background px-3 py-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
                   >
                     <option value="COMMUNITY">COMMUNITY (Community Discussions)</option>
-                    <option value="NEWS">NEWS (Editorial News)</option>
+                    
                     <option value="SERIES">SERIES (Curriculum Series)</option>
                   </select>
                 </div>

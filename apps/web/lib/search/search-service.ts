@@ -22,10 +22,10 @@ export const searchService = {
    * GET /api/v1/categories
    */
   async getCategories(paramsOrScope?: {
-    scope?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    scope?: 'SERIES' | 'COMMUNITY';
     domainId?: string;
-    contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
-  } | 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
+    contentType?: 'SERIES' | 'COMMUNITY';
+  } | 'SERIES' | 'COMMUNITY'): Promise<CategoryEntity[]> {
     const params = typeof paramsOrScope === 'string' ? { scope: paramsOrScope } : paramsOrScope;
     const response = await apiClient.get<CategoryEntity[]>('/categories', {
       params: {
@@ -48,6 +48,9 @@ export const searchService = {
 
     if (filters.contentType && filters.contentType !== 'ALL') {
       params.contentType = filters.contentType;
+    }
+    if (filters.query?.trim()) {
+      params.q = filters.query.trim();
     }
     if (filters.categoryId) {
       params.categoryId = filters.categoryId;

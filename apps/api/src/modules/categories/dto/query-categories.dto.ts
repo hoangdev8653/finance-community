@@ -3,8 +3,8 @@ import { IsOptional, IsString, IsIn, IsUUID, IsBoolean } from 'class-validator';
 export class QueryCategoriesDto {
   @IsOptional()
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
-  scope?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  @IsIn(['SERIES', 'COMMUNITY'])
+  scope?: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
   @IsUUID()
@@ -12,7 +12,7 @@ export class QueryCategoriesDto {
 
   @IsOptional()
   @IsString()
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType?: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
   @IsUUID()

@@ -5,7 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Flame } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Breadcrumb } from '@/components/navigation/Breadcrumb';
-import { DailyNewsStrip } from '@/components/content/DailyNewsStrip';
+import { DailyLearningStrip } from '@/components/content/DailyLearningStrip';
 import { EditorialHeroGrid } from '@/components/content/EditorialHeroGrid';
 import { ScopeNavigationTabs, ScopeFilter } from '@/components/content/ScopeNavigationTabs';
 import { CategoryFilterBar } from '@/components/content/CategoryFilterBar';
@@ -101,7 +101,7 @@ function HomePageContent() {
         />
 
         {/* Daily Financial Pulse & Dispatches Strip with Controls */}
-        <DailyNewsStrip />
+        <DailyLearningStrip />
 
         {/* Editorial Lead Story & Today's Latest Wire Grid */}
         <EditorialHeroGrid />

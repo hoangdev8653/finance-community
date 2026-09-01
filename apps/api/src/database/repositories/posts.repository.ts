@@ -26,6 +26,7 @@ export interface PostFeedFilterOptions {
   limit?: number;
   sortBy?: string;
   order?: 'ASC' | 'DESC';
+  q?: string;
 }
 
 export interface PaginatedResult<T> {
@@ -129,6 +130,10 @@ export class PostsRepository {
     }
     if (options.status) {
       conditions.push(eq(postsTable.status, options.status));
+    }
+    if (options.q?.trim()) {
+      const pattern = `%${options.q.trim().replace(/[%_\\]/g, '\\$&')}%`;
+      conditions.push(sql`(${postsTable.title} ILIKE ${pattern} OR COALESCE(${postsTable.body}, '') ILIKE ${pattern})`);
     }
 
     const whereClause = and(...conditions);

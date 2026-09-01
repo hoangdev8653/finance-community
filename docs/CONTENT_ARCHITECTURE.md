@@ -1,56 +1,41 @@
 # Content Architecture
 
-## Product priority
+## Product direction
 
-The primary product is a multi-domain Learning platform. Finance is one category among many; it is not a hard-coded product boundary. Learning content is organized as `Category -> Series -> Lesson` and is distinct from News ingestion and Community posts.
+Finance Community is a Learning and Community platform. Learning content is organized as `Domain -> Category -> Learning path -> Lesson`; Community posts are independent discussion content.
 
-For the current product direction, News/RSS is removed from the runtime. Learning content must be original, licensed, or otherwise explicitly permitted for reuse.
+RSS, automated news ingestion and the `NEWS` content type are no longer part of the product or runtime. Learning content must be original, licensed, or explicitly permitted for reuse.
 
-The platform treats finance as the first content domain, not as a permanent product boundary.
-
-## Taxonomy model
+## Supported content types
 
 ```text
-Domain
-  -> Category (hierarchical, reusable across content types)
-      -> Topic (optional, domain-specific)
-  -> Tag (free-form cross-domain label)
-
-Post
-  -> contentType: NEWS | COMMUNITY | SERIES
-  -> domainId (optional)
-  -> categoryId (optional)
-  -> topics (many-to-many through post_topics)
-  -> tags
+SERIES     Learning lessons
+COMMUNITY  Community posts
 ```
 
-`categories.scope` remains in the database and API for one compatibility cycle. New code should use `contentTypes` to decide whether a category can classify a post. The migration backfills existing categories with the legacy scope and assigns them to the `MONEY` domain.
+Posts may have a domain, category, topics and tags. Categories are scoped to either `SERIES` or `COMMUNITY`.
+
+## Learning paths
+
+```text
+Learning path
+  -> ordered lessons (SERIES posts)
+  -> required or optional lesson
+  -> learner progress
+```
+
+Required lessons are completed in order. The client uses the learner progress API to surface the next available lesson and lock later lessons until prerequisites are complete.
 
 ## API contracts
 
-- `GET /domains` returns active domains ordered for navigation.
+- `GET /domains` returns active domains.
 - `GET /categories?domainId=...` filters categories by domain.
-- `GET /categories?contentType=NEWS` returns categories usable for news.
-- `GET /categories?scope=SERIES` remains supported for existing clients.
-- `GET /posts?domainId=...` filters posts independently from content type.
-- `GET /posts?topicId=...` filters posts attached to a reusable topic.
-- `POST /posts` and `PATCH /posts/:id` accept optional `topics: string[]` containing topic IDs.
+- `GET /categories?scope=SERIES` returns learning categories.
+- `GET /posts?domainId=...` filters published content.
+- `GET /series/learning/paths` lists published learning paths.
+- `GET /series/learning/paths/:slug` returns a public path and its published lessons.
+- `GET /series/learning/:id/progress` returns the signed-in learner's path progress.
 
-## Domain rules
+## Historical migrations
 
-- A category may support one or more content types through `contentTypes`.
-- A post may have a domain without a category, which supports uncategorized news and future content pipelines.
-- A post topic must belong to the same domain as the post.
-- Tags remain free-form labels and must not replace category/topic taxonomy.
-- Existing auth, social, moderation, media, and post relationships remain unchanged.
-- Domain deletion is restricted when categories or posts still reference it.
-
-- Each structured source carries `domainCode`, `topicSlug`, `sourceName`, `url`, and `language`.
-- The default registry now covers MONEY, BUSINESS, TECH, CAREER, LIFE, and SPORTS instead of finance-only feeds.
-- A future ingest worker should resolve `domainCode` and `topicSlug` to database IDs before creating `NEWS` posts and `post_topics` rows.
-
-## Migration
-
-Run `apps/api/migrations/0003_generalize_content_taxonomy.sql` after the existing migrations. It creates the domain registry, topics table, additive category fields, post domain support, and the initial domains: MONEY, BUSINESS, TECH, CAREER, LIFE, and SPORTS.
-
-Run `apps/api/migrations/0005_add_post_topics_and_taxonomy_integrity.sql` after moderation migration `0004`. It adds `post_topics` and normalizes the CAREER seed label away from the old `Career & Learning` naming.
+Migrations `0001` and `0006`–`0010` reference former RSS/news tables and are retained only as deployment history. Migration `0019_remove_legacy_rss_pipeline.sql` removes those tables, and migration `0028_finalize_learning_community_content.sql` removes NEWS data and restricts content types to `SERIES` and `COMMUNITY`.

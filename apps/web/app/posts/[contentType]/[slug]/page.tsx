@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
 
-  if (normalizedType !== 'community' && normalizedType !== 'series' && normalizedType !== 'news') {
+  if (normalizedType !== 'community' && normalizedType !== 'series') {
     return buildPageMetadata({
       title: 'Không Tìm Thấy Bài Viết',
       noIndex: true,
@@ -61,7 +61,7 @@ export default async function PostDetailPage({ params }: PageProps) {
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
 
-  if (normalizedType !== 'community' && normalizedType !== 'series' && normalizedType !== 'news') {
+  if (normalizedType !== 'community' && normalizedType !== 'series') {
     notFound();
   }
 
@@ -84,18 +84,8 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD
   const articleJsonLd = generateArticleJsonLd(post);
-  const sectionLabel =
-    post.contentType === 'NEWS'
-      ? 'Tin Tức Thị Trường'
-      : post.contentType === 'SERIES'
-      ? 'Chuỗi Bài Học'
-      : 'Cộng Đồng Phân Tích';
-  const sectionUrl =
-    post.contentType === 'NEWS'
-      ? '/posts?type=NEWS'
-      : post.contentType === 'SERIES'
-      ? '/series'
-      : '/posts';
+  const sectionLabel = post.contentType === 'SERIES' ? 'Chuỗi Bài Học' : 'Cộng Đồng Phân Tích';
+  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/posts';
 
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },

@@ -21,7 +21,7 @@ export const queryKeys = {
   },
   categories: {
     all: ['categories'] as const,
-    list: (scope?: 'SERIES' | 'COMMUNITY' | 'NEWS') => ['categories', 'list', scope || 'ALL'] as const,
+    list: (scope?: 'SERIES' | 'COMMUNITY') => ['categories', 'list', scope || 'ALL'] as const,
     detail: (id: string) => ['categories', 'detail', id] as const,
   },
   tags: {

@@ -2,7 +2,7 @@ import { PostEntity, TagEntity, CategoryEntity, PostsFeedParams } from './conten
 
 export interface SearchFilterState {
   query?: string;
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS' | 'ALL';
+  contentType?: 'SERIES' | 'COMMUNITY' | 'ALL';
   categoryId?: string;
   domainId?: string;
   tagId?: string;
@@ -18,7 +18,7 @@ export interface SearchResultItem {
   title: string;
   description?: string;
   slug?: string;
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType?: 'SERIES' | 'COMMUNITY';
   url: string;
 }
 

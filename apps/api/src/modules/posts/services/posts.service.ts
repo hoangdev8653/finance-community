@@ -161,6 +161,40 @@ export class PostsService {
     return this.postTopicsRepo.getTopicsForPost(postId);
   }
 
+  private async validateMediaForPost(
+    authorId: string,
+    body: string | undefined,
+    coverMediaId: string | null | undefined,
+    mediaIds: string[] | undefined,
+    isModeratorOrAdmin = false,
+  ): Promise<void> {
+    const imageUrls = Array.from(body?.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi) || []).map((match) => match[1]);
+    if (imageUrls.length > 3) {
+      throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'Mỗi bài viết chỉ được sử dụng tối đa 3 ảnh trong nội dung.', code: 'CONTENT_IMAGE_LIMIT_EXCEEDED' });
+    }
+
+    if (coverMediaId) {
+      const cover = await this.mediaService.getMediaById(coverMediaId);
+      if (cover.purpose !== 'cover' || (cover.uploaderId !== authorId && !isModeratorOrAdmin)) {
+        throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: 'Ảnh đại diện không hợp lệ hoặc không thuộc quyền sử dụng của bạn.', code: 'INVALID_COVER_MEDIA' });
+      }
+    }
+
+    for (const mediaId of mediaIds || []) {
+      const media = await this.mediaService.getMediaById(mediaId);
+      if (media.purpose !== 'content' || (media.uploaderId !== authorId && !isModeratorOrAdmin)) {
+        throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: `Ảnh nội dung '${mediaId}' không hợp lệ hoặc không thuộc quyền sử dụng của bạn.`, code: 'INVALID_CONTENT_MEDIA' });
+      }
+    }
+
+    for (const url of imageUrls) {
+      const media = await this.mediaService.getMediaBySecureUrl(url);
+      if (!media || media.purpose !== 'content' || (media.uploaderId !== authorId && !isModeratorOrAdmin)) {
+        throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'Nội dung có ảnh chưa được đăng ký trong kho media hoặc không thuộc quyền sử dụng.', code: 'UNREGISTERED_CONTENT_IMAGE' });
+      }
+    }
+  }
+
   public async generateUniqueSlugPg(
     tx: any,
     contentType: string,
@@ -177,7 +211,7 @@ export class PostsService {
 
   async createPost(authorId: string, dto: CreatePostDto, userRoles: string[] = ['MEMBER']): Promise<PostDetailResponse> {
     const isPrivileged = userRoles.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role));
-    const allowedContentTypes = isPrivileged ? ['COMMUNITY', 'NEWS', 'SERIES'] : ['COMMUNITY'];
+    const allowedContentTypes = isPrivileged ? ['COMMUNITY', 'SERIES'] : ['COMMUNITY'];
     if (!allowedContentTypes.includes(dto.contentType)) {
       throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: 'Your role is not allowed to create this content type.', code: 'CONTENT_TYPE_NOT_ALLOWED' });
     }
@@ -236,6 +270,8 @@ export class PostsService {
         }
       }
     }
+
+    await this.validateMediaForPost(authorId, dto.body, dto.coverMediaId, dto.mediaIds);
 
     // 4. Resolve Tags via TagsService
     const resolvedTagIds: string[] = [];
@@ -424,6 +460,8 @@ export class PostsService {
         }
       }
     }
+
+    await this.validateMediaForPost(userSub, dto.body !== undefined ? dto.body : existing.body || undefined, dto.coverMediaId !== undefined ? dto.coverMediaId : existing.coverMediaId, dto.mediaIds, isModeratorOrAdmin);
 
     // 4. Resolve Tags if updating
     let resolvedTagIds: string[] | undefined;
@@ -661,6 +699,7 @@ export class PostsService {
       limit: query.limit,
       sortBy: query.sortBy,
       order: query.order,
+      q: query.q,
     };
 
     return this.postsRepo.findFeedPaginated(options);

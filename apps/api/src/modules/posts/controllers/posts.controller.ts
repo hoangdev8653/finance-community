@@ -186,7 +186,7 @@ export class PostsController {
   @ApiResponse({ status: 404, description: 'Post not found' })
   @UseGuards(JwtAuthGuard, AccountStatusGuard)
   async deletePost(@CurrentUser() user: any, @Param('id') id: string) {
-    const roles = this.jitService.getUserRoles(user.sub);
+    const roles = await this.jitService.getUserRolesAsync(user.sub);
     await this.postsService.deletePost(user.sub, roles, id);
   }
 }

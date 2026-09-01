@@ -132,10 +132,10 @@ export interface PaginatedAuditLogsResponse {
 export interface CreateCategoryDto {
   name: string;
   slug: string;
-  scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  scope: 'SERIES' | 'COMMUNITY';
   domainId?: string;
   parentId?: string;
-  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
   nameVi?: string;
   nameEn?: string;
   description?: string;
@@ -149,7 +149,7 @@ export interface UpdateCategoryDto {
   slug?: string;
   domainId?: string | null;
   parentId?: string | null;
-  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
   nameVi?: string;
   nameEn?: string;
   description?: string;

@@ -16,8 +16,8 @@ export class CreatePostDto {
   title!: string;
 
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
-  contentType!: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  @IsIn(['SERIES', 'COMMUNITY'])
+  contentType!: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
   @IsString()

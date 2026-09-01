@@ -4,8 +4,12 @@ import { Type } from 'class-transformer';
 export class QueryPostsDto {
   @IsOptional()
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  @Max(120)
+  q?: string;
+  @IsOptional()
+  @IsString()
+  @IsIn(['SERIES', 'COMMUNITY'])
+  contentType?: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
   @IsString()

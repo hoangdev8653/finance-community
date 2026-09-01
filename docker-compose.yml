@@ -29,13 +29,17 @@ services:
       - ./apps/api/migrations/0016_add_learning_editorial_status.sql:/docker-entrypoint-initdb.d/10_add_learning_editorial_status.sql:ro
       - ./apps/api/migrations/0017_add_learning_sources.sql:/docker-entrypoint-initdb.d/11_add_learning_sources.sql:ro
       - ./apps/api/migrations/0018_seed_learning_taxonomy.sql:/docker-entrypoint-initdb.d/12_seed_learning_taxonomy.sql:ro
-      - ./apps/api/migrations/0019_remove_legacy_rss_pipeline.sql:/docker-entrypoint-initdb.d/09_remove_legacy_rss_pipeline.sql:ro
+      - ./apps/api/migrations/0019_remove_legacy_rss_pipeline.sql:/docker-entrypoint-initdb.d/09b_remove_legacy_rss_pipeline.sql:ro
       - ./apps/api/migrations/0020_localize_learning_taxonomy.sql:/docker-entrypoint-initdb.d/13_localize_learning_taxonomy.sql:ro
       - ./apps/api/migrations/0021_fix_learning_taxonomy_utf8.sql:/docker-entrypoint-initdb.d/14_fix_learning_taxonomy_utf8.sql:ro
       - ./apps/api/migrations/0022_remove_unused_legacy_categories.sql:/docker-entrypoint-initdb.d/15_remove_unused_legacy_categories.sql:ro
       - ./apps/api/migrations/0023_fix_learning_domains_utf8.sql:/docker-entrypoint-initdb.d/16_fix_learning_domains_utf8.sql:ro
       - ./apps/api/migrations/0024_finalize_learning_taxonomy.sql:/docker-entrypoint-initdb.d/17_finalize_learning_taxonomy.sql:ro
       - ./apps/api/migrations/0025_add_learning_series.sql:/docker-entrypoint-initdb.d/18_add_learning_series.sql:ro
+      # Add media deduplication hash and seed the first learning quiz demo
+      - ./apps/api/migrations/0026_add_media_content_hash.sql:/docker-entrypoint-initdb.d/19_add_media_content_hash.sql:ro
+      - ./apps/api/migrations/0027_seed_learning_quiz_demo.sql:/docker-entrypoint-initdb.d/20_seed_learning_quiz_demo.sql:ro
+      - ./apps/api/migrations/0028_finalize_learning_community_content.sql:/docker-entrypoint-initdb.d/21_finalize_learning_community_content.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
       interval: 5s

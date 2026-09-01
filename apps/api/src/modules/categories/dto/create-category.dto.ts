@@ -15,8 +15,8 @@ export class CreateCategoryDto {
   slug!: string;
 
   @IsString()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'])
-  scope!: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  @IsIn(['SERIES', 'COMMUNITY'])
+  scope!: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
   @IsUUID()
@@ -29,8 +29,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsArray()
   @ArrayUnique()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'], { each: true })
-  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  @IsIn(['SERIES', 'COMMUNITY'], { each: true })
+  contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
 
   @IsOptional()
   @IsString()

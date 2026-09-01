@@ -6,11 +6,11 @@ import { CategoryEntity } from '@/types/content';
 import { Button } from '@/components/ui/Button';
 
 interface PostsExplorerHeaderProps {
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType?: 'SERIES' | 'COMMUNITY';
   categoryId?: string;
   sortBy: 'publishedAt' | 'createdAt';
   categories: CategoryEntity[];
-  onContentTypeChange: (type?: 'SERIES' | 'COMMUNITY' | 'NEWS') => void;
+  onContentTypeChange: (type?: 'SERIES' | 'COMMUNITY') => void;
   onCategoryChange: (categoryId?: string) => void;
   onSortChange: (sortBy: 'publishedAt' | 'createdAt') => void;
   onResetFilters: () => void;
@@ -74,18 +74,6 @@ export function PostsExplorerHeader({
           </button>
           <button
             type="button"
-            onClick={() => onContentTypeChange('NEWS')}
-            aria-pressed={contentType === 'NEWS'}
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition-all cursor-pointer ${
-              contentType === 'NEWS'
-                ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-xs'
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100'
-            }`}
-          >
-            Tin mới
-          </button>
-          <button
-            type="button"
             onClick={() => onContentTypeChange('SERIES')}
             aria-pressed={contentType === 'SERIES'}
             className={`rounded-lg px-4 py-2 text-sm font-bold transition-all cursor-pointer ${
@@ -112,7 +100,7 @@ export function PostsExplorerHeader({
               <option value="">Tất cả danh mục</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
-                  {cat.name} ({cat.scope === 'SERIES' ? 'Series' : cat.scope === 'NEWS' ? 'News' : 'Cộng đồng'})
+                  {cat.name} ({cat.scope === 'SERIES' ? 'Series' : 'Cộng đồng'})
                 </option>
               ))}
             </select>

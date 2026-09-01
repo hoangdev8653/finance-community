@@ -21,8 +21,8 @@ export class UpdateCategoryDto {
   @IsOptional()
   @IsArray()
   @ArrayUnique()
-  @IsIn(['SERIES', 'COMMUNITY', 'NEWS'], { each: true })
-  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  @IsIn(['SERIES', 'COMMUNITY'], { each: true })
+  contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
 
   @IsOptional()
   @IsString()

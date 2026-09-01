@@ -1,7 +1,7 @@
 export interface PostEntity {
   id: string;
   authorId: string;
-  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType: 'SERIES' | 'COMMUNITY';
   title: string;
   slug: string;
   body: string | null;
@@ -29,7 +29,7 @@ export interface PostEntity {
 
 export interface CreatePostDto {
   title: string;
-  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType: 'SERIES' | 'COMMUNITY';
   body?: string;
   categoryId?: string;
   domainId?: string;
@@ -94,13 +94,13 @@ export interface CategoryEntity {
   name: string;
   slug: string;
   description: string | null;
-  scope: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  scope: 'SERIES' | 'COMMUNITY';
   icon?: string | null;
   domainId?: string | null;
   parentId?: string | null;
   nameVi?: string | null;
   nameEn?: string | null;
-  contentTypes?: Array<'SERIES' | 'COMMUNITY' | 'NEWS'>;
+  contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
   isActive?: boolean;
   isPromoted?: boolean;
   sortOrder: number;
@@ -131,7 +131,7 @@ export interface PaginatedResult<T> {
 }
 
 export interface PostsFeedParams {
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType?: 'SERIES' | 'COMMUNITY';
   categoryId?: string;
   domainId?: string;
   tagId?: string;

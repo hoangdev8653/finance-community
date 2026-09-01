@@ -16,7 +16,6 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 │ 2  │ 📜 Mục Lục Trượt Mượt (Table of Contents) │ ⚡ Cao      │ Frontend Post Detail      │
 │ 3  │ 🧮 Bảng Tính Lãi Kép & Định Giá Cổ Phiếu  │ ⚡ Cao      │ Frontend Interactive Tool │
 │ 4  │ ⚡ Khung Đăng Nhanh Mạng Xã Hội           │ ⭐ Trung    │ Frontend + Backend Feed   │
-│ 5  │ 🤖 Tòa Soạn Tin Tức Tự Động (AI Newsroom) │ 💎 Cốt lõi  │ Backend News Curation     │
 │ 6  │ 🔵 Đăng Nhập 1-Chạm Bằng Facebook         │ ⭐ Trung    │ Auth Module (FE + BE)     │
 │ 7  │ 🗂️ Phân Định Rạch Ròi 3 Loại Nội Dung    │ 💎 Đã xong  │ Backend Schema & UI Feed  │
 │ 8  │ 🎓 AI Soạn Thảo Series Bài Học Tài Chính  │ ⭐ Trung    │ AI Studio & Series Engine │
@@ -74,18 +73,7 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 
 ---
 
-### 5. 🤖 Hệ Thống Tòa Soạn Tin Tức Tự Động (`news-curation`)
-* **Mục tiêu**: Tự động hóa 100% quy trình cào tin và dùng AI viết lại tin tức tài chính hằng ngày.
-* **Cơ chế hoạt động**:
-  * **Thu thập Lai (Hybrid)**: Quét RSS Feeds định kỳ (`06:30`, `11:30`, `17:30`) từ CafeF, Vietstock, VnEconomy + Dùng Cheerio/Readability bóc tách toàn văn thân bài và ảnh gốc.
-  * **Lọc trùng lặp (Deduplication)**: 5 tầng kiểm tra chống cào trùng; gom tin cùng 1 sự kiện.
-  * **Gemini 2.5 Flash Rewriter**: Bóc tách số liệu thị trường (`NEWS_ANALYSIS_TEMPLATE`), viết lại bài hoàn toàn mới theo văn phong tài chính khách quan, súc tích, có Sapo và H2.
-  * **Quick URL Import**: Ô dán link bài báo bất kỳ trên Web ➡️ AI tự bóc tách và viết nháp sau 3 giây.
-  * **Trang Quản trị `/admin/news-curation`**: Lưu bản nháp `status = 'DRAFT'` để BTV duyệt bằng **1-Click** xuất bản lên Trang chủ.
-
----
-
-### 6. 🔵 Đăng Nhập 1-Chạm Bằng Facebook (Facebook OAuth Login)
+### 5. 🔵 Đăng Nhập 1-Chạm Bằng Facebook (Facebook OAuth Login)
 * **Mục tiêu**: Giúp người dùng Việt Nam đăng ký và gia nhập cộng đồng chỉ trong 1 cú click.
 * **Cơ chế hoạt động**:
   * Frontend: Nút **"Tiếp tục với Facebook"** ([FacebookAuthButton.tsx](file:///d:/tools/finance-community/apps/web/components/auth)) đặt cạnh nút Google.
@@ -132,7 +120,5 @@ gantt
     Khung Đăng Nhanh Mạng Xã Hội        :p5, after p4, 1d
     Đăng Nhập 1-Chạm Facebook           :p6, after p5, 1d
     section Giai Đoạn 3 (Tự Động Hóa AI)
-    Module Tòa Soạn News Curation (BE)  :p7, after p6, 2d
-    Trang Quản Trị /admin/news-curation :p8, after p7, 1d
-    AI Soạn Thảo Series Bài Học         :p9, after p8, 1d
+    AI Soạn Thảo Series Bài Học         :p7, after p6, 1d
 ```

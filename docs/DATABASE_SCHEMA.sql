@@ -321,7 +321,7 @@ CREATE TABLE posts (
         UNIQUE (content_type, slug),
 
     CONSTRAINT chk_posts_content_type
-        CHECK (content_type IN ('SERIES', 'COMMUNITY', 'NEWS')),
+        CHECK (content_type IN ('SERIES', 'COMMUNITY')),
 
     CONSTRAINT chk_posts_source_type
         CHECK (source_type IN ('AI_CURATED', 'EDITORIAL', 'USER')),

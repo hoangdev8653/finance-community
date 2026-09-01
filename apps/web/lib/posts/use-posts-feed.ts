@@ -46,7 +46,7 @@ export function useFollowingFeed(limit = 10, enabled = true) {
   });
 }
 
-export function useCategories(scope?: 'SERIES' | 'COMMUNITY' | 'NEWS') {
+export function useCategories(scope?: 'SERIES' | 'COMMUNITY') {
   return useQuery({
     queryKey: queryKeys.categories.list(scope),
     queryFn: () => postsService.getCategories(scope),
@@ -62,7 +62,7 @@ export function useTags(search?: string, limit = 20) {
   });
 }
 
-export function useCategoryMap(scope?: 'SERIES' | 'COMMUNITY' | 'NEWS'): Record<string, CategoryEntity> {
+export function useCategoryMap(scope?: 'SERIES' | 'COMMUNITY'): Record<string, CategoryEntity> {
   const { data: categories = [] } = useCategories(scope);
   return categories.reduce<Record<string, CategoryEntity>>((acc, cat) => {
     acc[cat.id] = cat;

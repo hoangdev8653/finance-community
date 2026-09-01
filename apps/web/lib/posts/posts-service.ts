@@ -77,11 +77,11 @@ export const postsService = {
    * GET /api/v1/categories
    */
   async getCategories(paramsOrScope?: {
-    scope?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    scope?: 'SERIES' | 'COMMUNITY';
     domainId?: string;
-    contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+    contentType?: 'SERIES' | 'COMMUNITY';
     parentId?: string;
-  } | 'SERIES' | 'COMMUNITY' | 'NEWS'): Promise<CategoryEntity[]> {
+  } | 'SERIES' | 'COMMUNITY'): Promise<CategoryEntity[]> {
     const params = typeof paramsOrScope === 'string' ? { scope: paramsOrScope } : paramsOrScope;
     const response = await apiClient.get<CategoryEntity[]>('/categories', {
       params,

@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/feedback/EmptyState';
 import { Button } from '@/components/ui/Button';
 
 interface FeedListProps {
-  contentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  contentType?: 'SERIES' | 'COMMUNITY';
   categoryId?: string;
   tagId?: string;
   topicId?: string;
