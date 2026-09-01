@@ -1,5 +1,6 @@
 import { Injectable, ServiceUnavailableException } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
+import { buildLearningDraftPrompt } from './prompts/learning-draft.prompt';
 
 @Injectable()
 export class AiEditorialService {
@@ -7,8 +8,27 @@ export class AiEditorialService {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) throw new ServiceUnavailableException('AI chưa được cấu hình trên máy chủ.');
     const ai = new GoogleGenAI({ apiKey });
-    const prompt = `Bạn là trợ lý biên tập nội dung học tập bằng tiếng Việt. Hãy tạo một bản nháp nguyên bản, chính xác, dễ hiểu cho bài học có tiêu đề: "${input.title}". Không sao chép bài báo. Các giá trị lĩnh vực, chủ đề và series bên dưới chỉ là mã tham chiếu nội bộ; tuyệt đối không được viết lại, hiển thị hoặc đề cập đến mã này trong kết quả: lĩnh vực=${input.domain}, chủ đề=${input.category}, series=${input.series || 'không có'}, bài số=${input.lessonOrder ?? 1}.\nCấu trúc: MỤC TIÊU HỌC TẬP, GIẢI THÍCH KHÁI NIỆM, VÍ DỤ, ĐIỂM CẦN NHỚ, CẢNH BÁO nếu là tài chính hoặc sức khỏe.\nQuy tắc trình bày: viết tiếng Việt tự nhiên, dùng dấu câu đúng ngữ pháp và đúng ngữ cảnh; dùng dấu chấm cho câu trần thuật, dấu hỏi cho câu hỏi, dấu chấm than rất tiết chế; không đặt dấu chấm ở cuối tiêu đề; không dùng tiêu đề Markdown dạng #, ## hoặc ###; dùng tiêu đề viết hoa; dùng + hoặc - cho danh sách; dùng **in đậm** và *in nghiêng* khi thực sự cần nhấn mạnh. Chỉ trả về nội dung Markdown của bài học, bắt đầu bằng tiêu đề. Không thêm phần mở đầu, metadata, mã ID, lời giải thích hay ghi chú về yêu cầu.`;
+    const prompt = buildLearningDraftPrompt(input);
     const response = await ai.models.generateContent({ model: process.env.GEMINI_MODEL || 'gemini-2.5-flash', contents: prompt });
-    return { body: response.text || '', generatedBy: 'GEMINI', requiresReview: true };
+    const body = response.text || '';
+    const imagePlan = await this.createImagePlan(ai, input.title, body);
+    return { body, imagePlan, generatedBy: 'GEMINI', requiresReview: true };
+  }
+
+  private async createImagePlan(ai: GoogleGenAI, title: string, body: string) {
+    const planPrompt = `Phân tích bài viết HTML dưới đây và đề xuất kế hoạch hình ảnh bằng JSON hợp lệ.
+Chỉ đề xuất ảnh thật sự cần thiết: bài ngắn tối đa 1 ảnh nội dung, bài vừa 1-2 ảnh, bài dài tối đa 3 ảnh. Không tạo ảnh cho các section trùng ý hoặc chỉ để trang trí.
+Luôn trả về một ảnh cover 16:9. Ảnh nội dung phải ghi rõ sectionTitle, placement (before-section, after-section, left hoặc right), aspectRatio, prompt và reason.
+Không dùng markdown. Schema: {"recommendedImageCount": number, "reason": string, "items": [{"key": string, "type": "cover"|"content", "sectionTitle": string|null, "placement": string, "aspectRatio": string, "prompt": string, "reason": string}]}
+Tiêu đề: ${title}
+Nội dung HTML: ${body}`;
+    try {
+      const result = await ai.models.generateContent({ model: process.env.GEMINI_MODEL || 'gemini-2.5-flash', contents: planPrompt });
+      const raw = (result.text || '').replace(/^```json\s*|\s*```$/g, '').trim();
+      const parsed = JSON.parse(raw);
+      return { recommendedImageCount: Number(parsed.recommendedImageCount || 0), reason: parsed.reason || '', items: Array.isArray(parsed.items) ? parsed.items.slice(0, 4) : [] };
+    } catch {
+      return { recommendedImageCount: 0, reason: 'Chưa thể tạo kế hoạch ảnh tự động.', items: [] };
+    }
   }
 }

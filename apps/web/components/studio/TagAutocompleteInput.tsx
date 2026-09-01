@@ -2,7 +2,17 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useTags } from '../../lib/posts/use-posts-feed';
-import { Hash, X, Plus, TrendingUp } from 'lucide-react';
+import { Hash, X, TrendingUp } from 'lucide-react';
+
+const normalizeTag = (value: string) => value
+  .normalize('NFD')
+  .replace(/[\u0300-\u036f]/g, '')
+  .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+  .toLowerCase()
+  .replace(/^#/, '')
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-+|-+$/g, '')
+  .slice(0, 80);
 
 interface TagAutocompleteInputProps {
   selectedTags: string[];
@@ -19,7 +29,9 @@ export function TagAutocompleteInput({
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data: suggestions = [] } = useTags(inputQuery, 8);
+  const searchTerm = inputQuery.replace(/^#/, '').trim();
+  const isHashtagInput = /^#[a-zA-Z0-9À-ỹ][a-zA-Z0-9À-ỹ\s-]*$/.test(inputQuery.trim());
+  const { data: suggestions = [] } = useTags(searchTerm, 8);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -33,7 +45,7 @@ export function TagAutocompleteInput({
   }, []);
 
   const handleAddTag = (tagName: string) => {
-    const formatted = tagName.trim().replace(/^#/, '');
+    const formatted = normalizeTag(tagName);
     if (!formatted) return;
 
     if (!selectedTags.includes(formatted) && selectedTags.length < maxTags) {
@@ -94,25 +106,25 @@ export function TagAutocompleteInput({
             onFocus={() => setIsOpen(true)}
             onKeyDown={handleKeyDown}
             placeholder={selectedTags.length === 0 ? "Tìm thẻ (ví dụ: tài chính, kỹ năng sống)..." : "Thêm thẻ..."}
-            className="flex-1 min-w-[120px] bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden px-1.5 py-0.5 font-sans"
+            className={`flex-1 min-w-[120px] bg-transparent text-sm placeholder:text-muted-foreground focus:outline-hidden px-1.5 py-0.5 font-sans ${isHashtagInput ? 'font-bold text-primary' : 'text-foreground'}`}
           />
         )}
       </div>
 
       {/* Autocomplete Dropdown with TikTok-style Post Counts */}
-      {isOpen && (suggestions.length > 0 || inputQuery.trim()) && (
+      {isOpen && isHashtagInput && searchTerm && (suggestions.length > 0 || searchTerm) && (
         <div className="absolute top-full left-0 right-0 z-30 mt-1 rounded-lg border border-border bg-surface shadow-xl overflow-hidden animate-in fade-in duration-100 max-h-60 overflow-y-auto">
-          {inputQuery.trim() && !suggestions.some((s) => s.name.toLowerCase() === inputQuery.toLowerCase()) && (
+          {searchTerm && !suggestions.some((s) => normalizeTag(s.name) === normalizeTag(searchTerm)) && (
             <button
               type="button"
               onClick={() => handleAddTag(inputQuery)}
-              className="w-full flex items-center justify-between px-3.5 py-2.5 text-xs text-left hover:bg-muted transition-colors border-b border-border/60 text-primary font-semibold font-mono"
+              className="w-full flex items-center justify-between px-3.5 py-3 text-left hover:bg-muted transition-colors border-b border-border/60"
             >
-              <div className="flex items-center gap-2">
-                <Plus className="h-3.5 w-3.5" />
-                <span>Tạo tag mới: #{inputQuery.trim().replace(/^#/, '')}</span>
+              <div className="flex items-center gap-2 font-mono text-sm font-semibold text-foreground">
+                <Hash className="h-3.5 w-3.5 text-primary" />
+                <span>#{normalizeTag(searchTerm)}</span>
               </div>
-              <span className="text-xs text-muted-foreground font-normal">Mới</span>
+              <span className="text-xs text-muted-foreground font-mono">0 bài viết</span>
             </button>
           )}
 
@@ -134,7 +146,7 @@ export function TagAutocompleteInput({
               >
                 <div className="flex items-center gap-2 font-mono">
                   <Hash className="h-3.5 w-3.5 text-primary" />
-                  <span className="font-semibold">#{item.name}</span>
+                  <span className="font-semibold">#{normalizeTag(item.name)}</span>
                 </div>
 
                 <div className="flex items-center gap-1 text-xs font-mono text-muted-foreground">

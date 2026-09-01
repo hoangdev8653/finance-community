@@ -26,7 +26,7 @@ describe('TagInput Component', () => {
     expect(screen.getByText('#crypto')).toBeDefined();
 
     // Add tag via Enter
-    const input = screen.getByLabelText(/Tags/i);
+    const input = screen.getByLabelText(/Thẻ chủ đề/i);
     fireEvent.change(input, { target: { value: 'rates' } });
     fireEvent.keyDown(input, { key: 'Enter' });
 

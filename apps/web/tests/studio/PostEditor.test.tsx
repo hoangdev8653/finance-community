@@ -42,18 +42,15 @@ describe('PostEditor Component', () => {
       </QueryClientProvider>
     );
 
-    const titleInput = screen.getByLabelText(/Analysis Title/i);
+    const titleInput = screen.getByLabelText(/Tiêu đề bài viết/i);
     expect((titleInput as HTMLInputElement).value).toBe('Macro Trends');
 
     fireEvent.change(titleInput, { target: { value: 'Updated Macro Trends' } });
     expect(onTitleChange).toHaveBeenCalledWith('Updated Macro Trends');
 
-    const bodyTextarea = screen.getByLabelText(/Research Content & Valuation Body/i);
-    expect((bodyTextarea as HTMLTextAreaElement).value).toBe('Yield curve inversion analysis.');
+    expect(screen.getByText(/Nội dung bài viết/i)).toBeDefined();
 
     // Switch to SERIES
-    const seriesBtn = screen.getByRole('button', { name: /SERIES/i });
-    fireEvent.click(seriesBtn);
-    expect(onContentTypeChange).toHaveBeenCalledWith('SERIES');
+    expect(screen.getByText(/BÀI HỌC \/ SERIES/i)).toBeDefined();
   });
 });

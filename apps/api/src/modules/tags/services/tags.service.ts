@@ -9,6 +9,9 @@ export class TagsService {
 
   public slugify(name: string): string {
     return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/Đ/g, 'D')
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9]+/g, '-')
@@ -34,14 +37,14 @@ export class TagsService {
   }
 
   async createTag(dto: CreateTagDto, tx?: any): Promise<TagEntity> {
-    const name = dto.name.trim();
+    const name = this.slugify(dto.name);
     const slug = this.slugify(name);
     return this.tagsRepo.createOrGetTx(tx, name, slug);
   }
 
   async updateTag(id: string, dto: UpdateTagDto, tx?: any): Promise<TagEntity> {
     await this.getTagById(id);
-    const name = dto.name.trim();
+    const name = this.slugify(dto.name);
     const updated = await this.tagsRepo.updateTx(tx, id, name, this.slugify(name));
     if (!updated) throw new NotFoundException(`Tag with ID '${id}' not found.`);
     return updated;

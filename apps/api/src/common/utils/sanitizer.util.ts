@@ -32,9 +32,13 @@ export class SanitizerUtil {
         'h6',
         'span',
         'div',
+        'img',
+        'figure',
+        'figcaption',
       ],
       allowedAttributes: {
         a: ['href', 'name', 'target', 'rel', 'title'],
+        img: ['src', 'alt', 'title', 'width', 'height'],
         '*': ['class'],
       },
       allowedSchemes: ['http', 'https', 'mailto'],

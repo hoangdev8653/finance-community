@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, ilike, count, desc, asc } from 'drizzle-orm';
+import { eq, ilike, count, desc, asc, or } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { tagsTable } from '../schema/tags.schema';
@@ -66,7 +66,7 @@ export class TagsRepository {
 
     const rows = search && search.trim().length > 0
       ? await query
-          .where(ilike(tagsTable.name, `%${search.trim()}%`))
+          .where(or(ilike(tagsTable.name, `%${search.trim()}%`), ilike(tagsTable.slug, `%${search.trim().toLowerCase()}%`)))
           .groupBy(tagsTable.id, tagsTable.name, tagsTable.slug, tagsTable.createdAt)
           .orderBy(desc(count(postTagsTable.postId)), asc(tagsTable.name))
           .limit(limit)

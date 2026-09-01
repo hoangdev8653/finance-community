@@ -1,193 +1,46 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { EditorToolbar } from './EditorToolbar';
+import React from 'react';
+import { Copy, Sparkles } from 'lucide-react';
 import { CategorySelector } from './CategorySelector';
-import { TagInput } from './TagInput';
+import { TagAutocompleteInput } from './TagAutocompleteInput';
 import { SeoMetadataDrawer } from './SeoMetadataDrawer';
 import { CoverImagePicker } from '@/components/media/CoverImagePicker';
 import { DomainSelector } from './DomainSelector';
 import { SeriesSelector } from './SeriesSelector';
-import { Sparkles } from 'lucide-react';
+import { RichTextEditor } from './RichTextEditor';
 
 interface PostEditorProps {
-  title: string;
-  contentType: 'SERIES' | 'COMMUNITY' | 'NEWS';
-  categoryId?: string;
-  domainId?: string;
-  tags: string[];
-  coverMediaId?: string | null;
-  body: string;
-  metaTitle: string;
-  metaDescription: string;
-  isAdmin?: boolean;
-  onTitleChange: (val: string) => void;
-  onContentTypeChange: (val: 'SERIES' | 'COMMUNITY' | 'NEWS') => void;
-  onCategoryChange: (val: string) => void;
-  onDomainChange?: (val: string) => void;
-  seriesId?: string;
-  lessonOrder?: number;
-  onSeriesChange?: (val: string) => void;
-  onLessonOrderChange?: (val: number) => void;
-  onTagsChange: (val: string[]) => void;
-  onCoverMediaChange?: (val: string | null) => void;
-  onBodyChange: (val: string) => void;
-  onGenerateDraft?: () => void;
-  isGeneratingDraft?: boolean;
-  onMetaTitleChange: (val: string) => void;
-  onMetaDescriptionChange: (val: string) => void;
+  title: string; contentType: 'SERIES' | 'COMMUNITY'; categoryId?: string; domainId?: string;
+  tags: string[]; coverMediaId?: string | null; body: string; metaTitle: string; metaDescription: string; isAdmin?: boolean;
+  onTitleChange: (value: string) => void; onContentTypeChange: (value: 'SERIES' | 'COMMUNITY') => void;
+  onCategoryChange: (value: string) => void; onDomainChange?: (value: string) => void; seriesId?: string; lessonOrder?: number;
+  onSeriesChange?: (value: string) => void; onLessonOrderChange?: (value: number) => void; onTagsChange: (value: string[]) => void;
+  onCoverMediaChange?: (value: string | null) => void; onPendingCoverFileChange?: (file: File | null) => void; onBodyChange: (value: string) => void; onGenerateDraft?: () => void; onPendingImagesChange?: (images: Map<string, File>) => void;
+  isGeneratingDraft?: boolean; onMetaTitleChange: (value: string) => void; onMetaDescriptionChange: (value: string) => void; imagePlan?: { recommendedImageCount: number; reason: string; items: Array<{ type: 'cover' | 'content'; sectionTitle?: string | null; placement: string; aspectRatio: string; prompt: string; reason: string }> };
 }
 
-export function PostEditor({
-  title,
-  contentType,
-  categoryId,
-  domainId,
-  tags,
-  coverMediaId,
-  body,
-  metaTitle,
-  metaDescription,
-  isAdmin = false,
-  onTitleChange,
-  onContentTypeChange,
-  onCategoryChange,
-  onDomainChange,
-  seriesId,
-  lessonOrder = 1,
-  onSeriesChange,
-  onLessonOrderChange,
-  onTagsChange,
-  onCoverMediaChange,
-  onBodyChange,
-  onGenerateDraft,
-  isGeneratingDraft = false,
-  onMetaTitleChange,
-  onMetaDescriptionChange,
-}: PostEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  const handleToolbarInsert = (
-    prefix: string,
-    suffix: string = '',
-    defaultText: string = ''
-  ) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = body.substring(start, end) || defaultText;
-    const replacement = `${prefix}${selectedText}${suffix}`;
-
-    const newBody =
-      body.substring(0, start) + replacement + body.substring(end);
-    onBodyChange(newBody);
-
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(
-        start + prefix.length,
-        start + prefix.length + selectedText.length
-      );
-    }, 0);
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Title & Content Type Selector */}
-      <div className="space-y-4 rounded-lg border border-border bg-surface p-4 sm:p-6 shadow-2xs">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <div className="space-y-1.5 flex-1 w-full">
-            <div className="flex justify-between items-center text-xs">
-              <label
-                htmlFor="post-title-input"
-                className="font-medium text-foreground"
-              >
-                Tiêu đề bài học <span className="text-danger">*</span>
-              </label>
-              <span className="font-mono text-xs text-muted-foreground">
-                {title.length} / 300
-              </span>
-            </div>
-            <input
-              id="post-title-input"
-              type="text"
-              value={title}
-              onChange={(e) => onTitleChange(e.target.value)}
-              maxLength={300}
-              placeholder="Ví dụ: Lãi kép là gì và cách áp dụng trong thực tế?"
-              className="w-full h-10 rounded-md border border-input bg-background px-3 font-heading text-base text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
-            />
-          </div>
-
-          {/* Learning content type is fixed to SERIES. */}
-          <div className="space-y-1.5 shrink-0">
-            <label className="block text-xs font-medium text-foreground">Loại nội dung</label>
-            {isAdmin ? (
-              <div className="inline-flex items-center rounded-md border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-mono font-semibold text-emerald-400">BÀI HỌC / SERIES</div>
-            ) : (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border bg-muted text-xs font-mono font-semibold text-foreground">
-                <span>BÀI HỌC / SERIES</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Category & Tags Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border/60">
-          <DomainSelector value={domainId} onChange={onDomainChange ?? (() => undefined)} />
-          <CategorySelector
-            value={categoryId}
-            scope={contentType}
-            domainId={domainId}
-            onChange={onCategoryChange}
-          />
-          <SeriesSelector value={seriesId} lessonOrder={lessonOrder} domainId={domainId} onChange={onSeriesChange ?? (() => undefined)} onOrderChange={onLessonOrderChange ?? (() => undefined)} />
-          <TagInput tags={tags} onChange={onTagsChange} />
-        </div>
-
-        {/* Cover Image Picker */}
-        {onCoverMediaChange && (
-          <div className="pt-2 border-t border-border/60">
-            <CoverImagePicker
-              value={coverMediaId || null}
-              onChange={onCoverMediaChange}
-            />
-          </div>
-        )}
+export function PostEditor(props: PostEditorProps) {
+  const { title, contentType, categoryId, domainId, tags, coverMediaId, body, metaTitle, metaDescription, isAdmin = false, seriesId, lessonOrder = 1, isGeneratingDraft = false } = props;
+  const plainBody = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const sections = Array.from(body.matchAll(/<h[23][^>]*>(.*?)<\/h[23]>\s*(?:<p[^>]*>(.*?)<\/p>)?/gi))
+    .map((match) => `${match[1].replace(/<[^>]+>/g, '')}: ${(match[2] || '').replace(/<[^>]+>/g, '')}`.trim())
+    .filter(Boolean);
+  const topic = title || 'chủ đề bài viết';
+  const avatarPrompt = props.imagePlan?.items.find((item) => item.type === 'cover')?.prompt || `Ảnh đại diện cho bài viết giáo dục về "${topic}". Thể hiện trực quan ý chính: ${plainBody.slice(0, 280) || topic}. Phong cách editorial hiện đại, chuyên nghiệp, bố cục ngang 16:9, không chữ, không logo.`;
+  const contentItems = props.imagePlan?.items.filter((item) => item.type === 'content') || [];
+  const contentPrompt = contentItems.length ? contentItems.map((item, index) => `Ảnh ${index + 1} — Section: ${item.sectionTitle || 'Nội dung chính'}\nVị trí: ${item.placement} | Tỷ lệ: ${item.aspectRatio}\nMục đích: ${item.reason}\nPrompt: ${item.prompt}`).join('\n\n') : (sections.length ? sections.slice(0, 3) : [plainBody || topic]).map((section, index) => `Ảnh minh họa số ${index + 1} cho phần "${section}" trong bài viết "${topic}". Tạo hình ảnh cụ thể giúp người đọc hiểu nội dung, phong cách editorial hiện đại, tỷ lệ ngang, không chữ sai chính tả, không logo.`).join('\n\n');
+  const copyPrompt = (prompt: string) => void navigator.clipboard?.writeText(prompt);
+  return <div className="space-y-6">
+    <div className="space-y-4 rounded-lg border border-border bg-surface p-4 shadow-2xs sm:p-6">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="w-full flex-1 space-y-1.5"><div className="flex items-center justify-between text-xs"><label htmlFor="post-title-input" className="font-medium text-foreground">Tiêu đề bài viết <span className="text-danger">*</span></label><span className="font-mono text-muted-foreground">{title.length} / 300</span></div><input id="post-title-input" type="text" value={title} onChange={(event) => props.onTitleChange(event.target.value)} maxLength={300} placeholder="Ví dụ: Lãi kép là gì và cách áp dụng trong thực tế?" className="h-10 w-full rounded-md border border-input bg-background px-3 text-base text-foreground" /></div>
+        <div className="shrink-0 space-y-1.5"><span className="block text-xs font-medium text-foreground">Loại nội dung</span><div className={`inline-flex rounded-md border px-3 py-1.5 text-xs font-mono font-semibold ${isAdmin ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-border bg-muted text-foreground'}`}>BÀI HỌC / SERIES</div></div>
       </div>
-
-      {/* Markdown Body Editor */}
-      <div className="space-y-1.5">
-        {onGenerateDraft && <div className="flex justify-end"><button type="button" onClick={onGenerateDraft} disabled={isGeneratingDraft} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-primary/40 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20 disabled:opacity-60"><Sparkles className="h-4 w-4" />{isGeneratingDraft ? 'Đang tạo bản nháp...' : 'AI tạo bản nháp'}</button></div>}
-        <label
-          htmlFor="post-body-input"
-          className="block text-xs font-medium text-foreground"
-        >
-          Nội dung bài học
-        </label>
-        <div className="rounded-lg shadow-2xs">
-          <EditorToolbar onInsert={handleToolbarInsert} />
-          <textarea
-            id="post-body-input"
-            ref={textareaRef}
-            value={body}
-            onChange={(e) => onBodyChange(e.target.value)}
-            rows={16}
-            placeholder="Viết nội dung bài học, ví dụ minh họa, các bước thực hành và phần tổng kết..."
-            className="w-full rounded-b-lg border border-input bg-background p-4 font-mono text-xs leading-relaxed text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary resize-y"
-          />
-        </div>
-      </div>
-
-      {/* SEO Configuration Drawer */}
-      <SeoMetadataDrawer
-        metaTitle={metaTitle}
-        metaDescription={metaDescription}
-        onMetaTitleChange={onMetaTitleChange}
-        onMetaDescriptionChange={onMetaDescriptionChange}
-      />
+      <div className="grid grid-cols-1 gap-4 border-t border-border/60 pt-2 sm:grid-cols-2"><DomainSelector value={domainId} onChange={props.onDomainChange ?? (() => undefined)} /><CategorySelector value={categoryId} scope={contentType} domainId={domainId} onChange={props.onCategoryChange} /><SeriesSelector value={seriesId} lessonOrder={lessonOrder} domainId={domainId} onChange={props.onSeriesChange ?? (() => undefined)} onOrderChange={props.onLessonOrderChange ?? (() => undefined)} /><TagAutocompleteInput selectedTags={tags} onChange={props.onTagsChange} /></div>
+      {props.onCoverMediaChange && <div className="grid gap-4 border-t border-border/60 pt-2 lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]"><div><CoverImagePicker value={coverMediaId || null} onChange={props.onCoverMediaChange} onPendingFileChange={props.onPendingCoverFileChange} /></div><div className="space-y-3 rounded-lg border border-border bg-background/40 p-4"><div><h3 className="text-sm font-semibold text-foreground">Gợi ý prompt tạo ảnh</h3><p className="mt-1 text-xs text-muted-foreground">Sao chép prompt để dùng trong GPT hoặc công cụ tạo ảnh.</p></div><div className="space-y-2"><label className="text-xs font-medium text-foreground">Ảnh đại diện</label><div className="flex items-stretch gap-2"><textarea readOnly value={avatarPrompt} className="min-h-28 flex-1 resize-y rounded-md border border-input bg-background p-3 text-xs leading-5 text-foreground" /><button type="button" onClick={() => copyPrompt(avatarPrompt)} className="h-10 shrink-0 self-start rounded-md border border-primary px-3 text-xs font-semibold text-primary hover:bg-primary/10" aria-label="Sao chép prompt ảnh đại diện"><Copy className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />Sao chép</button></div></div><div className="space-y-2"><label className="text-xs font-medium text-foreground">Ảnh trong nội dung (tối đa 3 ảnh)</label><div className="flex items-stretch gap-2"><textarea readOnly value={contentPrompt} className="min-h-28 flex-1 resize-y rounded-md border border-input bg-background p-3 text-xs leading-5 text-foreground" /><button type="button" onClick={() => copyPrompt(contentPrompt)} className="h-10 shrink-0 self-start rounded-md border border-primary px-3 text-xs font-semibold text-primary hover:bg-primary/10" aria-label="Sao chép prompt ảnh nội dung"><Copy className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />Sao chép</button></div></div></div></div>}
     </div>
-  );
+    <div className="space-y-2"><div className="flex items-center justify-between"><label className="text-sm font-medium text-foreground">Nội dung bài viết</label>{props.onGenerateDraft && <button type="button" onClick={props.onGenerateDraft} disabled={isGeneratingDraft} className="inline-flex min-h-10 items-center gap-2 rounded-md border border-primary/40 bg-primary/10 px-3 text-sm font-semibold text-primary hover:bg-primary/20 disabled:opacity-60"><Sparkles className="h-4 w-4" aria-hidden="true" />{isGeneratingDraft ? 'Đang tạo bản nháp...' : 'AI tạo bản nháp'}</button>}</div><p className="text-xs text-muted-foreground">Bạn có thể chèn ảnh, bảng, liên kết và định dạng nội dung trực tiếp tại vị trí mong muốn.</p><RichTextEditor value={body} onChange={props.onBodyChange} onPendingImagesChange={props.onPendingImagesChange} /></div>
+    <SeoMetadataDrawer metaTitle={metaTitle} metaDescription={metaDescription} onMetaTitleChange={props.onMetaTitleChange} onMetaDescriptionChange={props.onMetaDescriptionChange} />
+  </div>;
 }

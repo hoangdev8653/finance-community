@@ -16,11 +16,15 @@ import { LearningAuditHistory } from '@/components/learning/LearningAuditHistory
 import { SeriesSelector } from './SeriesSelector';
 import { learningSeriesService } from '@/lib/learning/learning-series-service';
 import { apiClient } from '@/lib/api/client';
+import { useUploadMedia } from '@/lib/media/use-media';
 
 interface PostStudioProps {
   initialPost?: PostEntity;
-  defaultContentType?: 'SERIES' | 'COMMUNITY' | 'NEWS';
+  defaultContentType?: 'SERIES' | 'COMMUNITY';
 }
+
+interface ImagePlanItem { key: string; type: 'cover' | 'content'; sectionTitle?: string | null; placement: string; aspectRatio: string; prompt: string; reason: string; }
+interface ImagePlan { recommendedImageCount: number; reason: string; items: ImagePlanItem[]; }
 
 export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostStudioProps) {
   const router = useRouter();
@@ -31,7 +35,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
 
   // Form State
   const [title, setTitle] = useState(initialPost?.title || '');
-  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY' | 'NEWS'>(
+  const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY'>(
     initialPost?.contentType || defaultContentType
   );
   const [categoryId, setCategoryId] = useState<string | undefined>(
@@ -49,6 +53,9 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const [metaDescription, setMetaDescription] = useState(
     initialPost?.metaDescription || ''
   );
+  const [pendingContentImages, setPendingContentImages] = useState<Map<string, File>>(new Map());
+  const [pendingCoverFile, setPendingCoverFile] = useState<File | null>(null);
+  const { mutateAsync: uploadContentMedia } = useUploadMedia();
 
   const [isPreview, setIsPreview] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -60,10 +67,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
+  const [imagePlan, setImagePlan] = useState<ImagePlan | undefined>();
   const generateDraft = async () => {
     if (!title.trim() || !domainId || !categoryId) { setError('Vui lòng nhập tiêu đề, lĩnh vực và chủ đề trước khi tạo bản nháp.'); return; }
     setIsGeneratingDraft(true); setError(null);
-    try { const { data } = await apiClient.post<{ body: string }>('/ai-editorial/draft', { title: title.trim(), domain: domainId, category: categoryId, series: seriesId, lessonOrder }); setBody(data.body); }
+    try { const { data } = await apiClient.post<{ body: string; imagePlan: ImagePlan }>('/ai-editorial/draft', { title: title.trim(), domain: domainId, category: categoryId, series: seriesId, lessonOrder }); setBody(data.body); setImagePlan(data.imagePlan); }
     catch { setError('Không thể tạo bản nháp AI. Vui lòng kiểm tra cấu hình AI hoặc thử lại.'); }
     finally { setIsGeneratingDraft(false); }
   };
@@ -93,6 +101,20 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
     }
 
     try {
+      let finalCoverMediaId = coverMediaId || undefined;
+      if (pendingCoverFile) {
+        const coverMedia = await uploadContentMedia({ file: pendingCoverFile, purpose: 'cover', folder: 'posts/covers' });
+        finalCoverMediaId = coverMedia.id;
+      }
+      let finalBody = body.trim() || undefined;
+      if (pendingContentImages.size > 0 && finalBody) {
+        for (const [temporaryUrl, file] of pendingContentImages) {
+          const media = await uploadContentMedia({ file, purpose: 'content', folder: 'posts/content' });
+          finalBody = finalBody.split(temporaryUrl).join(media.secureUrl);
+          URL.revokeObjectURL(temporaryUrl);
+        }
+        setPendingContentImages(new Map());
+      }
       if (isEditing && initialPost) {
         if (status === 'PUBLISHED' && contentType === 'SERIES' && !user?.roles?.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role))) {
           await learningService.submitForReview(initialPost.id);
@@ -101,11 +123,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         }
         const updated = await updateMutation.mutateAsync({
           title: title.trim(),
-          body: body.trim() || undefined,
+          body: finalBody,
           categoryId: categoryId || undefined,
           domainId: domainId || undefined,
           tags: tags.length > 0 ? tags : undefined,
-          coverMediaId: coverMediaId || undefined,
+          coverMediaId: finalCoverMediaId,
           status,
           metaTitle: metaTitle.trim() || undefined,
           metaDescription: metaDescription.trim() || undefined,
@@ -120,11 +142,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         const created = await createMutation.mutateAsync({
           title: title.trim(),
           contentType,
-          body: body.trim() || undefined,
+          body: finalBody,
           categoryId: categoryId || undefined,
           domainId: domainId || undefined,
           tags: tags.length > 0 ? tags : undefined,
-          coverMediaId: coverMediaId || undefined,
+          coverMediaId: finalCoverMediaId,
           status,
           metaTitle: metaTitle.trim() || undefined,
           metaDescription: metaDescription.trim() || undefined,
@@ -203,7 +225,10 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           onLessonOrderChange={setLessonOrder}
           onTagsChange={setTags}
           onCoverMediaChange={setCoverMediaId}
+          onPendingCoverFileChange={setPendingCoverFile}
+          imagePlan={imagePlan}
           onBodyChange={setBody}
+          onPendingImagesChange={setPendingContentImages}
           onGenerateDraft={generateDraft}
           isGeneratingDraft={isGeneratingDraft}
           onMetaTitleChange={setMetaTitle}
