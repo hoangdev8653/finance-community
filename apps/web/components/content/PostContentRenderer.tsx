@@ -4,6 +4,37 @@ interface PostContentRendererProps {
   body: string | null;
 }
 
+export interface ContentHeading { id: string; text: string; level: 2 | 3; }
+
+export function extractContentHeadings(body: string | null): ContentHeading[] {
+  if (!body) return [];
+  const used = new Map<string, number>();
+  return Array.from(body.matchAll(/<h([23])(?:\s[^>]*)?>([\s\S]*?)<\/h\1>/gi)).map((match) => {
+    const text = match[2].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
+    const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+    const count = used.get(base) ?? 0;
+    used.set(base, count + 1);
+    return { id: count ? `${base}-${count + 1}` : base, text, level: Number(match[1]) as 2 | 3 };
+  }).filter((heading) => heading.text);
+}
+
+function addHeadingIds(html: string, headings: ContentHeading[]): string {
+  let index = 0;
+  return html.replace(/<h([23])([^>]*)>/gi, (tag, level, attributes) => {
+    const heading = headings[index++];
+    return heading && Number(level) === heading.level ? `<h${level}${attributes} id="${heading.id}" class="scroll-mt-28">` : tag;
+  });
+}
+
+function optimizeCloudinaryImages(html: string): string {
+  return html.replace(/(<img\b[^>]*\bsrc=["'])(https:\/\/res\.cloudinary\.com\/[^"']+)(["'][^>]*>)/gi, (_match, prefix, source, suffix) => {
+    if (!source.includes('/image/upload/')) return `${prefix}${source}${suffix}`;
+    const [base, rest] = source.split('/image/upload/');
+    if (!rest || /^(?:f_auto|q_auto|w_\d+)/.test(rest)) return `${prefix}${source}${suffix}`;
+    return `${prefix}${base}/image/upload/f_auto,q_auto,w_1200/${rest}${suffix}`;
+  });
+}
+
 export function PostContentRenderer({ body }: PostContentRendererProps) {
   if (!body || body.trim().length === 0) {
     return (
@@ -13,6 +44,7 @@ export function PostContentRenderer({ body }: PostContentRendererProps) {
     );
   }
 
+  const headings = extractContentHeadings(body);
   return (
     <div
       className="prose prose-slate dark:prose-invert max-w-none 
@@ -28,10 +60,11 @@ export function PostContentRenderer({ body }: PostContentRendererProps) {
         [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:space-y-3 [&_ol]:mb-6 [&_ol]:text-slate-800 dark:[&_ol]:text-slate-200 [&_ol]:text-base sm:[&_ol]:text-lg
         [&_li]:leading-[1.8]
         [&_a]:text-emerald-600 dark:[&_a]:text-emerald-400 [&_a]:underline [&_a]:underline-offset-4 [&_a]:hover:opacity-80 [&_a]:font-medium
+        [&_img]:my-8 [&_img]:h-auto [&_img]:max-w-full [&_img]:rounded-xl [&_img]:border [&_img]:border-border
         [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-base
         [&_th]:border [&_th]:border-slate-200 dark:[&_th]:border-slate-800 [&_th]:bg-slate-100 dark:[&_th]:bg-slate-800/80 [&_th]:p-3 [&_th]:text-left [&_th]:font-semibold
         [&_td]:border [&_td]:border-slate-200 dark:[&_td]:border-slate-800 [&_td]:p-3"
-      dangerouslySetInnerHTML={{ __html: body }}
+      dangerouslySetInnerHTML={{ __html: addHeadingIds(optimizeCloudinaryImages(body), headings) }}
     />
   );
 }

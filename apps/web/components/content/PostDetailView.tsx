@@ -7,7 +7,8 @@ import { useCategoryMap } from '@/lib/posts/use-posts-feed';
 import { Breadcrumb } from '@/components/navigation/Breadcrumb';
 import { PostHeader } from './PostHeader';
 import { PostCoverMedia } from './PostCoverMedia';
-import { PostContentRenderer } from './PostContentRenderer';
+import { PostContentRenderer, extractContentHeadings } from './PostContentRenderer';
+import { PostTableOfContents } from './PostTableOfContents';
 import { PostTagsList } from './PostTagsList';
 import { CommentsSection } from './CommentsSection';
 import { ReadingProgressBar } from './ReadingProgressBar';
@@ -33,6 +34,7 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
   const categoryName = post.categoryId ? categoryMap[post.categoryId]?.name : undefined;
 
   const isSeries = post.contentType === 'SERIES';
+  const headings = extractContentHeadings(post.body);
 
   return (
     <>
@@ -73,6 +75,7 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
 
           {/* Right Sticky Sidebar (Author, Related Articles, Tags) */}
           <div className="hidden lg:block lg:col-span-4">
+            <PostTableOfContents headings={headings} />
             <PostDetailSidebar post={post} categoryName={categoryName} />
           </div>
         </div>
