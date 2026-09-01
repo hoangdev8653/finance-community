@@ -13,6 +13,7 @@ export interface RegisterMediaDto {
   height?: number;
   fileSize?: number;
   purpose?: 'avatar' | 'cover' | 'content';
+  contentHash?: string;
 }
 
 export interface MediaItem {
@@ -29,6 +30,7 @@ export interface MediaItem {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
+  contentHash: string | null;
 }
 
 export interface CloudinaryUploadResponse {

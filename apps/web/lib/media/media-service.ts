@@ -29,6 +29,11 @@ export const mediaService = {
     return response.data;
   },
 
+  async findByHash(contentHash: string): Promise<MediaItem | null> {
+    const response = await apiClient.get<MediaItem | null>(`/media/by-hash/${encodeURIComponent(contentHash)}`);
+    return response.data;
+  },
+
   /**
    * Retrieve media asset details by ID
    * GET /api/v1/media/:id

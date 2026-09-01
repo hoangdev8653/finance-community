@@ -42,6 +42,12 @@ export class MediaController {
     return this.mediaService.registerMedia(user.sub, dto);
   }
 
+  @Get('by-hash/:hash')
+  @ApiOperation({ summary: 'Find an existing media asset by SHA-256 content hash' })
+  getMediaByHash(@Param('hash') hash: string) {
+    return this.mediaService.getMediaByHash(hash);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get media details by ID' })
   @ApiResponse({ status: 200, description: 'MediaEntity details' })

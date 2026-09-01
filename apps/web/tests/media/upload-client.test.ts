@@ -4,6 +4,8 @@ import { uploadClient, validateMediaFile } from '@/lib/media/upload-client';
 describe('Upload Client & Validation', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
+    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = 'demo';
+    process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY = 'test-key';
   });
 
   it('validates allowed image MIME types and size limits', () => {

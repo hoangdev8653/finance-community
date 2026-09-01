@@ -22,7 +22,14 @@ const MEDIA_URL_MAP: Record<string, string> = {
 export function resolveMediaUrl(mediaIdOrUrl?: string | null, fallback = DEFAULT_COVER_IMAGE): string {
   if (!mediaIdOrUrl) return fallback;
   if (mediaIdOrUrl.startsWith('http://') || mediaIdOrUrl.startsWith('https://') || mediaIdOrUrl.startsWith('/')) {
-    return mediaIdOrUrl;
+    return optimizeCloudinaryUrl(mediaIdOrUrl);
   }
   return MEDIA_URL_MAP[mediaIdOrUrl] || fallback;
+}
+
+/** Adds Cloudinary's automatic format/quality and a bounded delivery width. */
+export function optimizeCloudinaryUrl(url: string, width = 1200): string {
+  if (!url.includes('res.cloudinary.com') || !url.includes('/upload/')) return url;
+  if (url.includes('f_auto') || url.includes('q_auto')) return url;
+  return url.replace('/upload/', `/upload/f_auto,q_auto,w_${width}/`);
 }

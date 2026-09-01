@@ -23,7 +23,7 @@ describe('MediaUploader Component', () => {
 
     render(<MediaUploader onSuccess={onSuccess} label="Upload post cover" />);
 
-    expect(screen.getByText(/Click to upload/i)).toBeDefined();
+    expect(screen.getByText(/Nhấn để tải ảnh lên/i)).toBeDefined();
     expect(screen.getByText(/PNG, JPG, WebP, GIF up to 10MB/i)).toBeDefined();
   });
 

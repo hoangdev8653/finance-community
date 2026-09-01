@@ -11,6 +11,7 @@ interface CoverImagePickerProps {
   onChange: (mediaId: string | null) => void;
   fallbackPreviewUrl?: string | null;
   className?: string;
+  onPendingFileChange?: (file: File | null) => void;
 }
 
 const previewRegistry = new Map<string, string>();
@@ -24,6 +25,7 @@ export function CoverImagePicker({
   onChange,
   fallbackPreviewUrl = null,
   className = '',
+  onPendingFileChange,
 }: CoverImagePickerProps) {
   const { data: existingMedia } = useMediaDetail(value);
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
@@ -37,7 +39,13 @@ export function CoverImagePicker({
 
   const handleClear = () => {
     setLocalPreviewUrl(null);
+    onPendingFileChange?.(null);
     onChange(null);
+  };
+
+  const handlePendingFile = (file: File) => {
+    setLocalPreviewUrl(URL.createObjectURL(file));
+    onPendingFileChange?.(file);
   };
 
   return (
@@ -49,11 +57,13 @@ export function CoverImagePicker({
 
       <MediaUploader
         purpose="cover"
-        folder="posts"
+        folder="posts/covers"
         label="Upload article cover banner"
         currentPreviewUrl={previewUrl}
         onSuccess={handleUploadSuccess}
         onClear={handleClear}
+        deferUpload
+        onFileSelected={handlePendingFile}
       />
     </div>
   );

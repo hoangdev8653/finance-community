@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { mediaService } from './media-service';
-import { uploadClient } from './upload-client';
+import { uploadClient, compressImage, sha256File } from './upload-client';
 import { queryKeys } from '../query/keys';
 import { MediaItem } from '../../types/media';
+import { mediaService } from './media-service';
 
 export function useMediaDetail(id: string | null | undefined) {
   return useQuery<MediaItem>({
@@ -30,6 +30,10 @@ export function useUploadMedia() {
   const mutation = useMutation<MediaItem, Error, UploadMediaParams>({
     mutationFn: async ({ file, purpose = 'content', folder, onProgress }) => {
       setUploadProgress(0);
+      const optimizedFile = await compressImage(file);
+      const contentHash = await sha256File(optimizedFile);
+      const existing = await mediaService.findByHash(contentHash);
+      if (existing) return existing;
 
       // 1. Determine folder based on purpose if not explicitly provided
       const targetFolder = folder || (purpose === 'avatar' ? 'avatars' : 'posts');
@@ -39,7 +43,7 @@ export function useUploadMedia() {
 
       // 3. Upload directly to Cloudinary
       const cloudinaryResult = await uploadClient.uploadToCloudinary(
-        file,
+        optimizedFile,
         signatureData,
         (percent) => {
           setUploadProgress(percent);
@@ -55,8 +59,9 @@ export function useUploadMedia() {
         format: cloudinaryResult.format,
         width: cloudinaryResult.width,
         height: cloudinaryResult.height,
-        fileSize: cloudinaryResult.bytes || file.size,
+        fileSize: cloudinaryResult.bytes || optimizedFile.size,
         purpose,
+        contentHash,
       });
 
       return mediaRecord;

@@ -15,6 +15,8 @@ export const mediaTable = pgTable('media', {
   width: integer('width'),
   height: integer('height'),
   fileSize: integer('file_size'),
+  // Uniqueness is enforced by the partial migration index so soft-deleted assets can be re-uploaded.
+  contentHash: varchar('content_hash', { length: 64 }),
   purpose: varchar('purpose', { length: 20 }).notNull().default('content'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   deletedAt: timestamp('deleted_at', { withTimezone: true }),

@@ -16,6 +16,8 @@ interface MediaUploaderProps {
   label?: string;
   currentPreviewUrl?: string | null;
   onClear?: () => void;
+  deferUpload?: boolean;
+  onFileSelected?: (file: File) => void;
 }
 
 export function MediaUploader({
@@ -27,6 +29,8 @@ export function MediaUploader({
   label = 'Upload Image',
   currentPreviewUrl,
   onClear,
+  deferUpload = false,
+  onFileSelected,
 }: MediaUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -46,6 +50,10 @@ export function MediaUploader({
     }
 
     try {
+      if (deferUpload) {
+        onFileSelected?.(file);
+        return;
+      }
       const media = await uploadMedia({
         file,
         purpose,
@@ -121,7 +129,7 @@ export function MediaUploader({
           <img
             src={currentPreviewUrl}
             alt="Uploaded preview"
-            className="w-full h-48 object-cover rounded-lg"
+            className="max-h-[520px] w-full rounded-lg object-contain bg-black/10"
           />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
             <Button

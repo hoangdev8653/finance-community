@@ -11,6 +11,26 @@ export const ALLOWED_MIME_TYPES = [
 ];
 
 export const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10 MB
+export const MAX_COMPRESSED_FILE_SIZE_BYTES = 2 * 1024 * 1024;
+
+export async function sha256File(file: File): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', await file.arrayBuffer());
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+export async function compressImage(file: File, maxDimension = 2400, quality = 0.82): Promise<File> {
+  if (file.type === 'image/gif' || file.type === 'image/webp' && file.size <= MAX_COMPRESSED_FILE_SIZE_BYTES) return file;
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', quality));
+  if (!blob) throw new Error('Không thể nén ảnh trên trình duyệt.');
+  return new File([blob], `${file.name.replace(/\.[^.]+$/, '')}.webp`, { type: 'image/webp', lastModified: Date.now() });
+}
 
 export function validateMediaFile(file: File): { valid: boolean; error?: string } {
   if (!ALLOWED_MIME_TYPES.includes(file.type)) {
@@ -44,10 +64,11 @@ export const uploadClient = {
       throw new Error(validation.error);
     }
 
-    const cloudName =
-      process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || 'finance-community';
-    const apiKey =
-      process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || 'dev_api_key';
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    if (!cloudName || !apiKey) {
+      throw new Error('Thiếu cấu hình Cloudinary ở frontend. Hãy kiểm tra NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME và NEXT_PUBLIC_CLOUDINARY_API_KEY.');
+    }
     const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     const formData = new FormData();

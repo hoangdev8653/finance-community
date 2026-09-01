@@ -21,8 +21,8 @@ describe('CoverImagePicker Component', () => {
 
     render(<CoverImagePicker value={null} onChange={vi.fn()} />);
 
-    expect(screen.getByText('Cover Image (Optional)')).toBeDefined();
-    expect(screen.getByText(/Click to upload/i)).toBeDefined();
+    expect(screen.getByText('Ảnh đại diện (không bắt buộc)')).toBeDefined();
+    expect(screen.getByText(/Nhấn để tải ảnh lên/i)).toBeDefined();
   });
 
   it('renders existing cover image preview when value is present', () => {

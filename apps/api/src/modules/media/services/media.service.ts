@@ -37,6 +37,10 @@ export class MediaService {
    * Registers media metadata post-upload.
    */
   async registerMedia(uploaderId: string, dto: RegisterMediaDto, tx?: any): Promise<MediaEntity> {
+    if (dto.contentHash) {
+      const byHash = await this.mediaRepo.findByContentHash(dto.contentHash);
+      if (byHash) return byHash;
+    }
     const existing = await this.mediaRepo.findByCloudinaryPublicId(dto.cloudinaryPublicId);
     if (existing) {
       throw new ConflictException({
@@ -57,6 +61,7 @@ export class MediaService {
       height: dto.height || null,
       fileSize: dto.fileSize || null,
       purpose: dto.purpose || 'content',
+      contentHash: dto.contentHash || null,
     });
 
     if (this.auditLogService) {
@@ -86,6 +91,14 @@ export class MediaService {
       });
     }
     return media;
+  }
+
+  async getMediaByHash(hash: string): Promise<MediaEntity | null> {
+    return (await this.mediaRepo.findByContentHash(hash)) || null;
+  }
+
+  async getMediaBySecureUrl(url: string): Promise<MediaEntity | undefined> {
+    return this.mediaRepo.findBySecureUrl(url);
   }
 
   /**

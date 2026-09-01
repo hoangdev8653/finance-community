@@ -33,6 +33,19 @@ export class MediaRepository {
     return record;
   }
 
+  async findBySecureUrl(secureUrl: string): Promise<MediaEntity | undefined> {
+    const [record] = await this.db
+      .select()
+      .from(mediaTable)
+      .where(and(eq(mediaTable.secureUrl, secureUrl), isNull(mediaTable.deletedAt)));
+    return record;
+  }
+
+  async findByContentHash(contentHash: string): Promise<MediaEntity | undefined> {
+    const [record] = await this.db.select().from(mediaTable).where(and(eq(mediaTable.contentHash, contentHash), isNull(mediaTable.deletedAt)));
+    return record;
+  }
+
   async softDeleteTx(tx: any, id: string): Promise<boolean> {
     const client = tx || this.db;
     const [updated] = await client

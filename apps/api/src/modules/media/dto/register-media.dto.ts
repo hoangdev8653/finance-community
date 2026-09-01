@@ -36,4 +36,8 @@ export class RegisterMediaDto {
   @IsString()
   @IsIn(['avatar', 'cover', 'content'])
   purpose?: string;
+
+  @IsOptional()
+  @IsString()
+  contentHash?: string;
 }
