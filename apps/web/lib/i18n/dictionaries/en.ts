@@ -30,6 +30,7 @@ export const en: TranslationDictionary = {
     categories: 'Categories',
     tags: 'Tags',
     workspace: 'Workspace',
+    tools: 'Financial tools',
     account: 'Account',
     feedsAndDiscover: 'Feeds & Discover',
     personalLibrary: 'Personal Library',

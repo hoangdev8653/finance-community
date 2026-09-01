@@ -30,6 +30,7 @@ export const vi: TranslationDictionary = {
     categories: 'Danh mục',
     tags: 'Thẻ chủ đề',
     workspace: 'Không gian làm việc',
+    tools: 'Công cụ tài chính',
     account: 'Tài khoản',
     feedsAndDiscover: 'Bảng tin & Khám phá',
     personalLibrary: 'Thư viện cá nhân',

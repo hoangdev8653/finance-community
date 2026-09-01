@@ -30,6 +30,7 @@ export interface TranslationDictionary {
     categories: string;
     tags: string;
     workspace: string;
+    tools: string;
     account: string;
     feedsAndDiscover: string;
     personalLibrary: string;

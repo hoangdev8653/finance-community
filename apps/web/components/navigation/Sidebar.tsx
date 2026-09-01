@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Compass, LayoutGrid, Tag, Home, Folder, LucideIcon } from 'lucide-react';
+import { BookOpen, Compass, LayoutGrid, Tag, Home, Folder, Calculator, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { TranslationKey } from '@/lib/i18n/useTranslation';
@@ -24,6 +24,7 @@ const mainNavConfig: NavItemConfig[] = [
 
 const secondaryNavConfig: NavItemConfig[] = [
   { labelKey: 'navigation.workspace', href: '/dashboard', icon: Folder },
+  { labelKey: 'navigation.tools', href: '/tools', icon: Calculator },
 ];
 
 export function Sidebar({ className }: { className?: string }) {
