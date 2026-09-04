@@ -15,11 +15,11 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link
       href={targetHref}
-      className="group flex flex-col justify-between rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 transition-all duration-200 hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-md shadow-sm"
+      className="group flex flex-col justify-between rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 transition-all duration-200 hover:border-emerald-500 dark:hover:border-emerald-500 hover:shadow-md shadow-xs"
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-2">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-2xs">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 shadow-xs">
             {isSeries ? <BookOpen className="h-5 w-5" /> : <Folder className="h-5 w-5" />}
           </div>
           <span

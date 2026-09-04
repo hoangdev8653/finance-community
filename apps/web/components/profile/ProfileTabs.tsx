@@ -44,7 +44,7 @@ export function ProfileTabs({
   return (
     <div className="border-b border-border">
       <nav
-        className="flex space-x-6 overflow-x-auto no-scrollbar"
+        className="flex space-x-4 sm:space-x-6 overflow-x-auto no-scrollbar"
         aria-label="Profile navigation tabs"
         role="tablist"
       >

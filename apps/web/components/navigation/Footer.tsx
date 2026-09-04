@@ -74,7 +74,7 @@ export function Footer() {
                 <span className="font-heading text-xl font-bold leading-none tracking-tight text-slate-900 transition-colors group-hover:text-teal-600 dark:text-slate-100 dark:group-hover:text-teal-400">
                   Morning<span className="text-teal-600 dark:text-teal-400">View</span>
                 </span>
-                <span className="mt-1 font-mono text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                <span className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Biên tập & Phân tích thị trường
                 </span>
               </div>
@@ -92,7 +92,7 @@ export function Footer() {
           </div>
 
           <nav className="space-y-3 lg:col-span-3" aria-label="Chuyên mục phân tích">
-            <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               Chuyên mục phân tích
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -114,7 +114,7 @@ export function Footer() {
           </nav>
 
           <nav className="space-y-3 lg:col-span-2" aria-label="Học tập và series">
-            <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               Học tập & Series
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -136,7 +136,7 @@ export function Footer() {
           </nav>
 
           <div className="space-y-3 lg:col-span-3">
-            <h3 className="font-heading text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
               Bản tin sáng 60s
             </h3>
             <p className="max-w-xs text-xs leading-relaxed text-slate-600 dark:text-slate-400">
@@ -168,17 +168,17 @@ export function Footer() {
             <strong className="text-slate-700 dark:text-slate-300">
               Tuyên bố miễn trừ trách nhiệm:
             </strong>{' '}
-            Thông tin và bài phân tích trên Finance Pulse chỉ nhằm mục đích tham khảo, không phải
+            Thông tin và bài phân tích trên MorningView chỉ nhằm mục đích tham khảo, không phải
             lời khuyên hay khuyến nghị đầu tư. Độc giả tự cân nhắc và chịu trách nhiệm với quyết định của mình.
           </p>
         </div>
       </div>
 
-      <div className="border-t border-slate-200 px-4 py-4 dark:border-slate-800/80 sm:px-6 lg:px-8">
+      <div className="border-t border-slate-200 px-4 pt-4 pb-20 dark:border-slate-800/80 sm:px-6 sm:pb-4 lg:px-8">
         <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-500 sm:flex-row">
           <div>
             &copy; {new Date().getFullYear()}{' '}
-            <span className="font-bold text-slate-700 dark:text-slate-300">Finance Pulse</span>.
+            <span className="font-bold text-slate-700 dark:text-slate-300">MorningView</span>.
             {' '}Bản quyền thuộc về Ban Biên Tập.
           </div>
 

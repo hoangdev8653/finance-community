@@ -3,6 +3,8 @@ import { Calendar, Eye, Clock } from 'lucide-react';
 import { PostDetailResponse } from '@/types/content';
 import { Badge } from '@/components/ui/Badge';
 import { ReportButton } from '@/components/moderation/ReportButton';
+import { formatDate } from '@/lib/utils/date';
+import { calculateReadingTime } from '@/lib/utils/reading-time';
 import { BookmarkButton } from './BookmarkButton';
 
 interface PostHeaderProps {
@@ -11,27 +13,7 @@ interface PostHeaderProps {
 }
 
 export function PostHeader({ post, categoryName }: PostHeaderProps) {
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      })
-    : new Date(post.createdAt).toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-      });
-
-  // Calculate deterministic reading time (approx 225 words/min)
-  const calculateReadingTime = (text: string | null): string => {
-    if (!text) return '1 phút đọc';
-    const plainText = text.replace(/<[^>]*>/g, ' ');
-    const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
-    const minutes = Math.max(1, Math.ceil(wordCount / 225));
-    return `${minutes} phút đọc`;
-  };
-
+  const formattedDate = formatDate(post.publishedAt || post.createdAt);
   const readingTime = calculateReadingTime(post.body);
   const shortAuthor = post.authorId.slice(0, 8);
 
@@ -86,7 +68,7 @@ export function PostHeader({ post, categoryName }: PostHeaderProps) {
 
           <div className="flex items-center gap-1">
             <Calendar className="h-3.5 w-3.5" aria-hidden="true" />
-            <time dateTime={post.publishedAt || post.createdAt}>{formattedDate}</time>
+            <time dateTime={post.publishedAt || post.createdAt} suppressHydrationWarning>{formattedDate}</time>
           </div>
         </div>
 

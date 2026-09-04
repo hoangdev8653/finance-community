@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { postsService } from '@/lib/posts/posts-service';
+import { queryKeys } from '@/lib/query/keys';
 import { PostEntity } from '@/types/content';
 import { resolveMediaUrl } from '@/lib/utils/media';
 
@@ -36,36 +38,35 @@ const DEFAULT_FEATURED_SERIES: SeriesItem[] = [
 
 export function FeaturedSeriesWidget() {
   const { t } = useTranslation();
-  const [seriesList, setSeriesList] = useState<SeriesItem[]>(DEFAULT_FEATURED_SERIES);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  useEffect(() => {
-    let isMounted = true;
-    postsService.getFeed({ contentType: 'SERIES', limit: 4 })
-      .then((res) => {
-        if (!isMounted || !res?.data || res.data.length === 0) return;
-        const mapped: SeriesItem[] = res.data.map((post: PostEntity, idx: number) => ({
-          id: post.id,
-          title: post.title,
-          slug: post.slug,
-          count: 5 + (idx * 2),
-          image: resolveMediaUrl(post.coverMediaId, 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&auto=format&fit=crop&q=80'),
-        }));
-        setSeriesList(mapped);
-      })
-      .catch(() => {});
-
-    return () => { isMounted = false; };
-  }, []);
+  const { data: seriesList = DEFAULT_FEATURED_SERIES } = useQuery({
+    queryKey: queryKeys.posts.list({ contentType: 'SERIES', limit: 4 }),
+    queryFn: () => postsService.getFeed({ contentType: 'SERIES', limit: 4 }),
+    select: (res) => {
+      if (!res?.data || res.data.length === 0) return DEFAULT_FEATURED_SERIES;
+      return res.data.map((post: PostEntity, idx: number) => ({
+        id: post.id,
+        title: post.title,
+        slug: post.slug,
+        count: 5 + (idx * 2),
+        image: resolveMediaUrl(
+          post.coverMediaId,
+          'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&auto=format&fit=crop&q=80'
+        ),
+      }));
+    },
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3 shadow-xs">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100">
+        <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
           {t('editorial.featuredSeries')}
         </h3>
         <span className="rounded-md bg-slate-100 px-2 py-1 text-[11px] font-bold uppercase text-slate-500 dark:bg-[#162033] dark:text-slate-400">
-          Guide
+          Hướng dẫn
         </span>
       </div>
 

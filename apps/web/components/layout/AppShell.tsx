@@ -27,7 +27,7 @@ export function AppShell({
       <div className="max-w-[1440px] mx-auto py-6 px-4 sm:px-6 lg:px-8">
         <div className="w-full flex flex-col xl:flex-row items-start gap-6 lg:gap-8 min-w-0">
           {/* Main Feed Content — Takes generous 70%+ breathing space */}
-          <main className={cn('flex-1 w-full space-y-6 min-w-0', mainClassName)}>
+          <main id="main-content" className={cn('flex-1 w-full space-y-6 min-w-0', mainClassName)}>
             {children}
           </main>
 

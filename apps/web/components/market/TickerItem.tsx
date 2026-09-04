@@ -9,7 +9,7 @@ interface TickerItemProps {
   flashState?: TickFlashState;
 }
 
-export function TickerItem({ item, flashState }: TickerItemProps) {
+function TickerItemComponent({ item, flashState }: TickerItemProps) {
   const isPositive = item.change > 0;
   const isNegative = item.change < 0;
 
@@ -86,3 +86,6 @@ export function TickerItem({ item, flashState }: TickerItemProps) {
     </div>
   );
 }
+
+export const TickerItem = React.memo(TickerItemComponent);
+

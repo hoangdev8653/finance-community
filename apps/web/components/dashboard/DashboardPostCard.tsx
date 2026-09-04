@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { MoreVertical, Edit3, Eye, Trash2, Send, Archive, RotateCcw } from 'lucide-react';
 import { PostEntity } from '../../types/content';
+import { formatDate } from '@/lib/utils/date';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import {
@@ -30,11 +31,7 @@ export function DashboardPostCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
-  const formattedDate = new Date(post.publishedAt || post.createdAt).toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  const formattedDate = formatDate(post.publishedAt || post.createdAt);
 
   const statusVariants: Record<string, 'default' | 'secondary' | 'outline' | 'success' | 'warning' | 'danger'> = {
     PUBLISHED: 'success',
@@ -166,7 +163,7 @@ export function DashboardPostCard({
             <Eye className="h-4 w-4 text-slate-500" />
             <span>{(post.viewCount || 0).toLocaleString()} lượt xem</span>
           </span>
-          <span>{formattedDate}</span>
+          <span suppressHydrationWarning>{formattedDate}</span>
         </div>
 
         <Button variant="ghost" size="sm" asChild className="h-8 text-sm font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950">

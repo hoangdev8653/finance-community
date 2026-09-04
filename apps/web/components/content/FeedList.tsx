@@ -59,9 +59,9 @@ export function FeedList({
   if (allPosts.length === 0 || isError) {
     return (
       <EmptyState
-        title="No published analyses found"
-        description="There are no published articles matching the current topic or category filters."
-        actionLabel="Reset Filters"
+        title="Không tìm thấy bài phân tích"
+        description="Không có bài viết nào phù hợp với bộ lọc hiện tại."
+        actionLabel="Xóa bộ lọc"
         onAction={onResetFilters}
       />
     );
@@ -90,7 +90,7 @@ export function FeedList({
             isLoading={isFetchingNextPage}
             disabled={isFetchingNextPage}
           >
-            {isFetchingNextPage ? 'Loading more...' : 'Load More Articles'}
+            {isFetchingNextPage ? 'Đang tải thêm...' : 'Xem thêm bài viết'}
           </Button>
         </div>
       )}

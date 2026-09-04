@@ -8,7 +8,8 @@ import { EditCommentForm } from './EditCommentForm';
 import { ReplyComposer } from './ReplyComposer';
 import { CommentReactionButton } from '@/components/reactions/CommentReactionButton';
 import { ReportButton } from '@/components/moderation/ReportButton';
-import { MessageSquare, Edit2, Trash2, Calendar } from 'lucide-react';
+import { Calendar, MessageSquare, CornerDownRight, Trash2, Edit2, AlertCircle } from 'lucide-react';
+import { formatRelativeTime } from '@/lib/utils/date';
 
 interface CommentItemProps {
   comment: ThreadedComment;
@@ -40,11 +41,7 @@ export function CommentItem({
   );
   const canDelete = Boolean((isAuthor || isModerator) && !comment.isDeleted);
 
-  const formattedDate = new Date(comment.createdAt).toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
+  const formattedDate = formatRelativeTime(comment.createdAt);
 
   const authorName = comment.isDeleted
     ? '[deleted]'
@@ -92,8 +89,8 @@ export function CommentItem({
     <div
       className={`space-y-3 ${
         isNested
-          ? 'pl-4 sm:pl-6 border-l-2 border-border/60 my-4'
-          : 'rounded-lg border border-border bg-surface p-4 sm:p-5 shadow-2xs my-4'
+          ? 'pl-2.5 sm:pl-5 border-l-2 border-border/60 my-3 sm:my-4'
+          : 'rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-xs my-4'
       }`}
     >
       {/* Comment Header */}
@@ -120,7 +117,7 @@ export function CommentItem({
 
           <span className="text-muted-foreground font-mono flex items-center gap-1">
             <Calendar className="h-3 w-3" aria-hidden="true" />
-            <time dateTime={comment.createdAt}>{formattedDate}</time>
+            <time dateTime={comment.createdAt} suppressHydrationWarning>{formattedDate}</time>
           </span>
 
           {comment.updatedAt !== comment.createdAt && !comment.isDeleted && (

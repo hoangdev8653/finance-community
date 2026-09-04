@@ -48,9 +48,9 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
         <div className="mb-6">
           <Breadcrumb
             items={[
-              { label: 'Home', href: '/' },
+              { label: 'Trang chủ', href: '/' },
               {
-                label: isSeries ? 'Educational Series' : 'Market Feed',
+                label: isSeries ? 'Chuỗi bài học' : 'Bảng tin thị trường',
                 href: isSeries ? '/?type=SERIES' : '/',
               },
               { label: post.title },

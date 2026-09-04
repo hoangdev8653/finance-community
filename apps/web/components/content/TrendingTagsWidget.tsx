@@ -1,42 +1,39 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { postsService } from '@/lib/posts/posts-service';
+import { queryKeys } from '@/lib/query/keys';
 import { TagEntity } from '@/types/content';
 
 const DEFAULT_TOPICS = [
-  { name: 'Vĩ Mô Việt Nam', slug: 'vi-mo-viet-nam', count: 18 },
-  { name: 'Chính Sách Fed', slug: 'chinh-sach-fed', count: 24 },
-  { name: 'Tín Dụng Ngân Hàng', slug: 'tin-dung-ngan-hang', count: 15 },
-  { name: 'Định Giá DCF', slug: 'dinh-gia-dcf', count: 12 },
-  { name: 'Giá Vàng SJC', slug: 'gia-vang-sjc', count: 32 },
-  { name: 'Dòng Vốn FDI', slug: 'dong-von-fdi', count: 9 },
+  { name: 'Vĩ Mô Việt Nam', slug: 'vi-mo-viet-nam' },
+  { name: 'Chính Sách Fed', slug: 'chinh-sach-fed' },
+  { name: 'Tín Dụng Ngân Hàng', slug: 'tin-dung-ngan-hang' },
+  { name: 'Định Giá DCF', slug: 'dinh-gia-dcf' },
+  { name: 'Giá Vàng SJC', slug: 'gia-vang-sjc' },
+  { name: 'Dòng Vốn FDI', slug: 'dong-von-fdi' },
 ];
 
-const VISIBLE_TOPIC_COUNT = 5;
+const VISIBLE_TOPIC_COUNT = 6;
 
 export function TrendingTagsWidget() {
   const { t } = useTranslation();
-  const [tags, setTags] = useState(DEFAULT_TOPICS);
 
-  useEffect(() => {
-    let isMounted = true;
-    postsService.getTags()
-      .then((res) => {
-        if (!isMounted || !res || res.length === 0) return;
-        const mapped = res.slice(0, VISIBLE_TOPIC_COUNT).map((tag: TagEntity, idx: number) => ({
-          name: tag.name,
-          slug: tag.slug,
-          count: 10 + (idx * 3) % 17,
-        }));
-        setTags(mapped);
-      })
-      .catch(() => {});
-
-    return () => { isMounted = false; };
-  }, []);
+  const { data: tags = DEFAULT_TOPICS } = useQuery({
+    queryKey: queryKeys.tags.list('', VISIBLE_TOPIC_COUNT),
+    queryFn: () => postsService.getTags('', VISIBLE_TOPIC_COUNT),
+    select: (res: TagEntity[]) => {
+      if (!res || res.length === 0) return DEFAULT_TOPICS;
+      return res.slice(0, VISIBLE_TOPIC_COUNT).map((tag) => ({
+        name: tag.name,
+        slug: tag.slug,
+      }));
+    },
+    staleTime: 15 * 60 * 1000,
+  });
 
   return (
     <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3 shadow-xs">

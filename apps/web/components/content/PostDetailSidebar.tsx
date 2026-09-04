@@ -46,7 +46,7 @@ export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSi
     };
   }, [post.id]);
 
-  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : 'Ban Biên Tập Finance Pulse';
+  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : 'Ban Biên Tập MorningView';
   const authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
   const visibleTags = post.tags?.slice(0, VISIBLE_SIDEBAR_TAG_COUNT) ?? [];
   const hiddenTagCount = (post.tags?.length ?? 0) - visibleTags.length;

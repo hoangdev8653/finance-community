@@ -90,7 +90,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
     filters.order !== 'DESC';
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-xs">
+    <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-4 shadow-xs">
       {/* 1. Primary Keyword Search Input */}
       <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
         <div className="relative flex-1">
@@ -146,7 +146,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
       </div>
 
       {/* 3. Filter Controls Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
         {/* Content Type Scoping */}
         <div className="space-y-1">
           <label htmlFor="filter-content-type" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostEntity } from '@/types/content';
 import { resolveMediaUrl } from '@/lib/utils/media';
+import { formatRelativeTime } from '@/lib/utils/date';
 import { BookmarkButton } from './BookmarkButton';
 
 interface PostCardProps {
@@ -12,35 +13,7 @@ interface PostCardProps {
   categoryName?: string;
 }
 
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-  if (diffInMinutes < 60 && diffInMinutes > 0) {
-    return `${diffInMinutes} phút trước`;
-  }
-  if (diffInHours < 24 && diffInHours > 0) {
-    return `${diffInHours} giờ trước`;
-  }
-  if (diffInDays === 1) {
-    return 'Hôm qua';
-  }
-  if (diffInDays < 7 && diffInDays > 1) {
-    return `${diffInDays} ngày trước`;
-  }
-
-  return date.toLocaleDateString('vi-VN', {
-    day: 'numeric',
-    month: 'numeric',
-    year: 'numeric',
-  });
-}
-
-export function PostCard({ post, categoryName }: PostCardProps) {
+function PostCardComponent({ post, categoryName }: PostCardProps) {
   const displayDate = post.publishedAt || post.createdAt;
   const timeLabel = formatRelativeTime(displayDate);
   const postHref = `/posts/${post.contentType.toLowerCase()}/${post.slug}`;
@@ -58,7 +31,7 @@ export function PostCard({ post, categoryName }: PostCardProps) {
         href={postHref}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative shrink-0 w-full sm:w-56 md:w-64 lg:w-72 h-44 sm:h-38 md:h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#162033] border border-slate-200/80 dark:border-[#253044] shadow-xs group-hover:opacity-95 transition-opacity"
+        className="relative shrink-0 w-full sm:w-56 md:w-64 lg:w-72 h-44 sm:h-36 md:h-40 lg:h-44 rounded-xl overflow-hidden bg-slate-100 dark:bg-[#162033] border border-slate-200/80 dark:border-[#253044] shadow-xs group-hover:opacity-95 transition-opacity"
       >
         <Image
           src={coverUrl}
@@ -75,7 +48,7 @@ export function PostCard({ post, categoryName }: PostCardProps) {
         <h2 className="line-clamp-2">
           <Link
             href={postHref}
-            className="font-heading text-lg sm:text-xl lg:text-[1.35rem] font-bold text-slate-950 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-snug"
+            className="font-heading text-lg sm:text-xl lg:text-2xl font-bold text-slate-950 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-snug"
           >
             {post.title}
           </Link>
@@ -88,7 +61,7 @@ export function PostCard({ post, categoryName }: PostCardProps) {
               {displayCategory}
             </span>
             <span className="text-slate-400 dark:text-slate-500 font-normal">-</span>
-            <time dateTime={displayDate} className="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm shrink-0">
+            <time dateTime={displayDate} suppressHydrationWarning className="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm shrink-0">
               {timeLabel}
             </time>
           </div>
@@ -105,3 +78,6 @@ export function PostCard({ post, categoryName }: PostCardProps) {
     </article>
   );
 }
+
+export const PostCard = React.memo(PostCardComponent);
+

@@ -47,12 +47,12 @@ export function PostsExplorerHeader({
       {/* Filter Controls Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5 shadow-sm">
         {/* Left: Content Type Segments */}
-        <div className="flex items-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 p-1" role="group" aria-label="Filter content type">
+        <div className="flex items-center gap-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 p-1 overflow-x-auto max-w-full w-full sm:w-auto shrink-0 scrollbar-none" role="group" aria-label="Filter content type">
           <button
             type="button"
             onClick={() => onContentTypeChange(undefined)}
             aria-pressed={!contentType}
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition-all cursor-pointer ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               !contentType
                 ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100'
@@ -64,7 +64,7 @@ export function PostsExplorerHeader({
             type="button"
             onClick={() => onContentTypeChange('COMMUNITY')}
             aria-pressed={contentType === 'COMMUNITY'}
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition-all cursor-pointer ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               contentType === 'COMMUNITY'
                 ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100'
@@ -76,7 +76,7 @@ export function PostsExplorerHeader({
             type="button"
             onClick={() => onContentTypeChange('SERIES')}
             aria-pressed={contentType === 'SERIES'}
-            className={`rounded-lg px-4 py-2 text-sm font-bold transition-all cursor-pointer ${
+            className={`rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               contentType === 'SERIES'
                 ? 'bg-white dark:bg-slate-900 text-slate-950 dark:text-slate-100 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100'
@@ -87,15 +87,15 @@ export function PostsExplorerHeader({
         </div>
 
         {/* Right: Category Dropdown, Sort Dropdown, Reset Action */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
           {/* Category Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-slate-500 pointer-events-none" />
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial min-w-[140px]">
+            <Filter className="h-4 w-4 text-slate-500 pointer-events-none shrink-0" />
             <select
               value={categoryId || ''}
               onChange={(e) => onCategoryChange(e.target.value || undefined)}
               aria-label="Filter by category"
-              className="h-10 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              className="h-10 w-full sm:w-auto rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-xs"
             >
               <option value="">Tất cả danh mục</option>
               {categories.map((cat) => (
@@ -107,13 +107,13 @@ export function PostsExplorerHeader({
           </div>
 
           {/* Sort By Dropdown */}
-          <div className="flex items-center gap-2">
-            <ArrowUpDown className="h-4 w-4 text-slate-500 pointer-events-none" />
+          <div className="flex items-center gap-2 flex-1 sm:flex-initial min-w-[140px]">
+            <ArrowUpDown className="h-4 w-4 text-slate-500 pointer-events-none shrink-0" />
             <select
               value={sortBy}
               onChange={(e) => onSortChange(e.target.value as 'publishedAt' | 'createdAt')}
               aria-label="Sort articles"
-              className="h-10 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+              className="h-10 w-full sm:w-auto rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 text-xs sm:text-sm font-semibold text-slate-900 dark:text-slate-100 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-xs"
             >
               <option value="publishedAt">Mới xuất bản nhất</option>
               <option value="createdAt">Ngày tạo</option>

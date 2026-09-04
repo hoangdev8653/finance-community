@@ -34,8 +34,8 @@ export function DashboardTabs({
   };
 
   return (
-    <div className="border-b border-border" role="tablist" aria-label="Research status views">
-      <nav className="-mb-px flex space-x-6" aria-label="Tabs">
+    <div className="border-b border-border overflow-x-auto scrollbar-none" role="tablist" aria-label="Research status views">
+      <nav className="-mb-px flex space-x-4 sm:space-x-6 min-w-full" aria-label="Tabs">
         {tabs.map((tab, idx) => {
           const isActive = activeTab === tab.id;
           return (
@@ -49,7 +49,7 @@ export function DashboardTabs({
               onClick={() => onTabChange(tab.id)}
               onKeyDown={(e) => handleKeyDown(e, idx)}
               className={cn(
-                'group inline-flex items-center gap-2 border-b-2 py-4 px-1 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                'group inline-flex items-center gap-2 border-b-2 py-3.5 sm:py-4 px-1 text-xs sm:text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary whitespace-nowrap shrink-0 cursor-pointer',
                 isActive
                   ? 'border-primary text-primary font-semibold'
                   : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'

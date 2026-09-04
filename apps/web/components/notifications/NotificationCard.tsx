@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { NotificationEntity } from '@/types/notifications';
 import { useMarkAsRead } from '@/lib/notifications/use-notifications';
+import { formatRelativeTime } from '@/lib/utils/date';
 import {
   Bell,
   UserPlus,
@@ -19,26 +20,6 @@ import {
 interface NotificationCardProps {
   notification: NotificationEntity;
   onNavigate?: () => void;
-}
-
-function formatRelativeTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
-  if (diffSeconds < 60) return 'Vừa xong';
-  const diffMinutes = Math.floor(diffSeconds / 60);
-  if (diffMinutes < 60) return `${diffMinutes} phút trước`;
-  const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) return `${diffHours} giờ trước`;
-  const diffDays = Math.floor(diffHours / 24);
-  if (diffDays < 7) return `${diffDays} ngày trước`;
-
-  return date.toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
 }
 
 export function NotificationCard({

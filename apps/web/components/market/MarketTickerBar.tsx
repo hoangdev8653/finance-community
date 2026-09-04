@@ -29,10 +29,10 @@ export function MarketTickerBar() {
 
   return (
     <div
-      className="relative z-40 h-9 w-full overflow-hidden border-b border-border bg-background/95 dark:bg-slate-950/95 backdrop-blur-xs select-none transition-all duration-200"
+      className="relative z-40 h-9 w-full max-w-full overflow-hidden border-b border-border bg-background/95 dark:bg-slate-950/95 backdrop-blur-xs select-none transition-all duration-200"
       aria-label="Thanh chỉ số thị trường trực tiếp"
     >
-      <div className="flex h-full items-center">
+      <div className="flex h-full w-full min-w-0 items-center">
         {/* Live Indicator Badge (Left Anchor) */}
         <div className="relative z-10 flex h-full shrink-0 items-center gap-2 border-r border-border bg-background dark:bg-slate-950 px-3 shadow-xs">
           <span className="relative flex h-2 w-2">
@@ -45,7 +45,7 @@ export function MarketTickerBar() {
         </div>
 
         {/* Marquee Ticker Track */}
-        <div className="group relative flex flex-1 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]">
+        <div className="group relative flex flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]">
           <div className="flex w-max shrink-0 items-center gap-4 animate-[marquee_45s_linear_infinite] group-hover:[animation-play-state:paused]">
             {items.map((item) => (
               <React.Fragment key={`ticker-1-${item.symbol}`}>

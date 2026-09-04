@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, FileCheck2, Users, Flag, Sliders, FileSearch, FolderTree, ShieldAlert, Route, MessageSquare, Tag } from 'lucide-react';
 
-const ADMIN_LINKS = [
+export const ADMIN_LINKS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true, group: 'Không gian làm việc' },
   { href: '/admin/posts', label: 'Tất cả bài học', icon: FileCheck2, exact: true, group: 'Nội dung' },
   { href: '/admin/learning', label: 'Duyệt bài học', icon: FileCheck2, exact: true, group: 'Nội dung' },

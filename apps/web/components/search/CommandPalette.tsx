@@ -80,7 +80,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
               setSelectedIndex(0);
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Search topics, categories, or tags... (Type to explore)"
+            placeholder="Tìm chủ đề, danh mục hoặc tag... (Gõ để khám phá)"
             className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden"
           />
           {isLoading && <Loader2 className="h-4 w-4 animate-spin text-primary shrink-0" />}
@@ -99,7 +99,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
           {results.length > 0 && (
             <div className="space-y-1 pb-2">
               <div className="px-3 py-1.5 text-3xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
-                Topics & Taxonomy
+                Chủ đề & Phân loại
               </div>
               {results.map((item, idx) => {
                 const isSelected = selectedIndex === idx;
@@ -136,7 +136,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                     </div>
 
                     <div className="flex items-center gap-1 text-xs font-mono shrink-0">
-                      <span className="hidden sm:inline opacity-70">Jump</span>
+                      <span className="hidden sm:inline opacity-70">Đi đến</span>
                       <CornerDownLeft className="h-3.5 w-3.5" />
                     </div>
                   </div>
@@ -165,7 +165,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 <div className="flex items-center gap-2.5">
                   <Search className={`h-4 w-4 shrink-0 ${selectedIndex === results.length ? 'text-primary-foreground' : 'text-primary'}`} />
                   <span className="text-xs font-mono">
-                    Search all articles for &ldquo;<span className="font-semibold">{query.trim()}</span>&rdquo;
+                    Tìm tất cả bài viết cho &ldquo;<span className="font-semibold">{query.trim()}</span>&rdquo;
                   </span>
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0" />
@@ -175,7 +175,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
 
           {!isLoading && results.length === 0 && !query.trim() && (
             <div className="p-8 text-center text-xs text-muted-foreground font-mono">
-              Type a topic, tag, or category to start searching...
+              Nhập chủ đề, tag hoặc danh mục để tìm...
             </div>
           )}
         </div>
