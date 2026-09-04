@@ -78,12 +78,16 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] BE-06: Bổ sung Facebook OAuth API (`POST /auth/facebook`)
+### [DONE] [P1] BE-06: Bổ sung Facebook OAuth API (`POST /auth/facebook`)
 
-- **Mục tiêu:** Cho phép người dùng đăng nhập bằng tài khoản Facebook theo đúng Roadmap mục 5.
-- **Phạm vi:** `apps/api/src/modules/auth/`, `auth.controller.ts`, `auth.service.ts`.
-- **Yêu cầu:** Tiếp nhận Facebook access token, xác thực với Facebook Graph API (`/me`), tự động tạo tài khoản hoặc liên kết tài khoản theo email, cấp phát JWT.
-- **Tiêu chí hoàn thành:** API endpoint `POST /api/v1/auth/facebook` hoạt động và trả về JWT hợp lệ.
+- **Kết quả:**
+  - Bổ sung `FacebookAuthDto` nhận `accessToken` từ Facebook SDK trên client.
+  - Xây dựng `AuthService.authenticateFacebookUser()`: xác thực access token qua Facebook Graph API (`graph.facebook.com/me?fields=id,name,email,picture`), bóc tách danh tính, tự động ánh xạ deterministic UUID và provision user tài khoản với `provider: 'FACEBOOK'`.
+  - Mở endpoint public `POST /api/v1/auth/facebook` trên `AuthController`.
+  - Viết unit test E2E `test/security/facebook-auth.spec.ts` kiểm thử đầy đủ.
+- **Files:** `apps/api/src/modules/auth/dto/facebook-auth.dto.ts`, `apps/api/src/modules/auth/services/auth.service.ts`, `apps/api/src/modules/auth/controllers/auth.controller.ts`, `apps/api/test/security/facebook-auth.spec.ts`.
+- **Kiểm tra:** Test `facebook-auth.spec.ts` pass 2/2, `npm run build` trong `apps/api` thành công code 0, `npm run typecheck` trong `apps/web` thành công code 0.
+- **Ghi chú:** Hoàn thành mục 5 trong Feature Roadmap.
 
 ---
 

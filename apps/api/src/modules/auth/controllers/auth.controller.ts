@@ -6,6 +6,7 @@ import { LoginDto } from '../dto/login.dto';
 import { Public } from '../decorators/public.decorator';
 
 import { GoogleAuthDto } from '../dto/google-auth.dto';
+import { FacebookAuthDto } from '../dto/facebook-auth.dto';
 import { LogoutDto } from '../dto/logout.dto';
 
 @ApiTags('Authentication')
@@ -42,6 +43,16 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Google ID Token verification failed' })
   authenticateGoogle(@Body() dto: GoogleAuthDto) {
     return this.authService.authenticateGoogleUser(dto);
+  }
+
+  @Public()
+  @Post('facebook')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Quick 1-Click Social Authentication via Facebook User Access Token' })
+  @ApiResponse({ status: 200, description: 'User authenticated via Facebook with Bearer accessToken' })
+  @ApiResponse({ status: 401, description: 'Facebook access token verification failed' })
+  authenticateFacebook(@Body() dto: FacebookAuthDto) {
+    return this.authService.authenticateFacebookUser(dto);
   }
 
   @Public()
