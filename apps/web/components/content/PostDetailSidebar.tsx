@@ -9,16 +9,19 @@ import { resolveMediaUrl } from '@/lib/utils/media';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { PostTableOfContents } from './PostTableOfContents';
+import { ContentHeading } from './PostContentRenderer';
 import { Sparkles, UserPlus, UserCheck, BookOpen, Clock, Tag, ArrowRight } from 'lucide-react';
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
   categoryName?: string;
+  headings?: ContentHeading[];
 }
 
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
-export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps) {
+export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDetailSidebarProps) {
   const { isAuthenticated } = useAuth();
   const [isFollowing, setIsFollowing] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
@@ -52,6 +55,7 @@ export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps
 
   return (
     <aside className="space-y-6 sticky top-24">
+      {headings.length > 0 && <PostTableOfContents headings={headings} />}
       {/* 1. Author Profile Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-start gap-3.5">
