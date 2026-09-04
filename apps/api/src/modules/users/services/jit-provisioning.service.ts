@@ -217,7 +217,12 @@ export class JitProvisioningService {
         });
       } catch (err: any) {
         if (isDbOffline(err)) {
-          this.logger.warn(`PostgreSQL connection offline (${err.message || err.code}). Falling back to in-memory JIT store.`);
+          if (!this.db || process.env.NODE_ENV === 'test') {
+            this.logger.warn(`PostgreSQL connection offline in test suite (${err.message || err.code}). Falling back to in-memory JIT store.`);
+          } else {
+            this.logger.error(`PostgreSQL database unavailable during JIT provisioning for ${email}: ${err.message || err.code}`);
+            throw err;
+          }
         } else {
           throw err;
         }

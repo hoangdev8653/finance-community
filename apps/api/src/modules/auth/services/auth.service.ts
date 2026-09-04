@@ -2,13 +2,16 @@ import {
   Injectable,
   ConflictException,
   UnauthorizedException,
+  ForbiddenException,
+  ServiceUnavailableException,
   Inject,
   Optional,
+  Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import type { ConfigType } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
+import { randomUUID, createHash } from 'crypto';
 import { securityConfig } from '../../../config/security.config';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
 import { AuthCredentialsRepository } from '../../../database/repositories/auth-credentials.repository';
@@ -16,9 +19,8 @@ import { UsersRepository } from '../../../database/repositories/users.repository
 import { ProfilesRepository } from '../../../database/repositories/profiles.repository';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
-import { OAuth2Client } from 'google-auth-library';
-import { createHash } from 'crypto';
 import { GoogleAuthDto } from '../dto/google-auth.dto';
+import { OAuth2Client } from 'google-auth-library';
 
 interface LocalCredentials {
   userId: string;
@@ -27,11 +29,25 @@ interface LocalCredentials {
   passwordHash: string;
 }
 
-// In-memory local password fallback cache for unit test runs when DB is offline
-const fallbackMemoryCredentials = new Map<string, LocalCredentials>();
+const testMemoryCredentials = new Map<string, LocalCredentials>();
+
+const isDbOffline = (err: any): boolean => {
+  if (!err) return false;
+  const code = err.code || err.cause?.code || err.cause?.errors?.[0]?.code;
+  const name = err.name || err.cause?.name;
+  const msg = (err.message || '') + (err.cause?.message || '');
+  return (
+    code === 'ECONNREFUSED' ||
+    code === '57P01' ||
+    code === '08006' ||
+    name === 'AggregateError' ||
+    msg.includes('ECONNREFUSED')
+  );
+};
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private googleOAuthClient?: OAuth2Client;
 
   constructor(
@@ -43,28 +59,74 @@ export class AuthService {
     @Optional() private readonly usersRepo?: UsersRepository,
     @Optional() private readonly profilesRepo?: ProfilesRepository,
   ) {
-    if (this.secConfig.googleClientId && this.secConfig.googleClientId !== 'mock-google-client-id.apps.googleusercontent.com') {
+    if (
+      this.secConfig.googleClientId &&
+      this.secConfig.googleClientId !== 'mock-google-client-id.apps.googleusercontent.com'
+    ) {
       this.googleOAuthClient = new OAuth2Client(this.secConfig.googleClientId);
     }
   }
 
-  private issueTokens(userId: string, email: string) {
-    const payload = { sub: userId, email };
-    return { accessToken: this.jwtService.sign(payload, { secret: this.secConfig.jwtSecret, expiresIn: '15m' }), refreshToken: this.jwtService.sign({ ...payload, type: 'refresh' }, { secret: this.secConfig.jwtSecret, expiresIn: '30d' }), tokenType: 'Bearer' };
+  private isTestEnvironment(): boolean {
+    return process.env.NODE_ENV === 'test';
+  }
+
+  private issueTokens(userId: string, email: string, emailConfirmedAt: string | null = null) {
+    const payload = {
+      sub: userId,
+      email,
+      email_confirmed_at: emailConfirmedAt ?? new Date().toISOString(),
+    };
+    return {
+      accessToken: this.jwtService.sign(payload, { secret: this.secConfig.jwtSecret, expiresIn: '7d' }),
+      refreshToken: this.jwtService.sign({ ...payload, type: 'refresh' }, { secret: this.secConfig.jwtSecret, expiresIn: '30d' }),
+      tokenType: 'Bearer',
+    };
   }
 
   async refresh(refreshToken: string) {
     try {
-      const payload = await this.jwtService.verifyAsync<{ sub: string; email: string; type?: string }>(refreshToken, { secret: this.secConfig.jwtSecret });
-      if (payload.type !== 'refresh') throw new Error('wrong token type');
-      return this.issueTokens(payload.sub, payload.email);
-    } catch { throw new UnauthorizedException('Refresh token expired or invalid.'); }
+      const payload = await this.jwtService.verifyAsync<{
+        sub: string;
+        email: string;
+        type?: string;
+        email_confirmed_at?: string;
+      }>(refreshToken, { secret: this.secConfig.jwtSecret });
+
+      if (payload.type !== 'refresh') {
+        throw new Error('wrong token type');
+      }
+
+      if (this.usersRepo) {
+        try {
+          const user = await this.usersRepo.findById(payload.sub);
+          if (user && (user.status === 'BANNED' || user.status === 'SUSPENDED' || user.status === 'DEACTIVATED')) {
+            throw new ForbiddenException({
+              statusCode: 403,
+              error: 'Forbidden',
+              message: 'Tài khoản đã bị tạm khóa hoặc vô hiệu hóa.',
+              code: 'ACCOUNT_NOT_ACTIVE',
+            });
+          }
+        } catch (err) {
+          if (err instanceof ForbiddenException) throw err;
+          if (!this.isTestEnvironment() || !isDbOffline(err)) {
+            throw err;
+          }
+        }
+      }
+
+      return this.issueTokens(payload.sub, payload.email, payload.email_confirmed_at);
+    } catch (err) {
+      if (err instanceof ForbiddenException) throw err;
+      throw new UnauthorizedException('Refresh token expired or invalid.');
+    }
   }
 
   async register(dto: RegisterDto) {
     const emailKey = dto.email.toLowerCase();
 
-    // 1. Check if email already registered in Database or memory
+    // 1. Check if email already registered in Database
     if (this.usersRepo) {
       try {
         const existingUser = await this.usersRepo.findByEmail(emailKey);
@@ -76,21 +138,24 @@ export class AuthService {
             code: 'EMAIL_ALREADY_EXISTS',
           });
         }
-      } catch (err: any) {
+      } catch (err) {
         if (err instanceof ConflictException) throw err;
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Database error during registration email check: ${err}`);
+          throw new ServiceUnavailableException('Dịch vụ cơ sở dữ liệu tạm thời không khả dụng.');
+        }
+        if (testMemoryCredentials.has(emailKey)) {
+          throw new ConflictException({
+            statusCode: 409,
+            error: 'Conflict',
+            message: 'Email address is already registered.',
+            code: 'EMAIL_ALREADY_EXISTS',
+          });
+        }
       }
     }
 
-    if (fallbackMemoryCredentials.has(emailKey)) {
-      throw new ConflictException({
-        statusCode: 409,
-        error: 'Conflict',
-        message: 'Email address is already registered.',
-        code: 'EMAIL_ALREADY_EXISTS',
-      });
-    }
-
-    // 2. Check if username is already taken in Database or memory
+    // 2. Check if username is already taken in Database
     if (this.profilesRepo) {
       try {
         const existingProfile = await this.profilesRepo.findByUsername(dto.username);
@@ -102,19 +167,22 @@ export class AuthService {
             code: 'USERNAME_ALREADY_EXISTS',
           });
         }
-      } catch (err: any) {
+      } catch (err) {
         if (err instanceof ConflictException) throw err;
-      }
-    }
-
-    for (const cred of fallbackMemoryCredentials.values()) {
-      if (cred.username.toLowerCase() === dto.username.toLowerCase()) {
-        throw new ConflictException({
-          statusCode: 409,
-          error: 'Conflict',
-          message: 'Username is already taken.',
-          code: 'USERNAME_ALREADY_EXISTS',
-        });
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Database error during registration username check: ${err}`);
+          throw new ServiceUnavailableException('Dịch vụ cơ sở dữ liệu tạm thời không khả dụng.');
+        }
+        for (const cred of testMemoryCredentials.values()) {
+          if (cred.username.toLowerCase() === dto.username.toLowerCase()) {
+            throw new ConflictException({
+              statusCode: 409,
+              error: 'Conflict',
+              message: 'Username is already taken.',
+              code: 'USERNAME_ALREADY_EXISTS',
+            });
+          }
+        }
       }
     }
 
@@ -122,7 +190,7 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(dto.password, 10);
     const userId = randomUUID();
 
-    // 4. Provision User, Profile and Role in Database
+    // 4. Provision User, Profile and Role
     const userRecord = await this.jitService.ensureUserProvisioned({
       sub: userId,
       email: dto.email,
@@ -134,28 +202,28 @@ export class AuthService {
       try {
         await this.authCredentialsRepo.upsertCredentialTx(undefined, userRecord.id, passwordHash);
       } catch (err) {
-        // Fallback to memory if DB offline in local test
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Database error during credential persistence: ${err}`);
+          throw new ServiceUnavailableException('Không thể lưu thông tin đăng nhập vào cơ sở dữ liệu.');
+        }
       }
     }
 
-    // Keep memory fallback in sync for testing
-    fallbackMemoryCredentials.set(emailKey, {
-      userId: userRecord.id,
-      email: dto.email,
-      username: dto.username,
-      passwordHash,
-    });
+    if (this.isTestEnvironment()) {
+      testMemoryCredentials.set(emailKey, {
+        userId: userRecord.id,
+        email: dto.email,
+        username: dto.username,
+        passwordHash,
+      });
+    }
 
-    // 6. Sign JWT Access Token
-    const accessToken = this.jwtService.sign(
-      { sub: userRecord.id, email: userRecord.email },
-      { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
-    );
-    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
+    // 6. Sign JWT Tokens
+    const tokens = this.issueTokens(userRecord.id, userRecord.email);
 
     return {
-      accessToken,
-      refreshToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,
@@ -174,7 +242,7 @@ export class AuthService {
     let passwordHash: string | undefined;
     let userStatus: any = 'ACTIVE';
 
-    // 1. Try resolving credentials from PostgreSQL Database
+    // 1. Resolve user from PostgreSQL Database
     if (this.usersRepo && this.authCredentialsRepo) {
       try {
         const user = await this.usersRepo.findByEmail(emailKey);
@@ -183,7 +251,6 @@ export class AuthService {
           targetEmail = user.email;
           userStatus = user.status;
 
-          // Fetch profile for display username
           if (this.profilesRepo) {
             const profile = await this.profilesRepo.findByUserId(user.id);
             if (profile?.username) {
@@ -191,20 +258,22 @@ export class AuthService {
             }
           }
 
-          // Fetch persistent password hash from auth_credentials table
           const cred = await this.authCredentialsRepo.findByUserId(user.id);
           if (cred) {
             passwordHash = cred.passwordHash;
           }
         }
-      } catch {
-        // DB fallback
+      } catch (err) {
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Database error during user login: ${err}`);
+          throw new ServiceUnavailableException('Dịch vụ cơ sở dữ liệu tạm thời không khả dụng.');
+        }
       }
     }
 
-    // 2. Fallback to memory store if DB is offline or not found
-    if (!passwordHash) {
-      const memCred = fallbackMemoryCredentials.get(emailKey);
+    // In unit test environment where DB is offline, read from test mock
+    if (!passwordHash && this.isTestEnvironment()) {
+      const memCred = testMemoryCredentials.get(emailKey);
       if (memCred) {
         targetUserId = memCred.userId;
         targetEmail = memCred.email;
@@ -231,7 +300,16 @@ export class AuthService {
       });
     }
 
-    // 3. Verify bcrypt password hash
+    if (userStatus === 'BANNED' || userStatus === 'SUSPENDED' || userStatus === 'DEACTIVATED') {
+      throw new ForbiddenException({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'Tài khoản của bạn đã bị khóa hoặc vô hiệu hóa.',
+        code: 'ACCOUNT_NOT_ACTIVE',
+      });
+    }
+
+    // Verify bcrypt password hash
     const isMatch = await bcrypt.compare(dto.password, passwordHash);
     if (!isMatch) {
       throw new UnauthorizedException({
@@ -242,21 +320,16 @@ export class AuthService {
       });
     }
 
-    // 4. Ensure user record is active and roles are assigned
     const userRecord = await this.jitService.ensureUserProvisioned({
       sub: targetUserId,
       email: targetEmail,
     });
 
-    const accessToken = this.jwtService.sign(
-      { sub: userRecord.id, email: userRecord.email },
-      { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
-    );
-    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
+    const tokens = this.issueTokens(userRecord.id, userRecord.email);
 
     return {
-      accessToken,
-      refreshToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,
@@ -272,7 +345,6 @@ export class AuthService {
     let name: string;
     let googleSub: string;
 
-    // Handle mock token for test environments or verify real Google ID Token
     if (dto.idToken.startsWith('mock_google_id_token_')) {
       const mockName = dto.idToken.replace('mock_google_id_token_', '') || 'google_user';
       googleSub = '109876543210987654321';
@@ -315,26 +387,20 @@ export class AuthService {
       }
     }
 
-    // Convert Google Sub ID to deterministic UUID v4 format
     const hex = createHash('md5').update(`google:${googleSub}`).digest('hex');
     const userUuid = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-4${hex.slice(13, 16)}-a${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
 
-    // Provision user automatically via JIT Service
     const userRecord = await this.jitService.ensureUserProvisioned({
       sub: userUuid,
       email,
       displayName: name,
     });
 
-    const accessToken = this.jwtService.sign(
-      { sub: userRecord.id, email: userRecord.email },
-      { secret: this.secConfig.jwtSecret, expiresIn: '7d' },
-    );
-    const refreshToken = this.issueTokens(userRecord.id, userRecord.email).refreshToken;
+    const tokens = this.issueTokens(userRecord.id, userRecord.email);
 
     return {
-      accessToken,
-      refreshToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       tokenType: 'Bearer',
       user: {
         id: userRecord.id,

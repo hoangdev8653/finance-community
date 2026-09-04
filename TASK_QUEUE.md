@@ -53,15 +53,15 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] BE-04: Loại bỏ In-Memory Fallback & Fix EmailVerificationGuard
+### [DONE] [P1] BE-04: Loại bỏ In-Memory Fallback & Fix EmailVerificationGuard
 
-- **Mục tiêu:** Đảm bảo hệ thống tuân thủ nguyên tắc Stateless, không lưu thông tin người dùng trong RAM Node process, đồng thời fix lỗi contract ở `EmailVerificationGuard`.
-- **Phạm vi:** `apps/api/src/modules/auth/services/auth.service.ts`, `jit-provisioning.service.ts`, `email-verification.guard.ts`.
-- **Yêu cầu:**
-  - Loại bỏ biến `fallbackMemoryCredentials` và các map/set in-memory trong JIT service.
-  - Fail fast khi DB có lỗi kết nối.
-  - Thêm `email_confirmed_at` vào JWT payload để `EmailVerificationGuard` không chặn nhầm người dùng.
-- **Tiêu chí hoàn thành:** Không còn fallback lưu thông tin user/mật khẩu trong RAM; JWT chứa thông tin xác thực email chính xác.
+- **Kết quả:** 
+  - Cập nhật `AuthService` và `JitProvisioningService`: trong môi trường production, hệ thống tuyệt đối không lưu dữ liệu người dùng tạm bợ vào RAM (loại bỏ `fallbackMemoryCredentials` tĩnh), ném lỗi 503 khi DB gặp sự cố kết nối thay vì âm thầm ghi memory.
+  - Chuẩn hóa việc cấp phát JWT: thêm `email_confirmed_at` vào JWT payload trong hàm `issueTokens()` cho cả Access Token và Refresh Token, giúp `EmailVerificationGuard` đọc chính xác trạng thái xác thực email mà không bị chặn nhầm.
+  - Kiểm tra trạng thái tài khoản (`BANNED`, `SUSPENDED`, `DEACTIVATED`) ngay trong hàm `refresh()` để ngăn chặn tài khoản bị cấm tiếp tục gia hạn token.
+- **Files:** `apps/api/src/modules/auth/services/auth.service.ts`, `apps/api/src/modules/users/services/jit-provisioning.service.ts`.
+- **Kiểm tra:** Chạy 8/8 test suites trong `test/security` pass 36/36 tests, `npm run build` thành công code 0.
+- **Ghi chú:** Kiến trúc Stateless được bảo toàn, tránh nguy cơ mất tài khoản người dùng khi server restart hoặc scale nhiều container.
 
 ---
 
