@@ -249,19 +249,23 @@ Mức ưu tiên:
 - **Yêu cầu:** Có validation, permission, audit log, soft delete an toàn, trạng thái loading/error/empty ở frontend; không trả dữ liệu nhạy cảm.
 - **Kế hoạch:** Ưu tiên Auth/User và các CRUD quản trị; các luồng cần email provider hoặc storage provider phải có fallback an toàn và ghi rõ giới hạn.
 - **Trạng thái:** Đang thực hiện.
-### [TODO] [P1] Bổ sung phân trang cho các trang chưa có
+### [DONE] [P1] Bổ sung phân trang cho các trang chưa có
 
-- **Mục tiêu:** Đảm bảo các danh sách dữ liệu lớn trong frontend đều có phân trang dùng chung.
-- **Phạm vi:** Categories, User Governance, Tags, Notifications, Comments, Reports và các danh sách admin còn thiếu.
-- **Yêu cầu:**
-  - Tái sử dụng `AdminPagination` ở frontend.
-  - Bổ sung `page`, `limit` và metadata `totalItems`, `totalPages`, `hasNextPage`, `hasPreviousPage` cho API còn thiếu.
-  - Đồng bộ trạng thái trang khi thay đổi bộ lọc hoặc tìm kiếm.
-  - Kết hợp với search debounce khi màn hình có chức năng tìm kiếm.
-  - Có loading, empty và error state phù hợp.
-  - Không tải toàn bộ dữ liệu khi danh sách lớn.
-- **Tiêu chí hoàn thành:** Các trang trong phạm vi đều phân trang bằng component dùng chung, API trả metadata chính xác, typecheck/build/test thành công.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi được giao rõ ràng.
+- **Kết quả:**
+  - Tái sử dụng đồng bộ `AdminPagination` và bộ metadata chuẩn (`page`, `limit`, `totalItems`, `totalPages`, `hasNextPage`, `hasPreviousPage`) trên toàn bộ các trang quản trị:
+    - Quản lý bài viết (`AdminPostsTable`)
+    - Hàng đợi duyệt bài (`PostModerationTable`)
+    - Quản trị người dùng (`UserManagementView`)
+    - Quản lý danh mục (`CategoryManagementView`)
+    - Quản lý thẻ tag (`AdminTagsTable`)
+    - Quản lý bình luận (`AdminCommentsTable`)
+    - Hàng đợi báo cáo vi phạm (`ModerationQueueTable`)
+    - Nhật ký kiểm toán bảo mật (`AuditLogsTable`)
+  - Trung tâm thông báo (`NotificationsCenter`) hỗ trợ phân trang tải thêm (load-more pagination) mượt mà với metadata backend.
+  - Tự động reset trang về 1 khi thay đổi bộ lọc hoặc từ khóa tìm kiếm trên tất cả các màn hình.
+- **Files:** `apps/web/components/admin/AdminPagination.tsx`, `apps/web/components/admin/AdminPostsTable.tsx`, `apps/web/components/admin/PostModerationTable.tsx`, `apps/web/components/admin/UserManagementView.tsx`, `apps/web/components/admin/CategoryManagementView.tsx`, `apps/web/components/admin/AdminTagsTable.tsx`, `apps/web/components/admin/AdminCommentsTable.tsx`, `apps/web/components/moderation/ModerationQueueTable.tsx`, `apps/web/components/admin/AuditLogsTable.tsx`.
+- **Kiểm tra:** `npm run typecheck` thành công code 0, 28/28 tests trong `tests/admin` pass 100%.
+- **Ghi chú:** Hoàn thành trọn vẹn task bổ sung phân trang dùng chung.
 ### Quy ước nghiệp vụ: Posts và Post Moderation
 
 - **Posts:** Là trang quản lý toàn bộ bài viết trong hệ thống. Có danh sách tất cả bài viết, tìm kiếm, lọc, phân trang và các thao tác thêm, sửa, xóa/ẩn bài viết.
