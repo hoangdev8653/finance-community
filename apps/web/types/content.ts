@@ -1,6 +1,15 @@
+export interface PostAuthorItem {
+  id?: string;
+  username?: string;
+  displayName?: string | null;
+  avatarUrl?: string | null;
+  avatarMediaId?: string | null;
+}
+
 export interface PostEntity {
   id: string;
   authorId: string;
+  author?: PostAuthorItem | null;
   contentType: 'SERIES' | 'COMMUNITY';
   title: string;
   slug: string;
