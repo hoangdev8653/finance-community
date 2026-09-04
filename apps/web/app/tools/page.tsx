@@ -1,27 +1,167 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { Info, TrendingUp } from 'lucide-react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { AppShell } from '@/components/layout/AppShell';
+import { CompoundInterestTool } from '@/components/tools/CompoundInterestTool';
+import { LoanCalculatorTool } from '@/components/tools/LoanCalculatorTool';
+import { StockValuationTool } from '@/components/tools/StockValuationTool';
+import { Button } from '@/components/ui/Button';
+import {
+  TrendingUp,
+  Building,
+  BarChart3,
+  Share2,
+  Check,
+  Info,
+  Calculator,
+} from 'lucide-react';
 
-const money = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.max(0, value));
-const number = (value: number) => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(Math.max(0, value));
-const field = (label: string, value: number, setValue: (value: number) => void, suffix = '₫') => <label className="space-y-1.5 text-sm font-semibold">{label}<div className="flex items-center rounded-xl border border-border bg-background px-3"><input type="number" min="0" value={value} onChange={(e) => setValue(Number(e.target.value) || 0)} className="h-11 min-w-0 flex-1 bg-transparent outline-none" />{suffix && <span className="text-xs text-muted-foreground">{suffix}</span>}</div></label>;
+type ToolTab = 'compound' | 'loan' | 'stock';
 
-function GrowthChart({ values }: { values: number[] }) {
-  const max = Math.max(...values, 1);
-  return <div className="flex h-44 items-end gap-1 rounded-xl bg-muted/30 p-4">{values.map((value, index) => <div key={index} title={`Năm ${index + 1}: ${money(value)}`} className="group relative flex-1 rounded-t-md bg-primary/70 transition-all hover:bg-primary" style={{ height: `${Math.max(4, value / max * 100)}%` }} />)}</div>;
+function ToolsContent() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const tabParam = searchParams.get('tab') as ToolTab | null;
+  const [activeTab, setActiveTab] = useState<ToolTab>(
+    tabParam === 'loan' || tabParam === 'stock' || tabParam === 'compound'
+      ? tabParam
+      : 'compound',
+  );
+
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (tabParam && (tabParam === 'loan' || tabParam === 'stock' || tabParam === 'compound')) {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const handleTabChange = (tab: ToolTab) => {
+    setActiveTab(tab);
+    router.replace(`/tools?tab=${tab}`, { scroll: false });
+  };
+
+  const handleCopyShare = () => {
+    if (typeof window !== 'undefined') {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
+
+  return (
+    <main className="mx-auto max-w-6xl space-y-8 py-4 sm:py-6">
+      {/* Hero Header */}
+      <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="flex h-6 items-center rounded-full bg-primary/10 px-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
+              <Calculator className="mr-1.5 h-3 w-3" />
+              Finance Calculators
+            </span>
+          </div>
+          <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+            Công cụ tài chính tương tác
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground sm:text-base">
+            Tự kiểm tra các kịch bản tích lũy lãi kép, lập kế hoạch trả nợ vay ngân hàng và định giá cổ phiếu trực quan ngay trên trình duyệt.
+          </p>
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleCopyShare}
+          className="gap-2 self-start sm:self-auto"
+        >
+          {copied ? (
+            <>
+              <Check className="h-4 w-4 text-emerald-600" />
+              <span className="text-emerald-600">Đã sao chép link</span>
+            </>
+          ) : (
+            <>
+              <Share2 className="h-4 w-4" />
+              <span>Chia sẻ công cụ</span>
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Main Navigation Tabs */}
+      <div className="grid grid-cols-1 gap-2 rounded-2xl border border-border bg-card p-1.5 sm:grid-cols-3">
+        <button
+          type="button"
+          onClick={() => handleTabChange('compound')}
+          className={`flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-bold transition ${
+            activeTab === 'compound'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+          }`}
+        >
+          <TrendingUp className="h-4 w-4 shrink-0" />
+          <span>Lãi kép & Tích lũy</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleTabChange('loan')}
+          className={`flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-bold transition ${
+            activeTab === 'loan'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+          }`}
+        >
+          <Building className="h-4 w-4 shrink-0" />
+          <span>Tính lãi vay mua nhà / xe</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleTabChange('stock')}
+          className={`flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-bold transition ${
+            activeTab === 'stock'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+          }`}
+        >
+          <BarChart3 className="h-4 w-4 shrink-0" />
+          <span>Định giá cổ phiếu & Cổ tức</span>
+        </button>
+      </div>
+
+      {/* Active Tool View */}
+      <div className="min-h-[500px]">
+        {activeTab === 'compound' && <CompoundInterestTool />}
+        {activeTab === 'loan' && <LoanCalculatorTool />}
+        {activeTab === 'stock' && <StockValuationTool />}
+      </div>
+
+      {/* Disclaimer Banner */}
+      <div className="flex items-start gap-3 rounded-2xl border border-amber-300/40 bg-amber-500/5 p-4 text-xs text-amber-900 dark:text-amber-200">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+        <p className="leading-relaxed">
+          <strong>Lưu ý miễn trừ trách nhiệm:</strong> Các kết quả tính toán trên được xây dựng dựa trên công thức toán tài chính chuẩn quốc tế nhằm mục đích hỗ trợ học tập và lập kế hoạch cá nhân. Các thông số thực tế (như biên độ thả nổi lãi suất ngân hàng, phí bảo hiểm khoản vay, thuế cổ tức...) có thể khác biệt tùy thuộc vào chính sách của từng tổ chức tài chính tại từng thời điểm.
+        </p>
+      </div>
+    </main>
+  );
 }
 
 export default function ToolsPage() {
-  const [initial, setInitial] = useState(100000000); const [monthly, setMonthly] = useState(5000000); const [rate, setRate] = useState(10); const [years, setYears] = useState(10);
-  const [price, setPrice] = useState(100000); const [eps, setEps] = useState(10000); const [pe, setPe] = useState(12);
-  const [dividend, setDividend] = useState(5000); const [growth, setGrowth] = useState(5); const [required, setRequired] = useState(12);
-  const growthData = useMemo(() => Array.from({ length: years }, (_, i) => initial * Math.pow(1 + rate / 1200, (i + 1) * 12) + monthly * ((Math.pow(1 + rate / 1200, (i + 1) * 12) - 1) / (rate / 1200 || 1))), [initial, monthly, rate, years]);
-  const future = growthData.at(-1) || 0; const invested = initial + monthly * years * 12;
-  const peValue = eps * pe; const gordonValue = required > growth ? dividend * (1 + growth / 100) / ((required - growth) / 100) : 0;
-  return <AppShell showRightSidebar={false}><main className="mx-auto max-w-5xl space-y-8 py-2"><header><p className="font-mono text-xs uppercase tracking-[.18em] text-primary">Finance tools</p><h1 className="mt-2 text-3xl font-bold sm:text-4xl">Công cụ tài chính tương tác</h1><p className="mt-2 max-w-2xl text-muted-foreground">Tự kiểm tra các kịch bản tích lũy và định giá cơ bản ngay trên trình duyệt.</p></header>
-    <section className="rounded-2xl border border-border bg-surface p-5 shadow-xs sm:p-7"><div className="mb-6 flex items-center gap-3"><div className="rounded-xl bg-primary/10 p-2 text-primary"><TrendingUp className="h-5 w-5" /></div><div><h2 className="text-xl font-bold">Lãi kép & kế hoạch tích lũy</h2><p className="text-sm text-muted-foreground">Ước tính giá trị danh mục theo thời gian.</p></div></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{field('Vốn ban đầu', initial, setInitial)}{field('Tích lũy mỗi tháng', monthly, setMonthly)}{field('Lãi suất kỳ vọng', rate, setRate, '%/năm')}{field('Thời gian', years, setYears, 'năm')}</div><div className="mt-6 grid gap-6 lg:grid-cols-[1fr_1.4fr]"><div className="rounded-xl bg-primary p-5 text-primary-foreground"><p className="text-sm opacity-80">Giá trị dự kiến</p><p className="mt-1 text-3xl font-bold">{money(future)}</p><div className="mt-5 grid grid-cols-2 gap-3 text-sm"><div><p className="opacity-70">Tổng vốn góp</p><strong>{money(invested)}</strong></div><div><p className="opacity-70">Tiền lãi</p><strong>{money(future - invested)}</strong></div></div></div><GrowthChart values={growthData} /></div></section>
-    <div className="grid gap-6 lg:grid-cols-2"><section className="rounded-2xl border border-border bg-surface p-5 shadow-xs sm:p-7"><h2 className="text-xl font-bold">Định giá theo P/E</h2><p className="mt-1 text-sm text-muted-foreground">Giá hợp lý = EPS × P/E mục tiêu.</p><div className="mt-5 space-y-4">{field('EPS dự phóng', eps, setEps)}{field('P/E mục tiêu', pe, setPe, 'lần')}</div><div className="mt-5 rounded-xl bg-muted/40 p-4"><p className="text-sm text-muted-foreground">Giá trị ước tính</p><p className="mt-1 text-2xl font-bold text-primary">{money(peValue)}</p><p className="mt-2 text-xs">Giá hiện tại: {money(price)} · Biên an toàn: {peValue ? `${number((1 - price / peValue) * 100)}%` : '—'}</p></div></section><section className="rounded-2xl border border-border bg-surface p-5 shadow-xs sm:p-7"><h2 className="text-xl font-bold">Mô hình Gordon Growth</h2><p className="mt-1 text-sm text-muted-foreground">Định giá cổ phiếu dựa trên cổ tức tăng trưởng ổn định.</p><div className="mt-5 space-y-4">{field('Cổ tức năm tới', dividend, setDividend)}{field('Tăng trưởng dài hạn', growth, setGrowth, '%/năm')}{field('Tỷ suất sinh lời yêu cầu', required, setRequired, '%/năm')}</div><div className="mt-5 rounded-xl bg-muted/40 p-4"><p className="text-sm text-muted-foreground">Giá trị ước tính</p><p className="mt-1 text-2xl font-bold text-primary">{gordonValue ? money(gordonValue) : 'Không hợp lệ'}</p><p className="mt-2 text-xs">Tỷ suất yêu cầu phải lớn hơn tốc độ tăng trưởng.</p></div></section></div>
-    <div className="flex items-start gap-2 rounded-xl border border-amber-300/60 bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950/30 dark:text-amber-200"><Info className="mt-0.5 h-4 w-4 shrink-0" />Các kết quả chỉ mang tính minh họa, không phải khuyến nghị đầu tư.</div></main></AppShell>;
+  return (
+    <AppShell showRightSidebar={false}>
+      <Suspense
+        fallback={
+          <div className="flex h-96 items-center justify-center text-sm text-muted-foreground">
+            Đang khởi tạo công cụ tài chính...
+          </div>
+        }
+      >
+        <ToolsContent />
+      </Suspense>
+    </AppShell>
+  );
 }
