@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, unique, index } from 'drizzle-orm/pg-core';
 import { usersTable } from './users.schema';
 import { postsTable } from './posts.schema';
 
@@ -17,5 +17,6 @@ export const postReactionsTable = pgTable(
   },
   (table) => [
     unique('uq_post_reactions_user_post').on(table.userId, table.postId),
+    index('idx_post_reactions_post_id').on(table.postId),
   ],
 );

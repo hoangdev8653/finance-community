@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, timestamp, unique, index } from 'drizzle-orm/pg-core';
 import { usersTable } from './users.schema';
 import { commentsTable } from './comments.schema';
 
@@ -17,5 +17,6 @@ export const commentReactionsTable = pgTable(
   },
   (table) => [
     unique('uq_comment_reactions_user_comment').on(table.userId, table.commentId),
+    index('idx_comment_reactions_comment_id').on(table.commentId),
   ],
 );

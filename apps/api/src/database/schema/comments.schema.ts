@@ -1,4 +1,4 @@
-import { pgTable, uuid, text, varchar, timestamp } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, text, varchar, timestamp, index } from 'drizzle-orm/pg-core';
 import { postsTable } from './posts.schema';
 import { usersTable } from './users.schema';
 import { mediaTable } from './media.schema';
@@ -23,4 +23,9 @@ export const commentsTable = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
     deletedAt: timestamp('deleted_at', { withTimezone: true }),
   },
+  (table) => [
+    index('idx_comments_post_id').on(table.postId),
+    index('idx_comments_author_id').on(table.authorId),
+    index('idx_comments_status_created_at').on(table.status, table.createdAt),
+  ],
 );

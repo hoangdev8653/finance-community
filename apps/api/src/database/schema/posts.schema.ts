@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, integer, timestamp, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, integer, timestamp, unique, index } from 'drizzle-orm/pg-core';
 import { usersTable } from './users.schema';
 import { mediaTable } from './media.schema';
 import { categoriesTable } from './categories.schema';
@@ -37,5 +37,10 @@ export const postsTable = pgTable(
   },
   (table) => [
     unique('uq_posts_content_type_slug').on(table.contentType, table.slug),
+    index('idx_posts_status_published_at').on(table.status, table.publishedAt),
+    index('idx_posts_author_id').on(table.authorId),
+    index('idx_posts_category_id').on(table.categoryId),
+    index('idx_posts_domain_id').on(table.domainId),
+    index('idx_posts_created_at').on(table.createdAt),
   ],
 );
