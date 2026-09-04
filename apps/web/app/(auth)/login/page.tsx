@@ -18,7 +18,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="py-12">
-          <LoadingState message="Loading sign-in form..." />
+          <LoadingState message="Đang tải biểu mẫu đăng nhập..." />
         </div>
       }
     >

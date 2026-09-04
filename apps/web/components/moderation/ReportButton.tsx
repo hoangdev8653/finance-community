@@ -48,11 +48,11 @@ export function ReportButton({
       <button
         type="button"
         onClick={handleClick}
-        aria-label={`Report ${targetLabel}`}
+        aria-label={isAuthenticated ? `Báo cáo ${targetLabel}` : `Đăng nhập để báo cáo ${targetLabel}`}
         className={`inline-flex items-center gap-1 text-muted-foreground hover:text-danger transition-colors rounded p-1 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary ${className}`}
       >
         <Flag className="h-3.5 w-3.5" aria-hidden="true" />
-        {variant === 'text' && <span className="text-xs font-mono">Report</span>}
+        {variant === 'text' && <span className="text-xs font-mono">Báo cáo</span>}
       </button>
 
       {isModalOpen && (

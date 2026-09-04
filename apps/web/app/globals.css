@@ -261,7 +261,6 @@ select[aria-label="Lọc trạng thái bài"] option,
 select[aria-label="Lọc trạng thái kiểm duyệt"] option { font-weight: 700; }
 select[aria-label="Lọc loại nội dung"] option[value="COMMUNITY"] { color: #cbd5e1; }
 select[aria-label="Lọc loại nội dung"] option[value="SERIES"] { color: #2dd4bf; }
-select[aria-label="Lọc loại nội dung"] option[value="NEWS"] { color: #fbbf24; }
 select[aria-label="Lọc trạng thái bài"] option[value="PUBLISHED"] { color: #34d399; }
 select[aria-label="Lọc trạng thái bài"] option[value="HIDDEN"] { color: #f87171; }
 select[aria-label="Lọc trạng thái bài"] option[value="DRAFT"],
@@ -272,7 +271,6 @@ select[aria-label="Lọc trạng thái kiểm duyệt"] option[value="UNREVIEWED
 /* Admin post filters also support compact select markup without aria selectors. */
 select option[value="COMMUNITY"] { color: #cbd5e1; font-weight: 700; }
 select option[value="SERIES"] { color: #2dd4bf; font-weight: 700; }
-select option[value="NEWS"] { color: #fbbf24; font-weight: 700; }
 select option[value="PUBLISHED"],
 select option[value="APPROVED"],
 select option[value="ACTIVE"] { color: #34d399; font-weight: 700; }

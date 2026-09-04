@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { UserCheck, UserPlus } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 const TOP_CONTRIBUTORS = [
   {
@@ -43,6 +44,7 @@ const TOP_CONTRIBUTORS = [
 
 export function TopContributorsWidget() {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
 
   const toggleFollow = (id: string, e: React.MouseEvent) => {
@@ -88,7 +90,7 @@ export function TopContributorsWidget() {
                 </div>
               </Link>
 
-              <button
+              {isAuthenticated && <button
                 type="button"
                 onClick={(e) => toggleFollow(contributor.id, e)}
                 className={`shrink-0 inline-flex h-8 items-center gap-1.5 px-3 text-xs font-bold rounded-lg transition-all cursor-pointer shadow-2xs ${
@@ -108,7 +110,7 @@ export function TopContributorsWidget() {
                     <span>Theo dõi</span>
                   </>
                 )}
-              </button>
+              </button>}
             </div>
           );
         })}

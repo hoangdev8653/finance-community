@@ -18,8 +18,8 @@ export function RoleGuard({ allowedRoles, children, fallback }: RoleGuardProps) 
       fallback || (
         <div className="max-w-2xl mx-auto py-12 px-4">
           <ErrorState
-            title="Authentication Required"
-            message="Please sign in to access this restricted section."
+            title="Yêu cầu đăng nhập"
+            message="Vui lòng đăng nhập để truy cập khu vực này."
           />
         </div>
       )
@@ -33,8 +33,8 @@ export function RoleGuard({ allowedRoles, children, fallback }: RoleGuardProps) 
       fallback || (
         <div className="max-w-2xl mx-auto py-12 px-4">
           <ErrorState
-            title="Access Restricted"
-            message="You do not have permission to view this section."
+            title="Khu vực bị giới hạn"
+            message="Tài khoản của bạn không có quyền xem khu vực này."
           />
         </div>
       )

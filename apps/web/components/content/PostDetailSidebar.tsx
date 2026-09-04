@@ -8,23 +8,21 @@ import { postsService } from '@/lib/posts/posts-service';
 import { resolveMediaUrl } from '@/lib/utils/media';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
+import { useAuth } from '@/lib/auth/AuthContext';
 import { Sparkles, UserPlus, UserCheck, BookOpen, Clock, Tag, ArrowRight } from 'lucide-react';
-import { PostTableOfContents } from './PostTableOfContents';
-import type { ContentHeading } from './PostContentRenderer';
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
   categoryName?: string;
-  headings?: ContentHeading[];
 }
 
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
-export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSidebarProps) {
+export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps) {
+  const { isAuthenticated } = useAuth();
   const [isFollowing, setIsFollowing] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
-  const hasHeadings = Boolean(headings && headings.length > 0);
 
   useEffect(() => {
     let isMounted = true;
@@ -46,14 +44,14 @@ export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSi
     };
   }, [post.id]);
 
-  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : 'Ban Biên Tập MorningView';
+  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : 'Ban Biên Tập Finance Pulse';
   const authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
   const visibleTags = post.tags?.slice(0, VISIBLE_SIDEBAR_TAG_COUNT) ?? [];
   const hiddenTagCount = (post.tags?.length ?? 0) - visibleTags.length;
   const authorRole = 'Hội đồng Thẩm định & Phân tích Tài chính';
 
   return (
-    <aside className={`space-y-6 ${!hasHeadings ? 'sticky top-24' : ''}`}>
+    <aside className="space-y-6 sticky top-24">
       {/* 1. Author Profile Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-start gap-3.5">
@@ -77,7 +75,7 @@ export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSi
           Tổng hợp & thẩm định các phân tích vĩ mô, thị trường tài chính và kinh tế quốc tế.
         </p>
 
-        <Button
+        {isAuthenticated ? <Button
           variant={isFollowing ? 'outline' : 'primary'}
           size="sm"
           onClick={() => setIsFollowing((prev) => !prev)}
@@ -94,15 +92,10 @@ export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSi
               <span>Theo dõi tác giả</span>
             </>
           )}
-        </Button>
+        </Button> : <Link href="/login" className="flex min-h-10 w-full items-center justify-center rounded-lg border border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5">Đăng nhập để theo dõi tác giả</Link>}
       </div>
 
-      {/* 2. Smart Table of Contents (Sticky) */}
-      {hasHeadings && headings && (
-        <PostTableOfContents headings={headings} />
-      )}
-
-      {/* 3. Related Articles Card */}
+      {/* 2. Related Articles Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm sm:text-base">

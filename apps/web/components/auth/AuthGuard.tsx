@@ -25,7 +25,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
   if (isLoading) {
     return (
       <div className="py-20">
-        <LoadingState message="Verifying authentication session..." />
+        <LoadingState message="Đang xác minh phiên đăng nhập..." />
       </div>
     );
   }
@@ -42,7 +42,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
           title={`Account ${user.status === 'BANNED' ? 'Banned' : 'Suspended'}`}
         >
           Your account is currently {user.status.toLowerCase()}. Access to authenticated platform
-          features has been restricted. Please contact compliance administration if you believe
+          tính năng đã bị giới hạn. Vui lòng liên hệ quản trị viên nếu bạn cho rằng
           this is an error.
         </Alert>
       </div>

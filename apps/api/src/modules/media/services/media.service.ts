@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, ConflictException, Optional } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, ConflictException, Optional, ServiceUnavailableException } from '@nestjs/common';
 import { MediaRepository, MediaEntity } from '../../../database/repositories/media.repository';
 import { RegisterMediaDto } from '../dto/register-media.dto';
 import { AuditLogService } from '../../audit/services/audit-log.service';
@@ -22,7 +22,8 @@ export class MediaService {
    */
   generateUploadSignature(folder = 'uploads'): SignatureResponse {
     const timestamp = Math.floor(Date.now() / 1000);
-    const apiSecret = process.env.CLOUDINARY_API_SECRET || 'dev_secret_key_placeholder';
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!apiSecret) throw new ServiceUnavailableException('Cloudinary chưa được cấu hình trên máy chủ.');
     const paramsToSign = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
     const signature = crypto.createHash('sha1').update(paramsToSign).digest('hex');
 

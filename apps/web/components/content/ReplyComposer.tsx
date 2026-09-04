@@ -36,7 +36,7 @@ export function ReplyComposer({
       await onReply(trimmed);
       setBody('');
     } catch {
-      setError('Failed to submit reply. Please try again.');
+      setError('Không thể gửi phản hồi. Vui lòng thử lại.');
     }
   };
 

@@ -34,23 +34,23 @@ export function ProfileHeader({
   const name = profile.displayName || profile.username;
   const shortId = profile.userId.slice(0, 8);
 
-  const joinedDate = new Date(profile.createdAt).toLocaleDateString('vi-VN', {
+  const joinedDate = new Date(profile.createdAt).toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
   });
 
   return (
     <>
-      <header className="rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 sm:p-6 lg:p-8 space-y-6 shadow-xs">
+      <header className="rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 space-y-6 shadow-sm">
         {/* Top Bar: Avatar, Names, and CTA */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5 sm:gap-4 min-w-0">
-            <Avatar fallback={name} alt={name} size="lg" className="h-14 w-14 sm:h-18 sm:w-18 text-lg sm:text-xl ring-2 ring-slate-300 dark:ring-slate-700 rounded-full shrink-0" />
+          <div className="flex items-center gap-4 min-w-0">
+            <Avatar src={profile.avatarUrl || undefined} fallback={name} alt={name} size="lg" className="h-18 w-18 text-xl ring-2 ring-slate-300 dark:ring-slate-700 rounded-full shrink-0" />
             <div className="min-w-0 space-y-1">
-              <h1 className="font-heading text-xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 dark:text-slate-100 tracking-tight truncate">
+              <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 dark:text-slate-100 tracking-tight truncate">
                 {name}
               </h1>
-              <div className="flex items-center gap-2 flex-wrap pt-0.5 text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-mono">
+              <div className="flex items-center gap-2 flex-wrap pt-0.5 text-sm text-slate-600 dark:text-slate-400 font-mono">
                 <span className="font-bold text-slate-800 dark:text-slate-200">@{profile.username}</span>
                 <span>•</span>
                 <span className="text-xs font-mono font-bold py-0.5 px-2 bg-slate-100 dark:bg-slate-800 rounded-md text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">
@@ -62,13 +62,13 @@ export function ProfileHeader({
           </div>
 
           {/* Action CTA */}
-          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-start sm:justify-end">
+          <div className="flex items-center gap-2 shrink-0">
             {isSelf ? (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
-                className="font-bold text-sm rounded-xl px-4 py-2 gap-1.5 border-slate-300 dark:border-slate-700 shadow-xs"
+                className="font-bold text-sm rounded-xl px-4 py-2 gap-1.5 border-slate-300 dark:border-slate-700 shadow-2xs"
               >
                 <Edit3 className="h-4 w-4" aria-hidden="true" />
                 <span>Chỉnh sửa hồ sơ</span>

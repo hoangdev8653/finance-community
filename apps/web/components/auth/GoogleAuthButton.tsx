@@ -38,7 +38,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
                   if (onSuccess) onSuccess();
                 }
               } catch (err: any) {
-                if (onError) onError(err.message || 'Google authentication failed.');
+                if (onError) onError(err.message || 'Đăng nhập Google thất bại.');
               }
             },
           });
@@ -90,7 +90,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
       await loginWithGoogle(mockIdToken);
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      if (onError) onError(err.message || 'Google authentication failed.');
+      if (onError) onError(err.message || 'Đăng nhập Google thất bại.');
     }
   };
 
@@ -115,7 +115,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
           className="w-full max-w-[380px] justify-center gap-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-slate-800 dark:text-slate-100 h-11 text-sm shadow-xs cursor-pointer pointer-events-auto"
           onClick={handleCustomClick}
           disabled={isLoading}
-          aria-label="Sign in with Google"
+          aria-label="Đăng nhập bằng Google"
         >
           <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path

@@ -309,9 +309,6 @@ export class PostsService {
             status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
-            sourceType: dto.sourceType || 'USER',
-            sourceUrl: dto.sourceUrl || null,
-            sourceName: dto.sourceName || null,
             publishedAt,
           });
         };
@@ -339,9 +336,6 @@ export class PostsService {
             status: dto.status,
             metaTitle: dto.metaTitle || null,
             metaDescription: dto.metaDescription || null,
-            sourceType: dto.sourceType || 'USER',
-            sourceUrl: dto.sourceUrl || null,
-            sourceName: dto.sourceName || null,
             publishedAt,
           });
         } else {
@@ -498,9 +492,6 @@ export class PostsService {
       if (dto.status !== undefined) updateData.status = dto.status;
       if (dto.metaTitle !== undefined) updateData.metaTitle = dto.metaTitle || null;
       if (dto.metaDescription !== undefined) updateData.metaDescription = dto.metaDescription || null;
-      if (dto.sourceType !== undefined) updateData.sourceType = dto.sourceType;
-      if (dto.sourceUrl !== undefined) updateData.sourceUrl = dto.sourceUrl || null;
-      if (dto.sourceName !== undefined) updateData.sourceName = dto.sourceName || null;
       if (publishedAt !== undefined) updateData.publishedAt = publishedAt;
 
       const updated = await this.postsRepo.updateTx(tx, id, updateData);
@@ -691,7 +682,6 @@ export class PostsService {
   async findFeedPaginated(query: QueryPostsDto): Promise<any> {
     const options = {
       contentType: query.contentType,
-      sourceType: query.sourceType,
       categoryId: query.categoryId,
       domainId: query.domainId,
       tagId: query.tagId,

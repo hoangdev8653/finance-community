@@ -3,8 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/AuthContext';
-import { ShieldCheck, ArrowLeft, Loader2 } from 'lucide-react';
+import { ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { LoadingState } from '@/components/feedback/LoadingState';
 
 interface AdminGuardProps {
   children: React.ReactNode;
@@ -14,14 +15,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-3">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-xs font-mono text-muted-foreground">
-          Verifying administrative credentials...
-        </p>
-      </div>
-    );
+    return <LoadingState message="Đang xác minh quyền quản trị..." className="min-h-[50vh]" />;
   }
 
   const isAdmin = Boolean(
@@ -39,17 +33,17 @@ export function AdminGuard({ children }: AdminGuardProps) {
         </div>
         <div className="space-y-1">
           <h1 className="font-heading text-2xl font-bold text-foreground">
-            Administrative Access Required
+            Yêu cầu quyền quản trị
           </h1>
           <p className="text-xs text-muted-foreground">
-            The platform governance console is restricted to administrators with elevated privileges.
+            Khu vực quản trị chỉ dành cho tài khoản có quyền quản trị nâng cao.
           </p>
         </div>
         <div className="pt-2">
           <Link href="/">
             <Button variant="outline" size="sm" className="gap-1.5 font-mono text-xs">
               <ArrowLeft className="h-3.5 w-3.5" />
-              <span>Return to Platform</span>
+              <span>Quay lại nền tảng</span>
             </Button>
           </Link>
         </div>

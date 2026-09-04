@@ -77,8 +77,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
         <CommentSkeleton />
       ) : isError ? (
         <ErrorState
-          title="Unable to load discussion"
-          message="Failed to fetch comments for this research note."
+          title="Không thể tải thảo luận"
+          message="Không thể tải bình luận cho bài viết này."
           onRetry={() => refetch()}
         />
       ) : threadedComments.length === 0 ? (

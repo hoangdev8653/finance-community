@@ -177,7 +177,7 @@ export function AuditLogsTable() {
           className="p-8 text-center rounded-xl border border-danger/20 bg-danger/5 space-y-3"
         >
           <p className="text-sm font-medium text-foreground">
-            Failed to load audit logs.
+            Không thể tải nhật ký hệ thống.
           </p>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             Retry

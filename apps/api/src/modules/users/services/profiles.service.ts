@@ -90,6 +90,7 @@ export class ProfilesService {
       username: profile.username,
       displayName: profile.displayName,
       avatarMediaId: profile.avatarMediaId,
+      avatarUrl: profile.avatarUrl,
       bio: profile.bio,
       createdAt: profile.createdAt,
     };

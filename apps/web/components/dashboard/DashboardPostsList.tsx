@@ -39,9 +39,9 @@ export function DashboardPostsList({
     return (
       <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3">
         <AlertCircle className="h-8 w-8 text-destructive mx-auto" />
-        <h4 className="font-heading font-bold text-foreground">Failed to Load Research Notes</h4>
+        <h4 className="font-heading font-bold text-foreground">Không thể tải bài viết</h4>
         <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-          An error occurred while fetching your research portfolio. Please refresh or try again.
+          Đã xảy ra lỗi khi tải danh sách bài viết. Vui lòng làm mới hoặc thử lại.
         </p>
         <Button variant="outline" size="sm" onClick={() => onPageChange(page)}>
           Retry

@@ -36,7 +36,7 @@ export function ReportModal({
     setSuccessInfo(null);
 
     if (!selectedReason) {
-      setClientError('Please select a violation reason.');
+      setClientError('Vui lòng chọn lý do vi phạm.');
       return;
     }
 
@@ -69,7 +69,7 @@ export function ReportModal({
       }, 2000);
     } catch (err: any) {
       const message =
-        err?.response?.data?.message || err?.message || 'Failed to submit report. Please try again.';
+        err?.response?.data?.message || err?.message || 'Không thể gửi báo cáo. Vui lòng thử lại.';
       setClientError(message);
     }
   };

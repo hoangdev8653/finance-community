@@ -43,8 +43,8 @@ export function ProfileFollowersTab({ userId, currentUserId }: ProfileFollowersT
   if (isError) {
     return (
       <ErrorState
-        title="Unable to load followers"
-        message="Failed to retrieve followers list for this analyst."
+        title="Không thể tải danh sách người theo dõi"
+        message="Không thể tải danh sách người đang theo dõi tài khoản này."
         onRetry={() => refetch()}
       />
     );

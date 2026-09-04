@@ -16,6 +16,10 @@ CREATE TABLE IF NOT EXISTS domains (
 );
 
 ALTER TABLE categories
+  DROP CONSTRAINT IF EXISTS fk_categories_domain,
+  DROP CONSTRAINT IF EXISTS fk_categories_parent;
+
+ALTER TABLE categories
   ADD COLUMN IF NOT EXISTS domain_id uuid,
   ADD COLUMN IF NOT EXISTS parent_id uuid,
   ADD COLUMN IF NOT EXISTS name_vi varchar(100),
@@ -23,6 +27,9 @@ ALTER TABLE categories
   ADD COLUMN IF NOT EXISTS content_types jsonb NOT NULL DEFAULT '[]'::jsonb,
   ADD COLUMN IF NOT EXISTS is_active boolean NOT NULL DEFAULT true,
   ADD COLUMN IF NOT EXISTS is_promoted boolean NOT NULL DEFAULT false;
+
+ALTER TABLE posts
+  DROP CONSTRAINT IF EXISTS fk_posts_domain;
 
 ALTER TABLE posts
   ADD COLUMN IF NOT EXISTS domain_id uuid;

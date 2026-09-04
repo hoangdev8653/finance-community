@@ -5,11 +5,16 @@ import { BookOpen, ChevronRight, GraduationCap } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { learningSeriesService } from '@/lib/learning/learning-series-service';
 import type { LearningSeries } from '@/types/learning-series';
+import { LoadingState } from '@/components/feedback/LoadingState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { EmptyState } from '@/components/feedback/EmptyState';
 
 export default function LearningPathsPage() {
   const [paths, setPaths] = useState<LearningSeries[]>([]);
   const [loading, setLoading] = useState(true);
-  useEffect(() => { learningSeriesService.listPaths().then(setPaths).catch(() => setPaths([])).finally(() => setLoading(false)); }, []);
+  const [loadError, setLoadError] = useState(false);
+  const load = () => { setLoading(true); setLoadError(false); learningSeriesService.listPaths().then(setPaths).catch(() => { setPaths([]); setLoadError(true); }).finally(() => setLoading(false)); };
+  useEffect(() => { load(); }, []);
 
   return <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:py-14">
     <header className="mb-10 max-w-3xl"><div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs font-bold text-primary"><GraduationCap className="h-4 w-4" />Học có lộ trình</div><h1 className="font-heading text-4xl font-extrabold tracking-tight sm:text-5xl">Lộ trình học tài chính</h1><p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg">Đi từng bước từ kiến thức nền tảng đến khả năng áp dụng. Mỗi lộ trình gồm các bài học được sắp xếp theo thứ tự rõ ràng.</p><Link href="/learning/explore" className="mt-5 inline-flex items-center rounded-lg border border-primary/30 px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary/5">Khám phá bài học</Link></header>

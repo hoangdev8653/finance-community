@@ -43,8 +43,8 @@ export function ProfileFollowingTab({ userId, currentUserId }: ProfileFollowingT
   if (isError) {
     return (
       <ErrorState
-        title="Unable to load following"
-        message="Failed to retrieve following list for this analyst."
+        title="Không thể tải danh sách đang theo dõi"
+        message="Không thể tải danh sách người dùng đang theo dõi."
         onRetry={() => refetch()}
       />
     );

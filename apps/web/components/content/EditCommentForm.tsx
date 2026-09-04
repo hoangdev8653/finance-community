@@ -35,7 +35,7 @@ export function EditCommentForm({
       setError(null);
       await onSave(trimmed);
     } catch {
-      setError('Failed to update comment. Please try again.');
+      setError('Không thể cập nhật bình luận. Vui lòng thử lại.');
     }
   };
 

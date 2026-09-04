@@ -1,4 +1,5 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AiEditorialService } from './ai-editorial.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -11,6 +12,7 @@ import { RequirePermission } from '../auth/decorators/require-permission.decorat
 export class AiEditorialController {
   constructor(private readonly service: AiEditorialService) {}
   @Post('draft')
+  @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
   createDraft(

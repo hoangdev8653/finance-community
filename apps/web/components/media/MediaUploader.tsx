@@ -61,7 +61,7 @@ export function MediaUploader({
       });
       onSuccess(media);
     } catch (err: any) {
-      const message = err?.message || 'Failed to upload image. Please try again.';
+      const message = err?.message || 'Không thể tải ảnh lên. Vui lòng thử lại.';
       setClientError(message);
       onError?.(err instanceof Error ? err : new Error(message));
     }

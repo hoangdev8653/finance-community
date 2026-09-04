@@ -10,6 +10,7 @@ export const profilesTable = pgTable('profiles', {
   username: varchar('username', { length: 50 }).notNull().unique('uq_profiles_username'),
   displayName: varchar('display_name', { length: 100 }),
   avatarMediaId: uuid('avatar_media_id'),
+  avatarUrl: varchar('avatar_url', { length: 2048 }),
   bio: text('bio'),
   reputationScore: integer('reputation_score').notNull().default(0),
   badge: varchar('badge', { length: 50 }).notNull().default('MEMBER'),

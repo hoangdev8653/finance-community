@@ -52,8 +52,8 @@ export function ProfilePostsTab({ userId }: ProfilePostsTabProps) {
   if (isError) {
     return (
       <ErrorState
-        title="Unable to load published analyses"
-        message="Failed to retrieve research publications for this analyst."
+        title="Không thể tải bài viết đã xuất bản"
+        message="Không thể tải các bài phân tích của người dùng này."
         onRetry={() => refetch()}
       />
     );

@@ -18,7 +18,8 @@ export class SeriesController {
 
   @Public() @Get('learning/paths') getPublishedLearningPaths() { return this.learningSeriesService.listPublished(); }
 
-  @Get('learning') getLearningSeries() { return this.learningSeriesService.list(); }
+  @Get('learning') @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard) @RequirePermission('learning:manage')
+  getLearningSeries() { return this.learningSeriesService.list(); }
 
   @Public() @Get('learning/paths/:slug') getLearningPath(@Param('slug') slug: string) { return this.learningSeriesService.getPublicPath(slug); }
 

@@ -82,7 +82,7 @@ export function ExecuteActionDialog({
     }
 
     if (isDestructive && !confirmedDestructive) {
-      setClientError('Please confirm the destructive action checkbox before proceeding.');
+      setClientError('Vui lòng xác nhận ô kiểm tra hành động quan trọng trước khi tiếp tục.');
       return;
     }
 
@@ -107,7 +107,7 @@ export function ExecuteActionDialog({
       }, 1500);
     } catch (err: any) {
       const message =
-        err?.response?.data?.message || err?.message || 'Failed to execute moderation action.';
+        err?.response?.data?.message || err?.message || 'Không thể thực hiện hành động kiểm duyệt.';
       setClientError(message);
     }
   };

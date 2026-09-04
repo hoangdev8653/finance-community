@@ -51,7 +51,7 @@ export function AvatarPicker({
       setLocalPreviewUrl(media.secureUrl);
       onChange(media.id);
     } catch (err: any) {
-      setClientError(err?.message || 'Failed to upload avatar.');
+      setClientError(err?.message || 'Không thể tải ảnh đại diện lên.');
     } finally {
       if (e.target) e.target.value = '';
     }

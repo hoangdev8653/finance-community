@@ -12,11 +12,6 @@ export class QueryPostsDto {
   contentType?: 'SERIES' | 'COMMUNITY';
 
   @IsOptional()
-  @IsString()
-  @IsIn(['AI_CURATED', 'EDITORIAL', 'USER'])
-  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
-
-  @IsOptional()
   @IsUUID()
   categoryId?: string;
 

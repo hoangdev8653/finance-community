@@ -25,9 +25,6 @@ export interface PostEntity {
   moderationReason?: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
-  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
-  sourceUrl?: string | null;
-  sourceName?: string | null;
   topics?: PostTopicItem[];
   viewCount: number;
   publishedAt: string | null;
@@ -49,9 +46,6 @@ export interface CreatePostDto {
   status: 'DRAFT' | 'PUBLISHED';
   metaTitle?: string;
   metaDescription?: string;
-  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
-  sourceUrl?: string;
-  sourceName?: string;
 }
 
 export interface UpdatePostDto {
@@ -66,9 +60,6 @@ export interface UpdatePostDto {
   status?: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' | 'HIDDEN';
   metaTitle?: string;
   metaDescription?: string;
-  sourceType?: 'AI_CURATED' | 'EDITORIAL' | 'USER';
-  sourceUrl?: string;
-  sourceName?: string;
 }
 
 export interface PostMediaItem {

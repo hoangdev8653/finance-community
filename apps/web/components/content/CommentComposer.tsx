@@ -35,7 +35,7 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
           <MessageSquare className="h-6 w-6" aria-hidden="true" />
         </div>
         <p className="text-sm text-foreground font-medium">
-          Sign in to join the discussion
+          Đăng nhập để tham gia thảo luận
         </p>
         <p className="text-xs text-muted-foreground max-w-md mx-auto">
           Share your market perspective, ask questions about the valuation model, or challenge assumptions.
@@ -46,7 +46,7 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
             className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             <LogIn className="h-3.5 w-3.5" aria-hidden="true" />
-            Sign In to Comment
+            Đăng nhập để bình luận
           </Link>
         </div>
       </div>

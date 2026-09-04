@@ -21,7 +21,6 @@ services:
       # Align the database with the moderation fields used by the API schema
       - ./apps/api/migrations/0004_add_post_moderation_columns.sql:/docker-entrypoint-initdb.d/03_add_post_moderation_columns.sql:ro
       - ./apps/api/migrations/0005_add_post_topics_and_taxonomy_integrity.sql:/docker-entrypoint-initdb.d/04_add_post_topics_and_taxonomy_integrity.sql:ro
-      - ./apps/api/migrations/0011_enforce_post_taxonomy.sql:/docker-entrypoint-initdb.d/05_enforce_post_taxonomy.sql:ro
       - ./apps/api/migrations/0012_add_general_domain.sql:/docker-entrypoint-initdb.d/06_add_general_domain.sql:ro
       - ./apps/api/migrations/0013_add_general_categories.sql:/docker-entrypoint-initdb.d/07_add_general_categories.sql:ro
       - ./apps/api/migrations/0014_localize_finance_categories.sql:/docker-entrypoint-initdb.d/08_localize_finance_categories.sql:ro
@@ -29,7 +28,6 @@ services:
       - ./apps/api/migrations/0016_add_learning_editorial_status.sql:/docker-entrypoint-initdb.d/10_add_learning_editorial_status.sql:ro
       - ./apps/api/migrations/0017_add_learning_sources.sql:/docker-entrypoint-initdb.d/11_add_learning_sources.sql:ro
       - ./apps/api/migrations/0018_seed_learning_taxonomy.sql:/docker-entrypoint-initdb.d/12_seed_learning_taxonomy.sql:ro
-      - ./apps/api/migrations/0019_remove_legacy_rss_pipeline.sql:/docker-entrypoint-initdb.d/09b_remove_legacy_rss_pipeline.sql:ro
       - ./apps/api/migrations/0020_localize_learning_taxonomy.sql:/docker-entrypoint-initdb.d/13_localize_learning_taxonomy.sql:ro
       - ./apps/api/migrations/0021_fix_learning_taxonomy_utf8.sql:/docker-entrypoint-initdb.d/14_fix_learning_taxonomy_utf8.sql:ro
       - ./apps/api/migrations/0022_remove_unused_legacy_categories.sql:/docker-entrypoint-initdb.d/15_remove_unused_legacy_categories.sql:ro
@@ -39,7 +37,10 @@ services:
       # Add media deduplication hash and seed the first learning quiz demo
       - ./apps/api/migrations/0026_add_media_content_hash.sql:/docker-entrypoint-initdb.d/19_add_media_content_hash.sql:ro
       - ./apps/api/migrations/0027_seed_learning_quiz_demo.sql:/docker-entrypoint-initdb.d/20_seed_learning_quiz_demo.sql:ro
-      - ./apps/api/migrations/0028_finalize_learning_community_content.sql:/docker-entrypoint-initdb.d/21_finalize_learning_community_content.sql:ro
+      - ./apps/api/migrations/0029_baseline_content_types.sql:/docker-entrypoint-initdb.d/21_baseline_content_types.sql:ro
+      - ./apps/api/migrations/0030_add_user_provider.sql:/docker-entrypoint-initdb.d/22_add_user_provider.sql:ro
+      - ./apps/api/migrations/0031_add_profile_reputation_and_badge.sql:/docker-entrypoint-initdb.d/23_add_profile_reputation_and_badge.sql:ro
+      - ./apps/api/migrations/0032_add_profile_avatar_url.sql:/docker-entrypoint-initdb.d/24_add_profile_avatar_url.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
       interval: 5s

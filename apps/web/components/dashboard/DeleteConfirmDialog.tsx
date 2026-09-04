@@ -21,14 +21,14 @@ export function DeleteConfirmDialog({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && !isDeleting && onClose()}>
       <DialogContent
-        title="Delete Research Note"
-        description="Are you sure you want to delete this research analysis? This action will remove the article from public and author feeds."
+        title="Xóa bài viết"
+        description="Bạn có chắc muốn xóa bài phân tích này không? Bài viết sẽ bị gỡ khỏi bảng tin công khai và trang cá nhân."
       >
         <div className="space-y-4 pt-2">
           <div className="flex items-start gap-3 rounded-md border border-destructive/20 bg-destructive/10 p-3 text-destructive text-xs">
             <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold">Target Post:</p>
+              <p className="font-semibold">Bài viết:</p>
               <p className="line-clamp-2 mt-0.5 text-foreground italic">"{postTitle}"</p>
             </div>
           </div>
@@ -40,7 +40,7 @@ export function DeleteConfirmDialog({
               onClick={onClose}
               disabled={isDeleting}
             >
-              Cancel
+              Hủy
             </Button>
             <Button
               variant="destructive"
@@ -48,7 +48,7 @@ export function DeleteConfirmDialog({
               onClick={onConfirm}
               isLoading={isDeleting}
             >
-              Confirm Delete
+              Xác nhận xóa
             </Button>
           </div>
         </div>

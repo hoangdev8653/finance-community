@@ -64,6 +64,18 @@ export class ProfilesRepository {
     return updated;
   }
 
+  async syncGoogleProfileTx(tx: any, userId: string, data: { displayName: string; avatarUrl: string | null }): Promise<void> {
+    const client = tx || this.db;
+    await client
+      .update(profilesTable)
+      .set({
+        displayName: data.displayName,
+        avatarUrl: data.avatarUrl,
+        updatedAt: new Date(),
+      })
+      .where(eq(profilesTable.userId, userId));
+  }
+
   async incrementReputationScoreTx(tx: any, userId: string, points: number): Promise<void> {
     const client = tx || this.db;
     await client

@@ -148,8 +148,7 @@
                 { "key": "limit", "value": "10" },
                 { "key": "sortBy", "value": "publishedAt" },
                 { "key": "order", "value": "DESC" },
-                { "key": "contentType", "value": "COMMUNITY", "description": "COMMUNITY | NEWS | SERIES" },
-                { "key": "sourceType", "value": "USER", "disabled": true, "description": "AI_CURATED | EDITORIAL | USER" },
+                { "key": "contentType", "value": "COMMUNITY", "description": "COMMUNITY | SERIES" },
                 { "key": "domainId", "value": "", "disabled": true },
                 { "key": "categoryId", "value": "", "disabled": true },
                 { "key": "topicId", "value": "", "disabled": true },
@@ -289,7 +288,7 @@
               "host": ["{{baseUrl}}"],
               "path": ["api", "v1", "categories"],
               "query": [
-                { "key": "scope", "value": "COMMUNITY", "description": "COMMUNITY | NEWS | SERIES" }
+                { "key": "scope", "value": "COMMUNITY", "description": "COMMUNITY | SERIES" }
               ]
             }
           }

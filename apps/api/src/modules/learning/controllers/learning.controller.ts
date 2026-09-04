@@ -52,7 +52,8 @@ export class LearningController {
   getSources(@Param('postId') postId: string) { return this.learningService.getSources(postId); }
 
   @Post('posts/:postId/quiz/submit')
-  @Public()
+  @ApiBearerAuth('JWT-auth')
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
   @ApiOperation({ summary: 'Grade a quiz submission without exposing correct answers' })
   submitQuiz(@CurrentUser() user: any, @Param('postId') postId: string, @Body() dto: SubmitQuizDto) { return this.learningService.submitQuiz(postId, dto, user?.sub); }
 
@@ -106,7 +107,7 @@ export class LearningController {
 
   @Get('posts/:postId/progress')
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
   @ApiOperation({ summary: 'Get the current user progress for a learning post' })
   getProgress(@CurrentUser() user: any, @Param('postId') postId: string) {
     return this.learningService.getProgress(user.sub, postId);
@@ -114,7 +115,7 @@ export class LearningController {
 
   @Patch('posts/:postId/progress')
   @ApiBearerAuth('JWT-auth')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AccountStatusGuard)
   @ApiOperation({ summary: 'Create or update the current user progress for a learning post' })
   updateProgress(@CurrentUser() user: any, @Param('postId') postId: string, @Body() dto: UpdateProgressDto) {
     return this.learningService.updateProgress(user.sub, postId, dto);

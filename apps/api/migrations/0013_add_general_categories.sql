@@ -1,6 +1,6 @@
 -- Categories for content that does not belong to a specialized domain.
 INSERT INTO categories (name, name_vi, name_en, slug, scope, domain_id, content_types, description, is_active, sort_order, created_at, updated_at)
-SELECT v.name, v.name, v.name_en, v.slug, 'COMMUNITY', d.id, '["COMMUNITY", "NEWS", "SERIES"]'::jsonb, v.description, true, v.sort_order, NOW(), NOW()
+SELECT v.name, v.name, v.name_en, v.slug, 'COMMUNITY', d.id, '["COMMUNITY", "SERIES"]'::jsonb, v.description, true, v.sort_order, NOW(), NOW()
 FROM domains d
 CROSS JOIN (VALUES
   ('Khác', 'Other', 'other', 'Nội dung chưa thuộc domain chuyên biệt.', 1),

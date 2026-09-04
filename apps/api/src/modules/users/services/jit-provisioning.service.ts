@@ -19,6 +19,7 @@ export interface ProfileRecord {
   username: string;
   display_name: string | null;
   avatar_media_id: string | null;
+  avatar_url: string | null;
   bio: string | null;
   created_at: Date;
   updated_at: Date;
@@ -36,6 +37,7 @@ export interface ProvisioningInput {
   sub: string;
   email: string;
   displayName?: string | null;
+  avatarUrl?: string | null;
 }
 
 const isDbOffline = (err: any): boolean => {
@@ -136,7 +138,7 @@ export class JitProvisioningService {
    * Executes JIT User Provisioning atomically and idempotently using PostgreSQL transactions.
    */
   async ensureUserProvisioned(input: ProvisioningInput): Promise<UserRecord> {
-    const { sub, email, displayName } = input;
+    const { sub, email, displayName, avatarUrl } = input;
     const now = new Date();
 
     if (this.db && this.usersRepo && this.rolesRepo && this.profilesRepo) {
@@ -173,6 +175,7 @@ export class JitProvisioningService {
                   userId: sub,
                   username: targetUsername,
                   displayName: displayName || targetUsername,
+                  avatarUrl,
                   createdAt: now,
                   updatedAt: now,
                 });
@@ -194,6 +197,7 @@ export class JitProvisioningService {
                   userId: sub,
                   username: fallbackUsername,
                   displayName: displayName || fallbackUsername,
+                  avatarUrl,
                   createdAt: now,
                   updatedAt: now,
                 });
@@ -201,6 +205,11 @@ export class JitProvisioningService {
                 throw err;
               }
             }
+          } else if (avatarUrl) {
+            await profilesRepo.syncGoogleProfileTx(tx, sub, {
+              displayName: displayName || existingProfile.displayName || existingProfile.username,
+              avatarUrl,
+            });
           }
 
           const userRecord: UserRecord = {
@@ -266,6 +275,7 @@ export class JitProvisioningService {
         username: targetUsername,
         display_name: displayName || targetUsername,
         avatar_media_id: null,
+        avatar_url: avatarUrl || null,
         bio: null,
         created_at: now,
         updated_at: now,

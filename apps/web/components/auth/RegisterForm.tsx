@@ -58,7 +58,7 @@ export function RegisterForm() {
         setErrorMessage(
           typeof err.message === 'string'
             ? err.message
-            : 'An error occurred during registration. Please try again.'
+            : 'Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại.'
         );
       }
     } finally {
@@ -82,7 +82,7 @@ export function RegisterForm() {
       </div>
 
       {errorMessage && (
-        <Alert variant="danger" title="Registration Failed">
+        <Alert variant="danger" title="Đăng ký thất bại">
           {errorMessage}
         </Alert>
       )}
@@ -146,7 +146,7 @@ export function RegisterForm() {
           isLoading={isSubmitting}
           disabled={isSubmitting}
         >
-          Create Account
+          Tạo tài khoản
         </Button>
       </form>
 
@@ -167,7 +167,7 @@ export function RegisterForm() {
           href={`/login${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`}
           className="font-semibold text-primary hover:underline"
         >
-          Sign In
+          Đăng nhập
         </Link>
       </div>
     </div>

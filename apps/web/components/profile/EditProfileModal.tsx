@@ -58,7 +58,7 @@ export function EditProfileModal({
       await updateMutation.mutateAsync(payload);
       onClose();
     } catch {
-      setError('Failed to update profile. Please try again.');
+      setError('Không thể cập nhật hồ sơ. Vui lòng thử lại.');
     }
   };
 

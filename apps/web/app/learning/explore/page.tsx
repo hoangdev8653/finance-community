@@ -9,13 +9,14 @@ import { postsService } from '@/lib/posts/posts-service';
 import { learningSeriesService } from '@/lib/learning/learning-series-service';
 import type { SearchFilterState } from '@/types/search';
 import { PostCard } from '@/components/content/PostCard';
+import { ErrorState } from '@/components/feedback/ErrorState';
 
 export default function LearningExplorePage() {
   const [filters, setFilters] = useState<SearchFilterState>({ contentType: 'SERIES', sortBy: 'publishedAt', order: 'DESC', limit: 20 });
   const [query, setQuery] = useState(''); const [debouncedQuery, setDebouncedQuery] = useState('');
   useEffect(() => { const timer = window.setTimeout(() => setDebouncedQuery(query), 300); return () => window.clearTimeout(timer); }, [query]);
   const activeFilters = { ...filters, query: debouncedQuery || undefined };
-  const { data: result, isLoading } = useSearchDiscovery(activeFilters);
+  const { data: result, isLoading, isError, refetch } = useSearchDiscovery(activeFilters);
   const { data: domains = [] } = useQuery({ queryKey: ['domains'], queryFn: postsService.getDomains, staleTime: 300000 });
   const { data: categories = [] } = useQuery({ queryKey: ['learning-categories', filters.domainId], queryFn: () => postsService.getCategories({ scope: 'SERIES', domainId: filters.domainId }), staleTime: 300000 });
   const { data: paths = [] } = useQuery({ queryKey: ['learning-paths'], queryFn: learningSeriesService.listPaths, staleTime: 60000 });

@@ -110,7 +110,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
     if (!domainId) { setError('Vui lòng chọn lĩnh vực học tập.'); return false; }
     if (!categoryId) { setError('Vui lòng chọn chủ đề học tập.'); return false; }
     if (title.length > 300) {
-      setError('Title cannot exceed 300 characters.');
+      setError('Tiêu đề không được vượt quá 300 ký tự.');
       return false;
     }
     setError(null);
@@ -187,7 +187,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         }
       }
     } catch {
-      setError('Failed to save analysis. Please verify your inputs and try again.');
+      setError('Không thể lưu bài viết. Vui lòng kiểm tra thông tin và thử lại.');
     } finally {
       setIsSavingDraft(false);
       setIsPublishing(false);

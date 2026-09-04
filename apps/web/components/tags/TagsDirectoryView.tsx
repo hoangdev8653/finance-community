@@ -84,7 +84,7 @@ export function TagsDirectoryView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm kiếm chủ đề theo từ khóa hoặc mã cổ phiếu (FPT, HPG, Fed...)..."
-            aria-label="Filter market tags"
+            aria-label="Lọc chủ đề"
             className="h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs transition-colors"
           />
         </div>
@@ -135,13 +135,13 @@ export function TagsDirectoryView() {
           {/* Empty Search Results */}
           {filteredTags.length === 0 ? (
             <EmptyState
-              title={searchQuery.trim() ? `No tags matching "${searchQuery}"` : 'No market tags found'}
+              title={searchQuery.trim() ? `Không có chủ đề phù hợp với "${searchQuery}"` : 'Chưa có chủ đề'}
               description={
                 searchQuery.trim()
-                  ? 'Try searching for a different keyword, sector ticker, or clear the search input.'
-                  : 'No taxonomy tags are currently cataloged in the system.'
+                  ? 'Hãy thử từ khóa khác hoặc xóa nội dung tìm kiếm.'
+                  : 'Hiện chưa có chủ đề nào trong hệ thống.'
               }
-              actionLabel={searchQuery.trim() ? 'Clear Filter' : undefined}
+              actionLabel={searchQuery.trim() ? 'Xóa bộ lọc' : undefined}
               onAction={searchQuery.trim() ? () => setSearchQuery('') : undefined}
             />
           ) : (
@@ -157,7 +157,7 @@ export function TagsDirectoryView() {
                       {letter}
                     </h2>
                     <span className="text-xs text-muted-foreground">
-                      ({groupedTags[letter].length} {groupedTags[letter].length === 1 ? 'tag' : 'tags'})
+                      ({groupedTags[letter].length} chủ đề)
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

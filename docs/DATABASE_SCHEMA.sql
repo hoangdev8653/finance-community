@@ -20,6 +20,7 @@ CREATE TABLE users (
     id              UUID            PRIMARY KEY,  -- Supabase Auth UUID, not gen_random_uuid()
     email           VARCHAR(255)    NOT NULL,
     status          VARCHAR(20)     NOT NULL DEFAULT 'ACTIVE',
+    provider        VARCHAR(30)     NOT NULL DEFAULT 'LOCAL',
     created_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
     deleted_at      TIMESTAMPTZ     NULL,
@@ -121,6 +122,9 @@ CREATE TABLE categories (
 
     CONSTRAINT uq_categories_scope_name
         UNIQUE (scope, name),
+
+    CONSTRAINT chk_categories_scope
+        CHECK (scope IN ('COMMUNITY', 'SERIES')),
 
     CONSTRAINT fk_categories_domain
         FOREIGN KEY (domain_id) REFERENCES domains (id)
@@ -227,7 +231,10 @@ CREATE TABLE profiles (
     username            VARCHAR(50)     NOT NULL,
     display_name        VARCHAR(100)    NULL,
     avatar_media_id     UUID            NULL,
+    avatar_url          VARCHAR(2048)   NULL,
     bio                 TEXT            NULL,
+    reputation_score    INTEGER         NOT NULL DEFAULT 0,
+    badge               VARCHAR(50)     NOT NULL DEFAULT 'MEMBER',
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
 
@@ -292,9 +299,6 @@ CREATE TABLE posts (
     status              VARCHAR(20)     NOT NULL DEFAULT 'DRAFT',
     meta_title          VARCHAR(70)     NULL,
     meta_description    VARCHAR(160)    NULL,
-    source_type         VARCHAR(20)     NOT NULL DEFAULT 'USER',
-    source_url          VARCHAR(500)    NULL,
-    source_name         VARCHAR(100)    NULL,
     view_count          INTEGER         NOT NULL DEFAULT 0,
     published_at        TIMESTAMPTZ     NULL,
     created_at          TIMESTAMPTZ     NOT NULL DEFAULT NOW(),
@@ -323,8 +327,6 @@ CREATE TABLE posts (
     CONSTRAINT chk_posts_content_type
         CHECK (content_type IN ('SERIES', 'COMMUNITY')),
 
-    CONSTRAINT chk_posts_source_type
-        CHECK (source_type IN ('AI_CURATED', 'EDITORIAL', 'USER')),
 
     CONSTRAINT chk_posts_status
         CHECK (status IN ('DRAFT', 'PUBLISHED', 'ARCHIVED', 'HIDDEN')),
