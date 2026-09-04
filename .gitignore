@@ -63,11 +63,10 @@ scratch/
 backup_before_*.sql
 dashboard_example.png
 
-# Agent skills & generated design systems / docs
+# Agent skills & generated design systems
 .agents/skills/
 skills/
 design-system/
-docs/
 
 # Roadmaps, tasks & planning docs
 *TASK*.md
