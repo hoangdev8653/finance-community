@@ -175,22 +175,30 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
     }
   };
 
+  const [viewMode, setViewMode] = useState<'DOMAIN' | 'TABLE'>('TABLE');
+
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Standard Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h2 className="font-heading text-xl font-bold text-foreground">
-            Quản lý danh mục nội dung
-          </h2>
-          <p className="text-xs text-muted-foreground font-mono">
-            Thêm, chỉnh sửa và xóa danh mục cho chuỗi bài viết và cộng đồng.
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <FolderTree className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <h1 className="font-heading text-xl font-bold text-foreground">
+              Quản lý danh mục nội dung
+            </h1>
+          </div>
+          <p className="text-xs text-muted-foreground font-mono mt-1">
+            Thêm, chỉnh sửa và quản lý danh mục cho chuỗi bài viết và cộng đồng
           </p>
         </div>
         <Button
           variant="primary"
           size="sm"
           onClick={openCreateModal}
-          className="text-xs font-mono gap-1.5"
+          className="text-xs font-mono gap-1.5 h-9 self-start sm:self-auto"
         >
           <Plus className="h-4 w-4" />
           <span>Thêm danh mục</span>
@@ -215,9 +223,89 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
         </div>
       )}
 
+      {/* Summary & Search Toolbar */}
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
-        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} isLoading={isLoading} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
+        <AdminSearchInput
+          value={search}
+          onValueChange={(value) => {
+            setSearch(value);
+            setPage(1);
+          }}
+          isLoading={isLoading}
+          placeholder="Tìm theo tên hoặc slug danh mục..."
+          aria-label="Tìm kiếm danh mục"
+        />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">
+              {filteredCategories.length} danh mục
+            </span>
+            <span>•</span>
+            <span>{scopeFilter === 'ALL' ? 'Tất cả phạm vi' : scopeFilter}</span>
+          </div>
+
+          {!learningOnly && (
+            <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-lg text-xs font-mono">
+              {[
+                { key: 'ALL', label: 'Tất cả' },
+                { key: 'COMMUNITY', label: 'Cộng đồng' },
+                { key: 'SERIES', label: 'Chuỗi bài' },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={() => {
+                    setScopeFilter(tab.key as any);
+                    setPage(1);
+                  }}
+                  className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                    scopeFilter === tab.key
+                      ? 'bg-primary text-primary-foreground shadow-2xs'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* View Mode Switcher */}
+          <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-lg text-xs font-mono">
+            <button
+              type="button"
+              onClick={() => setViewMode('TABLE')}
+              className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                viewMode === 'TABLE'
+                  ? 'bg-primary text-primary-foreground shadow-2xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+              }`}
+            >
+              Bảng dữ liệu
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('DOMAIN')}
+              className={`px-2.5 py-1 rounded-md transition-all font-semibold ${
+                viewMode === 'DOMAIN'
+                  ? 'bg-primary text-primary-foreground shadow-2xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+              }`}
+            >
+              Theo Lĩnh vực
+            </button>
+          </div>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void refetch()}
+            disabled={isLoading}
+            className="h-8 text-xs self-start sm:self-auto"
+          >
+            Làm mới
+          </Button>
+        </div>
       </div>
 
       {isLoading && (
@@ -225,7 +313,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-16 rounded-lg border border-border bg-surface/50 animate-pulse"
+              className="h-16 rounded-xl border border-border bg-surface/50 animate-pulse"
             />
           ))}
         </div>
@@ -234,8 +322,9 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
       {isError && (
         <div
           role="alert"
-          className="p-8 text-center rounded-lg border border-danger/20 bg-danger/5 space-y-3"
+          className="p-8 text-center rounded-xl border border-danger/20 bg-danger/5 space-y-3"
         >
+          <AlertCircle className="h-8 w-8 text-danger mx-auto" />
           <p className="text-sm font-medium text-foreground">
             Không thể tải danh sách danh mục.
           </p>
@@ -246,7 +335,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
       )}
 
       {!isLoading && !isError && categories && categories.length === 0 && (
-        <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
+        <div className="p-12 text-center rounded-xl border border-dashed border-border bg-surface space-y-2">
           <FolderTree className="h-8 w-8 text-muted-foreground mx-auto" />
           <h3 className="text-sm font-semibold text-foreground">Chưa có danh mục</h3>
           <p className="text-xs text-muted-foreground">
@@ -255,75 +344,133 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
         </div>
       )}
 
-      {!isLoading && !isError && categories && categories.length > 0 && (
-        <div className="space-y-2 rounded-lg border border-border bg-surface p-2">
+      {!isLoading && !isError && categories && categories.length > 0 && viewMode === 'DOMAIN' && (
+        <div className="space-y-3">
           {domains.map((domain) => {
             const domainCategories = filteredCategories.filter((category) => category.domainId === domain.id);
             if (!domainCategories.length) return null;
-            const expanded = expandedDomains[domain.id] ?? false;
-            return <div key={domain.id} className="overflow-hidden rounded-lg border border-border">
-              <button type="button" onClick={() => setExpandedDomains((current) => ({ ...current, [domain.id]: !expanded }))} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/40">
-                <span><span className="font-semibold text-foreground">{domainLabels[domain.code] || domain.nameVi || domain.name}</span><span className="ml-2 text-xs text-muted-foreground">{domainCategories.length} danh mục</span></span>
-                <span className="text-lg text-muted-foreground">{expanded ? '−' : '+'}</span>
-              </button>
-              {expanded && <div className="grid gap-2 border-t border-border bg-background/30 p-3 sm:grid-cols-2">{domainCategories.map((category) => <div key={category.id} className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"><div className="min-w-0"><p className="truncate text-sm font-semibold text-foreground">{category.name}</p><p className="truncate font-mono text-[11px] text-muted-foreground">{category.slug}</p></div><div className="flex shrink-0 items-center gap-1.5"><Button variant="outline" size="sm" onClick={() => openEditModal(category)} className="h-7 px-2 text-xs">Sửa</Button><Button variant="outline" size="sm" onClick={() => void handleDelete(category)} className="h-7 px-2 text-xs text-danger">Xóa</Button></div></div>)}</div>}
-            </div>;
+            const expanded = expandedDomains[domain.id] ?? true;
+            return (
+              <div key={domain.id} className="overflow-hidden rounded-xl border border-border bg-surface shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => setExpandedDomains((current) => ({ ...current, [domain.id]: !expanded }))}
+                  className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-muted/40 font-mono text-xs"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className="font-bold text-sm text-foreground font-sans">
+                      {domainLabels[domain.code] || domain.nameVi || domain.name}
+                    </span>
+                    <Badge variant="outline" className="text-3xs font-mono">
+                      {domainCategories.length} danh mục
+                    </Badge>
+                  </span>
+                  <span className="text-lg text-muted-foreground font-bold">{expanded ? '−' : '+'}</span>
+                </button>
+                {expanded && (
+                  <div className="grid gap-2 border-t border-border bg-background/30 p-3 sm:grid-cols-2">
+                    {domainCategories.map((category) => (
+                      <div
+                        key={category.id}
+                        className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface px-3 py-2.5"
+                      >
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-foreground">{category.name}</p>
+                          <p className="truncate font-mono text-[11px] text-muted-foreground">{category.slug}</p>
+                        </div>
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          <Button variant="outline" size="sm" onClick={() => openEditModal(category)} className="h-7 px-2 text-xs">
+                            Sửa
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => void handleDelete(category)} className="h-7 px-2 text-xs text-danger">
+                            Xóa
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
           })}
         </div>
       )}
 
-      {!isLoading && !isError && categories && categories.length > 0 && (
-        <div className="hidden overflow-x-auto rounded-lg border border-border bg-surface">
-          <div className="grid grid-cols-[minmax(220px,1.5fr)_minmax(180px,1fr)_140px_140px_190px] border-b border-border bg-muted/50 px-4 py-3 text-xs font-mono uppercase text-muted-foreground"><span>Danh mục</span><span>Slug</span><span>Phạm vi</span><span>Ngày tạo</span><span className="text-right">Thao tác</span></div>
-          <div className="divide-y divide-border">
-            {visibleCategories.map((cat) => (
-              <div
-                key={cat.id}
-                className="grid grid-cols-[minmax(220px,1.5fr)_minmax(180px,1fr)_140px_140px_190px] items-center gap-4 px-4 py-3.5 transition-colors hover:bg-muted/30"
-              >
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-sm text-foreground">
-                      {cat.name}
-                    </span>
-                  </div>
-                  {cat.description && (
-                    <p className="text-xs text-muted-foreground truncate max-w-md">
-                      {cat.description}
-                    </p>
-                  )}
-                </div>
+      {!isLoading && !isError && categories && categories.length > 0 && viewMode === 'TABLE' && (
+        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-2xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-sans">
+              <thead className="bg-muted/50 border-b border-border text-muted-foreground font-mono text-xs uppercase">
+                <tr>
+                  <th className="py-3 px-4">Danh mục</th>
+                  <th className="py-3 px-4">Đường dẫn (Slug)</th>
+                  <th className="py-3 px-4">Lĩnh vực</th>
+                  <th className="py-3 px-4">Phạm vi</th>
+                  <th className="py-3 px-4">Ngày tạo</th>
+                  <th className="py-3 px-4 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {visibleCategories.map((cat) => {
+                  const domainObj = domains.find((d) => d.id === cat.domainId);
+                  const domainLabel = domainObj ? (domainLabels[domainObj.code] || domainObj.nameVi || domainObj.name) : '—';
 
-                <div className="truncate font-mono text-xs text-muted-foreground" title={cat.slug}>{cat.slug}</div>
-                <div><Badge variant={cat.scope === 'SERIES' ? 'default' : 'secondary'} className="font-mono text-xs">{cat.scope}</Badge></div>
-                <div className="text-xs text-muted-foreground">{new Date(cat.createdAt).toLocaleDateString('vi-VN')}</div>
-                <div className="flex items-center justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openEditModal(cat)}
-                    className="h-9 px-3 gap-1 font-mono text-xs"
-                    title="Sửa danh mục"
-                    aria-label={`Sửa danh mục ${cat.name}`}
-                  >
-                    <Edit2 className="h-3 w-3" />
-                    <span>Sửa</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => void handleDelete(cat)}
-                    disabled={deleteCategoryMutation.isPending}
-                    className="h-9 px-3 gap-1 font-mono text-xs text-danger hover:bg-danger/10"
-                    title="Xóa danh mục"
-                    aria-label={`Xóa danh mục ${cat.name}`}
-                  >
-                    <Trash2 className="h-3 w-3" />
-                    <span>Xóa</span>
-                  </Button>
-                </div>
-              </div>
-            ))}
+                  return (
+                    <tr key={cat.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="py-3.5 px-4 min-w-[180px]">
+                        <div>
+                          <span className="font-semibold text-sm text-foreground">{cat.name}</span>
+                          {cat.description && (
+                            <p className="text-xs text-muted-foreground truncate max-w-sm">{cat.description}</p>
+                          )}
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-xs text-muted-foreground">{cat.slug}</td>
+                      <td className="py-3.5 px-4">
+                        <Badge variant="outline" className="text-xs font-sans">
+                          {domainLabel}
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-4">
+                        <Badge variant={cat.scope === 'SERIES' ? 'default' : 'secondary'} className="font-mono text-xs">
+                          {cat.scope}
+                        </Badge>
+                      </td>
+                      <td className="py-3.5 px-4 text-xs text-muted-foreground">
+                        {new Date(cat.createdAt).toLocaleDateString('vi-VN')}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => openEditModal(cat)}
+                            className="h-8 px-2.5 gap-1 font-mono text-xs"
+                            title="Sửa danh mục"
+                            aria-label={`Sửa danh mục ${cat.name}`}
+                          >
+                            <Edit2 className="h-3 w-3" />
+                            <span>Sửa</span>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => void handleDelete(cat)}
+                            disabled={deleteCategoryMutation.isPending}
+                            className="h-8 px-2.5 gap-1 font-mono text-xs text-danger hover:bg-danger/10"
+                            title="Xóa danh mục"
+                            aria-label={`Xóa danh mục ${cat.name}`}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                            <span>Xóa</span>
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
           <AdminPagination meta={paginationMeta} itemLabel="danh mục" pageLabel="Trang" onPageChange={setPage} />
         </div>

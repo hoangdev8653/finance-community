@@ -126,11 +126,9 @@ export function AdminCommentsTable() {
             Kiểm duyệt nội dung trao đổi, ẩn các bình luận vi phạm và duy trì văn hóa thảo luận lành mạnh.
           </p>
         </div>
-      </div>
 
-      {/* Tabs & Search */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-1 overflow-x-auto rounded-lg border border-border bg-muted/30 p-1">
+        {/* Tabs in Header */}
+        <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-lg self-start sm:self-auto text-xs font-mono">
           {[
             { key: 'ALL', label: 'Tất cả' },
             { key: 'VISIBLE', label: 'Đang hiển thị' },
@@ -140,17 +138,20 @@ export function AdminCommentsTable() {
               key={tab.key}
               type="button"
               onClick={() => handleStatusTab(tab.key)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-md transition-all font-semibold ${
                 selectedStatus === tab.key
-                  ? 'bg-background text-foreground shadow-sm'
-                  : 'text-muted-foreground hover:text-foreground'
+                  ? 'bg-primary text-primary-foreground shadow-2xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
               }`}
             >
               {tab.label}
             </button>
           ))}
         </div>
+      </div>
 
+      {/* Summary & Search Toolbar */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -161,6 +162,16 @@ export function AdminCommentsTable() {
           placeholder="Tìm theo nội dung, tác giả, bài viết..."
           aria-label="Tìm kiếm bình luận"
         />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">{meta?.totalItems ?? 0} bình luận</span>
+            <span>•</span>
+            <span>{selectedStatus === 'ALL' ? 'Tất cả trạng thái' : selectedStatus === 'VISIBLE' ? 'Đang hiển thị' : 'Đã ẩn'}</span>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => void refetch()} disabled={isLoading} className="h-8 text-xs self-start sm:self-auto">
+            Làm mới dữ liệu
+          </Button>
+        </div>
       </div>
 
       {/* Table */}

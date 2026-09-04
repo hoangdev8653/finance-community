@@ -51,19 +51,55 @@ export function AuditLogsTable() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Standard Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
-          <h2 className="font-heading text-xl font-bold text-foreground">
-            Security & Governance Audit Logs
-          </h2>
-          <p className="text-xs text-muted-foreground font-mono">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <FileSearch className="h-5 w-5" aria-hidden="true" />
+            </div>
+            <h1 className="font-heading text-xl font-bold text-foreground">
+              Security & Governance Audit Logs
+            </h1>
+          </div>
+          <p className="text-xs text-muted-foreground font-mono mt-1">
             {meta ? `${meta.totalItems} immutable security log events recorded` : 'Loading audit logs...'}
           </p>
         </div>
       </div>
 
+      {/* Summary Toolbar */}
+      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">{meta ? meta.totalItems : 0} sự kiện</span>
+          <span>•</span>
+          <span>Lưu trữ bất biến (Immutable Audit Log)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {(filterAction || filterEntityType || filterActorId) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleResetFilters}
+              className="text-xs h-8 font-mono"
+            >
+              Reset Filters
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void refetch()}
+            disabled={isLoading}
+            className="text-xs h-8 font-mono"
+          >
+            Làm mới dữ liệu
+          </Button>
+        </div>
+      </div>
+
       {/* Filter Toolbar */}
-      <div className="rounded-lg border border-border bg-surface p-4 space-y-3">
+      <div className="rounded-xl border border-border bg-surface p-4 space-y-3 shadow-2xs">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground font-mono">
           <Filter className="h-3.5 w-3.5 text-primary" />
           <span>Audit Filters</span>
@@ -82,7 +118,7 @@ export function AuditLogsTable() {
                 setCurrentPage(1);
               }}
               placeholder="e.g. ROLE_ASSIGN"
-              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+              className="mt-1 w-full rounded-lg border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
 
@@ -99,7 +135,7 @@ export function AuditLogsTable() {
                 setCurrentPage(1);
               }}
               placeholder="e.g. users, posts"
-              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+              className="mt-1 w-full rounded-lg border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
 
@@ -116,23 +152,10 @@ export function AuditLogsTable() {
                 setCurrentPage(1);
               }}
               placeholder="Actor UUID..."
-              className="w-full rounded-md border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+              className="mt-1 w-full rounded-lg border border-input bg-background p-2 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
             />
           </div>
         </div>
-
-        {(filterAction || filterEntityType || filterActorId) && (
-          <div className="flex justify-end pt-1">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleResetFilters}
-              className="text-xs h-7 font-mono"
-            >
-              Reset Filters
-            </Button>
-          </div>
-        )}
       </div>
 
       {/* Loading Skeletons */}
@@ -141,7 +164,7 @@ export function AuditLogsTable() {
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="h-16 rounded-lg border border-border bg-surface/50 animate-pulse"
+              className="h-16 rounded-xl border border-border bg-surface/50 animate-pulse"
             />
           ))}
         </div>
@@ -151,7 +174,7 @@ export function AuditLogsTable() {
       {isError && (
         <div
           role="alert"
-          className="p-8 text-center rounded-lg border border-danger/20 bg-danger/5 space-y-3"
+          className="p-8 text-center rounded-xl border border-danger/20 bg-danger/5 space-y-3"
         >
           <p className="text-sm font-medium text-foreground">
             Failed to load audit logs.
@@ -164,7 +187,7 @@ export function AuditLogsTable() {
 
       {/* Empty State */}
       {!isLoading && !isError && logs.length === 0 && (
-        <div className="p-12 text-center rounded-lg border border-dashed border-border bg-surface space-y-2">
+        <div className="p-12 text-center rounded-xl border border-dashed border-border bg-surface space-y-2">
           <FileSearch className="h-8 w-8 text-muted-foreground mx-auto" />
           <h3 className="text-sm font-semibold text-foreground">No Audit Logs Found</h3>
           <p className="text-xs text-muted-foreground">
@@ -175,8 +198,8 @@ export function AuditLogsTable() {
 
       {/* Desktop Table View */}
       {!isLoading && !isError && logs.length > 0 && (
-        <>
-          <div className="hidden md:block overflow-x-auto rounded-lg border border-border bg-surface">
+        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-2xs">
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-3xs">
                 <tr>
@@ -300,36 +323,8 @@ export function AuditLogsTable() {
           </div>
 
           {/* Pagination Controls */}
-          {meta && <AdminPagination meta={meta} itemLabel="events" onPageChange={setCurrentPage} />}
-          {meta && meta.totalPages > 1 && false && (
-            <div className="flex items-center justify-between gap-4 pt-4 border-t border-border text-xs font-mono text-muted-foreground">
-              <div>
-                Page {meta.page} of {meta.totalPages} ({meta.totalItems} events)
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={!meta.hasPreviousPage}
-                  aria-label="Previous Page"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setCurrentPage((p) => p + 1)}
-                  disabled={!meta.hasNextPage}
-                  aria-label="Next Page"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          )}
-        </>
+          <AdminPagination meta={meta} itemLabel="events" onPageChange={setCurrentPage} />
+        </div>
       )}
 
       {/* Metadata Inspector Modal */}
