@@ -13,8 +13,9 @@ export class AiEditorialController {
   @Post('draft')
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
-  @RequirePermission('learning:manage')
-  createDraft(@Body() body: { title: string; domain: string; category: string; series?: string; lessonOrder?: number }) {
+  createDraft(
+    @Body() body: { title: string; domain: string; category: string; series?: string; lessonOrder?: number; sources?: string },
+  ) {
     return this.service.createDraft(body);
   }
 }
