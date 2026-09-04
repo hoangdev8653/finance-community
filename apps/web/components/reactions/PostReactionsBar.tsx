@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { usePostReactions, useTogglePostReaction } from '@/lib/reactions/use-reactions';
 import { ReactionButton } from './ReactionButton';
+import { BookmarkButton } from '../content/BookmarkButton';
 import { MessageSquare, Share2, Check } from 'lucide-react';
 
 interface PostReactionsBarProps {
@@ -81,25 +82,29 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
         </button>
       </div>
 
-      {/* Share Action */}
-      <button
-        type="button"
-        onClick={handleShare}
-        aria-label="Share this analysis link"
-        className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground px-3 py-2 min-h-[44px] rounded-md border border-border/60 hover:bg-muted/40 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
-      >
-        {copied ? (
-          <>
-            <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-            <span className="text-primary font-medium">Link Copied</span>
-          </>
-        ) : (
-          <>
-            <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>Share</span>
-          </>
-        )}
-      </button>
+      {/* Bookmark & Share Actions */}
+      <div className="flex items-center gap-2.5">
+        <BookmarkButton postId={postId} variant="labeled" size="md" className="min-h-[44px]" />
+
+        <button
+          type="button"
+          onClick={handleShare}
+          aria-label="Share this analysis link"
+          className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground px-3 py-2 min-h-[44px] rounded-md border border-border/60 hover:bg-muted/40 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
+        >
+          {copied ? (
+            <>
+              <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+              <span className="text-primary font-medium">Link Copied</span>
+            </>
+          ) : (
+            <>
+              <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
+              <span>Share</span>
+            </>
+          )}
+        </button>
+      </div>
     </section>
   );
 }

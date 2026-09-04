@@ -16,12 +16,12 @@ export function SeriesChapterItem({
 }: SeriesChapterItemProps) {
   const formattedIndex = String(sequenceNumber).padStart(2, '0');
   const formattedDate = chapter.publishedAt
-    ? new Date(chapter.publishedAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
+    ? new Date(chapter.publishedAt).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
         year: 'numeric',
       })
-    : 'Draft';
+    : 'Bản nháp';
 
   const readerUrl = `/posts/SERIES/${encodeURIComponent(chapter.slug)}`;
 

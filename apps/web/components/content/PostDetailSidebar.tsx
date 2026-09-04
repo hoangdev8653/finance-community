@@ -9,18 +9,22 @@ import { resolveMediaUrl } from '@/lib/utils/media';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
 import { Sparkles, UserPlus, UserCheck, BookOpen, Clock, Tag, ArrowRight } from 'lucide-react';
+import { PostTableOfContents } from './PostTableOfContents';
+import type { ContentHeading } from './PostContentRenderer';
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
   categoryName?: string;
+  headings?: ContentHeading[];
 }
 
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
-export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps) {
+export function PostDetailSidebar({ post, categoryName, headings }: PostDetailSidebarProps) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
+  const hasHeadings = Boolean(headings && headings.length > 0);
 
   useEffect(() => {
     let isMounted = true;
@@ -49,7 +53,7 @@ export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps
   const authorRole = 'Hội đồng Thẩm định & Phân tích Tài chính';
 
   return (
-    <aside className="space-y-6 sticky top-24">
+    <aside className={`space-y-6 ${!hasHeadings ? 'sticky top-24' : ''}`}>
       {/* 1. Author Profile Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-start gap-3.5">
@@ -93,7 +97,12 @@ export function PostDetailSidebar({ post, categoryName }: PostDetailSidebarProps
         </Button>
       </div>
 
-      {/* 2. Related Articles Card */}
+      {/* 2. Smart Table of Contents (Sticky) */}
+      {hasHeadings && headings && (
+        <PostTableOfContents headings={headings} />
+      )}
+
+      {/* 3. Related Articles Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm sm:text-base">

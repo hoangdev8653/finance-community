@@ -34,7 +34,7 @@ export function ProfileHeader({
   const name = profile.displayName || profile.username;
   const shortId = profile.userId.slice(0, 8);
 
-  const joinedDate = new Date(profile.createdAt).toLocaleDateString('en-US', {
+  const joinedDate = new Date(profile.createdAt).toLocaleDateString('vi-VN', {
     month: 'long',
     year: 'numeric',
   });

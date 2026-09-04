@@ -20,11 +20,11 @@ export function PostPreview({
   categoryName,
   tags,
   body,
-  authorName = 'Current Analyst',
+  authorName = 'Tác giả',
 }: PostPreviewProps) {
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
+  const currentDate = new Date().toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
   });
 

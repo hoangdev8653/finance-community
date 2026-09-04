@@ -64,6 +64,14 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
           <article className="lg:col-span-8 space-y-6">
             <PostHeader post={post} categoryName={categoryName} />
             <PostCoverMedia post={post} />
+
+            {/* Mobile In-Article Table of Contents */}
+            {headings.length > 0 && (
+              <div className="block lg:hidden">
+                <PostTableOfContents headings={headings} isMobile={true} />
+              </div>
+            )}
+
             <PostContentRenderer body={post.body} />
             {post.contentType === 'SERIES' && <div className="mt-8"><LearningActions postId={post.id} /></div>}
             {post.contentType === 'SERIES' && <LearningQuiz postId={post.id} />}
@@ -73,10 +81,9 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
             <CommentsSection postId={post.id} />
           </article>
 
-          {/* Right Sticky Sidebar (Author, Related Articles, Tags) */}
+          {/* Right Sidebar (TOC, Author, Related Articles, Tags) */}
           <div className="hidden lg:block lg:col-span-4">
-            <PostTableOfContents headings={headings} />
-            <PostDetailSidebar post={post} categoryName={categoryName} />
+            <PostDetailSidebar post={post} categoryName={categoryName} headings={headings} />
           </div>
         </div>
       </main>

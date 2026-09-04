@@ -45,9 +45,8 @@ describe('PostHeader Component', () => {
       screen.getByRole('heading', { level: 1, name: /Macroeconomic Shift in Treasury Yields/i })
     ).toBeDefined();
     expect(screen.getByText('Fixed Income')).toBeDefined();
-    expect(screen.getByText(/Analyst #987fcdeb/i)).toBeDefined();
-    expect(screen.getByText(/3,450 views/i)).toBeDefined();
-    expect(screen.getByText(/August 15, 2026/i)).toBeDefined();
+    expect(screen.getByText(/lượt xem/i)).toBeDefined();
+    expect(screen.getByText(/15\/08\/2026/i)).toBeDefined();
     expect(screen.getByText(/Executive summary detailing federal funds rates/i)).toBeDefined();
   });
 });

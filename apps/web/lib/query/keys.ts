@@ -69,6 +69,7 @@ export const queryKeys = {
   admin: {
     settings: ['admin', 'settings'] as const,
     auditLogs: (params?: QueryAuditLogsParams) => ['admin', 'auditLogs', params || {}] as const,
+    comments: (params?: Record<string, unknown>) => ['admin', 'comments', params || {}] as const,
   },
   search: {
     discovery: (filters?: SearchFilterState) => ['search', 'discovery', filters || {}] as const,

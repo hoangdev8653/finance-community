@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { Lexend, Source_Sans_3, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
-import { ToastProvider } from '@/components/ui/Toast';
 import { SiteChrome } from '@/components/layout/SiteChrome';
 
 const lexend = Lexend({
@@ -66,9 +65,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>
-          <ToastProvider>
-            <SiteChrome>{children}</SiteChrome>
-          </ToastProvider>
+          <SiteChrome>{children}</SiteChrome>
         </Providers>
       </body>
     </html>

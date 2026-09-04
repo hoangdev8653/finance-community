@@ -9,20 +9,44 @@ export interface ContentHeading { id: string; text: string; level: 2 | 3; }
 export function extractContentHeadings(body: string | null): ContentHeading[] {
   if (!body) return [];
   const used = new Map<string, number>();
-  return Array.from(body.matchAll(/<h([23])(?:\s[^>]*)?>([\s\S]*?)<\/h\1>/gi)).map((match) => {
-    const text = match[2].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
-    const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
-    const count = used.get(base) ?? 0;
-    used.set(base, count + 1);
-    return { id: count ? `${base}-${count + 1}` : base, text, level: Number(match[1]) as 2 | 3 };
-  }).filter((heading) => heading.text);
+
+  if (/<h[23]/i.test(body)) {
+    return Array.from(body.matchAll(/<h([23])(?:\s[^>]*)?>([\s\S]*?)<\/h\1>/gi)).map((match) => {
+      const text = match[2].replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&').trim();
+      const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+      const count = used.get(base) ?? 0;
+      used.set(base, count + 1);
+      return { id: count ? `${base}-${count + 1}` : base, text, level: Number(match[1]) as 2 | 3 };
+    }).filter((heading) => heading.text);
+  }
+
+  // Fallback for Markdown headings ## and ###
+  const headings: ContentHeading[] = [];
+  const lines = body.split('\n');
+  for (const line of lines) {
+    const match = line.match(/^(#{2,3})\s+(.+)$/);
+    if (match) {
+      const level = match[1].length as 2 | 3;
+      const text = match[2].replace(/[*_`#]/g, '').trim();
+      if (!text) continue;
+      const base = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'section';
+      const count = used.get(base) ?? 0;
+      used.set(base, count + 1);
+      headings.push({ id: count ? `${base}-${count + 1}` : base, text, level });
+    }
+  }
+  return headings;
 }
 
 function addHeadingIds(html: string, headings: ContentHeading[]): string {
   let index = 0;
   return html.replace(/<h([23])([^>]*)>/gi, (tag, level, attributes) => {
     const heading = headings[index++];
-    return heading && Number(level) === heading.level ? `<h${level}${attributes} id="${heading.id}" class="scroll-mt-28">` : tag;
+    if (heading && Number(level) === heading.level) {
+      const cleanAttrs = attributes.replace(/id=["'][^"']*["']/gi, '').trim();
+      return `<h${level} id="${heading.id}" ${cleanAttrs} class="scroll-mt-28">`;
+    }
+    return tag;
   });
 }
 

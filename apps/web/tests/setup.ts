@@ -14,3 +14,12 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
   useParams: () => ({}),
 }));
+
+vi.mock('@/lib/posts/use-post-bookmark', () => ({
+  usePostBookmark: vi.fn(() => ({
+    isBookmarked: false,
+    isLoading: false,
+    toggleBookmark: vi.fn(),
+  })),
+}));
+

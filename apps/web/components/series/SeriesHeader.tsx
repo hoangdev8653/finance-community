@@ -18,8 +18,8 @@ export function SeriesHeader({
   totalArticles,
   createdAt,
 }: SeriesHeaderProps) {
-  const formattedDate = new Date(createdAt).toLocaleDateString('en-US', {
-    month: 'short',
+  const formattedDate = new Date(createdAt).toLocaleDateString('vi-VN', {
+    month: 'long',
     year: 'numeric',
   });
 

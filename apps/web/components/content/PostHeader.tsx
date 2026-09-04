@@ -1,8 +1,9 @@
 import React from 'react';
-import { Calendar, Eye, Clock, BookOpen } from 'lucide-react';
+import { Calendar, Eye, Clock } from 'lucide-react';
 import { PostDetailResponse } from '@/types/content';
 import { Badge } from '@/components/ui/Badge';
 import { ReportButton } from '@/components/moderation/ReportButton';
+import { BookmarkButton } from './BookmarkButton';
 
 interface PostHeaderProps {
   post: PostDetailResponse;
@@ -11,24 +12,24 @@ interface PostHeaderProps {
 
 export function PostHeader({ post, categoryName }: PostHeaderProps) {
   const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
+    ? new Date(post.publishedAt).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
         year: 'numeric',
       })
-    : new Date(post.createdAt).toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
+    : new Date(post.createdAt).toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
         year: 'numeric',
       });
 
   // Calculate deterministic reading time (approx 225 words/min)
   const calculateReadingTime = (text: string | null): string => {
-    if (!text) return '1 min read';
+    if (!text) return '1 phút đọc';
     const plainText = text.replace(/<[^>]*>/g, ' ');
     const wordCount = plainText.trim().split(/\s+/).filter(Boolean).length;
     const minutes = Math.max(1, Math.ceil(wordCount / 225));
-    return `${minutes} min read`;
+    return `${minutes} phút đọc`;
   };
 
   const readingTime = calculateReadingTime(post.body);
@@ -36,7 +37,7 @@ export function PostHeader({ post, categoryName }: PostHeaderProps) {
 
   return (
     <header className="space-y-4 pb-6 border-b border-border">
-      {/* Category & Scope Badges + Report Action */}
+      {/* Category & Scope Badges + Actions */}
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           {categoryName && (
@@ -45,40 +46,36 @@ export function PostHeader({ post, categoryName }: PostHeaderProps) {
             </Badge>
           )}
 
-          <Badge variant="outline" className="text-xs font-mono uppercase px-2 py-0.5">
+          <Badge variant="outline" className="text-xs font-semibold px-2.5 py-0.5">
             {post.contentType}
           </Badge>
-
-          {post.contentType === 'SERIES' && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-mono text-primary uppercase font-bold tracking-wider">
-              <BookOpen className="h-3.5 w-3.5" />
-              Curated Curriculum
-            </span>
-          )}
         </div>
 
-        {/* Report Post Trigger */}
-        <ReportButton
-          targetType="POST"
-          targetId={post.id}
-          targetTitle={post.title}
-          variant="text"
-        />
+        {/* Action Controls: Bookmark & Report */}
+        <div className="flex items-center gap-2">
+          <BookmarkButton postId={post.id} variant="pill" size="sm" />
+          <ReportButton
+            targetType="POST"
+            targetId={post.id}
+            targetTitle={post.title}
+            variant="text"
+            className="text-xs text-muted-foreground hover:text-danger"
+          />
+        </div>
       </div>
 
-      {/* Main Title */}
-      <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-[1.15]">
-        {post.title}
-      </h1>
+      {/* Main Title & Executive Description */}
+      <div className="space-y-3">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
+          {post.title}
+        </h1>
 
-      {/* Executive Summary / Meta Description Callout */}
-      {post.metaDescription && (
-        <div className="border-l-2 border-primary bg-muted/30 p-4 rounded-r-md">
-          <p className="text-sm sm:text-base text-foreground/90 font-sans italic leading-relaxed">
+        {post.metaDescription && (
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
             {post.metaDescription}
           </p>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Author Metadata Bar */}
       <div className="flex flex-wrap items-center justify-between gap-4 pt-2 text-xs text-muted-foreground font-mono">
@@ -101,7 +98,7 @@ export function PostHeader({ post, categoryName }: PostHeaderProps) {
 
           <div className="flex items-center gap-1">
             <Eye className="h-3.5 w-3.5" aria-hidden="true" />
-            <span>{post.viewCount.toLocaleString()} views</span>
+            <span>{post.viewCount.toLocaleString('vi-VN')} lượt xem</span>
           </div>
         </div>
       </div>

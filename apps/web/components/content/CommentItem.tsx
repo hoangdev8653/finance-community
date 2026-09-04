@@ -40,9 +40,9 @@ export function CommentItem({
   );
   const canDelete = Boolean((isAuthor || isModerator) && !comment.isDeleted);
 
-  const formattedDate = new Date(comment.createdAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
+  const formattedDate = new Date(comment.createdAt).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
   });
 

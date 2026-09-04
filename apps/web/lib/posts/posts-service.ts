@@ -1,4 +1,5 @@
 import { apiClient } from '../api/client';
+import { DEFAULT_PAGE_SIZE } from '../constants/pagination';
 import {
   PostEntity,
   PostDetailResponse,
@@ -152,10 +153,19 @@ export const postsService = {
    * Get user's saved/bookmarked posts
    * GET /api/v1/posts/bookmarks/my-feed
    */
-  async getMyBookmarks(page = 1, limit = 20): Promise<PaginatedResult<PostEntity>> {
+  async getMyBookmarks(page = 1, limit = DEFAULT_PAGE_SIZE): Promise<PaginatedResult<PostEntity>> {
     const response = await apiClient.get<PaginatedResult<PostEntity>>('/posts/bookmarks/my-feed', {
       params: { page, limit },
     });
+    return response.data;
+  },
+
+  /**
+   * Check if post is bookmarked by current user
+   * GET /api/v1/posts/:id/bookmark
+   */
+  async getBookmarkStatus(postId: string): Promise<{ bookmarked: boolean }> {
+    const response = await apiClient.get<{ bookmarked: boolean }>(`/posts/${encodeURIComponent(postId)}/bookmark`);
     return response.data;
   },
 

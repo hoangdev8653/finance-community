@@ -15,6 +15,7 @@ import { learningService } from '@/lib/learning/learning-service';
 import { LearningAuditHistory } from '@/components/learning/LearningAuditHistory';
 import { SeriesSelector } from './SeriesSelector';
 import { learningSeriesService } from '@/lib/learning/learning-series-service';
+import { Globe, ExternalLink } from 'lucide-react';
 import { apiClient } from '@/lib/api/client';
 import { useUploadMedia } from '@/lib/media/use-media';
 
@@ -68,12 +69,37 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const [isPublishing, setIsPublishing] = useState(false);
   const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
   const [imagePlan, setImagePlan] = useState<ImagePlan | undefined>();
+  const [researchedSources, setResearchedSources] = useState<Array<{ title: string; url: string }>>([]);
+
   const generateDraft = async () => {
-    if (!title.trim() || !domainId || !categoryId) { setError('Vui lòng nhập tiêu đề, lĩnh vực và chủ đề trước khi tạo bản nháp.'); return; }
-    setIsGeneratingDraft(true); setError(null);
-    try { const { data } = await apiClient.post<{ body: string; imagePlan: ImagePlan }>('/ai-editorial/draft', { title: title.trim(), domain: domainId, category: categoryId, series: seriesId, lessonOrder }); setBody(data.body); setImagePlan(data.imagePlan); }
-    catch { setError('Không thể tạo bản nháp AI. Vui lòng kiểm tra cấu hình AI hoặc thử lại.'); }
-    finally { setIsGeneratingDraft(false); }
+    if (!title.trim() || !domainId || !categoryId) {
+      setError('Vui lòng nhập tiêu đề, lĩnh vực và chủ đề trước khi tạo bản nháp.');
+      return;
+    }
+    setIsGeneratingDraft(true);
+    setError(null);
+    try {
+      const { data } = await apiClient.post<{
+        body: string;
+        imagePlan: ImagePlan;
+        sources?: Array<{ title: string; url: string }>;
+      }>('/ai-editorial/draft', {
+        title: title.trim(),
+        domain: domainId,
+        category: categoryId,
+        series: seriesId,
+        lessonOrder,
+      });
+      setBody(data.body);
+      setImagePlan(data.imagePlan);
+      if (data.sources && data.sources.length > 0) {
+        setResearchedSources(data.sources);
+      }
+    } catch {
+      setError('Không thể tạo bản nháp AI. Vui lòng kiểm tra cấu hình AI hoặc thử lại.');
+    } finally {
+      setIsGeneratingDraft(false);
+    }
   };
 
   const validate = (): boolean => {
@@ -189,6 +215,31 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           {error}
         </div>
       )}
+      {/* Researched Sources Feedback */}
+      {researchedSources.length > 0 && (
+        <div className="rounded-xl border border-teal-200 bg-teal-50/70 dark:border-teal-900/60 dark:bg-teal-950/20 p-4 text-xs space-y-2 animate-in fade-in">
+          <div className="flex items-center gap-2 font-semibold text-teal-900 dark:text-teal-200">
+            <Globe className="h-4 w-4 text-teal-600 dark:text-teal-400" />
+            <span>AI đã tự động tìm kiếm và đối chiếu {researchedSources.length} nguồn uy tín trên Google:</span>
+          </div>
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pt-1">
+            {researchedSources.map((source, idx) => (
+              <li key={idx} className="truncate">
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-teal-700 dark:text-teal-300 hover:underline inline-flex items-center gap-1 font-medium"
+                >
+                  <ExternalLink className="h-3 w-3 shrink-0" />
+                  <span className="truncate">{source.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {isEditing && initialPost?.contentType === 'SERIES' && <LearningSourceManager postId={initialPost.id} />}
       {isEditing && initialPost?.contentType === 'SERIES' && <LearningQuizManager postId={initialPost.id} />}
       {isEditing && initialPost?.contentType === 'SERIES' && user?.roles?.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role)) && <LearningAuditHistory postId={initialPost.id} />}
@@ -201,7 +252,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           categoryName={categoryName}
           tags={tags}
           body={body}
-          authorName={user?.email?.split('@')[0] || 'Current Analyst'}
+          authorName={user?.email?.split('@')[0] || 'Tác giả'}
         />
       ) : (
         <PostEditor

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostEntity } from '@/types/content';
 import { resolveMediaUrl } from '@/lib/utils/media';
+import { BookmarkButton } from './BookmarkButton';
 
 interface PostCardProps {
   post: PostEntity;
@@ -69,7 +70,7 @@ export function PostCard({ post, categoryName }: PostCardProps) {
       </Link>
 
       {/* Right Column: CafeF Style Editorial Content (Title -> Category - Time -> Excerpt) */}
-      <div className="flex-1 min-w-0 space-y-2 pt-0.5">
+      <div className="flex-1 min-w-0 space-y-2 pt-0.5 w-full">
         {/* 1. Article Headline */}
         <h2 className="line-clamp-2">
           <Link
@@ -80,15 +81,18 @@ export function PostCard({ post, categoryName }: PostCardProps) {
           </Link>
         </h2>
 
-        {/* 2. Category & Relative Time: e.g. "Thị trường chứng khoán - 1 giờ trước" */}
-        <div className="flex items-center gap-2 text-sm font-semibold">
-          <span className="text-teal-900 dark:text-teal-400 font-bold hover:underline cursor-pointer">
-            {displayCategory}
-          </span>
-          <span className="text-slate-400 dark:text-slate-500 font-normal">-</span>
-          <time dateTime={displayDate} className="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm">
-            {timeLabel}
-          </time>
+        {/* 2. Category, Relative Time & Bookmark Action */}
+        <div className="flex items-center justify-between gap-2 text-sm font-semibold">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className="text-teal-900 dark:text-teal-400 font-bold hover:underline cursor-pointer truncate">
+              {displayCategory}
+            </span>
+            <span className="text-slate-400 dark:text-slate-500 font-normal">-</span>
+            <time dateTime={displayDate} className="text-slate-600 dark:text-slate-400 font-medium text-xs sm:text-sm shrink-0">
+              {timeLabel}
+            </time>
+          </div>
+          <BookmarkButton postId={post.id} variant="icon" size="sm" className="shrink-0" />
         </div>
 
         {/* 3. Article Content Excerpt — Enlarged Font Size & High Contrast */}
