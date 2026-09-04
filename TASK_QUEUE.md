@@ -21,6 +21,77 @@ Mức ưu tiên:
 
 <!-- Thêm task mới bên dưới theo mẫu này -->
 
+### [DONE] [P0] BE-01: Chuẩn hóa xử lý tiếng Việt cho Post Slug (slugify)
+
+- **Kết quả:** Xây dựng `SlugifyUtil` chuẩn hóa Unicode NFD, bóc tách dấu thanh tiếng Việt và chuyển đổi đ/Đ thành d, thay ký tự đặc biệt thành dấu gạch ngang và cắt gọt an toàn. Tích hợp trực tiếp vào `PostsService.slugify()`.
+- **Files:** `apps/api/src/common/utils/slugify.util.ts`, `apps/api/src/common/utils/slugify.util.spec.ts`, `apps/api/src/modules/posts/services/posts.service.ts`.
+- **Kiểm tra:** Jest unit test 5/5 passed (`src/common/utils/slugify.util.spec.ts`), `npm run build` thành công code 0.
+- **Ghi chú:** Đã giải quyết triệt để lỗi tiêu đề bài viết tiếng Việt bị cắt cụt dấu làm hỏng SEO.
+
+---
+
+### [DONE] [P0] BE-02: Bổ sung Database Indexes trong Drizzle Schema
+
+- **Kết quả:** Thêm composite indexes và single-column indexes cho các bảng có lưu lượng truy vấn cao:
+  - `postsTable`: `idx_posts_status_published_at`, `idx_posts_author_id`, `idx_posts_category_id`, `idx_posts_domain_id`, `idx_posts_created_at`.
+  - `commentsTable`: `idx_comments_post_id`, `idx_comments_author_id`, `idx_comments_status_created_at`.
+  - `notificationsTable`: `idx_notifications_user_unread` trên `(user_id, is_read, created_at)`.
+  - `postReactionsTable`: `idx_post_reactions_post_id`.
+  - `commentReactionsTable`: `idx_comment_reactions_comment_id`.
+- **Files:** `apps/api/src/database/schema/posts.schema.ts`, `comments.schema.ts`, `notifications.schema.ts`, `post-reactions.schema.ts`, `comment-reactions.schema.ts`.
+- **Kiểm tra:** `npm run build` thành công code 0.
+- **Ghi chú:** Đã giải quyết nguy cơ Seq Scan (quét toàn bảng) trên PostgreSQL khi dữ liệu feed, comment và thông báo mở rộng.
+
+---
+
+### [DONE] [P0] BE-03: Tối ưu Feed Query — Left Join Author Profile & Cover Media
+
+- **Kết quả:** Cập nhật `PostsRepository` (`findById`, `findBySlug`, `findFeedPaginated`, `findFollowingFeedPaginated`, `findTrendingFeedPaginated`) thực hiện `leftJoin(profilesTable)` và `leftJoin(mediaTable)`. Trả về đầy đủ thông tin `author` (`username`, `displayName`, `avatarMediaId`, `reputationScore`, `badge`) và `coverMedia` (`id`, `secureUrl`) trong 1 câu SQL query duy nhất.
+- **Files:** `apps/api/src/database/repositories/posts.repository.ts`.
+- **Kiểm tra:** `npm run build` trong `apps/api` thành công code 0, `npm run typecheck` trong `apps/web` thành công code 0.
+- **Ghi chú:** Đã loại bỏ hoàn toàn việc frontend phải fallback hiển thị `authorId.slice(0, 8)`. Tên và avatar tác giả hiển thị đầy đủ ngay từ API.
+
+---
+
+### [TODO] [P1] BE-04: Loại bỏ In-Memory Fallback & Fix EmailVerificationGuard
+
+- **Mục tiêu:** Đảm bảo hệ thống tuân thủ nguyên tắc Stateless, không lưu thông tin người dùng trong RAM Node process, đồng thời fix lỗi contract ở `EmailVerificationGuard`.
+- **Phạm vi:** `apps/api/src/modules/auth/services/auth.service.ts`, `jit-provisioning.service.ts`, `email-verification.guard.ts`.
+- **Yêu cầu:**
+  - Loại bỏ biến `fallbackMemoryCredentials` và các map/set in-memory trong JIT service.
+  - Fail fast khi DB có lỗi kết nối.
+  - Thêm `email_confirmed_at` vào JWT payload để `EmailVerificationGuard` không chặn nhầm người dùng.
+- **Tiêu chí hoàn thành:** Không còn fallback lưu thông tin user/mật khẩu trong RAM; JWT chứa thông tin xác thực email chính xác.
+
+---
+
+### [TODO] [P1] BE-05: Quản lý Phiên đăng nhập (Refresh Token Rotation & Revocation)
+
+- **Mục tiêu:** Ngăn chặn việc refresh token bị lạm dụng khi user đăng xuất, đổi mật khẩu hoặc bị cấm tài khoản.
+- **Phạm vi:** Bảng schema `refresh_tokens`, `auth.service.ts`, `auth.controller.ts`.
+- **Yêu cầu:** Lưu trữ refresh token (hash), hỗ trợ cơ chế rotation (cấp mới hủy cũ), endpoint `POST /auth/logout` thu hồi token.
+- **Tiêu chí hoàn thành:** Refresh token cũ không thể tái sử dụng; logout thu hồi token thành công.
+
+---
+
+### [TODO] [P1] BE-06: Bổ sung Facebook OAuth API (`POST /auth/facebook`)
+
+- **Mục tiêu:** Cho phép người dùng đăng nhập bằng tài khoản Facebook theo đúng Roadmap mục 5.
+- **Phạm vi:** `apps/api/src/modules/auth/`, `auth.controller.ts`, `auth.service.ts`.
+- **Yêu cầu:** Tiếp nhận Facebook access token, xác thực với Facebook Graph API (`/me`), tự động tạo tài khoản hoặc liên kết tài khoản theo email, cấp phát JWT.
+- **Tiêu chí hoàn thành:** API endpoint `POST /api/v1/auth/facebook` hoạt động và trả về JWT hợp lệ.
+
+---
+
+### [TODO] [P2] BE-07: Nâng cấp Live Data Adapter cho Market Ticker
+
+- **Mục tiêu:** Thay thế dữ liệu giả lập `Math.random()` bằng nguồn cấp dữ liệu thị trường thực tế cho VN-Index và cổ phiếu VN.
+- **Phạm vi:** `apps/api/src/modules/market/market.service.ts`.
+- **Yêu cầu:** Tích hợp adapter gọi API chứng khoán (VNDirect / CafeF / SSI open endpoints) có fallback an toàn khi sàn đóng cửa hoặc rate limit.
+- **Tiêu chí hoàn thành:** Dữ liệu chỉ số VN-Index và cổ phiếu phản ánh đúng giá thị trường.
+
+---
+
 ### [TODO] [P1] Xây dựng search component dùng chung cho Admin
 
 - **Mục tiêu:** Tạo một component tìm kiếm thống nhất và áp dụng cho tất cả trang Admin có dữ liệu cần tìm kiếm.

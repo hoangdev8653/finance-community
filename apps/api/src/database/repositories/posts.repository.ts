@@ -10,7 +10,25 @@ import { profilesTable } from '../schema/profiles.schema';
 import { followsTable } from '../schema/follows.schema';
 import { domainsTable } from '../schema/domains.schema';
 
-export type PostEntity = typeof postsTable.$inferSelect;
+export interface PostAuthorItem {
+  id?: string;
+  userId?: string;
+  username: string;
+  displayName: string | null;
+  avatarMediaId: string | null;
+  reputationScore?: number;
+  badge?: string;
+}
+
+export interface PostCoverMediaItem {
+  id: string;
+  secureUrl: string;
+}
+
+export type PostEntity = typeof postsTable.$inferSelect & {
+  author?: PostAuthorItem | null;
+  coverMedia?: PostCoverMediaItem | null;
+};
 export type NewPostEntity = typeof postsTable.$inferInsert;
 
 export interface PostFeedFilterOptions {
@@ -62,17 +80,57 @@ export class PostsRepository {
   }
 
   async findById(id: string): Promise<PostEntity | undefined> {
-    const [record] = await this.db
-      .select()
+    const [row] = await this.db
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.id,
+          userId: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          reputationScore: profilesTable.reputationScore,
+          badge: profilesTable.badge,
+        },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
+      })
       .from(postsTable)
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(and(eq(postsTable.id, id), isNull(postsTable.deletedAt)));
-    return record;
+
+    if (!row) return undefined;
+    return {
+      ...row.post,
+      author: row.author?.userId ? row.author : null,
+      coverMedia: row.coverMedia?.id ? row.coverMedia : null,
+    };
   }
 
   async findBySlug(contentType: string, slug: string): Promise<PostEntity | undefined> {
-    const [record] = await this.db
-      .select()
+    const [row] = await this.db
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.id,
+          userId: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          reputationScore: profilesTable.reputationScore,
+          badge: profilesTable.badge,
+        },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
+      })
       .from(postsTable)
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(
         and(
           eq(postsTable.contentType, contentType),
@@ -80,7 +138,13 @@ export class PostsRepository {
           isNull(postsTable.deletedAt),
         ),
       );
-    return record;
+
+    if (!row) return undefined;
+    return {
+      ...row.post,
+      author: row.author?.userId ? row.author : null,
+      coverMedia: row.coverMedia?.id ? row.coverMedia : null,
+    };
   }
 
   async findByDomainSlug(domainSlug: string, slug: string): Promise<PostEntity | undefined> {
@@ -149,13 +213,36 @@ export class PostsRepository {
     const orderDirection = options.order === 'ASC' ? asc : desc;
     const sortField = options.sortBy === 'publishedAt' ? postsTable.publishedAt : postsTable.createdAt;
 
-    const records = await this.db
-      .select()
+    const rows = await this.db
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.id,
+          userId: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          reputationScore: profilesTable.reputationScore,
+          badge: profilesTable.badge,
+        },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
+      })
       .from(postsTable)
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(whereClause)
       .orderBy(orderDirection(sortField), desc(postsTable.createdAt))
       .limit(limit)
       .offset(offset);
+
+    const records: PostEntity[] = rows.map((r) => ({
+      ...r.post,
+      author: r.author?.userId ? r.author : null,
+      coverMedia: r.coverMedia?.id ? r.coverMedia : null,
+    }));
 
     return {
       data: records,
@@ -306,16 +393,39 @@ export class PostsRepository {
     const totalPages = Math.ceil(totalItems / safeLimit);
 
     const rows = await this.db
-      .select({ post: postsTable })
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.id,
+          userId: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          reputationScore: profilesTable.reputationScore,
+          badge: profilesTable.badge,
+        },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
+      })
       .from(postsTable)
       .innerJoin(followsTable, eq(postsTable.authorId, followsTable.followingId))
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(whereClause)
       .orderBy(desc(postsTable.publishedAt), desc(postsTable.createdAt))
       .limit(safeLimit)
       .offset(offset);
 
+    const records: PostEntity[] = rows.map((r) => ({
+      ...r.post,
+      author: r.author?.userId ? r.author : null,
+      coverMedia: r.coverMedia?.id ? r.coverMedia : null,
+    }));
+
     return {
-      data: rows.map((r) => r.post),
+      data: records,
       meta: {
         page: safePage,
         limit: safeLimit,
@@ -349,15 +459,38 @@ export class PostsRepository {
     const totalPages = Math.ceil(totalItems / safeLimit);
 
     const rows = await this.db
-      .select()
+      .select({
+        post: postsTable,
+        author: {
+          id: profilesTable.id,
+          userId: profilesTable.userId,
+          username: profilesTable.username,
+          displayName: profilesTable.displayName,
+          avatarMediaId: profilesTable.avatarMediaId,
+          reputationScore: profilesTable.reputationScore,
+          badge: profilesTable.badge,
+        },
+        coverMedia: {
+          id: mediaTable.id,
+          secureUrl: mediaTable.secureUrl,
+        },
+      })
       .from(postsTable)
+      .leftJoin(profilesTable, eq(postsTable.authorId, profilesTable.userId))
+      .leftJoin(mediaTable, eq(postsTable.coverMediaId, mediaTable.id))
       .where(whereClause)
       .orderBy(desc(postsTable.viewCount), desc(postsTable.publishedAt), desc(postsTable.createdAt))
       .limit(safeLimit)
       .offset(offset);
 
+    const records: PostEntity[] = rows.map((r) => ({
+      ...r.post,
+      author: r.author?.userId ? r.author : null,
+      coverMedia: r.coverMedia?.id ? r.coverMedia : null,
+    }));
+
     return {
-      data: rows,
+      data: records,
       meta: {
         page: safePage,
         limit: safeLimit,
