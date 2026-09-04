@@ -2,11 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { PenSquare, FileText, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PenSquare, FileText, AlertCircle } from 'lucide-react';
 import { PostEntity } from '../../types/content';
 import { DashboardTabType } from '../../types/dashboard';
 import { DashboardPostCard } from './DashboardPostCard';
 import { Button } from '../ui/Button';
+import { Pagination } from '../ui/Pagination';
+import { DEFAULT_PAGE_SIZE } from '../../lib/constants/pagination';
 
 interface DashboardPostsListProps {
   posts: PostEntity[];
@@ -15,6 +17,7 @@ interface DashboardPostsListProps {
   activeTab: DashboardTabType;
   page: number;
   totalPages: number;
+  totalItems?: number;
   onPageChange: (newPage: number) => void;
   onUpdateStatus?: (postId: string, status: 'PUBLISHED' | 'ARCHIVED' | 'DRAFT') => Promise<unknown>;
   onDeletePost?: (postId: string) => Promise<unknown>;
@@ -27,6 +30,7 @@ export function DashboardPostsList({
   activeTab,
   page,
   totalPages,
+  totalItems,
   onPageChange,
   onUpdateStatus,
   onDeletePost,
@@ -104,34 +108,22 @@ export function DashboardPostsList({
         ))}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Reusable Standardized Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-border pt-4">
-          <span className="text-xs text-muted-foreground font-mono">
-            Page {page} of {totalPages}
-          </span>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(page - 1)}
-              disabled={page <= 1 || isLoading}
-              className="h-8 px-2"
-            >
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              <span>Previous</span>
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(page + 1)}
-              disabled={page >= totalPages || isLoading}
-              className="h-8 px-2"
-            >
-              <span>Next</span>
-              <ChevronRight className="h-4 w-4 ml-1" />
-            </Button>
-          </div>
+        <div className="rounded-xl border border-border bg-card overflow-hidden">
+          <Pagination
+            meta={{
+              page,
+              totalPages,
+              totalItems: totalItems ?? totalPages * DEFAULT_PAGE_SIZE,
+              limit: DEFAULT_PAGE_SIZE,
+              hasNextPage: page < totalPages,
+              hasPreviousPage: page > 1,
+            }}
+            onPageChange={onPageChange}
+            itemLabel="bài viết"
+            pageLabel="Trang"
+          />
         </div>
       )}
     </div>

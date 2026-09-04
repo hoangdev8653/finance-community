@@ -92,7 +92,7 @@ describe('Dashboard Service', () => {
   it('uses default query parameters when none are supplied to getAuthorPosts', async () => {
     vi.mocked(postsService.getFeed).mockResolvedValueOnce({
       data: [],
-      meta: { page: 1, limit: 20, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false },
+      meta: { page: 1, limit: 10, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false },
     });
 
     await dashboardService.getAuthorPosts('user-2');
@@ -101,7 +101,7 @@ describe('Dashboard Service', () => {
       authorId: 'user-2',
       status: 'PUBLISHED',
       page: 1,
-      limit: 20,
+      limit: 10,
       sortBy: 'createdAt',
       order: 'DESC',
     });

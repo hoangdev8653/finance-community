@@ -1,32 +1,39 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { SearchFilterBar } from '@/components/search/SearchFilterBar';
 import { SearchResultsList } from '@/components/search/SearchResultsList';
 import { SearchFilterState } from '@/types/search';
-import { Search, Compass, Loader2 } from 'lucide-react';
+import { Compass, Loader2 } from 'lucide-react';
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const [filters, setFilters] = useState<SearchFilterState>({
-    contentType: (searchParams.get('type') as any) || 'ALL',
-    categoryId: searchParams.get('category') || undefined,
-    tagId: searchParams.get('tag') || undefined,
-    sortBy: (searchParams.get('sort') as any) || 'publishedAt',
-    order: (searchParams.get('order') as any) || 'DESC',
-    page: parseInt(searchParams.get('page') || '1', 10),
-  });
-
   const queryText = searchParams.get('q') || '';
+  const contentType = (searchParams.get('type') as any) || 'ALL';
+  const categoryId = searchParams.get('category') || undefined;
+  const tagId = searchParams.get('tag') || undefined;
+  const sortBy = (searchParams.get('sort') as any) || 'publishedAt';
+  const order = (searchParams.get('order') as any) || 'DESC';
+  const page = parseInt(searchParams.get('page') || '1', 10);
+
+  // Directly derive active filters from URL query parameters
+  const filters: SearchFilterState = {
+    query: queryText || undefined,
+    contentType,
+    categoryId,
+    tagId,
+    sortBy,
+    order,
+    page,
+  };
 
   const handleFilterChange = (newFilters: SearchFilterState) => {
-    setFilters(newFilters);
     const params = new URLSearchParams();
 
-    if (queryText) params.set('q', queryText);
+    if (newFilters.query?.trim()) params.set('q', newFilters.query.trim());
     if (newFilters.contentType && newFilters.contentType !== 'ALL') params.set('type', newFilters.contentType);
     if (newFilters.categoryId) params.set('category', newFilters.categoryId);
     if (newFilters.tagId) params.set('tag', newFilters.tagId);
@@ -51,12 +58,12 @@ function SearchPageContent() {
           </div>
           <div>
             <h1 className="font-heading text-2xl font-bold text-foreground">
-              Market Discovery & Search
+              Tìm Kiếm & Khám Phá Bài Viết
             </h1>
-            <p className="text-xs text-muted-foreground font-mono">
+            <p className="text-xs text-muted-foreground font-sans mt-0.5">
               {queryText
-                ? `Results for keyword "${queryText}"`
-                : 'Explore articles across analytical taxonomy, format, and topics.'}
+                ? `Kết quả tìm kiếm cho từ khóa "${queryText}"`
+                : 'Khám phá tri thức, phân tích thị trường và chuyên đề học tập tài chính.'}
             </p>
           </div>
         </div>

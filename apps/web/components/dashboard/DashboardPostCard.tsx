@@ -30,9 +30,9 @@ export function DashboardPostCard({
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
 
-  const formattedDate = new Date(post.publishedAt || post.createdAt).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
+  const formattedDate = new Date(post.publishedAt || post.createdAt).toLocaleDateString('vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
     year: 'numeric',
   });
 

@@ -32,9 +32,9 @@ describe('SearchFilterBar Component', () => {
       />
     );
 
-    expect(screen.getByText('Discovery Filters')).toBeDefined();
+    expect(screen.getByText(/Bộ Lọc Chuyên Sâu/i)).toBeDefined();
 
-    const scopeSelect = screen.getByLabelText(/Content Scope/i);
+    const scopeSelect = screen.getByLabelText(/Định dạng/i);
     fireEvent.change(scopeSelect, { target: { value: 'SERIES' } });
 
     expect(mockChange).toHaveBeenCalledWith({
@@ -53,7 +53,7 @@ describe('SearchFilterBar Component', () => {
       />
     );
 
-    const resetBtn = screen.getByRole('button', { name: /Reset/i });
+    const resetBtn = screen.getByRole('button', { name: /Đặt lại bộ lọc/i });
     fireEvent.click(resetBtn);
 
     expect(mockChange).toHaveBeenCalledWith({

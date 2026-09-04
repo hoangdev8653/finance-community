@@ -39,7 +39,7 @@ describe('SearchResultsList Component', () => {
     render(<SearchResultsList filters={{ page: 1 }} onPageChange={vi.fn()} />);
 
     expect(screen.getByText('Yield Curve Inversion Mechanics')).toBeDefined();
-    expect(screen.getByText(/Showing 1 of 1 publications/i)).toBeDefined();
+    expect(screen.getByText(/Tìm thấy/i)).toBeDefined();
   });
 
   it('renders empty state when no posts match', () => {
@@ -57,6 +57,6 @@ describe('SearchResultsList Component', () => {
 
     render(<SearchResultsList filters={{ page: 1 }} onPageChange={vi.fn()} />);
 
-    expect(screen.getByText(/No Matching Financial Articles/i)).toBeDefined();
+    expect(screen.getByText(/Không tìm thấy bài viết phù hợp/i)).toBeDefined();
   });
 });

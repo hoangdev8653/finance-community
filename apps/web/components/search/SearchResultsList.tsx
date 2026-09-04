@@ -8,7 +8,8 @@ import { PostEntity } from '@/types/content';
 import { PostCard } from '@/components/content/PostCard';
 import { PostCardSkeleton } from '@/components/content/PostCardSkeleton';
 import { Button } from '@/components/ui/Button';
-import { SearchX, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Pagination } from '@/components/ui/Pagination';
+import { SearchX } from 'lucide-react';
 
 interface SearchResultsListProps {
   filters: SearchFilterState;
@@ -36,13 +37,13 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
     return (
       <div
         role="alert"
-        className="rounded-xl border border-danger/20 bg-danger/5 p-8 text-center space-y-3"
+        className="rounded-2xl border border-destructive/20 bg-destructive/5 p-8 text-center space-y-3"
       >
         <p className="text-sm font-semibold text-foreground">
-          Failed to load discovery results.
+          Không thể tải danh sách kết quả tìm kiếm.
         </p>
-        <Button variant="outline" size="sm" onClick={() => refetch()}>
-          Retry
+        <Button variant="outline" size="sm" onClick={() => refetch()} className="cursor-pointer">
+          Thử lại
         </Button>
       </div>
     );
@@ -50,14 +51,16 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
+      <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center space-y-3">
         <SearchX className="h-10 w-10 text-muted-foreground mx-auto" />
         <div className="space-y-1">
           <h3 className="text-sm font-heading font-bold text-foreground">
-            No Matching Financial Articles
+            Không tìm thấy bài viết phù hợp
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-            Try broadening your search criteria or selecting a different category or topic tag.
+            {filters.query
+              ? `Không có bài viết nào khớp với từ khóa "${filters.query}". Hãy thử từ khóa khác hoặc bỏ bớt các bộ lọc.`
+              : 'Hãy thử chọn chuyên mục, chủ đề hoặc định dạng bài viết khác.'}
           </p>
         </div>
       </div>
@@ -67,10 +70,16 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
   return (
     <div className="space-y-6">
       {/* Total Results Summary */}
-      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
+      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground px-1">
         <span>
-          Showing {posts.length} {meta ? `of ${meta.totalItems}` : ''} publications
+          Tìm thấy <span className="font-bold text-foreground">{meta?.totalItems ?? posts.length}</span> bài viết
+          {filters.query ? ` cho từ khóa "${filters.query}"` : ''}
         </span>
+        {meta && (
+          <span>
+            Trang {meta.page} / {meta.totalPages}
+          </span>
+        )}
       </div>
 
       {/* Posts Stream */}
@@ -86,34 +95,16 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
         ))}
       </div>
 
-      {/* Pagination Controls */}
-      {meta && meta.totalPages > 1 && (
-        <div className="flex items-center justify-between border-t border-border pt-4 text-xs font-mono text-muted-foreground">
-          <div>
-            Page {meta.page} of {meta.totalPages}
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange(Math.max(1, (filters.page || 1) - 1))}
-              disabled={!meta.hasPreviousPage}
-              aria-label="Previous Page"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onPageChange((filters.page || 1) + 1)}
-              disabled={!meta.hasNextPage}
-              aria-label="Next Page"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+      {/* Unified Pagination Component */}
+      {meta && (
+        <Pagination
+          meta={meta}
+          onPageChange={onPageChange}
+          itemLabel="bài viết"
+          pageLabel="Trang"
+          scrollToTop={true}
+          className="rounded-xl border border-border bg-card shadow-2xs"
+        />
       )}
     </div>
   );

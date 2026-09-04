@@ -50,7 +50,7 @@ export const dashboardService = {
       authorId,
       status: params?.status || 'PUBLISHED',
       page: params?.page || 1,
-      limit: params?.limit || 20,
+      limit: params?.limit || 10,
       sortBy: params?.sortBy || 'createdAt',
       order: params?.order || 'DESC',
     });

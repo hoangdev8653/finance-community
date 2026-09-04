@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { PenSquare, LayoutDashboard } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '../../lib/auth/AuthContext';
 import {
   useDashboardMetrics,
@@ -17,10 +18,20 @@ import { DashboardPostsList } from './DashboardPostsList';
 import { DashboardSkeleton } from './DashboardSkeleton';
 import { Button } from '../ui/Button';
 import { LearningProgressPanel } from '../learning/LearningProgressPanel';
+import { DEFAULT_PAGE_SIZE } from '../../lib/constants/pagination';
 
-export function DashboardView() {
+interface DashboardViewProps {
+  initialTab?: DashboardTabType;
+}
+
+export function DashboardView({ initialTab }: DashboardViewProps = {}) {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<DashboardTabType>('published');
+  const searchParams = useSearchParams();
+  const queryTab = searchParams?.get('tab') as DashboardTabType | null;
+  const validTabs: DashboardTabType[] = ['published', 'drafts', 'archived', 'bookmarks'];
+  const resolvedTab = initialTab || (queryTab && validTabs.includes(queryTab) ? queryTab : 'published');
+
+  const [activeTab, setActiveTab] = useState<DashboardTabType>(resolvedTab);
   const [page, setPage] = useState<number>(1);
 
   const isBookmarkTab = activeTab === 'bookmarks';
@@ -40,14 +51,14 @@ export function DashboardView() {
   } = useDashboardPosts(user?.id, {
     status: !isBookmarkTab ? statusMap[activeTab as Exclude<DashboardTabType, 'bookmarks'>] : undefined,
     page,
-    limit: 20,
+    limit: DEFAULT_PAGE_SIZE,
   });
 
   const {
     data: bookmarksData,
     isLoading: isBookmarksLoading,
     isError: isBookmarksError,
-  } = useDashboardBookmarks(page, 20, isBookmarkTab);
+  } = useDashboardBookmarks(page, DEFAULT_PAGE_SIZE, isBookmarkTab);
 
   const { updateStatus, deletePost } = useDashboardMutations();
 
@@ -64,6 +75,9 @@ export function DashboardView() {
   const totalPages = isBookmarkTab
     ? bookmarksData?.meta?.totalPages || 1
     : postsData?.meta?.totalPages || 1;
+  const totalItems = isBookmarkTab
+    ? bookmarksData?.meta?.totalItems || posts.length
+    : postsData?.meta?.totalItems || posts.length;
   const isLoadingActive = isBookmarkTab ? isBookmarksLoading : isPostsLoading;
   const isErrorActive = isBookmarkTab ? isBookmarksError : isPostsError;
 
@@ -141,6 +155,7 @@ export function DashboardView() {
               activeTab={activeTab}
               page={page}
               totalPages={totalPages}
+              totalItems={totalItems}
               onPageChange={setPage}
               onUpdateStatus={(postId, status) => updateStatus({ postId, status })}
               onDeletePost={deletePost}
