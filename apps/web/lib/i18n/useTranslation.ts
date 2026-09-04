@@ -1,15 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useLanguageStore } from '@/stores/language-store';
 import { vi } from './dictionaries/vi';
-import { en } from './dictionaries/en';
-import { Locale, TranslationDictionary } from './types';
-
-const dictionaries: Record<Locale, TranslationDictionary> = {
-  vi,
-  en,
-};
+import { TranslationDictionary } from './types';
 
 type NestedKeyOf<ObjectType extends object> = {
   [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
@@ -20,40 +12,19 @@ type NestedKeyOf<ObjectType extends object> = {
 export type TranslationKey = NestedKeyOf<TranslationDictionary>;
 
 export function useTranslation() {
-  const { locale, setLocale, toggleLocale } = useLanguageStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // During SSR or before mounting, use 'vi' as default to match server render
-  const activeLocale: Locale = mounted ? locale : 'vi';
-  const dict = dictionaries[activeLocale] || dictionaries.vi;
-
   /**
-   * Translate a nested key like 'common.signIn' or 'navigation.home'
-   * Supports parameter interpolation: t('key', { name: 'Alice' })
+   * Dịch key lồng nhau như 'common.signIn' hoặc 'navigation.home' (thuần tiếng Việt)
+   * Hỗ trợ nội suy tham số: t('key', { name: 'Alice' })
    */
   const t = (key: TranslationKey, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = dict;
+    let value: any = vi;
 
     for (const k of keys) {
       if (value && typeof value === 'object' && k in value) {
         value = value[k];
       } else {
-        // Fallback to Vietnamese dictionary or key name
-        let fallbackVal: any = dictionaries.vi;
-        for (const fbK of keys) {
-          if (fallbackVal && typeof fallbackVal === 'object' && fbK in fallbackVal) {
-            fallbackVal = fallbackVal[fbK];
-          } else {
-            fallbackVal = key;
-            break;
-          }
-        }
-        value = fallbackVal;
+        value = key;
         break;
       }
     }
@@ -73,10 +44,10 @@ export function useTranslation() {
 
   return {
     t,
-    locale: activeLocale,
-    setLocale,
-    toggleLocale,
-    isVietnamese: activeLocale === 'vi',
-    isEnglish: activeLocale === 'en',
+    locale: 'vi' as const,
+    setLocale: (_loc?: string) => {},
+    toggleLocale: () => {},
+    isVietnamese: true,
+    isEnglish: false,
   };
 }

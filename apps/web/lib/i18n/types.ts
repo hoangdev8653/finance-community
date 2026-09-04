@@ -1,4 +1,4 @@
-export type Locale = 'vi' | 'en';
+export type Locale = 'vi';
 
 export interface TranslationDictionary {
   common: {
@@ -19,9 +19,6 @@ export interface TranslationDictionary {
     readMore: string;
     all: string;
     notifications: string;
-    language: string;
-    vietnamese: string;
-    english: string;
   };
   navigation: {
     home: string;

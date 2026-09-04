@@ -19,9 +19,6 @@ export const vi: TranslationDictionary = {
     readMore: 'Đọc tiếp',
     all: 'Tất cả',
     notifications: 'Thông báo',
-    language: 'Ngôn ngữ',
-    vietnamese: 'Tiếng Việt',
-    english: 'English',
   },
   navigation: {
     home: 'Trang chủ',

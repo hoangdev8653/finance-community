@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   TrendingUp,
   Sun,
@@ -22,6 +22,7 @@ import {
   BarChart3,
   Wallet,
   ArrowRight,
+  Search,
 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -30,10 +31,10 @@ import { Button } from '@/components/ui/Button';
 import { IconButton } from '@/components/ui/IconButton';
 import { UserMenu } from '@/components/auth/UserMenu';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
-import { LanguageSwitcher } from '@/components/navigation/LanguageSwitcher';
 import { cn } from '@/lib/utils/cn';
 import { postsService } from '@/lib/posts/posts-service';
 import { useQuery } from '@tanstack/react-query';
+import { MarketTickerBar } from '@/components/market/MarketTickerBar';
 
 interface CategoryDropdownItem {
   title: string;
@@ -90,6 +91,8 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
 
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [headerSearch, setHeaderSearch] = useState('');
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useTranslation();
@@ -133,6 +136,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md">
+      <MarketTickerBar />
       <div className="max-w-[1440px] mx-auto flex h-18 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* 1. Left: Brand Logo */}
         <div className="flex items-center shrink-0">
@@ -306,8 +310,36 @@ export function Header() {
 
         {/* 3. Right: Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Language Switcher */}
-          <LanguageSwitcher />
+          {/* Quick Search Bar (Desktop / Tablet) */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (headerSearch.trim()) {
+                router.push(`/search?q=${encodeURIComponent(headerSearch.trim())}`);
+              } else {
+                router.push('/search');
+              }
+            }}
+            className="hidden md:flex items-center relative"
+          >
+            <Search className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              type="text"
+              value={headerSearch}
+              onChange={(e) => setHeaderSearch(e.target.value)}
+              placeholder="Tìm bài viết, mã CP..."
+              className="h-8 w-36 lg:w-44 xl:w-52 rounded-lg border border-input bg-background/80 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground transition-all focus:w-48 lg:focus:w-56 focus:outline-hidden focus:ring-1 focus:ring-primary"
+            />
+          </form>
+
+          {/* Mobile Search Icon Button */}
+          <Link
+            href="/search"
+            className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            aria-label="Tìm kiếm bài viết"
+          >
+            <Search className="h-4.5 w-4.5" />
+          </Link>
 
           {/* Theme Toggle */}
           <IconButton
