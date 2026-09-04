@@ -381,31 +381,6 @@ export function UserManagementView() {
         </div>
       )}
 
-      {/* Target User Identifier Card */}
-      <div className="hidden rounded-lg border border-border bg-surface p-5 space-y-3">
-        <label
-          htmlFor="target-user-id"
-          className="text-xs font-semibold text-foreground flex items-center gap-1.5"
-        >
-          <span>Target User UUID</span>
-          <span className="text-danger">*</span>
-        </label>
-        <input
-          id="target-user-id"
-          type="text"
-          value={targetUserId}
-          onChange={(e) => setTargetUserId(e.target.value)}
-          placeholder="e.g. 123e4567-e89b-12d3-a456-426614174000"
-          className="w-full rounded-md border border-input bg-background p-2.5 text-xs font-mono text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
-        />
-        {isSelf && (
-          <div className="flex items-center gap-1 text-xs text-warning font-mono">
-            <Lock className="h-3 w-3" />
-            <span>You cannot modify your own administrator account.</span>
-          </div>
-        )}
-      </div>
-
       {targetUserId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true">
           <div className="w-full max-w-5xl space-y-3 rounded-2xl border border-border bg-background p-5 shadow-2xl">

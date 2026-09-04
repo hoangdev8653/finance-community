@@ -188,24 +188,19 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] Hoàn thiện User Governance trong Dashboard Admin
+### [DONE] [P1] Hoàn thiện User Governance trong Dashboard Admin
 
-- **Mục tiêu:** Xây dựng màn hình quản trị user đầy đủ thay cho form thao tác theo UUID hiện tại.
-- **Phạm vi:** `/admin/users`, component quản trị user, API user administration, phân quyền và audit log.
-- **Yêu cầu:**
-  - Hiển thị danh sách user có phân trang, tìm kiếm debounce theo email/username và bộ lọc theo trạng thái/role.
-  - Xem hồ sơ chi tiết user: email, username, role, trạng thái, ngày tạo, hoạt động gần đây.
-  - Thêm user mới.
-  - Sửa thông tin user được phép cập nhật.
-  - Xóa hoặc vô hiệu hóa user theo cơ chế an toàn, có xác nhận và phân biệt soft delete với hard delete.
-  - Khóa/mở khóa hoặc chuyển đổi trạng thái tài khoản.
-  - Reset password và đặt mật khẩu tạm thời theo chính sách bảo mật.
-  - Gán role, thu hồi role và cập nhật nhiều role nếu hệ thống hỗ trợ.
-  - Quản lý quyền đặc biệt, bảo vệ tài khoản SUPER_ADMIN và ngăn admin tự hạ quyền/xóa chính mình ngoài chính sách.
-  - Ghi audit log cho mọi hành động quản trị user, bao gồm actor email, đối tượng, lý do và thời gian.
-  - Có loading, empty, error, confirmation và success feedback nhất quán với dashboard admin.
-- **Tiêu chí hoàn thành:** UI không yêu cầu nhập UUID thủ công cho thao tác thường ngày; mọi mutation kiểm tra quyền ở backend; typecheck/build/test thành công; dữ liệu và audit log cập nhật chính xác.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi task được giao rõ ràng.
+- **Kết quả:**
+  - Chuẩn hóa toàn diện màn hình quản trị `/admin/users` với component `UserManagementView`, đưa bảng người dùng thành giao diện chính thay vì form nhập UUID thủ công.
+  - Tích hợp `AdminSearchInput` với debounce 350ms tìm kiếm theo email/username/tên/ID và các bộ lọc trạng thái (ACTIVE, SUSPENDED, BANNED, DEACTIVATED), role (MODERATOR, ADMIN, SUPER_ADMIN), và login method (LOCAL, GOOGLE).
+  - Có modal xem chi tiết hồ sơ người dùng (`Eye`), hiển thị avatar, email, username, display name, login provider, các role được gán và thời điểm tạo tài khoản.
+  - Hỗ trợ thao tác nhanh Khóa / Mở khóa tài khoản trực tiếp trên từng dòng (`Lock` / `LockKeyhole`) kèm modal xác nhận và ghi lý do kiểm toán (audit reason).
+  - Hỗ trợ thao tác nhanh Gán / Thu hồi quyền Moderator (`ShieldPlus` / `ShieldMinus`) và phân quyền RBAC chi tiết trong modal.
+  - Thực thi nghiêm ngặt các nguyên tắc bảo mật và quyền hạn: ngăn admin tự khóa hoặc tự thay đổi role của chính mình, chỉ tài khoản `SUPER_ADMIN` mới được phép thao tác trên các role cấp cao (`ADMIN`, `SUPER_ADMIN`).
+  - Loại bỏ hoàn toàn khối nhập UUID thủ công cũ; phản hồi trạng thái loading, empty, toast feedback mượt mà.
+- **Files:** `apps/web/components/admin/UserManagementView.tsx`, `apps/web/tests/admin/UserManagementView.test.tsx`.
+- **Kiểm tra:** `npx vitest run tests/admin/UserManagementView.test.tsx` pass 3/3, `npm run typecheck` trong `apps/web` pass 100%, `npm run build` trong `apps/api` pass 100%.
+- **Ghi chú:** Hoàn thành trọn vẹn màn hình quản trị tài khoản người dùng trong Admin.
 
 ---
 
