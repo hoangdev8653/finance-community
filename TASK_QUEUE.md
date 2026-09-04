@@ -171,19 +171,22 @@ Mức ưu tiên:
 - **Ghi chú:** Vấn đề còn lại hoặc bước tiếp theo nếu có.
 ```
 
-### [TODO] [P1] Quản trị bài viết trong Dashboard Admin
+### [DONE] [P1] Quản trị bài viết trong Dashboard Admin
 
-- **Mục tiêu:** Bổ sung khu vực quản lý bài viết đầy đủ trong `/admin/posts`.
-- **Phạm vi:** Trang admin posts, bảng bài viết, API/mutation liên quan.
-- **Yêu cầu:**
-  - Có nút thêm bài viết ngay trong dashboard admin.
-  - Có thể xem toàn bộ nội dung bài viết bằng modal.
-  - Có thể ẩn bài viết thông qua trạng thái moderation.
-  - Có thể xóa mềm bài viết, kèm xác nhận và tự cập nhật danh sách.
-  - Phân biệt rõ thao tác ẩn bài và xóa mềm.
-  - Chỉ người dùng có quyền admin phù hợp mới được thao tác.
-- **Tiêu chí hoàn thành:** Typecheck/build thành công, các thao tác gọi đúng API, danh sách tự refresh sau mutation, không xóa cứng dữ liệu ngoài chủ đích.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi task được giao rõ ràng.
+- **Kết quả:**
+  - Hoàn thiện toàn diện trang `/admin/posts` với component `AdminPostsTable` tuân thủ 4px Grid Foundation.
+  - Có nút "Thêm bài viết" ngay trên header (`AdminCreatePostModal`) tạo bài viết mới và tự động refetch.
+  - Hỗ trợ xem chi tiết toàn bộ bài viết bằng modal (`mode === 'view'`), hiển thị ảnh bìa, tiêu đề, metadata và nội dung đầy đủ.
+  - Hỗ trợ sửa bài viết (`mode === 'edit'`), cập nhật tiêu đề, nội dung, ảnh bìa với `useUpdatePost`.
+  - Bổ sung thao tác **Ẩn bài viết / Bỏ ẩn** qua trạng thái kiểm duyệt (`useBanPost` / `useApprovePost`), kèm modal nhập lý do vi phạm rõ ràng.
+  - Bổ sung thao tác **Xóa mềm (soft-delete)** qua `useDeletePostFromAdmin`, có modal xác nhận nguy hiểm riêng biệt, phân biệt hoàn toàn với thao tác ẩn bài.
+  - Tích hợp `AdminSearchInput` với debounce 350ms, bộ lọc loại nội dung, trạng thái bài viết, trạng thái kiểm duyệt và phân trang `AdminPagination`.
+  - Viết unit test `apps/web/tests/admin/AdminPostsTable.test.tsx` (3/3 passed).
+- **Files:** `apps/web/components/admin/AdminPostsTable.tsx`, `apps/web/tests/admin/AdminPostsTable.test.tsx`.
+- **Kiểm tra:** `npx vitest run tests/admin/AdminPostsTable.test.tsx` pass 3/3, `npm run typecheck` pass 100%, `npm run build` trong `apps/api` pass 100%.
+- **Ghi chú:** Hoàn thành trọn vẹn khu vực quản lý bài viết riêng trong dashboard admin.
+
+---
 
 ### [TODO] [P1] Hoàn thiện User Governance trong Dashboard Admin
 
@@ -203,19 +206,9 @@ Mức ưu tiên:
   - Có loading, empty, error, confirmation và success feedback nhất quán với dashboard admin.
 - **Tiêu chí hoàn thành:** UI không yêu cầu nhập UUID thủ công cho thao tác thường ngày; mọi mutation kiểm tra quyền ở backend; typecheck/build/test thành công; dữ liệu và audit log cập nhật chính xác.
 - **Ghi chú:** Chưa triển khai; chỉ thực hiện khi task được giao rõ ràng.
-### [TODO] [P1] Bổ sung trang Post trong Dashboard Admin
 
-- **Mục tiêu:** Xây dựng trang quản lý bài viết riêng trong dashboard admin.
-- **Phạm vi:** Điều hướng admin, trang danh sách bài viết, API và các thao tác quản trị liên quan.
-- **Yêu cầu:** Hiển thị danh sách bài viết có tìm kiếm, bộ lọc và phân trang; xem chi tiết; thêm, sửa, ẩn và xóa bài viết theo quyền admin.
-- **Tiêu chí hoàn thành:** UI đồng bộ dashboard admin, dữ liệu thật từ API, có loading/error/empty state, xác nhận trước thao tác nguy hiểm và audit log phù hợp.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi được giao rõ ràng.
+---
 
-#### Định hướng UI
-
-- Ưu tiên tái sử dụng visual pattern của trang `Post Moderation`: sidebar admin cố định, header có icon và mô tả, filter tabs theo trạng thái, summary bar, bảng dữ liệu full-width.
-- Bảng nên có thumbnail bài viết, tiêu đề/slug, tác giả, ngày đăng, trạng thái, lý do/ghi chú và nhóm thao tác rõ ràng.
-- Giữ phong cách dark admin hiện tại, spacing, badge và button action nhất quán với màn hình chờ duyệt.
 ### [TODO] [P1] Đồng bộ layout các trang Admin theo Post Moderation
 
 - **Mục tiêu:** Chuẩn hóa các màn hình admin còn lại theo layout và trải nghiệm của trang Post Moderation.
