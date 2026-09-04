@@ -1,28 +1,24 @@
-import type { Metadata } from 'next';
-import { Lexend, Source_Sans_3, JetBrains_Mono } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
 import { SiteChrome } from '@/components/layout/SiteChrome';
 
-const lexend = Lexend({
-  subsets: ['latin', 'vietnamese'],
-  variable: '--font-heading',
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
-});
-
-const sourceSans = Source_Sans_3({
+const inter = Inter({
   subsets: ['latin', 'vietnamese'],
   variable: '--font-sans',
-  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
-});
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0f17' },
+  ],
+};
 
 import { getSiteUrlObject, siteConfig } from '@/lib/seo/site-config';
 import { generateWebSiteJsonLd, generateOrganizationJsonLd } from '@/lib/seo/structured-data';
@@ -61,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi" suppressHydrationWarning className={`${sourceSans.variable} ${lexend.variable} ${jetbrainsMono.variable}`}>
+    <html lang="vi" suppressHydrationWarning className={inter.variable}>
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>

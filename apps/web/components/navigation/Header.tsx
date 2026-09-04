@@ -135,9 +135,9 @@ export function Header() {
   const isDark = mounted ? theme === 'dark' || resolvedTheme === 'dark' : false;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/90 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full max-w-full overflow-hidden border-b border-slate-200/90 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md">
       <MarketTickerBar />
-      <div className="max-w-[1440px] mx-auto flex h-18 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1440px] mx-auto flex h-16 sm:h-18 items-center justify-between px-3.5 sm:px-6 lg:px-8">
         {/* 1. Left: Brand Logo */}
         <div className="flex items-center shrink-0">
           <Link
@@ -244,7 +244,7 @@ export function Header() {
 
             {/* Dropdown Popover Menu */}
             {isCategoryOpen && (
-              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 w-[520px] z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 w-[520px] max-w-[calc(100vw-2rem)] z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="rounded-xl border border-slate-200 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-xl p-3.5 shadow-2xl space-y-1">
                   <div className="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 dark:border-[#253044]/80 mb-2">
                     <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
@@ -309,7 +309,7 @@ export function Header() {
         </nav>
 
         {/* 3. Right: Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           {/* Quick Search Bar (Desktop / Tablet) */}
           <form
             onSubmit={(e) => {
@@ -335,23 +335,24 @@ export function Header() {
           {/* Mobile Search Icon Button */}
           <Link
             href="/search"
-            className="md:hidden flex h-9 w-9 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="md:hidden flex h-8.5 w-8.5 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             aria-label="Tìm kiếm bài viết"
           >
-            <Search className="h-4.5 w-4.5" />
+            <Search className="h-4 w-4" />
           </Link>
 
           {/* Theme Toggle */}
           <IconButton
             variant="ghost"
-            size="md"
+            size="sm"
+            className="h-8.5 w-8.5 sm:h-9 sm:w-9"
             label={t('common.toggleTheme')}
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
           >
             {isDark ? (
-              <Sun className="h-4.5 w-4.5 text-slate-300 hover:text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-45" />
+              <Sun className="h-4 w-4 text-slate-300 hover:text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-45" />
             ) : (
-              <Moon className="h-4.5 w-4.5 text-slate-600 hover:text-slate-950 transition-transform duration-200 rotate-0 hover:-rotate-12" />
+              <Moon className="h-4 w-4 text-slate-600 hover:text-slate-950 transition-transform duration-200 rotate-0 hover:-rotate-12" />
             )}
           </IconButton>
 
@@ -361,7 +362,7 @@ export function Header() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center justify-center h-9 w-9 sm:h-10 sm:w-10 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label={t('common.notifications')}
             >
               <Bell className="h-4.5 w-4.5" />
@@ -372,15 +373,15 @@ export function Header() {
           {!isLoading && isAuthenticated ? (
             <UserMenu />
           ) : (
-            <div className="flex items-center ml-1">
+            <div className="flex items-center ml-0.5 sm:ml-1">
               <Button
                 variant="primary"
                 size="sm"
                 asChild
-                className="rounded-lg font-bold text-xs sm:text-sm px-3.5 sm:px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
+                className="rounded-lg font-bold text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
               >
                 <Link href="/login">
-                  <LogIn className="h-4 w-4" />
+                  <LogIn className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>{t('common.signIn')}</span>
                 </Link>
               </Button>

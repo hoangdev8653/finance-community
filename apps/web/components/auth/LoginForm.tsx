@@ -72,7 +72,7 @@ export function LoginForm() {
         <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
           Sign in to your account
         </h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
           Enter your credentials to access editorial insights and community discussions.
         </p>
       </div>
@@ -99,7 +99,7 @@ export function LoginForm() {
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
               Forgot password? Contact administration.
             </span>
           </div>
@@ -117,7 +117,7 @@ export function LoginForm() {
 
         <Button
           type="submit"
-          className="w-full justify-center h-10 font-semibold"
+          className="w-full justify-center h-10 font-bold tracking-wide"
           isLoading={isSubmitting}
           disabled={isSubmitting}
         >
@@ -128,7 +128,7 @@ export function LoginForm() {
       <div className="relative">
         <Divider />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="bg-surface px-2 text-xs uppercase text-muted-foreground font-mono">
+          <span className="bg-surface px-3 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
             Or continue with
           </span>
         </div>
@@ -136,11 +136,11 @@ export function LoginForm() {
 
       <GoogleAuthButton onSuccess={handleGoogleSuccess} onError={setErrorMessage} />
 
-      <div className="text-center text-sm text-muted-foreground pt-2">
+      <div className="text-center text-sm text-slate-600 dark:text-slate-400 pt-2">
         Don&apos;t have an account?{' '}
         <Link
           href={`/register${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`}
-          className="font-medium text-primary hover:underline"
+          className="font-semibold text-primary hover:underline"
         >
           Join Community
         </Link>
