@@ -8,6 +8,7 @@ import {
 import { SystemSettingEntity } from '@/types/admin';
 import { Button } from '@/components/ui/Button';
 import { Sliders, AlertCircle, CheckCircle2, Save, Edit3, X } from 'lucide-react';
+import { useToast } from '@/lib/toast/ToastContext';
 
 export function SystemSettingsView() {
   const { data: settings, isLoading, isError, refetch } = useSystemSettings();
@@ -20,6 +21,8 @@ export function SystemSettingsView() {
     type: 'success' | 'error';
     message: string;
   } | null>(null);
+
+  const { toast } = useToast();
 
   const startEdit = (setting: SystemSettingEntity) => {
     setFeedback(null);
@@ -42,10 +45,12 @@ export function SystemSettingsView() {
     try {
       parsedValue = JSON.parse(jsonText);
     } catch (err: any) {
+      const msg = 'Invalid JSON format. Please verify syntax before saving.';
       setFeedback({
         type: 'error',
-        message: 'Invalid JSON format. Please verify syntax before saving.',
+        message: msg,
       });
+      toast.error(msg);
       return;
     }
 
@@ -57,15 +62,18 @@ export function SystemSettingsView() {
           description: descriptionText.trim() || undefined,
         },
       });
+      const msg = `System setting '${key}' updated successfully.`;
       setFeedback({
         type: 'success',
-        message: `System setting '${key}' updated successfully.`,
+        message: msg,
       });
+      toast.success(msg);
       setEditingKey(null);
     } catch (err: any) {
       const msg =
         err?.response?.data?.message || err?.message || 'Failed to update system setting.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 

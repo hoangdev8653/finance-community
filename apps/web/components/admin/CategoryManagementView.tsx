@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
+import { useToast } from '@/lib/toast/ToastContext';
 
 export function CategoryManagementView({ learningOnly = false }: { learningOnly?: boolean } = {}) {
   const domainLabels: Record<string, string> = { MONEY: 'Tài chính', BUSINESS: 'Kinh doanh', TECH: 'Công nghệ', CAREER: 'Nghề nghiệp & Học tập', LIFE: 'Đời sống', SPORTS: 'Thể thao', GENERAL: 'Khác' };
@@ -46,7 +48,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [expandedDomains, setExpandedDomains] = useState<Record<string, boolean>>({});
-  const pageSize = 8;
+  const pageSize = DEFAULT_PAGE_SIZE;
 
   const [feedback, setFeedback] = useState<{
     type: 'success' | 'error';
@@ -91,6 +93,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
   const filteredCategories = (categories ?? []).filter((category) => `${category.name} ${category.slug} ${category.description ?? ''}`.toLowerCase().includes(search.toLowerCase().trim()));
   const totalPages = Math.max(1, Math.ceil(filteredCategories.length / pageSize));
   const visibleCategories = filteredCategories.slice((page - 1) * pageSize, page * pageSize);
+  const { toast } = useToast();
   const paginationMeta = { page: Math.min(page, totalPages), limit: pageSize, totalItems: filteredCategories.length, totalPages, hasNextPage: page < totalPages, hasPreviousPage: page > 1 };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,17 +101,23 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
     setFeedback(null);
 
     if (!name.trim()) {
-      setFeedback({ type: 'error', message: 'Category name is required.' });
+      const msg = 'Vui lòng nhập tên danh mục.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (!slug.trim()) {
-      setFeedback({ type: 'error', message: 'Category slug is required.' });
+      const msg = 'Vui lòng nhập đường dẫn (slug) danh mục.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (!domainId) {
-      setFeedback({ type: 'error', message: 'Category domain is required.' });
+      const msg = 'Vui lòng chọn lĩnh vực cho danh mục.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -124,10 +133,9 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
             sortOrder,
           },
         });
-        setFeedback({
-          type: 'success',
-          message: `Category '${name}' updated successfully.`,
-        });
+        const feedbackMsg = `Category '${name}' updated successfully.`;
+        setFeedback({ type: 'success', message: feedbackMsg });
+        toast.success(`Đã cập nhật danh mục “${name}”.`);
       } else {
         await createCategoryMutation.mutateAsync({
           name: name.trim(),
@@ -138,16 +146,16 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
           description: description.trim() || undefined,
           sortOrder,
         });
-        setFeedback({
-          type: 'success',
-          message: `Category '${name}' created successfully.`,
-        });
+        const feedbackMsg = `Category '${name}' created successfully.`;
+        setFeedback({ type: 'success', message: feedbackMsg });
+        toast.success(`Đã tạo danh mục “${name}” thành công.`);
       }
       setIsModalOpen(false);
     } catch (err: any) {
       const msg =
-        err?.response?.data?.message || err?.message || 'Failed to save category.';
+        err?.response?.data?.message || err?.message || 'Không thể lưu danh mục.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
@@ -155,9 +163,13 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
     if (!window.confirm(`Xóa danh mục “${category.name}”? Các bài viết thuộc danh mục này sẽ không bị xóa.`)) return;
     try {
       await deleteCategoryMutation.mutateAsync(category.id);
-      setFeedback({ type: 'success', message: `Đã xóa danh mục “${category.name}”.` });
+      const msg = `Đã xóa danh mục “${category.name}”.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err?.response?.data?.message || err?.message || 'Không thể xóa danh mục.' });
+      const msg = err?.response?.data?.message || err?.message || 'Không thể xóa danh mục.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 

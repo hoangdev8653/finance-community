@@ -24,6 +24,8 @@ import { RequirePermission } from '../../auth/decorators/require-permission.deco
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { JitProvisioningService } from '../../users/services/jit-provisioning.service';
 import { QueryAdminUsersDto } from '../dto/query-admin-users.dto';
+import { QueryAdminCommentsDto } from '../dto/query-admin-comments.dto';
+import { UpdateCommentStatusDto } from '../dto/update-comment-status.dto';
 
 import { Public } from '../../auth/decorators/public.decorator';
 
@@ -191,5 +193,32 @@ export class AdminController {
       query.entityType,
       query.action,
     );
+  }
+
+  @Get('admin/comments')
+  @ApiBearerAuth('JWT-auth')
+  @ApiTags('Comments')
+  @ApiOperation({ summary: 'Query all comments across platform for admin moderation (Requires admin:full)' })
+  @ApiResponse({ status: 200, description: 'Paginated comments list' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getComments(@Query() query: QueryAdminCommentsDto) {
+    return this.adminService.getComments(query.page, query.limit, query.status, query.search);
+  }
+
+  @Patch('admin/comments/:id/status')
+  @ApiBearerAuth('JWT-auth')
+  @ApiTags('Comments')
+  @ApiOperation({ summary: 'Update comment visibility status (VISIBLE / HIDDEN) (Requires admin:full)' })
+  @ApiResponse({ status: 200, description: 'Updated comment entity' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  updateCommentStatus(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+    @Body() dto: UpdateCommentStatusDto,
+  ) {
+    const roles = this.jitService.getUserRoles(user.sub);
+    return this.adminService.updateCommentStatus(user.sub, roles, id, dto);
   }
 }

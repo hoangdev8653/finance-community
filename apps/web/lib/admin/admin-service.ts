@@ -13,8 +13,14 @@ import {
   UpdateCategoryDto,
   AdminOverviewEntity,
   PaginatedAdminUsersResponse,
+  AdminCommentEntity,
+  PaginatedAdminCommentsResponse,
+  QueryAdminCommentsParams,
+  UpdateCommentStatusDto,
+  CreateTagDto,
+  UpdateTagDto,
 } from '../../types/admin';
-import { CategoryEntity } from '../../types/content';
+import { CategoryEntity, TagEntity } from '../../types/content';
 
 export const adminService = {
   async getOverview(): Promise<AdminOverviewEntity> {
@@ -151,5 +157,43 @@ export const adminService = {
 
   async deleteCategory(id: string): Promise<void> {
     await apiClient.delete(`/categories/${encodeURIComponent(id)}`);
+  },
+
+  /**
+   * Comments Admin API
+   */
+  async getComments(params?: QueryAdminCommentsParams): Promise<PaginatedAdminCommentsResponse> {
+    const response = await apiClient.get<PaginatedAdminCommentsResponse>('/admin/comments', { params });
+    return response.data;
+  },
+
+  async updateCommentStatus(id: string, dto: UpdateCommentStatusDto): Promise<AdminCommentEntity> {
+    const response = await apiClient.patch<AdminCommentEntity>(
+      `/admin/comments/${encodeURIComponent(id)}/status`,
+      dto
+    );
+    return response.data;
+  },
+
+  /**
+   * Tags Admin API
+   */
+  async getTags(params?: { search?: string; limit?: number }): Promise<TagEntity[]> {
+    const response = await apiClient.get<TagEntity[]>('/tags', { params });
+    return response.data;
+  },
+
+  async createTag(dto: CreateTagDto): Promise<TagEntity> {
+    const response = await apiClient.post<TagEntity>('/tags', dto);
+    return response.data;
+  },
+
+  async updateTag(id: string, dto: UpdateTagDto): Promise<TagEntity> {
+    const response = await apiClient.patch<TagEntity>(`/tags/${encodeURIComponent(id)}`, dto);
+    return response.data;
+  },
+
+  async deleteTag(id: string): Promise<void> {
+    await apiClient.delete(`/tags/${encodeURIComponent(id)}`);
   },
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ToastProvider } from '@/lib/toast/ToastContext';
 import { CategoryManagementView } from '@/components/admin/CategoryManagementView';
 import * as postsFeedHooks from '@/lib/posts/use-posts-feed';
 import * as adminHooks from '@/lib/admin/use-admin';
@@ -105,7 +106,9 @@ describe('CategoryManagementView Component', () => {
 
     render(
       <QueryClientProvider client={queryClient}>
-        <CategoryManagementView />
+        <ToastProvider>
+          <CategoryManagementView />
+        </ToastProvider>
       </QueryClientProvider>
     );
 

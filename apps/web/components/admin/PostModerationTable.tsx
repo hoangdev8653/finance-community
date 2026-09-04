@@ -27,6 +27,7 @@ import {
 import { useToast } from '../../lib/toast/ToastContext';
 import { resolveMediaUrl } from '../../lib/utils/media';
 import { AdminPagination } from './AdminPagination';
+import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 
 export function PostModerationTable() {
   const { toast } = useToast();
@@ -38,14 +39,14 @@ export function PostModerationTable() {
   const { data, isLoading, isError, refetch } = useModerationPosts({
     moderationStatus: selectedStatus === 'ALL' ? undefined : (selectedStatus as PostModerationStatus),
     page: currentPage,
-    limit: 15,
+    limit: DEFAULT_PAGE_SIZE,
   });
 
   const approveMutation = useApprovePost();
   const banMutation = useBanPost();
 
   const posts = data?.data || [];
-  const meta = data?.meta ?? { page: 1, limit: 15, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
+  const meta = data?.meta ?? { page: 1, limit: DEFAULT_PAGE_SIZE, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
 
   const handleStatusTab = (status: string) => {
     setSelectedStatus(status);

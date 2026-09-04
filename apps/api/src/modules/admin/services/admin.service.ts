@@ -12,6 +12,7 @@ import { UpdateUserStatusDto } from '../dto/update-user-status.dto';
 import { AssignRoleDto } from '../dto/assign-role.dto';
 import { UpdateSystemSettingDto } from '../dto/update-system-setting.dto';
 import { ToggleFeatureFlagDto } from '../dto/toggle-feature-flag.dto';
+import { UpdateCommentStatusDto } from '../dto/update-comment-status.dto';
 import { postsTable, reportsTable, usersTable, profilesTable, mediaTable, commentsTable, categoriesTable, tagsTable, domainsTable } from '../../../database/schema';
 
 @Injectable()
@@ -35,7 +36,7 @@ export class AdminService {
       const dateStr = d.toISOString().slice(0, 10);
       const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0);
       const end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999);
-      const label = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(d);
+      const label = new Intl.DateTimeFormat('vi-VN', { weekday: 'short' }).format(d);
       days.push({ start, end, dateStr, label });
     }
     const sevenDaysAgo = days[0].start;
@@ -459,4 +460,122 @@ export class AdminService {
   async getAuditLogs(page = 1, limit = 20, actorId?: string, entityType?: string, action?: string) {
     return this.auditLogRepo.findLogsPaginated(page, limit, actorId, entityType, action);
   }
+
+  async getComments(page = 1, limit = 20, status?: string, search?: string) {
+    const filters = [] as any[];
+    if (search?.trim()) {
+      const term = `%${search.trim()}%`;
+      filters.push(
+        or(
+          ilike(commentsTable.body, term),
+          ilike(postsTable.title, term),
+          ilike(profilesTable.username, term),
+          ilike(profilesTable.displayName, term),
+        ),
+      );
+    }
+    if (status && status !== 'ALL') {
+      filters.push(eq(commentsTable.status, status));
+    }
+    const where = filters.length ? and(...filters) : undefined;
+    const [rows, total] = await Promise.all([
+      this.db
+        .select({
+          id: commentsTable.id,
+          postId: commentsTable.postId,
+          postTitle: postsTable.title,
+          authorId: commentsTable.authorId,
+          authorUsername: profilesTable.username,
+          authorDisplayName: profilesTable.displayName,
+          body: commentsTable.body,
+          status: commentsTable.status,
+          createdAt: commentsTable.createdAt,
+          updatedAt: commentsTable.updatedAt,
+          deletedAt: commentsTable.deletedAt,
+        })
+        .from(commentsTable)
+        .leftJoin(postsTable, eq(postsTable.id, commentsTable.postId))
+        .leftJoin(profilesTable, eq(profilesTable.userId, commentsTable.authorId))
+        .where(where)
+        .orderBy(desc(commentsTable.createdAt))
+        .limit(limit)
+        .offset((page - 1) * limit),
+      this.db
+        .select({ value: count() })
+        .from(commentsTable)
+        .leftJoin(postsTable, eq(postsTable.id, commentsTable.postId))
+        .leftJoin(profilesTable, eq(profilesTable.userId, commentsTable.authorId))
+        .where(where),
+    ]);
+    const totalItems = Number(total[0]?.value ?? 0);
+    const totalPages = Math.ceil(totalItems / limit);
+    return {
+      data: rows,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
+  }
+
+  async updateCommentStatus(
+    adminId: string,
+    adminRoles: string[],
+    commentId: string,
+    dto: UpdateCommentStatusDto,
+  ) {
+    const [comment] = await this.db
+      .select()
+      .from(commentsTable)
+      .where(eq(commentsTable.id, commentId));
+
+    if (!comment) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Comment with ID '${commentId}' not found.`,
+        code: 'COMMENT_NOT_FOUND',
+      });
+    }
+
+    return await this.db.transaction(async (tx) => {
+      const updateData: any = {
+        status: dto.status,
+        updatedAt: new Date(),
+      };
+      if (dto.status === 'HIDDEN') {
+        updateData.deletedAt = new Date();
+      } else {
+        updateData.deletedAt = null;
+      }
+
+      const [updated] = await tx
+        .update(commentsTable)
+        .set(updateData)
+        .where(eq(commentsTable.id, commentId))
+        .returning();
+
+      await this.auditLogService.log(
+        {
+          actor_id: adminId,
+          action: dto.status === 'HIDDEN' ? 'COMMENT_HIDE' : 'COMMENT_UNHIDE',
+          entity_type: 'comments',
+          entity_id: commentId,
+          metadata: {
+            previousStatus: comment.status,
+            newStatus: dto.status,
+            reason: dto.reason,
+          },
+        },
+        tx,
+      );
+
+      return updated;
+    });
+  }
 }
+

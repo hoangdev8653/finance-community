@@ -177,9 +177,9 @@ export function ModerationQueueTable() {
               <tbody className="divide-y divide-border">
                 {reports.map((report) => {
                   const target = getTargetInfo(report);
-                  const formattedDate = new Date(report.createdAt).toLocaleDateString(
-                    'en-US',
-                    { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                  const formattedDate = new Date(report.createdAt).toLocaleString(
+                    'vi-VN',
+                    { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }
                   );
 
                   return (
@@ -243,9 +243,10 @@ export function ModerationQueueTable() {
           <div className="md:hidden space-y-3">
             {reports.map((report) => {
               const target = getTargetInfo(report);
-              const formattedDate = new Date(report.createdAt).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
+              const formattedDate = new Date(report.createdAt).toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
               });

@@ -24,6 +24,8 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
+import { useToast } from '@/lib/toast/ToastContext';
 
 export function UserManagementView() {
   const { user } = useAuth();
@@ -41,8 +43,9 @@ export function UserManagementView() {
   const [pendingStatusAction, setPendingStatusAction] = useState<{ id: string; status: UserStatus; email: string } | null>(null);
   const [quickStatusReason, setQuickStatusReason] = useState('');
   useEffect(() => { const timer = window.setTimeout(() => { setDebouncedSearch(userSearch); setUserPage(1); }, 350); return () => window.clearTimeout(timer); }, [userSearch]);
-  const { data: usersResponse, isLoading: usersLoading } = useAdminUsers({ page: userPage, limit: 10, search: debouncedSearch || undefined, status: statusFilter === 'ALL' ? undefined : statusFilter });
+  const { data: usersResponse, isLoading: usersLoading } = useAdminUsers({ page: userPage, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch || undefined, status: statusFilter === 'ALL' ? undefined : statusFilter });
 
+  const { toast } = useToast();
   const [feedback, setFeedback] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -64,23 +67,23 @@ export function UserManagementView() {
 
     const trimmedId = targetUserId.trim();
     if (!trimmedId) {
-      setFeedback({ type: 'error', message: 'Target User ID is required.' });
+      const msg = 'Target User ID is required.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (isSelf) {
-      setFeedback({
-        type: 'error',
-        message: 'Administrators cannot modify their own account status.',
-      });
+      const msg = 'Administrators cannot modify their own account status.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (isDestructive && !confirmedDestructive) {
-      setFeedback({
-        type: 'error',
-        message: 'Please confirm the destructive status change checkbox.',
-      });
+      const msg = 'Please confirm the destructive status change checkbox.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -89,16 +92,16 @@ export function UserManagementView() {
         id: trimmedId,
         dto: { status, reason: reason.trim() || undefined },
       });
-      setFeedback({
-        type: 'success',
-        message: `User status successfully updated to '${status}'.`,
-      });
+      const msg = `User status successfully updated to '${status}'.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
       setConfirmedDestructive(false);
       setReason('');
     } catch (err: any) {
       const msg =
         err?.response?.data?.message || err?.message || 'Failed to update user status.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
@@ -106,15 +109,16 @@ export function UserManagementView() {
     setFeedback(null);
     const trimmedId = targetUserId.trim();
     if (!trimmedId) {
-      setFeedback({ type: 'error', message: 'Target User ID is required.' });
+      const msg = 'Target User ID is required.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (isSelf) {
-      setFeedback({
-        type: 'error',
-        message: 'Administrators cannot modify their own roles.',
-      });
+      const msg = 'Administrators cannot modify their own roles.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -122,10 +126,9 @@ export function UserManagementView() {
       (selectedRole === 'SUPER_ADMIN' || selectedRole === 'ADMIN') &&
       !isCallerSuperAdmin
     ) {
-      setFeedback({
-        type: 'error',
-        message: `Only SUPER_ADMIN can assign '${selectedRole}' role.`,
-      });
+      const msg = `Only SUPER_ADMIN can assign '${selectedRole}' role.`;
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -134,14 +137,14 @@ export function UserManagementView() {
         userId: trimmedId,
         roleName: selectedRole,
       });
-      setFeedback({
-        type: 'success',
-        message: `Role '${selectedRole}' successfully assigned to user.`,
-      });
+      const msg = `Role '${selectedRole}' successfully assigned to user.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
     } catch (err: any) {
       const msg =
         err?.response?.data?.message || err?.message || 'Failed to assign role.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
@@ -149,15 +152,16 @@ export function UserManagementView() {
     setFeedback(null);
     const trimmedId = targetUserId.trim();
     if (!trimmedId) {
-      setFeedback({ type: 'error', message: 'Target User ID is required.' });
+      const msg = 'Target User ID is required.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
     if (isSelf) {
-      setFeedback({
-        type: 'error',
-        message: 'Administrators cannot modify their own roles.',
-      });
+      const msg = 'Administrators cannot modify their own roles.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -165,10 +169,9 @@ export function UserManagementView() {
       (selectedRole === 'SUPER_ADMIN' || selectedRole === 'ADMIN') &&
       !isCallerSuperAdmin
     ) {
-      setFeedback({
-        type: 'error',
-        message: `Only SUPER_ADMIN can revoke '${selectedRole}' role.`,
-      });
+      const msg = `Only SUPER_ADMIN can revoke '${selectedRole}' role.`;
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
       return;
     }
 
@@ -177,19 +180,24 @@ export function UserManagementView() {
         userId: trimmedId,
         roleName: selectedRole,
       });
-      setFeedback({
-        type: 'success',
-        message: `Role '${selectedRole}' successfully revoked from user.`,
-      });
+      const msg = `Role '${selectedRole}' successfully revoked from user.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
     } catch (err: any) {
       const msg =
         err?.response?.data?.message || err?.message || 'Failed to revoke role.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
   const handleQuickStatus = async (id: string, nextStatus: UserStatus) => {
-    if (user?.id === id) return setFeedback({ type: 'error', message: 'Khï¿½ng thï¿½ thay ï¿½ï¿½"i trï¿½ng thï¿½i tï¿½i khoï¿½n cï¿½a chï¿½nh mï¿½nh.' });
+    if (user?.id === id) {
+      const msg = 'Không thể thay đổi trạng thái tài khoản của chính mình.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
+      return;
+    }
     const selected = usersResponse?.data.find((item) => item.id === id);
     if (nextStatus !== 'ACTIVE') {
       setPendingStatusAction({ id, status: nextStatus, email: selected?.email ?? id });
@@ -198,9 +206,13 @@ export function UserManagementView() {
     }
     try {
       await changeStatusMutation.mutateAsync({ id, dto: { status: nextStatus, reason: 'Admin quick action' } });
-      setFeedback({ type: 'success', message: `ï¿½ chuyï¿½n tï¿½i khoï¿½n sang ${nextStatus}.` });
+      const msg = `Đã chuyển tài khoản sang ${nextStatus}.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Khï¿½ng thï¿½ cï¿½p nhï¿½t trï¿½ng thï¿½i.' });
+      const msg = err?.response?.data?.message || 'Không thể cập nhật trạng thái.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
@@ -208,21 +220,34 @@ export function UserManagementView() {
     if (!pendingStatusAction) return;
     try {
       await changeStatusMutation.mutateAsync({ id: pendingStatusAction.id, dto: { status: pendingStatusAction.status, reason: quickStatusReason.trim() || 'Admin quick action' } });
-      setFeedback({ type: 'success', message: `ï¿½ chuyï¿½n tï¿½i khoï¿½n sang ${pendingStatusAction.status}.` });
+      const msg = `Đã chuyển tài khoản sang ${pendingStatusAction.status}.`;
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
       setPendingStatusAction(null);
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Khï¿½ng thï¿½ cï¿½p nhï¿½t trï¿½ng thï¿½i.' });
+      const msg = err?.response?.data?.message || 'Không thể cập nhật trạng thái.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
   const handleQuickRole = async (id: string, action: 'assign' | 'revoke') => {
-    if (user?.id === id) return setFeedback({ type: 'error', message: 'Khï¿½ng thï¿½ thay ï¿½ï¿½"i role cï¿½a chï¿½nh mï¿½nh.' });
+    if (user?.id === id) {
+      const msg = 'Không thể thay đổi role của chính mình.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
+      return;
+    }
     try {
       if (action === 'assign') await assignRoleMutation.mutateAsync({ userId: id, roleName: 'MODERATOR' });
       else await revokeRoleMutation.mutateAsync({ userId: id, roleName: 'MODERATOR' });
-      setFeedback({ type: 'success', message: action === 'assign' ? 'ï¿½ gï¿½n role MODERATOR.' : 'ï¿½ thu hï¿½i role MODERATOR.' });
+      const msg = action === 'assign' ? 'Đã gán role MODERATOR.' : 'Đã thu hồi role MODERATOR.';
+      setFeedback({ type: 'success', message: msg });
+      toast.success(msg);
     } catch (err: any) {
-      setFeedback({ type: 'error', message: err?.response?.data?.message || 'Khï¿½ng thï¿½ cï¿½p nhï¿½t role.' });
+      const msg = err?.response?.data?.message || 'Không thể cập nhật role.';
+      setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
     }
   };
 
@@ -238,8 +263,97 @@ export function UserManagementView() {
       </div>
 
       <section className="overflow-hidden rounded-xl border border-border bg-surface" aria-labelledby="admin-users-list">
-        <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between"><div><h3 id="admin-users-list" className="font-heading text-base font-bold text-foreground">Danh sách người dùng</h3><p className="text-xs text-muted-foreground">Chọn một user để thực hiện thao tác quản trị.</p></div><AdminSearchInput value={userSearch} onValueChange={setUserSearch} placeholder="Tìm theo email, tên, username hoặc ID..." aria-label="Tìm kiếm user" /><select value={statusFilter} onChange={e => { setStatusFilter(e.target.value as UserStatus | 'ALL'); setUserPage(1); }} aria-label="Status filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs"><option value="ALL">All statuses</option><option value="ACTIVE">ACTIVE</option><option value="SUSPENDED">SUSPENDED</option><option value="BANNED">BANNED</option><option value="DEACTIVATED">DEACTIVATED</option></select><select value={roleFilter} onChange={e => { setRoleFilter(e.target.value as RoleName | 'ALL'); setUserPage(1); }} aria-label="Role filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs"><option value="ALL">All roles</option><option value="MODERATOR">MODERATOR</option><option value="ADMIN">ADMIN</option><option value="SUPER_ADMIN">SUPER_ADMIN</option></select><select value={providerFilter} onChange={e => { setProviderFilter(e.target.value as 'ALL' | 'LOCAL' | 'GOOGLE'); setUserPage(1); }} aria-label="Login method filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs"><option value="ALL">All login methods</option><option value="LOCAL">LOCAL</option><option value="GOOGLE">GOOGLE</option></select></div>
-        <div className="overflow-x-auto"><table className="w-full min-w-[980px] text-left text-xs"><thead className="border-b border-border bg-muted/50 font-mono uppercase text-muted-foreground"><tr><th className="px-4 py-3">Người dùng</th><th className="px-4 py-3">Login method</th><th className="px-4 py-3">Role</th><th className="px-4 py-3">Trạng thái</th><th className="px-4 py-3">Ngày tạo</th><th className="px-4 py-3 text-right">Thao tác</th></tr></thead><tbody className="divide-y divide-border">{usersLoading ? <tr><td colSpan={6} className="py-8 text-center text-muted-foreground">ang tï¿½i user...</td></tr> : (usersResponse?.data ?? []).filter(item => (roleFilter === 'ALL' || item.roles.includes(roleFilter)) && (providerFilter === 'ALL' || item.provider === providerFilter)).map(item => <tr key={item.id} className="hover:bg-muted/20"><td className="px-4 py-3"><div className="flex items-center gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-primary/10 font-semibold text-primary">{item.avatarUrl ? <img src={item.avatarUrl} alt="" className="h-full w-full object-cover" /> : (item.displayName || item.username || item.email).slice(0, 1).toUpperCase()}</div><div className="min-w-0"><p className="truncate font-semibold text-foreground">{item.displayName || item.username || 'Chï¿½a ï¿½ï¿½t tï¿½n'}</p><p className="truncate text-xs text-muted-foreground">{item.email}</p></div></div></td><td className="px-4 py-3"><span className={item.provider === 'GOOGLE' ? 'rounded-md bg-blue-500/15 px-2 py-1 font-mono font-bold text-blue-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono font-bold text-slate-300'}>{item.provider === 'GOOGLE' ? 'GOOGLE' : 'LOCAL'}</span></td><td className="px-4 py-3"><div className="flex flex-wrap gap-1">{(item.roles.length ? item.roles : ['MEMBER' as RoleName]).map(role => <span key={role} className={role === 'SUPER_ADMIN' ? 'rounded-md bg-red-500/15 px-2 py-1 font-mono text-[10px] font-bold text-red-400' : role === 'ADMIN' ? 'rounded-md bg-orange-500/15 px-2 py-1 font-mono text-[10px] font-bold text-orange-400' : role === 'MODERATOR' ? 'rounded-md bg-violet-500/15 px-2 py-1 font-mono text-[10px] font-bold text-violet-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono text-[10px] font-bold text-slate-300'}>{role}</span>)}</div></td><td className="px-4 py-3"><span className={item.status === 'ACTIVE' ? 'rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-1 font-mono font-bold text-emerald-400' : item.status === 'SUSPENDED' ? 'rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-1 font-mono font-bold text-amber-400' : item.status === 'BANNED' ? 'rounded-md border border-red-500/30 bg-red-500/15 px-2 py-1 font-mono font-bold text-red-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono font-bold text-slate-400'}>{item.status}</span></td><td className="px-4 py-3 text-muted-foreground">{new Date(item.createdAt).toLocaleDateString('vi-VN')}</td><td className="px-4 py-3"><div className="flex justify-end gap-2"><Button size="sm" variant="outline" onClick={() => void handleQuickStatus(item.id, item.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')} disabled={item.id === user?.id || changeStatusMutation.isPending} title={item.status === 'ACTIVE' ? 'Khï¿½a tï¿½i khoï¿½n' : 'Mï¿½x khï¿½a tï¿½i khoï¿½n'} aria-label={item.status === 'ACTIVE' ? `Khï¿½a tï¿½i khoï¿½n ${item.email}` : `Mï¿½x khï¿½a tï¿½i khoï¿½n ${item.email}`} className="h-9 w-9 p-0 text-warning hover:bg-warning/10">{item.status === 'ACTIVE' ? <LockKeyhole className="h-4 w-4" /> : <Lock className="h-4 w-4" />}</Button><Button size="sm" variant="outline" onClick={() => void handleQuickRole(item.id, item.roles.includes('MODERATOR') ? 'revoke' : 'assign')} disabled={item.id === user?.id || assignRoleMutation.isPending || revokeRoleMutation.isPending} title={item.roles.includes('MODERATOR') ? 'Thu hï¿½i Moderator' : 'Gï¿½n Moderator'} aria-label={item.roles.includes('MODERATOR') ? `Thu hï¿½i Moderator ${item.email}` : `Gï¿½n Moderator ${item.email}`} className="h-9 w-9 p-0 text-primary hover:bg-primary/10">{item.roles.includes('MODERATOR') ? <ShieldMinus className="h-4 w-4" /> : <ShieldPlus className="h-4 w-4" />}</Button><Button size="sm" variant="ghost" onClick={() => setTargetUserId(item.id)} title="Xem chi tiï¿½t" aria-label={`Xem chi tiï¿½t ${item.email}`} className="h-9 w-9 p-0"><Eye className="h-4 w-4" /></Button></div></td></tr>)}</tbody></table></div>
+        <div className="flex flex-col gap-3 border-b border-border p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 id="admin-users-list" className="font-heading text-base font-bold text-foreground">Danh sách người dùng</h3>
+            <p className="text-xs text-muted-foreground">Chọn một user để thực hiện thao tác quản trị.</p>
+          </div>
+          <AdminSearchInput value={userSearch} onValueChange={setUserSearch} placeholder="Tìm theo email, tên, username hoặc ID..." aria-label="Tìm kiếm user" />
+          <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value as UserStatus | 'ALL'); setUserPage(1); }} aria-label="Status filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs">
+            <option value="ALL">All statuses</option>
+            <option value="ACTIVE">ACTIVE</option>
+            <option value="SUSPENDED">SUSPENDED</option>
+            <option value="BANNED">BANNED</option>
+            <option value="DEACTIVATED">DEACTIVATED</option>
+          </select>
+          <select value={roleFilter} onChange={e => { setRoleFilter(e.target.value as RoleName | 'ALL'); setUserPage(1); }} aria-label="Role filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs">
+            <option value="ALL">All roles</option>
+            <option value="MODERATOR">MODERATOR</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+          </select>
+          <select value={providerFilter} onChange={e => { setProviderFilter(e.target.value as 'ALL' | 'LOCAL' | 'GOOGLE'); setUserPage(1); }} aria-label="Login method filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs">
+            <option value="ALL">All login methods</option>
+            <option value="LOCAL">LOCAL</option>
+            <option value="GOOGLE">GOOGLE</option>
+          </select>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[980px] text-left text-xs">
+            <thead className="border-b border-border bg-muted/50 font-mono uppercase text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3">Người dùng</th>
+                <th className="px-4 py-3">Login method</th>
+                <th className="px-4 py-3">Role</th>
+                <th className="px-4 py-3">Trạng thái</th>
+                <th className="px-4 py-3">Ngày tạo</th>
+                <th className="px-4 py-3 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {usersLoading ? (
+                <tr><td colSpan={6} className="py-8 text-center text-muted-foreground">Đang tải user...</td></tr>
+              ) : (usersResponse?.data ?? []).filter(item => (roleFilter === 'ALL' || item.roles.includes(roleFilter)) && (providerFilter === 'ALL' || item.provider === providerFilter)).map(item => (
+                <tr key={item.id} className="hover:bg-muted/20">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-primary/10 font-semibold text-primary">
+                        {item.avatarUrl ? <img src={item.avatarUrl} alt="" className="h-full w-full object-cover" /> : (item.displayName || item.username || item.email).slice(0, 1).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate font-semibold text-foreground">{item.displayName || item.username || 'Chưa đặt tên'}</p>
+                        <p className="truncate text-xs text-muted-foreground">{item.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={item.provider === 'GOOGLE' ? 'rounded-md bg-blue-500/15 px-2 py-1 font-mono font-bold text-blue-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono font-bold text-slate-300'}>
+                      {item.provider === 'GOOGLE' ? 'GOOGLE' : 'LOCAL'}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex flex-wrap gap-1">
+                      {(item.roles.length ? item.roles : ['MEMBER' as RoleName]).map(role => (
+                        <span key={role} className={role === 'SUPER_ADMIN' ? 'rounded-md bg-red-500/15 px-2 py-1 font-mono text-[10px] font-bold text-red-400' : role === 'ADMIN' ? 'rounded-md bg-orange-500/15 px-2 py-1 font-mono text-[10px] font-bold text-orange-400' : role === 'MODERATOR' ? 'rounded-md bg-violet-500/15 px-2 py-1 font-mono text-[10px] font-bold text-violet-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono text-[10px] font-bold text-slate-300'}>
+                          {role}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={item.status === 'ACTIVE' ? 'rounded-md border border-emerald-500/30 bg-emerald-500/15 px-2 py-1 font-mono font-bold text-emerald-400' : item.status === 'SUSPENDED' ? 'rounded-md border border-amber-500/30 bg-amber-500/15 px-2 py-1 font-mono font-bold text-amber-400' : item.status === 'BANNED' ? 'rounded-md border border-red-500/30 bg-red-500/15 px-2 py-1 font-mono font-bold text-red-400' : 'rounded-md bg-slate-500/15 px-2 py-1 font-mono font-bold text-slate-400'}>
+                      {item.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{new Date(item.createdAt).toLocaleDateString('vi-VN')}</td>
+                  <td className="px-4 py-3">
+                    <div className="flex justify-end gap-2">
+                      <Button size="sm" variant="outline" onClick={() => void handleQuickStatus(item.id, item.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE')} disabled={item.id === user?.id || changeStatusMutation.isPending} title={item.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'} aria-label={item.status === 'ACTIVE' ? `Khóa tài khoản ${item.email}` : `Mở khóa tài khoản ${item.email}`} className="h-9 w-9 p-0 text-warning hover:bg-warning/10">
+                        {item.status === 'ACTIVE' ? <LockKeyhole className="h-4 w-4" /> : <Lock className="h-4 w-4" />}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => void handleQuickRole(item.id, item.roles.includes('MODERATOR') ? 'revoke' : 'assign')} disabled={item.id === user?.id || assignRoleMutation.isPending || revokeRoleMutation.isPending} title={item.roles.includes('MODERATOR') ? 'Thu hồi Moderator' : 'Gán Moderator'} aria-label={item.roles.includes('MODERATOR') ? `Thu hồi Moderator ${item.email}` : `Gán Moderator ${item.email}`} className="h-9 w-9 p-0 text-primary hover:bg-primary/10">
+                        {item.roles.includes('MODERATOR') ? <ShieldMinus className="h-4 w-4" /> : <ShieldPlus className="h-4 w-4" />}
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => setTargetUserId(item.id)} title="Xem chi tiết" aria-label={`Xem chi tiết ${item.email}`} className="h-9 w-9 p-0">
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
         {usersResponse?.meta && <AdminPagination meta={usersResponse.meta} itemLabel="user" pageLabel="Trang" onPageChange={setUserPage} />}
       </section>
 
@@ -287,10 +401,16 @@ export function UserManagementView() {
         )}
       </div>
 
-      {targetUserId && <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm">
-        <div className="w-full max-w-5xl space-y-3 rounded-2xl border border-border bg-background p-5 shadow-2xl">
-        <div className="flex items-center justify-between"><h3 className="font-heading text-base font-bold text-foreground">Chi tiï¿½t quï¿½n trï¿½9</h3><Button variant="ghost" size="sm" onClick={() => setTargetUserId('')}>ï¿½ng</Button></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {targetUserId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true">
+          <div className="w-full max-w-5xl space-y-3 rounded-2xl border border-border bg-background p-5 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="font-heading text-base font-bold text-foreground">Chi tiết quản trị người dùng</h3>
+              <Button variant="ghost" size="sm" onClick={() => setTargetUserId('')}>
+                Đóng
+              </Button>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Account Status Form */}
         <form
           onSubmit={handleStatusSubmit}
@@ -429,9 +549,58 @@ export function UserManagementView() {
             </p>
           )}
         </div>
-      </div></div></div>}
+      </div>
+          </div>
+        </div>
+      )}
 
-      {pendingStatusAction && <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="status-confirm-title"><div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl"><div className="mb-4 flex items-start justify-between gap-4"><div><h3 id="status-confirm-title" className="font-heading text-lg font-bold text-foreground">Xï¿½c nhï¿½n khï¿½a tï¿½i khoï¿½n</h3><p className="mt-1 text-xs text-muted-foreground">{pendingStatusAction.email}</p></div><Button variant="ghost" size="sm" onClick={() => setPendingStatusAction(null)}>ï¿½ng</Button></div><p className="mb-4 text-sm text-foreground">Tï¿½i khoï¿½n sï¿½ chuyï¿½n sang trï¿½ng thï¿½i <strong>{pendingStatusAction.status}</strong> vï¿½ bï¿½9 hï¿½n chï¿½ truy cï¿½p.</p><label className="block space-y-2 text-xs font-semibold text-foreground"><span>Lï¿½ do</span><textarea value={quickStatusReason} onChange={(event) => setQuickStatusReason(event.target.value)} rows={3} placeholder="Nhï¿½p lï¿½ do xï¿½ lï¿½..." className="w-full rounded-lg border border-border bg-background p-3 text-sm font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" /></label><div className="mt-5 flex justify-end gap-2"><Button variant="outline" onClick={() => setPendingStatusAction(null)}>Hï¿½y</Button><Button variant="destructive" onClick={() => void confirmQuickStatus()} isLoading={changeStatusMutation.isPending}>Xï¿½c nhï¿½n khï¿½a</Button></div></div></div>}
+      {pendingStatusAction && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="status-confirm-title"
+        >
+          <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl">
+            <div className="mb-4 flex items-start justify-between gap-4">
+              <div>
+                <h3 id="status-confirm-title" className="font-heading text-lg font-bold text-foreground">
+                  Xác nhận khóa tài khoản
+                </h3>
+                <p className="mt-1 text-xs text-muted-foreground">{pendingStatusAction.email}</p>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setPendingStatusAction(null)}>
+                Đóng
+              </Button>
+            </div>
+            <p className="mb-4 text-sm text-foreground">
+              Tài khoản sẽ chuyển sang trạng thái <strong>{pendingStatusAction.status}</strong> và bị hạn chế truy cập.
+            </p>
+            <label className="block space-y-2 text-xs font-semibold text-foreground">
+              <span>Lý do</span>
+              <textarea
+                value={quickStatusReason}
+                onChange={(event) => setQuickStatusReason(event.target.value)}
+                rows={3}
+                placeholder="Nhập lý do xử lý..."
+                className="w-full rounded-lg border border-border bg-background p-3 text-sm font-normal outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+            </label>
+            <div className="mt-5 flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setPendingStatusAction(null)}>
+                Hủy
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => void confirmQuickStatus()}
+                isLoading={changeStatusMutation.isPending}
+              >
+                Xác nhận khóa
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

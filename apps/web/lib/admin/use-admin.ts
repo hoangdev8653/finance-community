@@ -16,8 +16,14 @@ import {
   CreateCategoryDto,
   UpdateCategoryDto,
   PaginatedAdminUsersResponse,
+  QueryAdminCommentsParams,
+  PaginatedAdminCommentsResponse,
+  UpdateCommentStatusDto,
+  AdminCommentEntity,
+  CreateTagDto,
+  UpdateTagDto,
 } from '../../types/admin';
-import { CategoryEntity } from '../../types/content';
+import { CategoryEntity, TagEntity } from '../../types/content';
 
 export function usePublicFeatureFlags() {
   return useQuery<Record<string, boolean>>({
@@ -183,3 +189,70 @@ export function useDeleteCategory() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.categories.all }),
   });
 }
+
+export function useAdminComments(params?: QueryAdminCommentsParams) {
+  return useQuery<PaginatedAdminCommentsResponse>({
+    queryKey: queryKeys.admin.comments(params as Record<string, unknown>),
+    queryFn: () => adminService.getComments(params),
+    staleTime: 15 * 1000,
+  });
+}
+
+export function useUpdateCommentStatus() {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    AdminCommentEntity,
+    Error,
+    { id: string; dto: UpdateCommentStatusDto }
+  >({
+    mutationFn: ({ id, dto }) => adminService.updateCommentStatus(id, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'comments'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'auditLogs'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+    },
+  });
+}
+
+export function useAdminTags(params?: { search?: string; limit?: number }) {
+  return useQuery<TagEntity[]>({
+    queryKey: queryKeys.tags.list(params?.search, params?.limit),
+    queryFn: () => adminService.getTags(params),
+    staleTime: 30 * 1000,
+  });
+}
+
+export function useCreateTag() {
+  const queryClient = useQueryClient();
+
+  return useMutation<TagEntity, Error, CreateTagDto>({
+    mutationFn: (dto: CreateTagDto) => adminService.createTag(dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags.all });
+    },
+  });
+}
+
+export function useUpdateTag() {
+  const queryClient = useQueryClient();
+
+  return useMutation<TagEntity, Error, { id: string; dto: UpdateTagDto }>({
+    mutationFn: ({ id, dto }) => adminService.updateTag(id, dto),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags.all });
+    },
+  });
+}
+
+export function useDeleteTag() {
+  const queryClient = useQueryClient();
+
+  return useMutation<void, Error, string>({
+    mutationFn: (id: string) => adminService.deleteTag(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.tags.all });
+    },
+  });
+}
+

@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { ToastProvider } from '@/lib/toast/ToastContext';
 import { SystemSettingsView } from '@/components/admin/SystemSettingsView';
 import * as adminHooks from '@/lib/admin/use-admin';
 
@@ -37,7 +38,11 @@ describe('SystemSettingsView Component', () => {
       refetch: vi.fn(),
     } as any);
 
-    render(<SystemSettingsView />);
+    render(
+      <ToastProvider>
+        <SystemSettingsView />
+      </ToastProvider>
+    );
 
     expect(screen.getByText('rate_limits')).toBeDefined();
     expect(screen.getByText('Global API rate limits')).toBeDefined();

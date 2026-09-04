@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, FileCheck2, Users, Flag, Sliders, FileSearch, FolderTree, ShieldAlert, Route } from 'lucide-react';
+import { LayoutDashboard, FileCheck2, Users, Flag, Sliders, FileSearch, FolderTree, ShieldAlert, Route, MessageSquare, Tag } from 'lucide-react';
 
 const ADMIN_LINKS = [
   { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true, group: 'Không gian làm việc' },
@@ -13,7 +13,9 @@ const ADMIN_LINKS = [
   { href: '/admin/moderation', label: 'Kiểm duyệt bài viết', icon: ShieldAlert, group: 'Nội dung' },
   { href: '/moderation', label: 'Hàng chờ báo cáo', icon: ShieldAlert, group: 'Cộng đồng' },
   { href: '/admin/users', label: 'Quản lý người dùng', icon: Users, group: 'Cộng đồng' },
+  { href: '/admin/comments', label: 'Quản lý bình luận', icon: MessageSquare, group: 'Cộng đồng' },
   { href: '/admin/learning/categories', label: 'Danh mục học tập', icon: FolderTree, exact: true, group: 'Phân loại nội dung' },
+  { href: '/admin/tags', label: 'Quản lý thẻ', icon: Tag, group: 'Phân loại nội dung' },
   { href: '/admin/audit-logs', label: 'Nhật ký hoạt động', icon: FileSearch, group: 'Quản trị' },
   { href: '/admin/feature-flags', label: 'Tính năng hệ thống', icon: Flag, group: 'Quản trị' },
   { href: '/admin/settings', label: 'Cài đặt hệ thống', icon: Sliders, group: 'Quản trị' },

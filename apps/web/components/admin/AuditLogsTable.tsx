@@ -6,6 +6,7 @@ import { AdminPagination } from './AdminPagination';
 import { AuditLogEntity } from '@/types/admin';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import {
   FileSearch,
   ChevronLeft,
@@ -27,14 +28,14 @@ export function AuditLogsTable() {
 
   const { data, isLoading, isError, refetch } = useAuditLogs({
     page: currentPage,
-    limit: 15,
+    limit: DEFAULT_PAGE_SIZE,
     action: filterAction.trim() || undefined,
     entityType: filterEntityType.trim() || undefined,
     actorId: filterActorId.trim() || undefined,
   });
 
   const logs = data?.data || [];
-  const meta = data?.meta ?? { page: 1, limit: 15, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
+  const meta = data?.meta ?? { page: 1, limit: DEFAULT_PAGE_SIZE, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
 
   const handleResetFilters = () => {
     setFilterAction('');
@@ -174,19 +175,19 @@ export function AuditLogsTable() {
             <table className="w-full text-left text-xs">
               <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-3xs">
                 <tr>
-                  <th className="py-3 px-4">Action</th>
-                  <th className="py-3 px-4">Actor</th>
-                  <th className="py-3 px-4">Entity</th>
-                  <th className="py-3 px-4">Reason / Notes</th>
-                  <th className="py-3 px-4">Timestamp</th>
-                  <th className="py-3 px-4 text-right">Details</th>
+                  <th className="py-3 px-4">Hành động</th>
+                  <th className="py-3 px-4">Người thực hiện</th>
+                  <th className="py-3 px-4">Đối tượng</th>
+                  <th className="py-3 px-4">Lý do / Ghi chú</th>
+                  <th className="py-3 px-4">Thời gian</th>
+                  <th className="py-3 px-4 text-right">Chi tiết</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border font-mono">
                 {logs.map((log) => {
-                  const formattedDate = new Date(log.created_at).toLocaleDateString(
-                    'en-US',
-                    { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }
+                  const formattedDate = new Date(log.created_at).toLocaleString(
+                    'vi-VN',
+                    { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }
                   );
 
                   return (
@@ -245,9 +246,10 @@ export function AuditLogsTable() {
           {/* Mobile Responsive Cards */}
           <div className="md:hidden space-y-3">
             {logs.map((log) => {
-              const formattedDate = new Date(log.created_at).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
+              const formattedDate = new Date(log.created_at).toLocaleString('vi-VN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
               });

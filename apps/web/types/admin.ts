@@ -157,3 +157,49 @@ export interface UpdateCategoryDto {
   isActive?: boolean;
   isPromoted?: boolean;
 }
+
+export interface AdminCommentEntity {
+  id: string;
+  postId: string;
+  postTitle?: string | null;
+  authorId: string;
+  authorUsername?: string | null;
+  authorDisplayName?: string | null;
+  body: string;
+  status: 'VISIBLE' | 'HIDDEN';
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+}
+
+export interface PaginatedAdminCommentsResponse {
+  data: AdminCommentEntity[];
+  meta: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface QueryAdminCommentsParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}
+
+export interface UpdateCommentStatusDto {
+  status: 'VISIBLE' | 'HIDDEN';
+  reason?: string;
+}
+
+export interface CreateTagDto {
+  name: string;
+}
+
+export interface UpdateTagDto {
+  name: string;
+}
