@@ -4,7 +4,7 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { PostStudio } from '@/components/studio/PostStudio';
 
 export const metadata: Metadata = {
-  title: 'Chỉnh Sửa Bài Viết | Finance Pulse Studio',
+  title: 'Chỉnh Sửa Bài Viết | MorningView Studio',
   description: 'Chỉnh sửa bài nghiên cứu đã xuất bản hoặc bản nháp của bạn.',
   robots: {
     index: false,

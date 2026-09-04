@@ -5,7 +5,7 @@ import { AdminNav } from '@/components/admin/AdminNav';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 
 export const metadata: Metadata = {
-  title: 'Bảng Điều Khiển Quản Trị Hệ Thống | Finance Pulse Admin',
+  title: 'Bảng Điều Khiển Quản Trị Hệ Thống | MorningView Admin',
   description: 'Quản trị nền tảng, nhật ký kiểm toán bảo mật và phân quyền tài khoản.',
   robots: {
     index: false,

@@ -6,17 +6,17 @@ import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = {
   title: 'Điều khoản sử dụng',
-  description: 'Điều khoản sử dụng nền tảng Finance Pulse.',
+  description: 'Điều khoản sử dụng nền tảng MorningView.',
 };
 
 const sections = [
   {
     title: '1. Phạm vi sử dụng',
-    body: 'Finance Pulse cung cấp nội dung phân tích, dữ liệu tham khảo và tài liệu học tập về tài chính. Khi truy cập hoặc sử dụng nền tảng, bạn đồng ý sử dụng thông tin một cách hợp pháp, tôn trọng quyền sở hữu trí tuệ và không gây ảnh hưởng đến hoạt động của hệ thống.',
+    body: 'MorningView cung cấp nội dung phân tích, dữ liệu tham khảo và tài liệu học tập về tài chính. Khi truy cập hoặc sử dụng nền tảng, bạn đồng ý sử dụng thông tin một cách hợp pháp, tôn trọng quyền sở hữu trí tuệ và không gây ảnh hưởng đến hoạt động của hệ thống.',
   },
   {
     title: '2. Nội dung phân tích',
-    body: 'Các bài viết, nhận định và dữ liệu trên Finance Pulse chỉ phục vụ mục đích cung cấp tri thức và tham khảo. Nội dung không cấu thành lời khuyên đầu tư, khuyến nghị mua bán chứng khoán, hàng hóa, tiền mã hóa hoặc bất kỳ tài sản tài chính nào.',
+    body: 'Các bài viết, nhận định và dữ liệu trên MorningView chỉ phục vụ mục đích cung cấp tri thức và tham khảo. Nội dung không cấu thành lời khuyên đầu tư, khuyến nghị mua bán chứng khoán, hàng hóa, tiền mã hóa hoặc bất kỳ tài sản tài chính nào.',
   },
   {
     title: '3. Trách nhiệm của người dùng',
@@ -24,11 +24,11 @@ const sections = [
   },
   {
     title: '4. Tài khoản và nội dung đóng góp',
-    body: 'Nếu bạn tạo tài khoản hoặc đăng nội dung, bạn chịu trách nhiệm về tính chính xác, nguồn gốc và tính hợp pháp của nội dung đó. Finance Pulse có quyền chỉnh sửa, ẩn hoặc gỡ nội dung vi phạm chuẩn mực cộng đồng hoặc quy định pháp luật.',
+    body: 'Nếu bạn tạo tài khoản hoặc đăng nội dung, bạn chịu trách nhiệm về tính chính xác, nguồn gốc và tính hợp pháp của nội dung đó. MorningView có quyền chỉnh sửa, ẩn hoặc gỡ nội dung vi phạm chuẩn mực cộng đồng hoặc quy định pháp luật.',
   },
   {
     title: '5. Thay đổi điều khoản',
-    body: 'Finance Pulse có thể cập nhật điều khoản sử dụng để phản ánh thay đổi về sản phẩm, pháp lý hoặc vận hành. Phiên bản mới có hiệu lực kể từ khi được đăng tải trên nền tảng.',
+    body: 'MorningView có thể cập nhật điều khoản sử dụng để phản ánh thay đổi về sản phẩm, pháp lý hoặc vận hành. Phiên bản mới có hiệu lực kể từ khi được đăng tải trên nền tảng.',
   },
 ];
 
@@ -40,7 +40,7 @@ export default function TermsPage() {
           icon={FileText}
           label="Legal"
           title="Điều khoản sử dụng"
-          subtitle="Các nguyên tắc khi truy cập, đọc, đóng góp và sử dụng nội dung trên Finance Pulse."
+          subtitle="Các nguyên tắc khi truy cập, đọc, đóng góp và sử dụng nội dung trên MorningView."
         />
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-6">

@@ -5,7 +5,7 @@ import { NotificationsCenter } from '@/components/notifications/NotificationsCen
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = {
-  title: 'Trung Tâm Thông Báo | Finance Pulse',
+  title: 'Trung Tâm Thông Báo | MorningView',
   description: 'Quản lý các hoạt động, phản hồi bình luận và cập nhật mới nhất từ cộng đồng.',
   robots: {
     index: false,

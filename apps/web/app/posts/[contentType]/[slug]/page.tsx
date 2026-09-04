@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = post.metaTitle || post.title;
     const description =
       post.metaDescription ||
-      'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên Finance Pulse.';
+      'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên MorningView.';
     const canonicalPath = `/posts/${normalizedType}/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({

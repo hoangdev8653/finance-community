@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const title = `${profile.displayName || profile.username} (@${profile.username}) | Hồ Sơ Nhà Phân Tích`;
     const description =
       profile.bio ||
-      'Hồ sơ nhà phân tích và cộng tác viên nghiên cứu tài chính trên nền tảng Finance Pulse.';
+      'Hồ sơ nhà phân tích và cộng tác viên nghiên cứu tài chính trên nền tảng MorningView.';
     const canonicalPath = `/profile/${encodeURIComponent(username)}`;
 
     return buildPageMetadata({

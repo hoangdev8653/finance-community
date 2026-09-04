@@ -33,10 +33,10 @@ export function HeroSection() {
         {/* Top Tagline Badge */}
         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-300 backdrop-blur-xs">
           <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-          <span>Finance Pulse Intelligence &bull; Verified Research</span>
+          <span>MorningView Intelligence &bull; Verified Research</span>
         </div>
 
-        {/* Main Title — Lexend font */}
+        {/* Main Title */}
         <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
           {t('home.heroTitle')}
         </h1>

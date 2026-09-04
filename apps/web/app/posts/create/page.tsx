@@ -4,7 +4,7 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { PostStudio } from '@/components/studio/PostStudio';
 
 export const metadata: Metadata = {
-  title: 'Soạn Thảo Bài Viết Mới | Finance Pulse Studio',
+  title: 'Soạn Thảo Bài Viết Mới | MorningView Studio',
   description: 'Biên tập và xuất bản bài nghiên cứu, nhận định thị trường tài chính chuyên nghiệp.',
   robots: {
     index: false,

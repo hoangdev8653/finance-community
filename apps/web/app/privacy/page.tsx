@@ -6,13 +6,13 @@ import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = {
   title: 'Chính sách bảo mật',
-  description: 'Cách Finance Pulse thu thập, sử dụng và bảo vệ dữ liệu người dùng.',
+  description: 'Cách MorningView thu thập, sử dụng và bảo vệ dữ liệu người dùng.',
 };
 
 const sections = [
   {
     title: '1. Dữ liệu chúng tôi thu thập',
-    body: 'Finance Pulse có thể thu thập thông tin tài khoản, email, hồ sơ công khai, nội dung bạn đăng tải, lịch sử tương tác cơ bản và dữ liệu kỹ thuật cần thiết để vận hành nền tảng.',
+    body: 'MorningView có thể thu thập thông tin tài khoản, email, hồ sơ công khai, nội dung bạn đăng tải, lịch sử tương tác cơ bản và dữ liệu kỹ thuật cần thiết để vận hành nền tảng.',
   },
   {
     title: '2. Mục đích sử dụng',
@@ -20,11 +20,11 @@ const sections = [
   },
   {
     title: '3. Bản tin email',
-    body: 'Nếu đăng ký nhận bản tin, email của bạn chỉ được dùng để gửi các cập nhật liên quan đến Finance Pulse. Bạn có thể yêu cầu ngừng nhận bản tin bất cứ lúc nào khi tính năng hủy đăng ký được cung cấp.',
+    body: 'Nếu đăng ký nhận bản tin, email của bạn chỉ được dùng để gửi các cập nhật liên quan đến MorningView. Bạn có thể yêu cầu ngừng nhận bản tin bất cứ lúc nào khi tính năng hủy đăng ký được cung cấp.',
   },
   {
     title: '4. Chia sẻ dữ liệu',
-    body: 'Finance Pulse không bán dữ liệu cá nhân của người dùng. Dữ liệu chỉ được chia sẻ khi cần thiết cho vận hành dịch vụ, tuân thủ pháp luật hoặc bảo vệ quyền lợi hợp pháp của nền tảng và cộng đồng.',
+    body: 'MorningView không bán dữ liệu cá nhân của người dùng. Dữ liệu chỉ được chia sẻ khi cần thiết cho vận hành dịch vụ, tuân thủ pháp luật hoặc bảo vệ quyền lợi hợp pháp của nền tảng và cộng đồng.',
   },
   {
     title: '5. Bảo mật và lưu trữ',
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
           icon={Shield}
           label="Privacy"
           title="Chính sách bảo mật"
-          subtitle="Cách Finance Pulse xử lý dữ liệu cá nhân và bảo vệ quyền riêng tư của người dùng."
+          subtitle="Cách MorningView xử lý dữ liệu cá nhân và bảo vệ quyền riêng tư của người dùng."
         />
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-6">

@@ -34,7 +34,7 @@ export function CategoriesDirectoryView() {
           Danh mục Tri thức & Khóa học
         </h1>
         <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-          Khám phá các phân mục nghiên cứu tài chính có cấu trúc, các lớp tài sản đầu tư và hệ thống giáo trình đào tạo bài bản trên Finance Pulse.
+          Khám phá các phân mục nghiên cứu tài chính có cấu trúc, các lớp tài sản đầu tư và hệ thống giáo trình đào tạo bài bản trên MorningView.
         </p>
       </div>
 

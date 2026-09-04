@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: '404 - Không tìm thấy trang',
-  description: 'Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển trên Finance Pulse.',
+  description: 'Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển trên MorningView.',
 };
 
 const quickExploreLinks = [
@@ -67,7 +67,7 @@ export default function NotFound() {
             <TrendingUp className="h-5 w-5" />
           </div>
           <span className="font-heading text-lg font-extrabold tracking-tight text-foreground">
-            Finance<span className="text-primary">Pulse</span>
+            Morning<span className="text-primary">View</span>
           </span>
         </Link>
 
@@ -173,7 +173,7 @@ export default function NotFound() {
               <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
                 Gợi ý lối tắt phổ biến
               </h3>
-              <span className="text-xs text-muted-foreground">Finance Pulse Directory</span>
+              <span className="text-xs text-muted-foreground">MorningView Directory</span>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -206,7 +206,7 @@ export default function NotFound() {
 
       {/* Standalone Minimal Footer */}
       <footer className="text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Finance Pulse Platform. Bảo lưu mọi quyền.
+        © {new Date().getFullYear()} MorningView. Bảo lưu mọi quyền.
       </footer>
     </div>
   );

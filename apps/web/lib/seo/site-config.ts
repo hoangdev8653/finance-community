@@ -8,7 +8,7 @@ import type { SiteConfig } from '../../types/seo';
  * 2. VERCEL_PROJECT_PRODUCTION_URL (prefixed with https://)
  * 3. VERCEL_URL (prefixed with https://)
  * 4. In development/test environments (NODE_ENV !== 'production'): http://localhost:3000
- * 5. Production default fallback: https://financepulse.community
+ * 5. Production default fallback: https://morningview.community
  */
 export function getSiteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -29,7 +29,7 @@ export function getSiteUrl(): string {
     return 'http://localhost:3000';
   }
 
-  return 'https://financepulse.community';
+  return 'https://morningview.community';
 }
 
 /**

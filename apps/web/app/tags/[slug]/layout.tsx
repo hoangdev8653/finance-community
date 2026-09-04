@@ -30,7 +30,7 @@ export async function generateMetadata({
   }
 
   const title = `#${tagName} — Phân Tích & Nghiên Cứu Thị Trường`;
-  const description = `Các bài viết nghiên cứu, phân tích tài chính và thảo luận chuyên sâu về chủ đề #${tagName} trên Finance Pulse.`;
+  const description = `Các bài viết nghiên cứu, phân tích tài chính và thảo luận chuyên sâu về chủ đề #${tagName} trên MorningView.`;
   const canonicalPath = `/tags/${encodeURIComponent(slug)}`;
 
   return buildPageMetadata({

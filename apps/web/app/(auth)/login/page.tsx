@@ -5,7 +5,7 @@ import { LoadingState } from '@/components/feedback/LoadingState';
 
 export const metadata: Metadata = {
   title: 'Đăng Nhập Tài Khoản',
-  description: 'Đăng nhập tài khoản Finance Pulse để truy cập các bài nghiên cứu chuyên sâu và thảo luận cùng cộng đồng.',
+  description: 'Đăng nhập tài khoản MorningView để truy cập các bài nghiên cứu chuyên sâu và thảo luận cùng cộng đồng.',
   robots: {
     index: false,
     follow: false,

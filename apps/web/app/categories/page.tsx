@@ -12,14 +12,14 @@ import { AppShell } from '@/components/layout/AppShell';
 export const metadata: Metadata = buildPageMetadata({
   title: 'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
   description:
-    'Khám phá các lĩnh vực nghiên cứu tài chính, danh mục kinh tế vĩ mô và chuỗi bài học chuyên ngành trên Finance Pulse.',
+    'Khám phá các lĩnh vực nghiên cứu tài chính, danh mục kinh tế vĩ mô và chuỗi bài học chuyên ngành trên MorningView.',
   canonicalPath: '/categories',
 });
 
 export default function CategoriesPage() {
   const collectionSchema = generateCollectionPageJsonLd(
     'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
-    'Danh mục phân loại có cấu trúc về các lĩnh vực nghiên cứu tài chính và chuỗi bài học trên Finance Pulse.',
+    'Danh mục phân loại có cấu trúc về các lĩnh vực nghiên cứu tài chính và chuỗi bài học trên MorningView.',
     '/categories'
   );
 

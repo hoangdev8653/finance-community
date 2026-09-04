@@ -43,25 +43,25 @@ describe('SEO Site Config & Canonical URL Resolver', () => {
     delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
     delete process.env.VERCEL_URL;
     (process.env as any).NODE_ENV = 'production';
-    expect(getSiteUrl()).toBe('https://financepulse.community');
+    expect(getSiteUrl()).toBe('https://morningview.community');
   });
 
   it('getSiteUrlObject() returns valid URL instance', () => {
-    process.env.NEXT_PUBLIC_SITE_URL = 'https://financepulse.community';
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://morningview.community';
     const urlObj = getSiteUrlObject();
     expect(urlObj).toBeInstanceOf(URL);
-    expect(urlObj.origin).toBe('https://financepulse.community');
+    expect(urlObj.origin).toBe('https://morningview.community');
   });
 
   it('buildCanonicalUrl strips query params and normalizes slashes', () => {
-    process.env.NEXT_PUBLIC_SITE_URL = 'https://financepulse.community';
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://morningview.community';
 
-    expect(buildCanonicalUrl('/')).toBe('https://financepulse.community');
+    expect(buildCanonicalUrl('/')).toBe('https://morningview.community');
     expect(buildCanonicalUrl('/posts/community/test-slug?sort=recent#heading')).toBe(
-      'https://financepulse.community/posts/community/test-slug'
+      'https://morningview.community/posts/community/test-slug'
     );
     expect(buildCanonicalUrl('series/market-curriculum/')).toBe(
-      'https://financepulse.community/series/market-curriculum'
+      'https://morningview.community/series/market-curriculum'
     );
   });
 });

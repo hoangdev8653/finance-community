@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AuthLayout({
   children,
@@ -12,11 +13,18 @@ export default function AuthLayout({
       {/* Top Bar with Brand & Back to Home Button */}
       <header className="w-full max-w-5xl mx-auto flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold shadow-xs transition-transform group-hover:scale-105">
-            <TrendingUp className="h-5 w-5" />
+          <div className="relative flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden shadow-xs transition-transform group-hover:scale-105">
+            <Image
+              src="/images/logo.png"
+              alt="MorningView"
+              width={36}
+              height={36}
+              className="h-9 w-9 object-contain"
+              priority
+            />
           </div>
-          <span className="font-heading text-lg font-extrabold tracking-tight text-foreground">
-            Finance<span className="text-primary">Pulse</span>
+          <span className="font-heading text-xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
+            Morning<span className="text-teal-600 dark:text-teal-400">View</span>
           </span>
         </Link>
 
@@ -38,7 +46,7 @@ export default function AuthLayout({
 
       {/* Bottom Minimal Copyright */}
       <footer className="text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} Finance Pulse Platform. Bảo lưu mọi quyền.
+        © {new Date().getFullYear()} MorningView Platform. Bảo lưu mọi quyền.
       </footer>
     </div>
   );

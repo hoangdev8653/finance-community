@@ -7,24 +7,24 @@ import { PageHeader } from '@/components/layout/PageHeader';
 
 export const metadata: Metadata = {
   title: 'Liên hệ Tòa soạn',
-  description: 'Liên hệ đội ngũ biên tập Finance Pulse.',
+  description: 'Liên hệ đội ngũ biên tập MorningView.',
 };
 
 const contactItems = [
   {
     title: 'Góp ý nội dung',
     description: 'Gửi phản hồi về bài viết, dữ liệu, lỗi trình bày hoặc đề xuất chủ đề phân tích.',
-    value: 'editorial@financepulse.local',
+    value: 'editorial@morningview.vn',
   },
   {
     title: 'Hợp tác chuyên môn',
     description: 'Trao đổi về series học tập, bài phân tích chuyên sâu hoặc chương trình cộng tác.',
-    value: 'partners@financepulse.local',
+    value: 'partners@morningview.vn',
   },
   {
     title: 'Hỗ trợ tài khoản',
     description: 'Liên hệ khi cần hỗ trợ đăng nhập, hồ sơ, bài viết hoặc quyền truy cập.',
-    value: 'support@financepulse.local',
+    value: 'support@morningview.vn',
   },
 ];
 
@@ -36,7 +36,7 @@ export default function ContactPage() {
           icon={MessageSquareText}
           label="Editorial Desk"
           title="Liên hệ Tòa soạn"
-          subtitle="Gửi phản hồi, đề xuất chủ đề hoặc liên hệ hợp tác với đội ngũ Finance Pulse."
+          subtitle="Gửi phản hồi, đề xuất chủ đề hoặc liên hệ hợp tác với đội ngũ MorningView."
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -65,7 +65,7 @@ export default function ContactPage() {
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm leading-relaxed text-slate-600 shadow-xs dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 sm:p-6">
-          Finance Pulse ưu tiên phản hồi các vấn đề liên quan đến tính chính xác của dữ liệu,
+          MorningView ưu tiên phản hồi các vấn đề liên quan đến tính chính xác của dữ liệu,
           quyền tác giả, nội dung nhạy cảm và trải nghiệm sử dụng nền tảng.
         </div>
       </div>
