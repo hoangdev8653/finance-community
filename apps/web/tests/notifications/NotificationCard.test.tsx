@@ -44,7 +44,7 @@ describe('NotificationCard Component', () => {
   it('handles mark-as-read button click', () => {
     render(<NotificationCard notification={mockNotification} />);
 
-    const markBtn = screen.getByRole('button', { name: /Mark as read/i });
+    const markBtn = screen.getByRole('button', { name: /Đánh dấu đã đọc/i });
     fireEvent.click(markBtn);
 
     expect(markAsReadMock).toHaveBeenCalledWith('n-1');
@@ -59,6 +59,6 @@ describe('NotificationCard Component', () => {
 
     render(<NotificationCard notification={readNotification} />);
 
-    expect(screen.queryByRole('button', { name: /Mark as read/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Đánh dấu đã đọc/i })).toBeNull();
   });
 });

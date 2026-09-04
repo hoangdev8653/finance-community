@@ -82,4 +82,23 @@ describe('NotificationsService (In-App Notification Engine)', () => {
     expect(res).toBe(true);
     expect(mockNotificationsRepo.markAllAsReadTx).toHaveBeenCalledWith(undefined, 'user-recipient-1');
   });
+
+  it('should return unread count for user', async () => {
+    mockNotificationsRepo.getUnreadCount = jest.fn().mockResolvedValue(5);
+
+    const res = await notificationsService.getUnreadCount('user-recipient-1');
+    expect(res.count).toBe(5);
+    expect(mockNotificationsRepo.getUnreadCount).toHaveBeenCalledWith('user-recipient-1');
+  });
+
+  it('should filter notifications by category comments', async () => {
+    await notificationsService.getUserNotifications('user-recipient-1', undefined, 'comments', undefined, 1, 20);
+    expect(mockNotificationsRepo.findUserNotifications).toHaveBeenCalledWith(
+      'user-recipient-1',
+      undefined,
+      ['NEW_COMMENT', 'COMMENT_REPLY'],
+      1,
+      20,
+    );
+  });
 });

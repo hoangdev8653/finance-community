@@ -59,16 +59,16 @@ describe('NotificationsCenter Component', () => {
 
     render(<NotificationsCenter />);
 
-    expect(screen.getByRole('heading', { level: 1, name: /Notification Center/i })).toBeDefined();
-    expect(screen.getByRole('tab', { name: /All Notifications/i })).toBeDefined();
-    expect(screen.getByRole('tab', { name: /Unread/i })).toBeDefined();
+    expect(screen.getByRole('heading', { level: 1, name: /Trung tâm thông báo/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /^Tất cả$/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /^Chưa đọc/i })).toBeDefined();
     expect(screen.getByText('New Analyst Follower')).toBeDefined();
 
     // Switch tab to Unread
-    const unreadTab = screen.getByRole('tab', { name: /Unread/i });
+    const unreadTab = screen.getByRole('button', { name: /Chưa đọc/i });
     fireEvent.click(unreadTab);
 
-    expect(unreadTab.getAttribute('aria-selected')).toBe('true');
+    expect(unreadTab.className).toContain('bg-primary');
   });
 
   it('renders empty state when no notifications match', () => {
@@ -85,6 +85,6 @@ describe('NotificationsCenter Component', () => {
 
     render(<NotificationsCenter />);
 
-    expect(screen.getByText(/No notifications yet/i)).toBeDefined();
+    expect(screen.getByText(/Hộp thông báo đang trống/i)).toBeDefined();
   });
 });

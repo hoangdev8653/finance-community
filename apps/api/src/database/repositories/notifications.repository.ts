@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, count, desc } from 'drizzle-orm';
+import { eq, and, count, desc, inArray } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { notificationsTable } from '../schema/notifications.schema';
@@ -17,15 +17,34 @@ export class NotificationsRepository {
     return record;
   }
 
-  async findUserNotifications(userId: string, isRead?: boolean, page = 1, limit = 20): Promise<{ data: NotificationEntity[]; meta: any }> {
+  async getUnreadCount(userId: string): Promise<number> {
+    const [{ total }] = await this.db
+      .select({ total: count() })
+      .from(notificationsTable)
+      .where(and(eq(notificationsTable.userId, userId), eq(notificationsTable.isRead, false)));
+    return Number(total || 0);
+  }
+
+  async findUserNotifications(
+    userId: string,
+    isRead?: boolean,
+    types?: string[],
+    page = 1,
+    limit = 20,
+  ): Promise<{ data: NotificationEntity[]; meta: any }> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
     const offset = (safePage - 1) * safeLimit;
 
-    let whereClause = eq(notificationsTable.userId, userId);
+    const filters: any[] = [eq(notificationsTable.userId, userId)];
     if (isRead !== undefined) {
-      whereClause = and(whereClause, eq(notificationsTable.isRead, isRead)) as any;
+      filters.push(eq(notificationsTable.isRead, isRead));
     }
+    if (types && types.length > 0) {
+      filters.push(inArray(notificationsTable.type, types));
+    }
+
+    const whereClause = and(...filters);
 
     const [{ total }] = await this.db
       .select({ total: count() })

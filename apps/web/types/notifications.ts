@@ -1,3 +1,5 @@
+export type NotificationCategory = 'all' | 'unread' | 'comments' | 'social' | 'system';
+
 export interface NotificationEntity {
   id: string;
   userId: string;
@@ -14,6 +16,20 @@ export interface NotificationEntity {
 
 export interface QueryNotificationsParams {
   isRead?: boolean;
+  category?: NotificationCategory;
+  type?: string;
   page?: number;
   limit?: number;
+}
+
+export interface PaginatedNotificationsResponse {
+  data: NotificationEntity[];
+  meta: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
 }

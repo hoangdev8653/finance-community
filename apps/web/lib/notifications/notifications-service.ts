@@ -18,6 +18,15 @@ export const notificationsService = {
   },
 
   /**
+   * Get unread notifications count directly from Backend API
+   * GET /api/v1/notifications/unread-count
+   */
+  async getUnreadCount(): Promise<{ count: number }> {
+    const response = await apiClient.get<{ count: number }>('/notifications/unread-count');
+    return response.data;
+  },
+
+  /**
    * Mark single notification as read directly on Backend API
    * PATCH /api/v1/notifications/:id/read
    */

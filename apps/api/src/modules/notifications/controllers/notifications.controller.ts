@@ -23,6 +23,13 @@ import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
+  @Get('unread-count')
+  @ApiOperation({ summary: 'Get total unread notifications count for current user' })
+  @ApiResponse({ status: 200, description: 'Object with unread count' })
+  getUnreadCount(@CurrentUser() user: any) {
+    return this.notificationsService.getUnreadCount(user.sub);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get current user notification feed' })
   @ApiResponse({ status: 200, description: 'Paginated list of NotificationEntity items' })
@@ -34,6 +41,8 @@ export class NotificationsController {
     return this.notificationsService.getUserNotifications(
       user.sub,
       query.isRead,
+      query.category,
+      query.type,
       query.page,
       query.limit,
     );

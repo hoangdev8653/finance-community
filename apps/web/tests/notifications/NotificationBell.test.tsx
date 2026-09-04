@@ -77,12 +77,12 @@ describe('NotificationBell Component', () => {
 
     render(<NotificationBell />);
 
-    const triggerBtn = screen.getByRole('button', { name: /Notifications/i });
+    const triggerBtn = screen.getByRole('button', { name: /Thông báo/i });
     expect(screen.queryByRole('dialog')).toBeNull();
 
     // Click to open
     fireEvent.click(triggerBtn);
-    expect(screen.getByRole('dialog', { name: /Notifications/i })).toBeDefined();
+    expect(screen.getByRole('dialog', { name: /Thông báo/i })).toBeDefined();
     expect(screen.getByText('New Follower')).toBeDefined();
 
     // Press Escape to close
@@ -102,10 +102,10 @@ describe('NotificationBell Component', () => {
 
     render(<NotificationBell />);
 
-    const triggerBtn = screen.getByRole('button', { name: /Notifications/i });
+    const triggerBtn = screen.getByRole('button', { name: /Thông báo/i });
     fireEvent.click(triggerBtn);
 
-    const markAllBtn = screen.getByRole('button', { name: /Mark all as read/i });
+    const markAllBtn = screen.getByRole('button', { name: /Đã đọc tất cả/i });
     fireEvent.click(markAllBtn);
 
     expect(markAllMock).toHaveBeenCalled();

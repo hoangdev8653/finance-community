@@ -14,8 +14,43 @@ export class NotificationsService {
     return this.notificationsRepo.createTx(undefined, data);
   }
 
-  async getUserNotifications(userId: string, isRead?: boolean, page = 1, limit = 20) {
-    return this.notificationsRepo.findUserNotifications(userId, isRead, page, limit);
+  async getUnreadCount(userId: string): Promise<{ count: number }> {
+    const count = await this.notificationsRepo.getUnreadCount(userId);
+    return { count };
+  }
+
+  async getUserNotifications(
+    userId: string,
+    isRead?: boolean,
+    category?: string,
+    type?: string,
+    page = 1,
+    limit = 20,
+  ) {
+    let types: string[] | undefined = undefined;
+    let effectiveIsRead = isRead;
+
+    if (category === 'unread') {
+      effectiveIsRead = false;
+    } else if (category === 'comments') {
+      types = ['NEW_COMMENT', 'COMMENT_REPLY'];
+    } else if (category === 'social') {
+      types = ['POST_REACTION', 'NEW_FOLLOWER'];
+    } else if (category === 'system') {
+      types = ['POST_APPROVED', 'POST_BANNED', 'SYSTEM'];
+    }
+
+    if (type) {
+      types = [type];
+    }
+
+    return this.notificationsRepo.findUserNotifications(
+      userId,
+      effectiveIsRead,
+      types,
+      page,
+      limit,
+    );
   }
 
   async markAsRead(userId: string, id: string): Promise<boolean> {

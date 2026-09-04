@@ -19,4 +19,10 @@ export class QueryNotificationsDto {
   @Min(1)
   @Max(100)
   limit?: number;
+
+  @IsOptional()
+  category?: 'all' | 'unread' | 'comments' | 'social' | 'system';
+
+  @IsOptional()
+  type?: string;
 }

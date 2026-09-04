@@ -25,14 +25,12 @@ export function useUnreadNotificationsCount() {
   return useQuery({
     queryKey: ['notifications', 'unreadCount'],
     queryFn: async () => {
-      const response = await notificationsService.getUserNotifications({
-        isRead: false,
-        limit: 1,
-      });
-      return response.meta.totalItems;
+      const response = await notificationsService.getUnreadCount();
+      return response.count;
     },
-    staleTime: 30 * 1000,
+    staleTime: 15 * 1000,
     gcTime: 15 * 60 * 1000,
+    refetchInterval: 30 * 1000, // Real-time background polling every 30s
     refetchOnWindowFocus: true,
     enabled: isAuthenticated,
   });

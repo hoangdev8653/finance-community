@@ -23,8 +23,8 @@ export function NotificationList({
   isLoading,
   hasNextPage = false,
   onLoadMore,
-  emptyTitle = 'No notifications yet',
-  emptyDescription = 'You are all caught up! Check back later for activity updates.',
+  emptyTitle = 'Chưa có thông báo nào',
+  emptyDescription = 'Hộp thư thông báo của bạn hiện đang trống.',
   onItemClick,
 }: NotificationListProps) {
   if (isLoading && notifications.length === 0) {
@@ -52,15 +52,15 @@ export function NotificationList({
       ))}
 
       {hasNextPage && onLoadMore && (
-        <div className="flex justify-center pt-4">
+        <div className="flex justify-center pt-4 border-t border-border mt-4">
           <Button
             variant="outline"
             size="sm"
             onClick={onLoadMore}
             disabled={isLoading}
-            className="font-mono text-xs"
+            className="text-xs font-semibold"
           >
-            {isLoading ? 'Loading...' : 'Load More Notifications'}
+            {isLoading ? 'Đang tải...' : 'Tải thêm thông báo'}
           </Button>
         </div>
       )}
