@@ -19,6 +19,7 @@ import { MediaService } from '../../media/services/media.service';
 import { TagsService } from '../../tags/services/tags.service';
 import { AuditLogService } from '../../audit/services/audit-log.service';
 import { SanitizerUtil } from '../../../common/utils/sanitizer.util';
+import { SlugifyUtil } from '../../../common/utils/slugify.util';
 import { ContentSafetyUtil } from '../../../common/utils/content-safety.util';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
@@ -69,13 +70,7 @@ export class PostsService {
   }
 
   public slugify(title: string): string {
-    const slugified = title
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '');
-    const fallback = slugified.length > 0 ? slugified : 'post';
-    return fallback.slice(0, 300);
+    return SlugifyUtil.slugify(title, 300);
   }
 
   public generateDeterministicSlug(title: string, authorId: string): string {
