@@ -1,70 +1,70 @@
-# FACT CHECK — [TÊN BÀI]
+# KIỂM CHỨNG THÔNG TIN — [TÊN BÀI]
 
 ## Tổng quan
 
-- Article:
-- Reviewer:
-- Date:
-- Status:
+- Bài viết:
+- Người kiểm duyệt:
+- Ngày kiểm tra:
+- Trạng thái:
 
-## Claim 01
+## Luận điểm / Tuyên bố 01
 
-**Claim:**
+**Nội dung tuyên bố:**
 
-**Type:**
-FACT / STATISTIC / DATE / QUOTE / LEGAL / FINANCIAL / ANALYSIS / OPINION / PREDICTION
+**Loại thông tin:**
+SỰ THẬT / SỐ LIỆU / NGÀY THÁNG / TRÍCH DẪN / PHÁP LÝ / TÀI CHÍNH / PHÂN TÍCH / QUAN ĐIỂM / DỰ ĐOÁN
 
-**Source:**
+**Nguồn tham chiếu:**
 
-**Source type:**
+**Loại nguồn:**
 
-**Published/updated:**
+**Ngày xuất bản/cập nhật:**
 
-**Checked at:**
+**Thời điểm kiểm tra:**
 
-**Status:**
-VERIFIED / PARTIALLY_VERIFIED / UNVERIFIED / FALSE
+**Trạng thái kiểm chứng:**
+ĐÃ XÁC THỰC / XÁC THỰC MỘT PHẦN / CHƯA XÁC THỰC / SAI SỰ THẬT
 
-**Confidence:**
-HIGH / MEDIUM / LOW
+**Độ tin cậy:**
+CAO / TRUNG BÌNH / THẤP
 
-**Notes:**
-
----
-
-## Claim 02
-
-**Claim:**
-
-**Type:**
-
-**Source:**
-
-**Source type:**
-
-**Published/updated:**
-
-**Checked at:**
-
-**Status:**
-
-**Confidence:**
-
-**Notes:**
+**Ghi chú:**
 
 ---
 
-## Final checklist
+## Luận điểm / Tuyên bố 02
 
-- [ ] Không có nguồn giả
-- [ ] Không có quote chưa xác minh
-- [ ] Số liệu quan trọng đã kiểm tra
-- [ ] Ngày tháng đã kiểm tra
-- [ ] Claim quan trọng có nguồn
-- [ ] Thông tin thay đổi nhanh có thời điểm
-- [ ] Fact và analysis được phân biệt
-- [ ] Không còn claim quan trọng UNVERIFIED
+**Nội dung tuyên bố:**
 
-## Final status
+**Loại thông tin:**
 
-PASS / NEEDS_REVISION / RESEARCH_AGAIN
+**Nguồn tham chiếu:**
+
+**Loại nguồn:**
+
+**Ngày xuất bản/cập nhật:**
+
+**Thời điểm kiểm tra:**
+
+**Trạng thái kiểm chứng:**
+
+**Độ tin cậy:**
+
+**Ghi chú:**
+
+---
+
+## Danh sách kiểm tra cuối cùng
+
+- [ ] Không có nguồn giả mạo
+- [ ] Không có trích dẫn chưa xác minh
+- [ ] Số liệu quan trọng đã đối chiếu kỹ lưỡng
+- [ ] Ngày tháng và sự kiện đã kiểm tra
+- [ ] Luận điểm cốt lõi có nguồn minh chứng rõ ràng
+- [ ] Thông tin biến động nhanh có ghi rõ thời điểm
+- [ ] Phân biệt rạch ròi giữa sự thật khách quan và nhận định phân tích
+- [ ] Không còn thông tin quan trọng nào ở trạng thái chưa xác thực
+
+## Kết luận thẩm định
+
+ĐẠT / CẦN SỬA ĐỔI / CẦN NGHIÊN CỨU LẠI

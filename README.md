@@ -113,13 +113,13 @@ finance-community/
 │   ├── api/                 # Backend NestJS REST API
 │   │   ├── src/modules/     # Auth, Users, Posts, Comments, Reactions, Series...
 │   │   └── Dockerfile
-│   └── web/                 # Frontend Next.js 15+ (App Router, Tailwind CSS, i18n)
+│   └── web/                 # Frontend Next.js 15+ (App Router, Tailwind CSS)
 │       ├── app/             # App Router Pages & Layouts
 │       ├── components/      # UI, Navigation, Feedback, Content Widgets
-│       ├── lib/i18n/        # Bộ từ điển song ngữ (vi.ts / en.ts) & useTranslation
+│       ├── lib/i18n/        # Bộ từ điển tiếng Việt (vi.ts) & useTranslation
 │       └── stores/          # Zustand State Stores
 ├── docs/                    # Tài liệu kiến trúc, Database Schema, Postman Collection
-├── .agents/rules/           # Quy tắc kỹ thuật AI (4pt Grid, i18n, Postman Sync...)
+├── .agents/rules/           # Quy tắc kỹ thuật AI (4pt Grid, Postman Sync...)
 └── docker-compose.yml       # Cấu hình container PostgreSQL & Backend
 ```
 

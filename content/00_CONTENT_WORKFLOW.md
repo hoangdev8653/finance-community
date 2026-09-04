@@ -1,136 +1,128 @@
-# CONTENT PRODUCTION WORKFLOW
-# Quy trình sản xuất nội dung tiếng Việt
+# QUY TRÌNH SẢN XUẤT NỘI DUNG (CONTENT PRODUCTION WORKFLOW)
 
 ## 1. Mục đích
 
-Đây là file điều phối chính cho toàn bộ quy trình sản xuất một bài viết.
+Đây là tài liệu điều phối chính cho toàn bộ quy trình sản xuất bài viết trên nền tảng.
 
 Mục tiêu:
-- tạo nội dung hữu ích cho độc giả Việt Nam;
-- dựa trên nguồn có thể kiểm chứng;
-- tổng hợp và diễn đạt lại bằng cấu trúc, ngôn ngữ riêng;
-- hạn chế hallucination;
-- tách rõ fact, analysis, opinion và prediction;
-- tạo ra bài viết có thể kiểm tra, biên tập và xuất bản.
+- tạo nội dung hữu ích, chất lượng cao cho độc giả Việt Nam;
+- dựa trên nguồn tư liệu có thể kiểm chứng độc lập;
+- tổng hợp và diễn đạt lại bằng cấu trúc và ngôn ngữ riêng;
+- hạn chế tối đa hiện tượng bịa đặt thông tin (hallucination);
+- phân biệt rạch ròi giữa sự thật (fact), phân tích (analysis), quan điểm (opinion) và dự đoán (prediction);
+- tạo ra bài viết đạt chuẩn để kiểm tra, biên tập và xuất bản.
 
-AI KHÔNG được nhảy thẳng từ IDEA → ARTICLE.
+*AI TUYỆT ĐỐI KHÔNG ĐƯỢC nhảy cóc từ Ý TƯỞNG → VIẾT BÀI.*
 
-## 2. Pipeline
+## 2. Quy trình từng bước (Pipeline)
 
-IDEA
-→ TOPIC RESEARCH
-→ SOURCE RESEARCH
-→ CONTENT BRIEF
-→ OUTLINE
-→ ARTICLE WRITING
-→ FACT CHECK
-→ EDITORIAL REVIEW
-→ READY TO PUBLISH
-→ PUBLISHED
+Ý TƯỞNG (IDEA)
+→ NGHIÊN CỨU CHỦ ĐỀ (TOPIC RESEARCH)
+→ NGHIÊN CỨU NGUỒN (SOURCE RESEARCH)
+→ ĐỀ CƯƠNG BÀI VIẾT (CONTENT BRIEF)
+→ DÀN Ý CHI TIẾT (OUTLINE)
+→ VIẾT BẢN THẢO (ARTICLE WRITING)
+→ KIỂM CHỨNG THÔNG TIN (FACT CHECK)
+→ BIÊN TẬP & DUYỆT BÀI (EDITORIAL REVIEW)
+→ SẴN SÀNG XUẤT BẢN (READY TO PUBLISH)
+→ ĐÃ XUẤT BẢN (PUBLISHED)
 
 ## 3. Quy tắc bất biến
 
-1. Không bịa nguồn.
-2. Không bịa số liệu.
-3. Không bịa trích dẫn.
+1. Không bịa đặt nguồn.
+2. Không bịa đặt số liệu.
+3. Không bịa đặt trích dẫn phát biểu.
 4. Không biến suy đoán thành sự thật.
-5. Không sao chép một nguồn duy nhất.
-6. Không thay từ đồng nghĩa hàng loạt để che việc sao chép.
-7. Ưu tiên nguồn gốc và nguồn chính thức.
-8. Thông tin thay đổi nhanh phải kiểm tra thời điểm.
-9. Nếu chưa xác minh được claim quan trọng, phải đánh dấu hoặc nghiên cứu thêm.
-10. Viết cho con người trước, SEO sau.
-11. Nội dung cuối phải bằng tiếng Việt tự nhiên.
-12. Con người vẫn là người duyệt cuối.
+5. Không sao chép từ một nguồn duy nhất.
+6. Không thay thế từ đồng nghĩa hàng loạt để che giấu việc sao chép.
+7. Ưu tiên nguồn gốc và nguồn công bố chính thức.
+8. Thông tin thay đổi nhanh bắt buộc phải kiểm tra mốc thời gian.
+9. Nếu chưa xác minh được luận điểm quan trọng, phải đánh dấu hoặc tiếp tục nghiên cứu.
+10. Viết cho con người đọc trước, tối ưu công cụ tìm kiếm (SEO) sau.
+11. Bản hoàn thiện cuối cùng phải bằng tiếng Việt tự nhiên, chuẩn mực.
+12. Con người luôn là người phê duyệt cuối cùng trước khi bấm xuất bản.
 
-## 4. Gate
+## 4. Các cổng kiểm soát chất lượng (Quality Gates)
 
-### GATE 1 — TOPIC
+### CỔNG 1 — CHỦ ĐỀ (TOPIC)
+Phải xác định rõ:
+- chủ đề bài viết;
+- độc giả mục tiêu;
+- ý định tìm kiếm của độc giả;
+- mục tiêu bài viết giải quyết;
+- góc tiếp cận độc đáo;
+- bộ câu hỏi của người đọc.
 
+### CỔNG 2 — NGUỒN TƯ LIỆU (SOURCES)
 Phải có:
-- chủ đề;
-- độc giả;
-- search intent;
-- mục tiêu;
-- góc tiếp cận;
-- câu hỏi người đọc.
+- danh sách nguồn chính thức và nguồn bổ trợ (do AI tự động tìm kiếm Google thời gian thực và đối chiếu đa nguồn, người dùng không cần dán link thủ công);
+- các luận điểm và số liệu quan trọng được trích xuất;
+- đường dẫn (URL) cụ thể để biên tập viên kiểm chứng;
+- đánh giá mức độ tin cậy của từng nguồn.
 
-### GATE 2 — SOURCES
-
+### CỔNG 3 — ĐỀ CƯƠNG (BRIEF)
 Phải có:
-- nguồn chính;
-- nguồn hỗ trợ;
-- claim quan trọng;
-- mức độ tin cậy.
+- luận điểm trung tâm;
+- góc nhìn độc đáo;
+- phạm vi bài viết;
+- câu hỏi trọng tâm;
+- dữ kiện then chốt;
+- danh sách nguồn đối chiếu.
 
-### GATE 3 — BRIEF
-
+### CỔNG 4 — DÀN Ý (OUTLINE)
 Phải có:
-- thesis;
-- unique angle;
-- scope;
-- key questions;
-- key facts;
-- nguồn.
+- tiêu đề chính (H1);
+- các đề mục phân tích (H2/H3);
+- mục tiêu cụ thể của từng phần;
+- dữ kiện / nguồn liên quan cho từng phần.
 
-### GATE 4 — OUTLINE
+### CỔNG 5 — BẢN THẢO (DRAFT)
+Phải đảm bảo:
+- đúng bản đề cương đã duyệt;
+- đúng dàn ý đã thống nhất;
+- không còn chỗ trống hoặc thông tin dang dở;
+- không tự ý phỏng đoán dữ kiện.
 
-Phải có:
-- H1;
-- các H2/H3 cần thiết;
-- mục tiêu từng section;
-- fact/source liên quan.
+### CỔNG 6 — KIỂM CHỨNG (FACT CHECK)
+- Không còn bất kỳ dữ kiện hoặc số liệu quan trọng nào ở trạng thái CHƯA XÁC THỰC.
 
-### GATE 5 — DRAFT
+### CỔNG 7 — BIÊN TẬP CUỐI (EDITORIAL)
+Bài viết phải:
+- chính xác;
+- dễ đọc, mạch lạc;
+- mang lại giá trị thiết thực;
+- diễn đạt thuần Việt, tự nhiên;
+- không lặp ý;
+- không gây hiểu lầm hoặc sai lệch bản chất vấn đề.
 
-Phải:
-- đúng brief;
-- đúng outline;
-- không có placeholder quan trọng;
-- không tự bịa thông tin.
+## 5. Thứ tự ưu tiên của nguồn tư liệu
 
-### GATE 6 — FACT CHECK
+A. Nguồn chính thức / Dữ liệu gốc từ cơ quan quản lý, sở giao dịch.
+B. Viện nghiên cứu / Báo cáo phân tích chuyên môn của các tổ chức uy tín.
+C. Báo chí tài chính - kinh tế uy tín.
+D. Nguồn thứ cấp (dùng để truy vết).
+E. Cộng đồng / Mạng xã hội (chỉ tham khảo dư luận).
 
-Không còn claim quan trọng ở trạng thái UNVERIFIED.
+*Nguồn tiếng Việt được ưu tiên hàng đầu khi chất lượng tương đương và liên quan trực tiếp đến thị trường Việt Nam.*
 
-### GATE 7 — EDITORIAL
+## 6. Xử lý khi các nguồn có mâu thuẫn
 
-Bài phải:
-- đúng;
-- dễ đọc;
-- hữu ích;
-- tự nhiên;
-- không lặp;
-- không gây hiểu sai.
+AI bắt buộc phải:
+1. tìm lại nguồn dữ liệu gốc ban đầu;
+2. kiểm tra lại ngày và mốc thời gian;
+3. kiểm tra phạm vi tính toán;
+4. kiểm tra phương pháp thống kê;
+5. tìm thêm nguồn độc lập thứ 3;
+6. nếu vẫn chưa giải quyết được mâu thuẫn, phải trình bày rõ sự khác biệt cho độc giả biết thay vì tự ý chọn một bên.
 
-## 5. Thứ tự ưu tiên nguồn
+## 7. Các trạng thái bài viết
 
-A. Nguồn chính thức / dữ liệu gốc
-B. Nghiên cứu / báo cáo chuyên môn
-C. Báo chí uy tín
-D. Nguồn thứ cấp
-E. Cộng đồng / mạng xã hội
-
-Nguồn tiếng Việt được ưu tiên khi chất lượng tương đương và phù hợp độc giả Việt Nam.
-
-## 6. Khi nguồn mâu thuẫn
-
-AI phải:
-1. tìm nguồn gốc;
-2. kiểm tra ngày;
-3. kiểm tra phạm vi;
-4. kiểm tra phương pháp;
-5. tìm nguồn độc lập;
-6. nếu vẫn chưa giải quyết được, trình bày sự khác biệt thay vì tự chọn một bên.
-
-## 7. Trạng thái
-
-IDEA
-RESEARCHING
-BRIEF_READY
-OUTLINE_READY
-DRAFT_READY
-FACT_CHECKED
-EDITED
-READY_TO_PUBLISH
-PUBLISHED
+- Ý TƯỞNG (IDEA)
+- ĐANG NGHIÊN CỨU (RESEARCHING)
+- ĐÃ CÓ ĐỀ CƯƠNG (BRIEF_READY)
+- ĐÃ CÓ DÀN Ý (OUTLINE_READY)
+- ĐÃ CÓ BẢN THẢO (DRAFT_READY)
+- ĐÃ KIỂM CHỨNG (FACT_CHECKED)
+- ĐÃ BIÊN TẬP (EDITED)
+- SẴN SÀNG XUẤT BẢN (READY_TO_PUBLISH)
+- ĐÃ XUẤT BẢN (PUBLISHED)

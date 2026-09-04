@@ -1,5 +1,4 @@
-# TOPIC RESEARCH
-# Nghiên cứu chủ đề
+# NGHIÊN CỨU CHỦ ĐỀ (TOPIC RESEARCH)
 
 ## Mục tiêu
 
@@ -8,37 +7,37 @@ Xác định:
 - viết cho ai;
 - người đọc cần gì;
 - bài nên tiếp cận theo góc nào;
-- cần nghiên cứu những claim nào.
+- cần nghiên cứu những luận điểm nào.
 
-## 1. Topic
+## 1. Xác định chủ đề
 
 - Chủ đề:
-- Vấn đề:
-- Phạm vi:
-- Thị trường:
-- Thời gian:
+- Vấn đề cốt lõi:
+- Phạm vi nội dung:
+- Thị trường / Lĩnh vực:
+- Khung thời gian:
 
-## 2. Target Audience
+## 2. Độc giả mục tiêu
 
 Trả lời:
 - Họ là ai?
-- Họ biết gì?
-- Họ chưa biết gì?
-- Họ đang gặp vấn đề gì?
-- Họ muốn giải quyết vấn đề gì?
+- Họ đã biết những gì?
+- Họ chưa biết điều gì?
+- Họ đang gặp vướng mắc gì?
+- Họ muốn giải quyết vấn đề gì qua bài viết?
 
-## 3. Search Intent
+## 3. Ý định tìm kiếm (Search Intent)
 
-Chọn:
-- Informational
-- Navigational
-- Commercial Investigation
-- Transactional
+Chọn loại ý định:
+- Tìm kiếm thông tin (Informational)
+- Điều hướng (Navigational)
+- Khảo sát / Đánh giá (Commercial Investigation)
+- Giao dịch / Thực thi (Transactional)
 
-Ghi:
-> Intent chính:
+Ghi rõ:
+> Ý định chính:
 
-## 4. Reader Questions
+## 4. Câu hỏi độc giả quan tâm
 
 Liệt kê các câu hỏi thực tế:
 
@@ -48,58 +47,58 @@ Liệt kê các câu hỏi thực tế:
 4.
 5.
 
-## 5. Content Opportunity
+## 5. Cơ hội nội dung
 
 Phân tích:
-- Nội dung hiện có thường nói gì?
-- Điểm yếu của nội dung hiện có?
-- Điều gì thường bị bỏ qua?
-- Bài này có thể làm rõ điều gì?
+- Nội dung hiện có trên thị trường thường nói gì?
+- Điểm yếu / hạn chế của các bài viết hiện tại?
+- Điều gì thường bị bỏ qua hoặc giải thích sơ sài?
+- Bài viết này sẽ làm rõ điều gì vượt trội hơn?
 
-## 6. Unique Angle
+## 6. Góc tiếp cận độc đáo
 
-Viết một câu:
+Viết một câu định vị:
 
 > Bài viết này sẽ giúp độc giả hiểu ______ bằng cách ______.
 
-## 7. Claims cần nghiên cứu
+## 7. Các luận điểm & Dữ liệu cần nghiên cứu
 
 Liệt kê:
 - số liệu;
 - ngày tháng;
-- giá;
+- mức giá / chi phí;
 - chính sách;
-- quy định;
-- phát biểu;
-- nghiên cứu;
+- quy định pháp lý;
+- phát biểu / trích dẫn;
+- nghiên cứu chuyên sâu;
 - dữ liệu tài chính;
 - dự báo;
-- thông tin dễ thay đổi.
+- thông tin dễ biến động theo thời gian.
 
-## 8. GO / NO-GO
+## 8. Quyết định triển khai (TIẾP TỤC / DỪNG LẠI)
 
-### GO nếu:
-- nhu cầu rõ;
-- nguồn đủ;
-- có giá trị riêng;
-- phạm vi kiểm soát được.
+### TIẾP TỤC (GO) nếu:
+- nhu cầu độc giả rõ ràng;
+- nguồn tư liệu đầy đủ;
+- có giá trị phân tích riêng;
+- phạm vi bài viết kiểm soát được.
 
-### NO-GO nếu:
-- không có nguồn đáng tin;
-- chỉ định sao chép;
-- chủ đề quá mơ hồ;
-- giá trị thấp;
-- phần lớn nội dung phải đoán.
+### DỪNG LẠI (NO-GO) nếu:
+- không có nguồn đáng tin cậy;
+- chỉ mang tính xào xáo, sao chép;
+- chủ đề quá mơ hồ, dàn trải;
+- giá trị đem lại thấp;
+- phần lớn nội dung phải phỏng đoán.
 
-## 9. Output
+## 9. Kết quả đầu ra
 
-Kết quả phải gồm:
-- Topic statement
-- Audience
-- Intent
-- Reader questions
-- Unique angle
-- Key claims
-- Research gaps
+Kết quả sau bước này phải gồm:
+- Tuyên bố chủ đề (Topic statement)
+- Độc giả mục tiêu (Audience)
+- Ý định tìm kiếm (Search intent)
+- Bộ câu hỏi độc giả (Reader questions)
+- Góc tiếp cận độc đáo (Unique angle)
+- Các luận điểm then chốt (Key claims)
+- Khoảng trống thông tin cần bổ sung (Research gaps)
 
-Không viết bài ở bước này.
+*Lưu ý: Chưa tiến hành viết bài ở bước này.*

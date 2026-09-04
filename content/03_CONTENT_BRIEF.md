@@ -1,30 +1,29 @@
-# CONTENT BRIEF
-# Bản thiết kế bài viết
+# BẢN THIẾT KẾ BÀI VIẾT (CONTENT BRIEF)
 
 ## Mục tiêu
 
-Không viết bài khi chưa có brief rõ ràng.
+Không viết bài khi chưa có bản brief rõ ràng.
 
-## 1. Basic Information
+## 1. Thông tin cơ bản
 
 - Tên bài:
-- Slug:
-- Topic:
-- Target audience:
-- Search intent:
-- Goal:
-- Priority:
-- Planned publish date:
+- Đường dẫn tĩnh (Slug):
+- Chủ đề:
+- Độc giả mục tiêu:
+- Ý định tìm kiếm của độc giả:
+- Mục tiêu bài viết:
+- Mức độ ưu tiên:
+- Ngày dự kiến xuất bản:
 
-## 2. Main Thesis
-
-> 
-
-## 3. Unique Angle
+## 2. Luận điểm chính
 
 > 
 
-## 4. Reader Questions
+## 3. Góc tiếp cận độc đáo
+
+> 
+
+## 4. Câu hỏi độc giả quan tâm
 
 1.
 2.
@@ -32,22 +31,22 @@ Không viết bài khi chưa có brief rõ ràng.
 4.
 5.
 
-## 5. Key Facts
+## 5. Dữ kiện & Số liệu then chốt
 
-| ID | Fact | Source | Confidence |
+| Mã | Dữ kiện | Nguồn tham chiếu | Độ tin cậy |
 |---|---|---|---|
 | C01 | | | |
 | C02 | | | |
 
-## 6. Scope
+## 6. Phạm vi nội dung
 
-### Include
+### Bao gồm
 -
 
-### Exclude
+### Loại trừ
 -
 
-## 7. Reader Outcome
+## 7. Giá trị độc giả nhận được
 
 Sau khi đọc, độc giả phải:
 
@@ -60,51 +59,51 @@ Sau khi đọc, độc giả phải:
 **Tránh:**
 -
 
-**Có thể làm:**
+**Có thể làm / Áp dụng thực tế:**
 -
 
-## 8. Content Structure
+## 8. Cấu trúc nội dung
 
-### Section 1
+### Phần 1
 Mục tiêu:
 
-### Section 2
+### Phần 2
 Mục tiêu:
 
-### Section 3
+### Phần 3
 Mục tiêu:
 
-### Section 4
+### Phần 4
 Mục tiêu:
 
-## 9. Keywords
+## 9. Từ khóa (Keywords)
 
-- Primary:
-- Secondary:
-- Related:
-- Questions:
+- Từ khóa chính:
+- Từ khóa phụ:
+- Từ khóa liên quan:
+- Câu hỏi tìm kiếm:
 
-Keyword phải được dùng tự nhiên.
+*Từ khóa phải được lồng ghép tự nhiên, không nhồi nhét.*
 
-## 10. Sources
+## 10. Danh sách nguồn tham khảo
 
 - S01:
 - S02:
 - S03:
 
-## 11. Risks
+## 11. Rủi ro & Điểm cần lưu ý
 
-- Claim dễ sai:
-- Dữ liệu cần cập nhật:
+- Luận điểm dễ sai sót:
+- Dữ liệu cần cập nhật theo thời gian:
 - Nội dung nhạy cảm:
-- Khoảng trống:
+- Khoảng trống thông tin:
 
-## 12. Acceptance Criteria
+## 12. Tiêu chuẩn nghiệm thu đề cương
 
-- [ ] Audience rõ
-- [ ] Intent rõ
-- [ ] Thesis rõ
-- [ ] Unique angle rõ
-- [ ] Sources đủ
-- [ ] Scope rõ
-- [ ] Có thể tạo outline
+- [ ] Xác định rõ độc giả mục tiêu
+- [ ] Xác định rõ ý định tìm kiếm
+- [ ] Luận điểm chính rõ ràng, sắc bén
+- [ ] Góc tiếp cận độc đáo, có chiều sâu
+- [ ] Nguồn tư liệu đầy đủ, tin cậy
+- [ ] Phạm vi nội dung rõ ràng
+- [ ] Đủ cơ sở để xây dựng dàn bài chi tiết

@@ -1,24 +1,24 @@
-# CONTENT BRIEF — [TÊN BÀI]
+# BẢN ĐỀ CƯƠNG NỘI DUNG — [TÊN BÀI]
 
 ## Thông tin cơ bản
 
-- Topic:
-- Slug:
-- Target audience:
-- Search intent:
-- Goal:
-- Priority:
-- Planned publish date:
+- Chủ đề:
+- Đường dẫn tĩnh (Slug):
+- Độc giả mục tiêu:
+- Ý định tìm kiếm của độc giả:
+- Mục tiêu bài viết:
+- Mức độ ưu tiên:
+- Ngày dự kiến xuất bản:
 
-## Main thesis
-
->
-
-## Unique angle
+## Luận điểm chính
 
 >
 
-## Reader questions
+## Góc tiếp cận độc đáo
+
+>
+
+## Câu hỏi độc giả quan tâm
 
 1.
 2.
@@ -26,23 +26,23 @@
 4.
 5.
 
-## Key facts
+## Dữ kiện & Số liệu then chốt
 
-| ID | Fact | Source | Confidence |
+| Mã | Dữ kiện | Nguồn tham chiếu | Độ tin cậy |
 |---|---|---|---|
 | C01 | | | |
 | C02 | | | |
 | C03 | | | |
 
-## Scope
+## Phạm vi nội dung
 
-### Include
+### Bao gồm
 -
 
-### Exclude
+### Loại trừ
 -
 
-## Reader outcome
+## Giá trị độc giả nhận được
 
 ### Hiểu
 -
@@ -53,31 +53,31 @@
 ### Tránh
 -
 
-### Có thể làm
+### Có thể áp dụng thực tế
 -
 
-## Keywords
+## Từ khóa (Keywords)
 
-- Primary:
-- Secondary:
-- Related:
+- Từ khóa chính:
+- Từ khóa phụ:
+- Từ khóa liên quan:
 
-## Sources
+## Danh sách nguồn tham khảo
 
 - S01:
 - S02:
 - S03:
 
-## Risks / Missing information
+## Rủi ro & Thông tin còn thiếu
 
 -
 
-## Acceptance criteria
+## Tiêu chí nghiệm thu đề cương
 
-- [ ] Audience rõ
-- [ ] Intent rõ
-- [ ] Thesis rõ
-- [ ] Unique angle rõ
-- [ ] Sources đủ
-- [ ] Scope rõ
-- [ ] Có thể tạo outline
+- [ ] Xác định rõ độc giả mục tiêu
+- [ ] Xác định rõ ý định tìm kiếm
+- [ ] Luận điểm chính rõ ràng, sắc bén
+- [ ] Góc tiếp cận độc đáo, có chiều sâu
+- [ ] Nguồn tư liệu đầy đủ, tin cậy
+- [ ] Phạm vi nội dung rõ ràng
+- [ ] Đủ cơ sở để xây dựng dàn bài chi tiết

@@ -1,124 +1,120 @@
-# ARTICLE WRITING
-# Quy tắc viết bài
+# QUY TẮC VIẾT BÀI (ARTICLE WRITING)
 
 ## Mục tiêu
 
-Viết bài tiếng Việt dựa trên:
-- Content Brief;
-- Outline;
-- Source Research.
+Viết bài tiếng Việt chất lượng cao dựa trên:
+- Bản đề cương (Content Brief);
+- Dàn ý chi tiết (Outline);
+- Hồ sơ nghiên cứu nguồn (Source Research).
 
-## 1. Nguyên tắc
+## 1. Nguyên tắc cốt lõi
 
-Bài phải:
-- hữu ích;
-- rõ ràng;
-- chính xác;
-- dễ đọc;
-- có logic;
-- có giá trị riêng;
-- tự nhiên với độc giả Việt Nam.
+Bài viết phải:
+- hữu ích và mang lại giá trị thực tế;
+- rõ ràng, mạch lạc;
+- chính xác về mặt dữ kiện;
+- dễ đọc, dễ hiểu;
+- lập luận có tính logic cao;
+- có góc nhìn và văn phong riêng;
+- tự nhiên và gần gũi với độc giả Việt Nam.
 
-## 2. Không tự bịa
+## 2. Tuyệt đối không tự suy diễn
 
-Nếu không biết:
-- tìm nguồn;
+Nếu gặp dữ kiện chưa rõ:
+- tra cứu lại nguồn gốc;
 - đánh dấu [CẦN KIỂM CHỨNG];
-- hoặc loại bỏ claim.
+- hoặc loại bỏ hoàn toàn luận điểm đó.
 
-Không đoán để lấp khoảng trống.
+*Tuyệt đối không phỏng đoán để lấp khoảng trống thông tin.*
 
-## 3. Phân loại nội dung
+## 3. Phân định rõ các loại nội dung
 
-### FACT
-Thông tin có thể kiểm chứng.
+### SỰ THẬT (FACT)
+Thông tin khách quan, số liệu, sự kiện có thể kiểm chứng độc lập.
 
-### ANALYSIS
-Suy luận từ dữ kiện. Phải thể hiện đây là phân tích.
+### PHÂN TÍCH (ANALYSIS)
+Suy luận logic dựa trên chuỗi dữ kiện thực tế. Bắt buộc phải thể hiện đây là nhận định chuyên môn.
 
-### OPINION
-Quan điểm. Không trình bày như fact.
+### QUAN ĐIỂM (OPINION)
+Góc nhìn cá nhân hoặc trường phái đầu tư. Tuyệt đối không trình bày như một sự thật hiển nhiên.
 
-### PREDICTION
-Dự đoán. Phải thể hiện mức độ không chắc chắn.
+### DỰ ĐOÁN (PREDICTION)
+Kỳ vọng về tương lai. Luôn thể hiện rõ mức độ bất định và các kịch bản rủi ro đi kèm.
 
-## 4. Title
+## 4. Tiêu đề bài viết (Title)
 
-Tiêu đề:
-- rõ;
-- chính xác;
-- hấp dẫn vừa đủ;
-- không clickbait;
-- không hứa điều bài không cung cấp.
+Tiêu đề phải:
+- rõ ràng, cô đọng;
+- phản ánh chính xác nội dung bên trong;
+- hấp dẫn nhưng chừng mực;
+- không giật tít, câu view rẻ tiền (clickbait);
+- không hứa hẹn những điều bài viết không giải quyết được.
 
-## 5. Introduction
+## 5. Mở bài (Introduction)
 
-Mở bài nên:
-1. nêu vấn đề;
-2. tạo ngữ cảnh;
-3. cho biết bài sẽ giải quyết gì.
+Mở bài cần:
+1. nêu bật ngay vấn đề hoặc bối cảnh thị trường;
+2. giải thích vì sao vấn đề này quan trọng với độc giả;
+3. chỉ rõ bài viết sẽ giúp độc giả giải quyết điều gì.
 
-Tránh mở bài sáo rỗng.
+*Tránh mở bài vòng vo, sáo rỗng theo kiểu khuôn mẫu AI.*
 
-## 6. Body
+## 6. Thân bài (Body)
 
-Mỗi H2:
-- có một mục tiêu;
-- trả lời một nhóm câu hỏi;
-- dùng fact phù hợp.
+Mỗi đề mục H2:
+- giải quyết trọn vẹn một mục tiêu cụ thể;
+- trả lời một nhóm câu hỏi của độc giả;
+- sử dụng dữ kiện và số liệu minh chứng phù hợp.
 
-Mỗi đoạn:
-- tập trung vào một ý;
-- tránh lặp.
+Mỗi đoạn văn:
+- tập trung làm sáng tỏ một ý duy nhất;
+- chuyển ý mượt mà, tránh lặp từ và lặp ý.
 
-## 7. Tiếng Việt
+## 7. Tiêu chuẩn tiếng Việt
 
 Ưu tiên:
-- câu tự nhiên;
-- từ phổ thông;
-- chủ ngữ rõ;
-- động từ cụ thể;
-- giải thích thuật ngữ.
+- câu từ tự nhiên, chuẩn ngữ pháp tiếng Việt;
+- từ ngữ phổ thông, trong sáng;
+- câu có chủ ngữ, vị ngữ rõ ràng;
+- sử dụng động từ cụ thể, giàu hình ảnh;
+- giải thích cặn kẽ các thuật ngữ chuyên ngành khi xuất hiện lần đầu.
 
 Tránh:
-- dịch máy;
-- sáo rỗng;
-- quá nhiều từ tiếng Anh;
-- câu dài;
-- lặp cấu trúc.
+- dịch máy thô cứng (word-by-word);
+- văn phong sáo rỗng, khuôn sáo;
+- lạm dụng chêm xen từ tiếng Anh không cần thiết;
+- câu văn quá dài lê thê;
+- lặp đi lặp lại cấu trúc ngữ pháp.
 
-## 8. Nguồn
+## 8. Trích dẫn và xử lý nguồn
 
-Ưu tiên diễn giải.
+- Ưu tiên diễn giải, phân tích bằng ngôn ngữ của tác giả.
+- Không biến bài viết thành một danh sách trích dẫn chắp vá.
+- Mọi dữ kiện quan trọng đều phải truy vết được về nguồn gốc trong hồ sơ nghiên cứu.
 
-Không biến bài thành danh sách trích dẫn.
+## 9. Tối ưu tìm kiếm (SEO)
 
-Claim quan trọng phải truy được về nguồn.
-
-## 9. SEO
-
-Nguyên tắc:
-> Viết cho người trước, tối ưu tìm kiếm sau.
+Nguyên tắc bất biến:
+> Viết cho con người đọc trước, tối ưu công cụ tìm kiếm sau.
 
 Không:
-- keyword stuffing;
-- lặp keyword;
-- tạo heading vô nghĩa chỉ để chứa keyword.
+- nhồi nhét từ khóa (keyword stuffing);
+- lặp lại từ khóa gượng ép;
+- tạo các tiêu đề vô nghĩa chỉ nhằm mục đích SEO.
 
-Có:
-- trả lời search intent;
-- cấu trúc rõ;
-- nội dung dễ quét;
-- internal/external links phù hợp.
+Nên:
+- giải quyết triệt để ý định tìm kiếm của người đọc (search intent);
+- bố cục bài viết rành mạch, dễ quét thông tin (scanable);
+- liên kết nội bộ (internal link) tự nhiên và hữu ích.
 
-## 10. Quy trình
+## 10. Quy trình triển khai
 
-1. Đọc Brief.
-2. Đọc Sources.
-3. Tạo Outline.
-4. Viết từng section.
-5. Kiểm tra claim.
-6. Đọc lại.
-7. Chuyển Fact Check.
+1. Đọc kỹ Bản đề cương (Brief).
+2. Nghiên cứu tài liệu nguồn (Sources).
+3. Lập dàn ý chi tiết (Outline).
+4. Viết từng phần nội dung.
+5. Đối chiếu lại các luận điểm và số liệu.
+6. Tự đọc và biên tập lại văn phong.
+7. Chuyển sang bước Thẩm định thông tin (Fact Check).
 
-Draft chưa được coi là verified.
+*Bản thảo đầu tiên (Draft) chưa được coi là thông tin đã kiểm chứng.*

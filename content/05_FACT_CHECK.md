@@ -22,42 +22,42 @@
 - thông tin tài chính;
 - thông tin có thể ảnh hưởng quyết định.
 
-## 2. Claim Types
+## 2. Các loại thông tin cần kiểm chứng
 
-- FACT
-- STATISTIC
-- DATE
-- QUOTE
-- LEGAL/POLICY
-- FINANCIAL
-- ANALYSIS
-- OPINION
-- PREDICTION
+- SỰ THẬT
+- SỐ LIỆU
+- NGÀY THÁNG
+- TRÍCH DẪN
+- PHÁP LÝ / CHÍNH SÁCH
+- TÀI CHÍNH
+- PHÂN TÍCH
+- QUAN ĐIỂM
+- DỰ ĐOÁN
 
-## 3. Claim Record
+## 3. Hồ sơ kiểm chứng luận điểm
 
-Claim:
-Type:
-Source:
-Source type:
-Published/updated:
-Checked at:
-Status:
-Confidence:
-Notes:
+- Nội dung tuyên bố:
+- Loại thông tin:
+- Nguồn tham chiếu:
+- Loại nguồn:
+- Ngày xuất bản/cập nhật:
+- Thời điểm kiểm tra:
+- Trạng thái kiểm chứng:
+- Độ tin cậy:
+- Ghi chú:
 
-### Status
+### Trạng thái kiểm chứng
 
-VERIFIED
-PARTIALLY_VERIFIED
-UNVERIFIED
-FALSE
+- ĐÃ XÁC THỰC
+- XÁC THỰC MỘT PHẦN
+- CHƯA XÁC THỰC
+- SAI SỰ THẬT
 
-### Confidence
+### Độ tin cậy
 
-HIGH
-MEDIUM
-LOW
+- CAO
+- TRUNG BÌNH
+- THẤP
 
 ## 4. Kiểm tra số liệu
 
@@ -109,11 +109,11 @@ Phải:
 - không tự tạo số liệu;
 - tránh biến phân tích thành lời khuyên đầu tư.
 
-## 9. Final Gate
+## 9. Tiêu chuẩn nghiệm thu cuối cùng
 
-Không PASS nếu còn:
-- nguồn giả;
-- quote chưa xác minh;
+Không ĐẠT nếu còn:
+- nguồn giả mạo;
+- trích dẫn chưa xác minh;
 - số liệu không có căn cứ;
-- claim quan trọng UNVERIFIED;
+- thông tin quan trọng chưa được xác thực;
 - thông tin lỗi thời được trình bày như hiện tại.
