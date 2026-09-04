@@ -35,6 +35,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { DomainsModule } from './modules/domains/domains.module';
 import { LearningModule } from './modules/learning/learning.module';
 import { AiEditorialModule } from './modules/ai-editorial/ai-editorial.module';
+import { MarketModule } from './modules/market/market.module';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { AiEditorialModule } from './modules/ai-editorial/ai-editorial.module';
     DomainsModule,
     LearningModule,
     AiEditorialModule,
+    MarketModule,
   ],
   controllers: [AppController, TestSecurityController],
   providers: [
