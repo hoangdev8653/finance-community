@@ -6,6 +6,7 @@ import { LoginDto } from '../dto/login.dto';
 import { Public } from '../decorators/public.decorator';
 
 import { GoogleAuthDto } from '../dto/google-auth.dto';
+import { LogoutDto } from '../dto/logout.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -46,5 +47,18 @@ export class AuthController {
   @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refresh(@Body() dto: { refreshToken: string }) { return this.authService.refresh(dto.refreshToken); }
+  @ApiOperation({ summary: 'Rotate refresh token and issue new access token' })
+  @ApiResponse({ status: 200, description: 'New token pair issued' })
+  refresh(@Body() dto: { refreshToken: string }) {
+    return this.authService.refresh(dto.refreshToken);
+  }
+
+  @Public()
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Logout and revoke refresh tokens' })
+  @ApiResponse({ status: 200, description: 'User logged out and tokens revoked successfully' })
+  logout(@Body() dto?: LogoutDto) {
+    return this.authService.logout(undefined, dto?.refreshToken);
+  }
 }

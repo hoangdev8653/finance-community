@@ -13,6 +13,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './services/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { AuthCredentialsRepository } from '../../database/repositories/auth-credentials.repository';
+import { RefreshTokensRepository } from '../../database/repositories/refresh-tokens.repository';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { AuthCredentialsRepository } from '../../database/repositories/auth-cred
   providers: [
     AuthService,
     AuthCredentialsRepository,
+    RefreshTokensRepository,
     LocalJwtStrategy,
     SupabaseJwksStrategy,
     JwtAuthGuard,
@@ -35,6 +37,7 @@ import { AuthCredentialsRepository } from '../../database/repositories/auth-cred
   ],
   exports: [
     AuthService,
+    RefreshTokensRepository,
     PassportModule,
     JwtModule,
     LocalJwtStrategy,

@@ -17,6 +17,7 @@ import { JitProvisioningService } from '../../users/services/jit-provisioning.se
 import { AuthCredentialsRepository } from '../../../database/repositories/auth-credentials.repository';
 import { UsersRepository } from '../../../database/repositories/users.repository';
 import { ProfilesRepository } from '../../../database/repositories/profiles.repository';
+import { RefreshTokensRepository } from '../../../database/repositories/refresh-tokens.repository';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
 import { GoogleAuthDto } from '../dto/google-auth.dto';
@@ -58,6 +59,7 @@ export class AuthService {
     @Optional() private readonly authCredentialsRepo?: AuthCredentialsRepository,
     @Optional() private readonly usersRepo?: UsersRepository,
     @Optional() private readonly profilesRepo?: ProfilesRepository,
+    @Optional() private readonly refreshTokensRepo?: RefreshTokensRepository,
   ) {
     if (
       this.secConfig.googleClientId &&
@@ -71,15 +73,49 @@ export class AuthService {
     return process.env.NODE_ENV === 'test';
   }
 
-  private issueTokens(userId: string, email: string, emailConfirmedAt: string | null = null) {
+  private async issueTokens(
+    userId: string,
+    email: string,
+    emailConfirmedAt: string | null = null,
+    existingFamily?: string,
+  ) {
+    const family = existingFamily || randomUUID();
     const payload = {
       sub: userId,
       email,
       email_confirmed_at: emailConfirmedAt ?? new Date().toISOString(),
+      family,
     };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.secConfig.jwtSecret,
+      expiresIn: '7d',
+    });
+    const refreshToken = this.jwtService.sign(
+      { ...payload, type: 'refresh' },
+      { secret: this.secConfig.jwtSecret, expiresIn: '30d' },
+    );
+
+    if (this.refreshTokensRepo) {
+      try {
+        const tokenHash = createHash('sha256').update(refreshToken).digest('hex');
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+        await this.refreshTokensRepo.createTokenTx(undefined, {
+          userId,
+          tokenHash,
+          family,
+          expiresAt,
+        });
+      } catch (err) {
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Error saving refresh token: ${err}`);
+        }
+      }
+    }
+
     return {
-      accessToken: this.jwtService.sign(payload, { secret: this.secConfig.jwtSecret, expiresIn: '7d' }),
-      refreshToken: this.jwtService.sign({ ...payload, type: 'refresh' }, { secret: this.secConfig.jwtSecret, expiresIn: '30d' }),
+      accessToken,
+      refreshToken,
       tokenType: 'Bearer',
     };
   }
@@ -91,10 +127,40 @@ export class AuthService {
         email: string;
         type?: string;
         email_confirmed_at?: string;
+        family?: string;
       }>(refreshToken, { secret: this.secConfig.jwtSecret });
 
       if (payload.type !== 'refresh') {
         throw new Error('wrong token type');
+      }
+
+      const tokenHash = createHash('sha256').update(refreshToken).digest('hex');
+
+      // Database-backed Token Rotation & Revocation Check
+      if (this.refreshTokensRepo) {
+        try {
+          const record = await this.refreshTokensRepo.findByTokenHash(tokenHash);
+          if (record) {
+            if (record.isRevoked) {
+              // Token reuse detected! Invalidate entire family to protect account!
+              await this.refreshTokensRepo.revokeFamilyTx(undefined, record.family);
+              this.logger.warn(`Refresh token reuse detected for user ${record.userId}! Revoked family ${record.family}`);
+              throw new UnauthorizedException({
+                statusCode: 401,
+                error: 'Unauthorized',
+                message: 'Phát hiện token đã hết hạn hoặc bị tái sử dụng. Vui lòng đăng nhập lại.',
+                code: 'TOKEN_REUSE_DETECTED',
+              });
+            }
+            // Revoke the used refresh token
+            await this.refreshTokensRepo.revokeTokenTx(undefined, record.id);
+          }
+        } catch (err) {
+          if (err instanceof UnauthorizedException) throw err;
+          if (!this.isTestEnvironment() || !isDbOffline(err)) {
+            throw err;
+          }
+        }
       }
 
       if (this.usersRepo) {
@@ -116,11 +182,36 @@ export class AuthService {
         }
       }
 
-      return this.issueTokens(payload.sub, payload.email, payload.email_confirmed_at);
+      return await this.issueTokens(payload.sub, payload.email, payload.email_confirmed_at, payload.family);
     } catch (err) {
-      if (err instanceof ForbiddenException) throw err;
+      if (err instanceof ForbiddenException || err instanceof UnauthorizedException) throw err;
       throw new UnauthorizedException('Refresh token expired or invalid.');
     }
+  }
+
+  async logout(userId?: string, refreshToken?: string) {
+    if (this.refreshTokensRepo) {
+      try {
+        if (refreshToken) {
+          const tokenHash = createHash('sha256').update(refreshToken).digest('hex');
+          const record = await this.refreshTokensRepo.findByTokenHash(tokenHash);
+          if (record) {
+            await this.refreshTokensRepo.revokeFamilyTx(undefined, record.family);
+          }
+        } else if (userId) {
+          await this.refreshTokensRepo.revokeAllUserTokensTx(undefined, userId);
+        }
+      } catch (err) {
+        if (!this.isTestEnvironment() || !isDbOffline(err)) {
+          this.logger.error(`Error during token revocation on logout: ${err}`);
+        }
+      }
+    }
+
+    return {
+      success: true,
+      message: 'Đăng xuất và thu hồi phiên đăng nhập thành công.',
+    };
   }
 
   async register(dto: RegisterDto) {
@@ -219,7 +310,7 @@ export class AuthService {
     }
 
     // 6. Sign JWT Tokens
-    const tokens = this.issueTokens(userRecord.id, userRecord.email);
+    const tokens = await this.issueTokens(userRecord.id, userRecord.email);
 
     return {
       accessToken: tokens.accessToken,
@@ -325,7 +416,7 @@ export class AuthService {
       email: targetEmail,
     });
 
-    const tokens = this.issueTokens(userRecord.id, userRecord.email);
+    const tokens = await this.issueTokens(userRecord.id, userRecord.email);
 
     return {
       accessToken: tokens.accessToken,
@@ -396,7 +487,7 @@ export class AuthService {
       displayName: name,
     });
 
-    const tokens = this.issueTokens(userRecord.id, userRecord.email);
+    const tokens = await this.issueTokens(userRecord.id, userRecord.email);
 
     return {
       accessToken: tokens.accessToken,

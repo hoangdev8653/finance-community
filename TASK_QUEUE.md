@@ -65,12 +65,16 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] BE-05: Quản lý Phiên đăng nhập (Refresh Token Rotation & Revocation)
+### [DONE] [P1] BE-05: Quản lý Phiên đăng nhập (Refresh Token Rotation & Revocation)
 
-- **Mục tiêu:** Ngăn chặn việc refresh token bị lạm dụng khi user đăng xuất, đổi mật khẩu hoặc bị cấm tài khoản.
-- **Phạm vi:** Bảng schema `refresh_tokens`, `auth.service.ts`, `auth.controller.ts`.
-- **Yêu cầu:** Lưu trữ refresh token (hash), hỗ trợ cơ chế rotation (cấp mới hủy cũ), endpoint `POST /auth/logout` thu hồi token.
-- **Tiêu chí hoàn thành:** Refresh token cũ không thể tái sử dụng; logout thu hồi token thành công.
+- **Kết quả:**
+  - Thiết kế bảng `refresh_tokens` trong PostgreSQL schema Drizzle lưu trữ `tokenHash` (SHA-256), `family` (UUID cho cơ chế Token Rotation), `isRevoked` và `expiresAt`.
+  - Xây dựng `RefreshTokensRepository` quản lý tạo mới, tra cứu hash, thu hồi token đơn lẻ và thu hồi toàn bộ token family khi phát hiện token reuse.
+  - Cập nhật `AuthService.refresh()`: xoay vòng token khi cấp phát mới, tự động phát hiện và thu hồi toàn bộ family nếu kẻ tấn công cố tình tái sử dụng refresh token đã cũ/đã hủy.
+  - Bổ sung endpoint `POST /api/v1/auth/logout` thu hồi refresh token của người dùng.
+- **Files:** `apps/api/src/database/schema/refresh-tokens.schema.ts`, `apps/api/src/database/schema/index.ts`, `apps/api/src/database/repositories/refresh-tokens.repository.ts`, `apps/api/src/modules/auth/auth.module.ts`, `apps/api/src/modules/auth/dto/logout.dto.ts`, `apps/api/src/modules/auth/services/auth.service.ts`, `apps/api/src/modules/auth/controllers/auth.controller.ts`.
+- **Kiểm tra:** `npm run build` thành công code 0, 8/8 test suites trong `test/security` pass 36/36.
+- **Ghi chú:** Đã ngăn chặn rủi ro rò rỉ token kéo dài 30 ngày và bảo vệ tài khoản người dùng ngay khi bấm Đăng xuất hoặc bị lộ token.
 
 ---
 

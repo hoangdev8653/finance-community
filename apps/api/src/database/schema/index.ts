@@ -26,6 +26,7 @@ import { postTopicsTable } from './post-topics.schema';
 import { quizzesTable, quizQuestionsTable, learningProgressTable } from './learning.schema';
 import { learningSourcesTable } from './learning-sources.schema';
 import { learningSeriesTable, learningSeriesPostsTable } from './learning-series.schema';
+import { refreshTokensTable } from './refresh-tokens.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -55,6 +56,7 @@ export * from './post-topics.schema';
 export * from './learning.schema';
 export * from './learning-sources.schema';
 export * from './learning-series.schema';
+export * from './refresh-tokens.schema';
 
 export const schema = {
   users: usersTable,
@@ -88,4 +90,5 @@ export const schema = {
   learningSources: learningSourcesTable,
   learningSeries: learningSeriesTable,
   learningSeriesPosts: learningSeriesPostsTable,
+  refreshTokens: refreshTokensTable,
 };
