@@ -89,6 +89,18 @@ export class PostsController {
   @ApiOperation({ summary: 'Get a post for Learning editorial editing' })
   getAdminPost(@Param('id') id: string, @CurrentUser() user: any) { return this.postsService.getPostById(id, user.sub); }
 
+  @Get(':id/bookmark')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get current user bookmark status for a post' })
+  @ApiResponse({ status: 200, description: 'Bookmark status' })
+  @UseGuards(JwtAuthGuard)
+  getBookmarkStatus(
+    @CurrentUser() user: any,
+    @Param('id') id: string,
+  ) {
+    return this.postsService.isPostBookmarked(user.sub, id);
+  }
+
   @Post(':id/bookmark')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth('JWT-auth')

@@ -675,7 +675,15 @@ export class PostsService {
     return this.postBookmarksRepo.toggleBookmarkTx(undefined, userId, postId);
   }
 
-  async getMyBookmarkedPosts(userId: string, page = 1, limit = 20) {
+  async isPostBookmarked(userId: string, postId: string): Promise<{ bookmarked: boolean }> {
+    if (!this.postBookmarksRepo) {
+      return { bookmarked: false };
+    }
+    const bookmarked = await this.postBookmarksRepo.isBookmarked(userId, postId);
+    return { bookmarked };
+  }
+
+  async getMyBookmarkedPosts(userId: string, page = 1, limit = 10) {
     if (!this.postBookmarksRepo) {
       return {
         data: [],
@@ -696,7 +704,7 @@ export class PostsService {
       authorId: query.authorId,
       status: query.status || 'PUBLISHED',
       page: query.page,
-      limit: query.limit,
+      limit: query.limit || 10,
       sortBy: query.sortBy,
       order: query.order,
       q: query.q,
@@ -705,11 +713,11 @@ export class PostsService {
     return this.postsRepo.findFeedPaginated(options);
   }
 
-  async findFollowingFeed(userId: string, page = 1, limit = 20) {
+  async findFollowingFeed(userId: string, page = 1, limit = 10) {
     return this.postsRepo.findFollowingFeedPaginated(userId, page, limit);
   }
 
-  async findTrendingFeed(page = 1, limit = 20) {
+  async findTrendingFeed(page = 1, limit = 10) {
     return this.postsRepo.findTrendingFeedPaginated(page, limit);
   }
 

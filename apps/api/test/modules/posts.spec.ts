@@ -41,6 +41,11 @@ describe('PostsService (Content Engine)', () => {
         categoryId: data.categoryId || null,
         domainId: data.domainId || null,
         status: data.status,
+        editorialStatus: data.editorialStatus || 'DRAFT',
+        moderationStatus: 'UNREVIEWED',
+        moderatedBy: null,
+        moderatedAt: null,
+        moderationReason: null,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
         sourceType: data.sourceType || 'USER',
@@ -63,6 +68,11 @@ describe('PostsService (Content Engine)', () => {
         categoryId: data.categoryId || null,
         domainId: data.domainId || null,
         status: data.status || 'DRAFT',
+        editorialStatus: data.editorialStatus || 'DRAFT',
+        moderationStatus: 'UNREVIEWED',
+        moderatedBy: null,
+        moderatedAt: null,
+        moderationReason: null,
         metaTitle: null,
         metaDescription: null,
         sourceType: data.sourceType || 'USER',
@@ -85,8 +95,16 @@ describe('PostsService (Content Engine)', () => {
         categoryId: null,
         domainId: null,
         status: 'DRAFT',
+        editorialStatus: 'DRAFT',
+        moderationStatus: 'UNREVIEWED',
+        moderatedBy: null,
+        moderatedAt: null,
+        moderationReason: null,
         metaTitle: null,
         metaDescription: null,
+        sourceType: 'USER',
+        sourceUrl: null,
+        sourceName: null,
         viewCount: 0,
         publishedAt: null,
         createdAt: new Date(),
@@ -200,6 +218,8 @@ describe('PostsService (Content Engine)', () => {
     const post = await postsService.createPost('author-uuid-1', {
       title: 'Draft Post Title',
       contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       status: 'DRAFT',
     });
 
@@ -211,6 +231,8 @@ describe('PostsService (Content Engine)', () => {
     const post = await postsService.createPost('author-uuid-1', {
       title: 'Published Post Title',
       contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       status: 'PUBLISHED',
     });
 
@@ -241,6 +263,8 @@ describe('PostsService (Content Engine)', () => {
     const post = await postsService.createPost('author-uuid-1', {
       title: 'XSS Test',
       contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       body: maliciousBody,
       status: 'DRAFT',
     });
@@ -253,7 +277,9 @@ describe('PostsService (Content Engine)', () => {
   it('34.4a: should create and update NEWS source metadata', async () => {
     const created = await postsService.createPost('author-uuid-1', {
       title: 'Market News',
-      contentType: 'NEWS',
+      contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       body: 'News body',
       status: 'DRAFT',
       sourceType: 'EDITORIAL',
@@ -264,14 +290,14 @@ describe('PostsService (Content Engine)', () => {
     expect(mockPostsRepo.createTx).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
-        contentType: 'NEWS',
-        domainId: null,
+        contentType: 'COMMUNITY',
+        domainId: 'domain-money',
         sourceType: 'EDITORIAL',
         sourceUrl: 'https://example.com/market-news',
         sourceName: 'Example Finance',
       }),
     );
-    expect(created.contentType).toBe('NEWS');
+    expect(created.contentType).toBe('COMMUNITY');
 
     await postsService.updatePost('author-uuid-1', ['MEMBER'], 'post-uuid-1', {
       sourceType: 'AI_CURATED',
@@ -308,12 +334,16 @@ describe('PostsService (Content Engine)', () => {
         categoryId: null,
         domainId: null,
         status: 'DRAFT',
+        editorialStatus: 'DRAFT',
         moderationStatus: 'UNREVIEWED',
         moderatedBy: null,
         moderatedAt: null,
         moderationReason: null,
         metaTitle: null,
         metaDescription: null,
+        sourceType: 'USER',
+        sourceUrl: null,
+        sourceName: null,
         viewCount: 0,
         publishedAt: null,
         createdAt: new Date(),
@@ -324,6 +354,8 @@ describe('PostsService (Content Engine)', () => {
     const post = await postsService.createPost('author-uuid-1', {
       title: 'Collision Title',
       contentType: 'COMMUNITY',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       status: 'DRAFT',
     });
 
@@ -338,6 +370,8 @@ describe('PostsService (Content Engine)', () => {
       postsService.createPost('author-uuid-1', {
         title: 'Rollback Test',
         contentType: 'COMMUNITY',
+        domainId: 'domain-money',
+        categoryId: 'cat-uuid-1',
         tags: ['Finance'],
         status: 'DRAFT',
       }),
@@ -361,6 +395,7 @@ describe('PostsService (Content Engine)', () => {
       title: 'Topic Post',
       contentType: 'COMMUNITY',
       domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
       topics: ['topic-1', 'topic-2'],
       status: 'DRAFT',
     });
@@ -411,13 +446,18 @@ describe('PostsService (Content Engine)', () => {
       body: 'Body',
       coverMediaId: null,
       categoryId: null,
+      domainId: null,
       status: 'PUBLISHED',
+      editorialStatus: 'PUBLISHED',
       moderationStatus: 'UNREVIEWED',
       moderatedBy: null,
       moderatedAt: null,
       moderationReason: null,
       metaTitle: null,
       metaDescription: null,
+      sourceType: 'USER',
+      sourceUrl: null,
+      sourceName: null,
       viewCount: 0,
       publishedAt: new Date(),
       createdAt: new Date(),

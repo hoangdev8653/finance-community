@@ -33,7 +33,7 @@ describe('TagsService', () => {
 
     expect(tag.id).toBe('tag-uuid-1');
     expect(tag.slug).toBe('personal-finance');
-    expect(mockTagsRepo.createOrGetTx).toHaveBeenCalledWith(undefined, 'Personal Finance', 'personal-finance');
+    expect(mockTagsRepo.createOrGetTx).toHaveBeenCalledWith(undefined, 'personal-finance', 'personal-finance');
   });
 
   it('should search tags by keyword', async () => {
