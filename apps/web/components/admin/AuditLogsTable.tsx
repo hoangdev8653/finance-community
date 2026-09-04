@@ -201,7 +201,7 @@ export function AuditLogsTable() {
         <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-2xs">
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-3xs">
+              <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-xs">
                 <tr>
                   <th className="py-3 px-4">Hành động</th>
                   <th className="py-3 px-4">Người thực hiện</th>
@@ -261,7 +261,7 @@ export function AuditLogsTable() {
                             <span>JSON</span>
                           </Button>
                         ) : (
-                          <span className="text-muted-foreground text-3xs">-</span>
+                          <span className="text-muted-foreground text-xs font-mono">-</span>
                         )}
                       </td>
                     </tr>

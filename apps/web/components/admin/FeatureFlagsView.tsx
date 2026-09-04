@@ -203,7 +203,7 @@ export function FeatureFlagsView() {
                     </span>
                     <Badge
                       variant={flag.isEnabled ? 'success' : 'secondary'}
-                      className="text-3xs font-mono uppercase"
+                      className="text-xs font-mono uppercase"
                     >
                       {flag.isEnabled ? 'Enabled' : 'Disabled'}
                     </Badge>

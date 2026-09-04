@@ -361,7 +361,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
                     <span className="font-bold text-sm text-foreground font-sans">
                       {domainLabels[domain.code] || domain.nameVi || domain.name}
                     </span>
-                    <Badge variant="outline" className="text-3xs font-mono">
+                    <Badge variant="outline" className="text-xs font-mono">
                       {domainCategories.length} danh mục
                     </Badge>
                   </span>

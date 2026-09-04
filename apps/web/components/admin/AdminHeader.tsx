@@ -47,7 +47,7 @@ export function AdminHeader() {
             <img src="/images/logo.png" alt="MorningView" className="h-9 w-9 object-contain" />
             <div className="min-w-0">
               <p className="truncate text-xs font-bold uppercase tracking-[0.18em] text-primary">MorningView</p>
-              <p className="truncate text-xs text-muted-foreground">Admin workspace</p>
+              <p className="truncate text-xs font-medium text-muted-foreground">Admin Workspace</p>
             </div>
           </div>
 
@@ -59,10 +59,10 @@ export function AdminHeader() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden h-9 w-48 items-center gap-2 rounded-lg border border-border bg-surface px-3 text-xs text-muted-foreground md:flex">
+          <div className="hidden h-9 w-52 items-center gap-2 rounded-lg border border-border bg-surface px-3 text-xs text-muted-foreground md:flex">
             <Search className="h-3.5 w-3.5" />
             <span>Tìm kiếm...</span>
-            <span className="ml-auto text-[10px]">Ctrl K</span>
+            <span className="ml-auto font-mono text-xs text-muted-foreground/80">Ctrl K</span>
           </div>
 
           {isAuthenticated && (

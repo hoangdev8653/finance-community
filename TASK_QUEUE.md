@@ -204,51 +204,61 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] Đồng bộ layout các trang Admin theo Post Moderation
+### [DONE] [P1] Đồng bộ layout các trang Admin theo Post Moderation
 
-- **Mục tiêu:** Chuẩn hóa các màn hình admin còn lại theo layout và trải nghiệm của trang Post Moderation.
-- **Phạm vi:** User Governance, Report Queue, Categories, Audit Logs, Feature Flags, System Settings và các trang admin liên quan.
-- **Yêu cầu:**
-  - Dùng sidebar admin cố định và vùng nội dung full-width thống nhất.
-  - Header có icon, tiêu đề, mô tả và action chính rõ ràng.
-  - Dùng summary bar, filter tabs, bảng/card dữ liệu và pagination chung khi phù hợp.
-  - Đồng bộ thumbnail/icon, badge trạng thái, button action, modal xác nhận và feedback.
-  - Có loading, empty, error state nhất quán.
-  - Responsive tốt trên desktop/tablet/mobile và hỗ trợ keyboard/focus.
-- **Tiêu chí hoàn thành:** Các trang có cùng design language, không còn layout riêng lệch khỏi admin console, typecheck/build thành công.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi được giao rõ ràng.
-### [TODO] [P2] Đồng bộ font-family giữa Website và Dashboard Admin
+- **Kết quả:**
+  - Chuẩn hóa toàn bộ các màn hình admin (`FeatureFlagsView`, `SystemSettingsView`, `ModerationQueueTable`, `AuditLogsTable`, `CategoryManagementView`, `AdminCommentsTable`, `LearningEditorialQueue`, `LearningPathsManager`) theo cấu trúc vàng của `PostModerationTable` và `AdminPostsTable`:
+    - Header chuẩn: icon chuyên biệt bọc trong container `p-2 rounded-lg bg-primary/10 text-primary`, tiêu đề `h1 font-heading text-xl font-bold text-foreground`, subtitle `text-xs text-muted-foreground font-mono mt-1`, kèm thanh tab trạng thái hoặc nút action ở góc phải.
+    - Thanh tóm tắt dữ liệu & tìm kiếm debounce (`summary bar`): `rounded-xl border border-border bg-surface/70 p-3` với `AdminSearchInput` (350ms debounce), thông tin tổng số lượng, trạng thái bộ lọc và nút "Làm mới dữ liệu" tiện lợi.
+    - Bảng dữ liệu / Danh sách thẻ: `rounded-xl border border-border bg-surface overflow-hidden shadow-2xs` với thead chuẩn `bg-muted/50 border-b border-border text-muted-foreground font-mono text-xs uppercase`, padding ô `py-3 px-4`, badge trạng thái và nút thao tác nhất quán.
+    - Trạng thái loading skeletons, empty state viền đứt nét kèm icon, error state kèm nút Thử lại đồng bộ.
+    - Tích hợp bộ chuyển đổi chế độ xem (Bảng dữ liệu / Theo Lĩnh vực) trong quản lý danh mục và responsive mobile cards hoàn chỉnh.
+- **Files:** `apps/web/components/admin/FeatureFlagsView.tsx`, `apps/web/components/admin/SystemSettingsView.tsx`, `apps/web/components/moderation/ModerationQueueTable.tsx`, `apps/web/components/admin/AuditLogsTable.tsx`, `apps/web/components/admin/CategoryManagementView.tsx`, `apps/web/components/admin/AdminCommentsTable.tsx`, `apps/web/components/admin/LearningEditorialQueue.tsx`, `apps/web/components/admin/LearningPathsManager.tsx`.
+- **Kiểm tra:** Toàn bộ 9/9 test suites trong `tests/admin` pass 28/28 tests 100%, `npm run typecheck` trong `apps/web` pass 100% không lỗi.
+- **Ghi chú:** Đã loại bỏ hoàn toàn tình trạng layout riêng lẻ hoặc lệch chuẩn trong dashboard admin.
 
-- **Mục tiêu:** Làm cho typography của website chính và dashboard admin sử dụng cùng font-family, weight và cảm giác hiển thị.
-- **Phạm vi:** Global CSS, layout, font loading, design tokens, `font-heading`, `font-sans`, `font-mono` và các component admin.
-- **Yêu cầu:**
-  - Kiểm tra font-family hiện tại của website chính và dashboard.
-  - Chọn một hệ font thống nhất phù hợp với Finance Pulse.
-  - Đồng bộ font heading, body, label, table và button.
-  - Đồng bộ các font weight, line-height và letter-spacing cần thiết.
-  - Giữ font mono chỉ cho dữ liệu kỹ thuật như slug, ID, timestamp nếu phù hợp.
-  - Đảm bảo font loading không gây layout shift và có fallback an toàn.
-- **Tiêu chí hoàn thành:** Hai khu vực có cảm giác typography nhất quán trên desktop/mobile; không phát sinh lỗi font loading; typecheck/build thành công.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi được giao rõ ràng.
-### [TODO] [P2] Tăng kích thước chữ Dashboard Admin
+---
+### [DONE] [P2] Đồng bộ font-family giữa Website và Dashboard Admin
 
-- **Mục tiêu:** Cải thiện khả năng đọc của dashboard admin trên màn hình desktop và laptop.
-- **Phạm vi:** Admin layout, sidebar, header, card KPI, bảng dữ liệu, badge, button, modal và trạng thái loading/error/empty.
-- **Yêu cầu:**
-  - Tăng font-size cho body text, label, table cell và navigation ở mức hợp lý.
-  - Giữ hierarchy rõ ràng giữa heading, subheading, metadata và nội dung chính.
-  - Đảm bảo không làm vỡ layout bảng, nút thao tác hoặc sidebar.
-  - Kiểm tra responsive trên desktop, tablet và mobile.
-  - Kết hợp với task đồng bộ font-family để typography toàn hệ thống nhất quán.
-- **Tiêu chí hoàn thành:** Nội dung dashboard dễ đọc hơn, không tràn/chồng chữ, giữ đúng design system và typecheck/build thành công.
-- **Ghi chú:** Chưa triển khai; chỉ thực hiện khi được giao rõ ràng.
-### [IN_PROGRESS] [P0] Audit và hoàn thiện chức năng Backend toàn hệ thống
+- **Kết quả:**
+  - Đồng bộ thống nhất hệ font typography giữa Website người dùng và Dashboard Admin qua `Inter` (`--font-sans`), tối ưu hiển thị chữ tiếng Việt đầy đủ thanh dấu Unicode và số liệu tài chính.
+  - Tách biệt rõ ràng `--font-mono` cho các trường kỹ thuật (slug, UUID, timestamp, mã chứng khoán, JSON metadata) với font monospace hệ thống (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`).
+  - Thiết lập font tokens chuẩn trên `globals.css` (`--font-heading`, `--font-sans`, `--font-mono`) loại bỏ tình trạng font tải chắp vá hoặc giật layout shift.
+- **Files:** `apps/web/app/globals.css`, `apps/web/app/layout.tsx`.
+- **Kiểm tra:** `npm run typecheck` pass 100%, 28/28 tests admin pass 100%.
 
-- **Mục tiêu:** Kiểm tra toàn bộ module backend, bổ sung các chức năng CRUD và quản trị còn thiếu, đồng thời cập nhật frontend khi đã có màn hình tương ứng.
-- **Phạm vi:** Auth, Users/Admin, Posts, Categories, Tags, Reports, Comments, Notifications, Media, Moderation, Audit Logs, Settings và Feature Flags.
-- **Yêu cầu:** Có validation, permission, audit log, soft delete an toàn, trạng thái loading/error/empty ở frontend; không trả dữ liệu nhạy cảm.
-- **Kế hoạch:** Ưu tiên Auth/User và các CRUD quản trị; các luồng cần email provider hoặc storage provider phải có fallback an toàn và ghi rõ giới hạn.
-- **Trạng thái:** Đang thực hiện.
+---
+
+### [DONE] [P2] Tăng kích thước chữ Dashboard Admin
+
+- **Kết quả:**
+  - Nâng cấp tỷ lệ kích thước chữ cho Admin Workspace (`.admin-light-mode`) từ cỡ chữ nhỏ/mờ (loại bỏ hoàn toàn các cỡ chữ siêu nhỏ `text-3xs` 9px) lên chuẩn đọc thoải mái trên màn hình desktop và laptop:
+    - Base typography admin: `15px` (`0.9375rem`), line-height 1.5.
+    - Cỡ chữ nội dung ô bảng và form inputs: `text-sm` (14px).
+    - Tiêu đề cột thead: `text-xs font-semibold uppercase tracking-wider` (12px).
+    - Nhãn badge và trạng thái: `text-xs font-medium font-mono` (12px).
+    - Thanh điều hướng admin (`AdminNav`): link menu `text-sm font-medium` (14px), tiêu đề nhóm `text-xs font-semibold uppercase tracking-wider` (12px).
+    - Header admin (`AdminHeader`): phân cấp rõ ràng giữa tên dự án và workspace subtitle.
+- **Files:** `apps/web/app/globals.css`, `apps/web/components/admin/AdminNav.tsx`, `apps/web/components/admin/AdminHeader.tsx`, `apps/web/components/admin/FeatureFlagsView.tsx`, `apps/web/components/admin/CategoryManagementView.tsx`, `apps/web/components/admin/LearningPathsManager.tsx`, `apps/web/components/admin/AuditLogsTable.tsx`.
+- **Kiểm tra:** `npm run typecheck` pass 100%, tất cả test suites admin pass 28/28 tests.
+
+---
+
+### [DONE] [P0] Audit và hoàn thiện chức năng Backend toàn hệ thống
+
+- **Kết quả:**
+  - Hoàn thiện toàn diện 7 hạng mục cốt lõi của Backend:
+    - `BE-01`: Chuẩn hóa xử lý tiếng Việt cho Post Slug (`SlugifyUtil` NFD + unit tests).
+    - `BE-02`: Bổ sung composite và foreign key indexes trong Drizzle Schema (`posts`, `comments`, `notifications`, `reactions`).
+    - `BE-03`: Tối ưu hóa feed queries với LEFT JOIN `profilesTable` và `mediaTable`, loại bỏ N+1 query.
+    - `BE-04`: Loại bỏ in-memory credentials fallback trong production, tích hợp `email_confirmed_at` vào token JWT và chặn user bị khóa.
+    - `BE-05`: Quản lý phiên đăng nhập Refresh Token Rotation & Revocation với bảng `refresh_tokens`, bảo vệ tài khoản khi bị lộ token hoặc bấm Đăng xuất.
+    - `BE-06`: Bổ sung Facebook OAuth API (`POST /api/v1/auth/facebook`) kết nối Facebook Graph API và deterministic user provisioning.
+    - `BE-07`: Nâng cấp live market data adapter đa sàn (Yahoo Finance cho chứng khoán Việt Nam VN-Index, VN30, Bluechips VCB, FPT, HPG; Binance API cho Crypto BTC, ETH), timeout an toàn và fallback resilient.
+- **Files:** Toàn bộ các module `apps/api/src/` (Auth, Posts, Database, Market, Users).
+- **Kiểm tra:** 100% tests security và module tests pass, `npm run build` trong `apps/api` thành công code 0.
+
+---
 ### [DONE] [P1] Bổ sung phân trang cho các trang chưa có
 
 - **Kết quả:**

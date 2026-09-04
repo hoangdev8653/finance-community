@@ -288,7 +288,7 @@ export function LearningPathsManager() {
                     <p className="mt-1 font-mono text-[11px] text-muted-foreground/70">{path.slug}</p>
                   </button>
                   <span className="shrink-0">
-                    <Badge variant={path.isPublished ? 'success' : 'secondary'} className="text-3xs font-mono">
+                    <Badge variant={path.isPublished ? 'success' : 'secondary'} className="text-xs font-mono">
                       {path.isPublished ? 'Đã xuất bản' : 'Bản nháp'}
                     </Badge>
                   </span>
