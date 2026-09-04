@@ -115,11 +115,11 @@ export class MarketService {
         updatedAt: new Date().toISOString(),
       }));
 
-      // 2. Fetch live crypto from Binance Public Ticker API (Non-blocking, fast fallback)
-      await this.fetchLiveCrypto(updatedList);
-
-      // 3. Realistic micro-fluctuation to keep ticker lively for real-time demonstration
-      this.applySubtleFluctuation(updatedList);
+      // 2. Concurrently fetch live market data from external adapters
+      await Promise.allSettled([
+        this.fetchLiveCrypto(updatedList),
+        this.fetchLiveVietnamMarket(updatedList),
+      ]);
 
       this.cachedItems = updatedList;
       this.lastFetchTime = now;
@@ -132,15 +132,14 @@ export class MarketService {
   }
 
   private async fetchLiveCrypto(items: MarketTickerItem[]): Promise<void> {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
+    try {
       const response = await fetch(
         'https://api.binance.com/api/v3/ticker/24hr?symbols=["BTCUSDT","ETHUSDT"]',
         { signal: controller.signal }
       );
-      clearTimeout(timeoutId);
 
       if (!response.ok) return;
 
@@ -170,28 +169,94 @@ export class MarketService {
       }
     } catch {
       // Ignore network errors, base snapshot is already in place
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 
-  private applySubtleFluctuation(items: MarketTickerItem[]): void {
-    // Apply very minor micro-variations (±0.02% to ±0.08%) on 1-2 random stocks
-    // to simulate active order matching on trading floors
-    const randomIndex = Math.floor(Math.random() * items.length);
-    const item = items[randomIndex];
+  private async fetchLiveVietnamMarket(items: MarketTickerItem[]): Promise<void> {
+    const symbolMap: Record<string, string> = {
+      '^VNINDEX.VN': 'VN-INDEX',
+      'VCB.VN': 'VCB',
+      'FPT.VN': 'FPT',
+      'HPG.VN': 'HPG',
+      'VND=X': 'USD/VND',
+      'GC=F': 'GOLD_GLOBAL',
+    };
 
-    // Keep crypto and FX exact, vary stocks and indexes slightly
-    if (item && (item.category === 'STOCK' || item.category === 'INDEX')) {
-      const deltaPercent = (Math.random() * 0.1 - 0.05); // -0.05% to +0.05%
-      const deltaPrice = Math.round(item.price * (deltaPercent / 100));
-      if (deltaPrice !== 0) {
-        item.price += deltaPrice;
-        item.change += deltaPrice;
-        if (item.currency === 'POINTS') {
-          item.price = Math.round(item.price * 100) / 100;
-          item.change = Math.round(item.change * 100) / 100;
+    const yahooSymbols = Object.keys(symbolMap);
+
+    await Promise.all(
+      yahooSymbols.map(async (ySymbol) => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+        try {
+          const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(ySymbol)}?interval=1d`;
+          const response = await fetch(url, {
+            signal: controller.signal,
+            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' },
+          });
+
+          if (!response.ok) return;
+
+          const data = (await response.json()) as {
+            chart?: {
+              result?: Array<{
+                meta?: {
+                  regularMarketPrice?: number;
+                  chartPreviousClose?: number;
+                  previousClose?: number;
+                };
+              }>;
+            };
+          };
+
+          const meta = data.chart?.result?.[0]?.meta;
+          if (!meta || typeof meta.regularMarketPrice !== 'number') return;
+
+          const price = meta.regularMarketPrice;
+          const prev = meta.chartPreviousClose ?? meta.previousClose ?? price;
+          const rawChange = price - prev;
+          const rawChangePercent = prev > 0 ? (rawChange / prev) * 100 : 0;
+
+          if (ySymbol === 'GC=F') {
+            const sjc = items.find((i) => i.symbol === 'SJC');
+            if (sjc && prev > 0) {
+              const goldChangePercent = Math.round(rawChangePercent * 100) / 100;
+              sjc.changePercent = goldChangePercent;
+              sjc.change = Math.round(sjc.price * (goldChangePercent / 100));
+            }
+            return;
+          }
+
+          const targetSymbol = symbolMap[ySymbol];
+          const target = items.find((i) => i.symbol === targetSymbol);
+          if (!target) return;
+
+          if (target.currency === 'POINTS') {
+            target.price = Math.round(price * 100) / 100;
+            target.change = Math.round(rawChange * 100) / 100;
+            target.changePercent = Math.round(rawChangePercent * 100) / 100;
+
+            // Coordinate VN30 movement proportionally
+            const vn30 = items.find((i) => i.symbol === 'VN30');
+            if (vn30) {
+              vn30.changePercent = target.changePercent;
+              vn30.change = Math.round(vn30.price * (target.changePercent / 100) * 100) / 100;
+              vn30.price = Math.round((vn30.price + vn30.change) * 100) / 100;
+            }
+          } else if (target.currency === 'VND') {
+            target.price = Math.round(price);
+            target.change = Math.round(rawChange);
+            target.changePercent = Math.round(rawChangePercent * 100) / 100;
+          }
+        } catch {
+          // Fallback seamlessly to baseline
+        } finally {
+          clearTimeout(timeoutId);
         }
-        item.changePercent = Math.round((item.change / (item.price - item.change)) * 10000) / 100;
-      }
-    }
+      })
+    );
   }
 }

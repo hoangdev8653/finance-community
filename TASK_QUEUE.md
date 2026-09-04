@@ -91,12 +91,17 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P2] BE-07: Nâng cấp Live Data Adapter cho Market Ticker
+### [DONE] [P2] BE-07: Nâng cấp Live Data Adapter cho Market Ticker
 
-- **Mục tiêu:** Thay thế dữ liệu giả lập `Math.random()` bằng nguồn cấp dữ liệu thị trường thực tế cho VN-Index và cổ phiếu VN.
-- **Phạm vi:** `apps/api/src/modules/market/market.service.ts`.
-- **Yêu cầu:** Tích hợp adapter gọi API chứng khoán (VNDirect / CafeF / SSI open endpoints) có fallback an toàn khi sàn đóng cửa hoặc rate limit.
-- **Tiêu chí hoàn thành:** Dữ liệu chỉ số VN-Index và cổ phiếu phản ánh đúng giá thị trường.
+- **Kết quả:**
+  - Nâng cấp `MarketService` tích hợp adapter cấp dữ liệu chứng khoán Việt Nam và chỉ số qua Yahoo Finance chart endpoint (`^VNINDEX.VN`, `VCB.VN`, `FPT.VN`, `HPG.VN`, `VND=X`, `GC=F`) song song với Binance Public API (`BTCUSDT`, `ETHUSDT`).
+  - Phản ánh đúng giá thị trường thực tế, bước nhảy giá, tỷ lệ phần trăm thay đổi và điều phối liên chỉ số (VN30 theo VN-Index).
+  - Tích hợp timeout an toàn bằng `AbortController` (3500ms) kèm xử lý `finally { clearTimeout(timeoutId) }` giải phóng timer triệt để, tránh open handles.
+  - Caching in-memory với TTL (15 giây) và cơ chế resilient fallback về baseline snapshot khi mất mạng hoặc nhà cung cấp đóng sàn.
+  - Mở rộng unit tests `test/modules/market.spec.ts` kiểm thử đầy đủ cả kịch bản API phản hồi thành công và kịch bản mạng lỗi ngoại lệ.
+- **Files:** `apps/api/src/modules/market/market.service.ts`, `apps/api/test/modules/market.spec.ts`.
+- **Kiểm tra:** `npm test -- test/modules/market.spec.ts` pass 5/5, `npm run build` trong `apps/api` code 0, `npm run typecheck` trong `apps/web` code 0.
+- **Ghi chú:** Hoàn thành trọn vẹn toàn bộ 7 task backend (BE-01 đến BE-07).
 
 ---
 

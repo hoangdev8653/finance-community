@@ -43,6 +43,56 @@ describe('MarketModule', () => {
 
       expect(firstCall).toBe(secondCall);
     });
+
+    it('should handle external API failures gracefully without crashing', async () => {
+      // Mock global fetch to throw network error
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockRejectedValue(new Error('Network connection timeout'));
+
+      const fallbackService = new MarketService();
+      const items = await fallbackService.getTicker();
+
+      expect(Array.isArray(items)).toBe(true);
+      expect(items.length).toBeGreaterThanOrEqual(8);
+
+      global.fetch = originalFetch;
+    });
+
+    it('should correctly parse live Vietnam market data when API responds', async () => {
+      const originalFetch = global.fetch;
+      global.fetch = jest.fn().mockImplementation((url: string) => {
+        if (url.includes('%5EVNINDEX.VN') || url.includes('^VNINDEX.VN')) {
+          return Promise.resolve({
+            ok: true,
+            json: () =>
+              Promise.resolve({
+                chart: {
+                  result: [
+                    {
+                      meta: {
+                        regularMarketPrice: 1300.5,
+                        chartPreviousClose: 1290.0,
+                      },
+                    },
+                  ],
+                },
+              }),
+          });
+        }
+        return Promise.resolve({ ok: false });
+      });
+
+      const testService = new MarketService();
+      const items = await testService.getTicker();
+      const vnIndex = items.find((i) => i.symbol === 'VN-INDEX');
+
+      expect(vnIndex).toBeDefined();
+      expect(vnIndex!.price).toBe(1300.5);
+      expect(vnIndex!.change).toBe(10.5);
+      expect(vnIndex!.changePercent).toBe(0.81);
+
+      global.fetch = originalFetch;
+    });
   });
 
   describe('MarketController', () => {
