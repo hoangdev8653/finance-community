@@ -23,11 +23,13 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import { useToast } from '@/lib/toast/ToastContext';
 
 export function AdminTagsTable() {
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 350);
   const [page, setPage] = useState(1);
   const pageSize = DEFAULT_PAGE_SIZE;
 
@@ -63,7 +65,7 @@ export function AdminTagsTable() {
   };
 
   const filteredTags = tags.filter((tag) =>
-    `${tag.name} ${tag.slug}`.toLowerCase().includes(search.toLowerCase().trim()),
+    `${tag.name} ${tag.slug}`.toLowerCase().includes(debouncedSearch.toLowerCase().trim()),
   );
 
   const totalPages = Math.max(1, Math.ceil(filteredTags.length / pageSize));
@@ -192,7 +194,9 @@ export function AdminTagsTable() {
             setSearch(val);
             setPage(1);
           }}
+          isLoading={isLoading}
           placeholder="Tìm kiếm theo tên thẻ hoặc slug..."
+          aria-label="Tìm kiếm thẻ"
         />
       </div>
 

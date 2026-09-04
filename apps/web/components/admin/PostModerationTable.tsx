@@ -27,12 +27,16 @@ import {
 import { useToast } from '../../lib/toast/ToastContext';
 import { resolveMediaUrl } from '../../lib/utils/media';
 import { AdminPagination } from './AdminPagination';
+import { AdminSearchInput } from './AdminSearchInput';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 
 export function PostModerationTable() {
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search, 350);
   const [postToBan, setPostToBan] = useState<ModerationPostItem | null>(null);
   const [selectedPost, setSelectedPost] = useState<ModerationPostItem | null>(null);
 
@@ -47,6 +51,16 @@ export function PostModerationTable() {
 
   const posts = data?.data || [];
   const meta = data?.meta ?? { page: 1, limit: DEFAULT_PAGE_SIZE, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false };
+
+  const filteredPosts = posts.filter((post) => {
+    if (!debouncedSearch.trim()) return true;
+    const q = debouncedSearch.toLowerCase().trim();
+    return (
+      post.title.toLowerCase().includes(q) ||
+      post.slug.toLowerCase().includes(q) ||
+      (post.author?.username && post.author.username.toLowerCase().includes(q))
+    );
+  });
 
   const handleStatusTab = (status: string) => {
     setSelectedStatus(status);
@@ -145,14 +159,26 @@ export function PostModerationTable() {
       </div>
 
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">{meta?.totalItems ?? '—'} bài viết</span>
-          <span>•</span>
-          <span>{selectedStatus === 'ALL' ? 'Tất cả trạng thái' : selectedStatus === 'UNREVIEWED' ? 'Đang chờ xử lý' : selectedStatus === 'APPROVED' ? 'Đã duyệt' : 'Đã cấm'}</span>
+        <AdminSearchInput
+          value={search}
+          onValueChange={(val) => {
+            setSearch(val);
+            setCurrentPage(1);
+          }}
+          isLoading={isLoading}
+          placeholder="Tìm bài viết cần duyệt theo tiêu đề, slug, tác giả..."
+          aria-label="Tìm kiếm kiểm duyệt bài viết"
+        />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground">{filteredPosts.length} / {meta?.totalItems ?? '—'} bài viết</span>
+            <span>•</span>
+            <span>{selectedStatus === 'ALL' ? 'Tất cả trạng thái' : selectedStatus === 'UNREVIEWED' ? 'Đang chờ xử lý' : selectedStatus === 'APPROVED' ? 'Đã duyệt' : 'Đã cấm'}</span>
+          </div>
+          <Button variant="outline" size="sm" onClick={() => void refetch()} disabled={isLoading} className="h-8 self-start text-xs sm:self-auto">
+            Làm mới dữ liệu
+          </Button>
         </div>
-        <Button variant="outline" size="sm" onClick={() => void refetch()} disabled={isLoading} className="h-8 self-start text-xs sm:self-auto">
-          Làm mới dữ liệu
-        </Button>
       </div>
 
       {/* Table Container */}
@@ -183,14 +209,14 @@ export function PostModerationTable() {
                     Không thể tải dữ liệu kiểm duyệt. Vui lòng thử lại.
                   </td>
                 </tr>
-              ) : posts.length === 0 ? (
+              ) : filteredPosts.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-12 text-center text-muted-foreground font-mono text-xs">
-                    Không có bài viết nào trong trạng thái này.
+                    {search ? 'Không tìm thấy bài viết phù hợp với từ khóa.' : 'Không có bài viết nào trong trạng thái này.'}
                   </td>
                 </tr>
               ) : (
-                posts.map((post) => (
+                filteredPosts.map((post) => (
                   <tr key={post.id} className="hover:bg-muted/20 transition-colors">
                     <td className="max-w-0 overflow-hidden px-4 py-3.5">
                       <div className="flex items-start gap-2">

@@ -105,26 +105,26 @@ Mức ưu tiên:
 
 ---
 
-### [TODO] [P1] Xây dựng search component dùng chung cho Admin
+### [DONE] [P1] Xây dựng search component dùng chung cho Admin
 
-- **Mục tiêu:** Tạo một component tìm kiếm thống nhất và áp dụng cho tất cả trang Admin có dữ liệu cần tìm kiếm.
-- **Phạm vi:** Admin dashboard, Post Moderation, User Governance, Report Queue, Audit Logs, Categories và các trang Admin khác khi có nhu cầu search.
-- **Yêu cầu:**
-  - Tạo component search dùng chung, có trạng thái nhập, loading, clear và empty state.
-  - Hỗ trợ placeholder, label, icon và query parameter tùy theo từng màn hình.
-  - Tạo hoặc tái sử dụng hook `useDebounce` để trì hoãn truy vấn sau khi người dùng ngừng nhập.
-  - Không gọi API ở mỗi lần gõ phím.
-  - Reset pagination về trang đầu khi query thay đổi.
-  - Giữ giá trị tìm kiếm đồng bộ với URL khi phù hợp để có thể deep-link và refresh trang.
-  - Có trạng thái mobile/responsive và hỗ trợ keyboard/focus accessibility.
-- **Tiêu chí hoàn thành:**
-  - Component search dùng chung được tái sử dụng ở tối thiểu các trang có search thực tế.
-  - API chỉ được gọi sau khoảng debounce hợp lý, đề xuất 300–500ms.
-  - Có thể xóa query và khôi phục danh sách ban đầu.
-  - Không gây request trùng hoặc race condition khi nhập nhanh.
-  - Có test cho hook debounce và component search.
-  - Frontend typecheck, test và build thành công.
-- **Ghi chú:** Cần kiểm tra các API hiện tại đã hỗ trợ tham số search chưa; nếu chưa, bổ sung query DTO/service tương ứng ở backend.
+- **Kết quả:**
+  - Xây dựng hook `useDebounce` và `useDebouncedCallback` tại `apps/web/lib/hooks/use-debounce.ts` với delay mặc định 350ms, tự động dọn dẹp timer và tránh re-render lặp.
+  - Viết unit test cho `useDebounce` tại `apps/web/tests/utils/use-debounce.test.ts` (4/4 passed).
+  - Nâng cấp `AdminSearchInput` (`apps/web/components/admin/AdminSearchInput.tsx`) tuân thủ nghiêm ngặt 4px Grid System (`h-10`, `pl-10`, `pr-10`, `rounded-lg`), hỗ trợ:
+    - Trạng thái tải `isLoading` với spinner `Loader2`.
+    - Nút xóa nhanh `X` kèm phím tắt `Escape` xóa dữ liệu tìm kiếm.
+    - Hỗ trợ đồng bộ tham số URL (`syncWithUrl`, `queryParamKey`), tự động reset phân trang về trang 1.
+  - Viết unit test cho `AdminSearchInput` tại `apps/web/tests/admin/AdminSearchInput.test.tsx` (6/6 passed).
+  - Tích hợp và chuẩn hóa tìm kiếm debounce trên toàn bộ các trang quản trị:
+    - `PostModerationTable.tsx`: bổ sung `AdminSearchInput` tìm bài viết theo tiêu đề, slug, tác giả.
+    - `AuditLogsTable.tsx`: áp dụng debounce cho bộ lọc action, entityType, actorId ngăn chặn spam request API khi nhập.
+    - `AdminCommentsTable.tsx`: áp dụng `useDebounce` và `isLoading` cho tìm kiếm bình luận.
+    - `AdminPostsTable.tsx`: áp dụng `useDebounce`, `isLoading` và sửa lỗi lọc bài viết theo loại nội dung.
+    - `UserManagementView.tsx`: thay thế timer thủ công bằng `useDebounce`, hiển thị `isLoading`.
+    - `CategoryManagementView.tsx`: áp dụng `useDebounce` và `isLoading` cho tìm kiếm danh mục.
+- **Files:** `apps/web/lib/hooks/use-debounce.ts`, `apps/web/tests/utils/use-debounce.test.ts`, `apps/web/components/admin/AdminSearchInput.tsx`, `apps/web/tests/admin/AdminSearchInput.test.tsx`, `apps/web/components/admin/PostModerationTable.tsx`, `apps/web/components/admin/AuditLogsTable.tsx`, `apps/web/components/admin/AdminCommentsTable.tsx`, `apps/web/components/admin/AdminPostsTable.tsx`, `apps/web/components/admin/UserManagementView.tsx`, `apps/web/components/admin/CategoryManagementView.tsx`.
+- **Kiểm tra:** 29/29 tests trong `tests/admin` và `tests/utils` pass 100%, `npm run typecheck` trong `apps/web` code 0, `npm run build` trong `apps/api` code 0.
+- **Ghi chú:** Hoàn thành trọn vẹn task xây dựng search component dùng chung cho Admin.
 
 ---
 

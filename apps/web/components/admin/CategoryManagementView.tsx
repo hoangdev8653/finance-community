@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import { useToast } from '@/lib/toast/ToastContext';
 
@@ -46,6 +47,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
   const [description, setDescription] = useState('');
   const [sortOrder, setSortOrder] = useState<number>(0);
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 350);
   const [page, setPage] = useState(1);
   const [expandedDomains, setExpandedDomains] = useState<Record<string, boolean>>({});
   const pageSize = DEFAULT_PAGE_SIZE;
@@ -90,7 +92,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
     }
   };
 
-  const filteredCategories = (categories ?? []).filter((category) => `${category.name} ${category.slug} ${category.description ?? ''}`.toLowerCase().includes(search.toLowerCase().trim()));
+  const filteredCategories = (categories ?? []).filter((category) => `${category.name} ${category.slug} ${category.description ?? ''}`.toLowerCase().includes(debouncedSearch.toLowerCase().trim()));
   const totalPages = Math.max(1, Math.ceil(filteredCategories.length / pageSize));
   const visibleCategories = filteredCategories.slice((page - 1) * pageSize, page * pageSize);
   const { toast } = useToast();
@@ -215,7 +217,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
 
       <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">{filteredCategories.length} danh mục</span><span>•</span><span>Tất cả phạm vi nội dung</span></div>
-        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
+        <div className="flex flex-col gap-2 sm:flex-row">{!learningOnly && <select value={scopeFilter} onChange={(event) => { setScopeFilter(event.target.value as 'ALL' | 'SERIES' | 'COMMUNITY'); setPage(1); }} aria-label="Lọc danh mục theo phạm vi" className="h-9 rounded-md border border-input bg-background px-3 text-xs font-mono text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"><option value="ALL">Tất cả phạm vi</option><option value="COMMUNITY">COMMUNITY</option><option value="SERIES">SERIES</option></select>}<AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} isLoading={isLoading} placeholder="Tìm theo tên hoặc slug..." aria-label="Tìm kiếm danh mục" /></div>
       </div>
 
       {isLoading && (

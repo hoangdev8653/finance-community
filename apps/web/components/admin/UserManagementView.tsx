@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import { useToast } from '@/lib/toast/ToastContext';
 
@@ -35,14 +36,18 @@ export function UserManagementView() {
   const [selectedRole, setSelectedRole] = useState<RoleName>('MODERATOR');
   const [confirmedDestructive, setConfirmedDestructive] = useState(false);
   const [userSearch, setUserSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const debouncedSearch = useDebounce(userSearch, 350);
   const [userPage, setUserPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState<UserStatus | 'ALL'>('ALL');
   const [roleFilter, setRoleFilter] = useState<RoleName | 'ALL'>('ALL');
   const [providerFilter, setProviderFilter] = useState<'ALL' | 'LOCAL' | 'GOOGLE'>('ALL');
   const [pendingStatusAction, setPendingStatusAction] = useState<{ id: string; status: UserStatus; email: string } | null>(null);
   const [quickStatusReason, setQuickStatusReason] = useState('');
-  useEffect(() => { const timer = window.setTimeout(() => { setDebouncedSearch(userSearch); setUserPage(1); }, 350); return () => window.clearTimeout(timer); }, [userSearch]);
+
+  useEffect(() => {
+    setUserPage(1);
+  }, [debouncedSearch]);
+
   const { data: usersResponse, isLoading: usersLoading } = useAdminUsers({ page: userPage, limit: DEFAULT_PAGE_SIZE, search: debouncedSearch || undefined, status: statusFilter === 'ALL' ? undefined : statusFilter });
 
   const { toast } = useToast();
@@ -268,7 +273,7 @@ export function UserManagementView() {
             <h3 id="admin-users-list" className="font-heading text-base font-bold text-foreground">Danh sách người dùng</h3>
             <p className="text-xs text-muted-foreground">Chọn một user để thực hiện thao tác quản trị.</p>
           </div>
-          <AdminSearchInput value={userSearch} onValueChange={setUserSearch} placeholder="Tìm theo email, tên, username hoặc ID..." aria-label="Tìm kiếm user" />
+          <AdminSearchInput value={userSearch} onValueChange={setUserSearch} isLoading={usersLoading} placeholder="Tìm theo email, tên, username hoặc ID..." aria-label="Tìm kiếm user" />
           <select value={statusFilter} onChange={e => { setStatusFilter(e.target.value as UserStatus | 'ALL'); setUserPage(1); }} aria-label="Status filter" className="h-9 rounded-md border border-input bg-background px-3 text-xs">
             <option value="ALL">All statuses</option>
             <option value="ACTIVE">ACTIVE</option>

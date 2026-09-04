@@ -18,6 +18,7 @@ import {
   X,
   Filter,
 } from 'lucide-react';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 
 export function AuditLogsTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,12 +27,16 @@ export function AuditLogsTable() {
   const [filterActorId, setFilterActorId] = useState('');
   const [selectedLog, setSelectedLog] = useState<AuditLogEntity | null>(null);
 
+  const debouncedAction = useDebounce(filterAction, 350);
+  const debouncedEntityType = useDebounce(filterEntityType, 350);
+  const debouncedActorId = useDebounce(filterActorId, 350);
+
   const { data, isLoading, isError, refetch } = useAuditLogs({
     page: currentPage,
     limit: DEFAULT_PAGE_SIZE,
-    action: filterAction.trim() || undefined,
-    entityType: filterEntityType.trim() || undefined,
-    actorId: filterActorId.trim() || undefined,
+    action: debouncedAction.trim() || undefined,
+    entityType: debouncedEntityType.trim() || undefined,
+    actorId: debouncedActorId.trim() || undefined,
   });
 
   const logs = data?.data || [];

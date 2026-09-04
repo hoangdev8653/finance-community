@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { AdminSearchInput } from './AdminSearchInput';
 import { AdminPagination } from './AdminPagination';
+import { useDebounce } from '@/lib/hooks/use-debounce';
 import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import { useToast } from '@/lib/toast/ToastContext';
 
@@ -29,6 +30,7 @@ export function AdminCommentsTable() {
   const { toast } = useToast();
   const [selectedStatus, setSelectedStatus] = useState<string>('ALL');
   const [search, setSearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search, 350);
   const [page, setPage] = useState<number>(1);
   const pageSize = DEFAULT_PAGE_SIZE;
 
@@ -36,7 +38,7 @@ export function AdminCommentsTable() {
     page,
     limit: pageSize,
     status: selectedStatus === 'ALL' ? undefined : selectedStatus,
-    search: search.trim() || undefined,
+    search: debouncedSearch.trim() || undefined,
   });
 
   const updateStatusMutation = useUpdateCommentStatus();
@@ -155,7 +157,9 @@ export function AdminCommentsTable() {
             setSearch(val);
             setPage(1);
           }}
+          isLoading={isLoading}
           placeholder="Tìm theo nội dung, tác giả, bài viết..."
+          aria-label="Tìm kiếm bình luận"
         />
       </div>
 
