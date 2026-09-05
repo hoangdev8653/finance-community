@@ -24,6 +24,7 @@ import { ContentSafetyUtil } from '../../../common/utils/content-safety.util';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { QueryPostsDto } from '../dto/query-posts.dto';
+import { ExpiringStore, InMemoryExpiringStore } from '../../../common/cache/expiring-store';
 
 export interface PostDetailResponse extends PostEntity {
   tags: Array<{ id: string; name: string; slug: string }>;
@@ -33,7 +34,8 @@ export interface PostDetailResponse extends PostEntity {
 
 @Injectable()
 export class PostsService {
-  private readonly viewDebounceCache = new Map<string, number>();
+  // Swap this adapter for Redis when the API runs across multiple instances.
+  private readonly viewDebounceCache: ExpiringStore<number> = new InMemoryExpiringStore<number>();
   private readonly VIEW_DEBOUNCE_WINDOW_MS = 15 * 60 * 1000; // 15 minutes cooldown per viewer/IP
 
   constructor(
@@ -56,15 +58,11 @@ export class PostsService {
     const lastView = this.viewDebounceCache.get(key);
 
     if (!lastView || now - lastView > this.VIEW_DEBOUNCE_WINDOW_MS) {
-      this.viewDebounceCache.set(key, now);
+      this.viewDebounceCache.set(key, now, this.VIEW_DEBOUNCE_WINDOW_MS);
       this.postsRepo.incrementViewCountTx(undefined, postId).catch(() => {});
 
-      if (this.viewDebounceCache.size > 10000) {
-        for (const [k, timestamp] of this.viewDebounceCache.entries()) {
-          if (now - timestamp > this.VIEW_DEBOUNCE_WINDOW_MS) {
-            this.viewDebounceCache.delete(k);
-          }
-        }
+      if (this.viewDebounceCache.size() > 10000) {
+        this.viewDebounceCache.prune(now);
       }
     }
   }

@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, count, desc } from 'drizzle-orm';
+import { eq, and, count, desc, inArray } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { reportsTable } from '../schema/reports.schema';
@@ -46,7 +46,7 @@ export class ReportsRepository {
         and(
           eq(reportsTable.reporterId, reporterId),
           targetCondition,
-          eq(reportsTable.status, 'OPEN'),
+          inArray(reportsTable.status, ['OPEN', 'PENDING', 'REVIEWING']),
         ),
       );
     return existing;
@@ -64,7 +64,7 @@ export class ReportsRepository {
     const [{ total }] = await this.db
       .select({ total: count() })
       .from(reportsTable)
-      .where(and(targetCondition, eq(reportsTable.status, 'OPEN')));
+      .where(and(targetCondition, inArray(reportsTable.status, ['OPEN', 'PENDING', 'REVIEWING'])));
 
     return Number(total);
   }
@@ -109,7 +109,7 @@ export class ReportsRepository {
     const client = tx || this.db;
     const [updated] = await client
       .update(reportsTable)
-      .set({ status, resolvedAt: resolvedAt || new Date() })
+      .set({ status, resolvedAt: status === 'RESOLVED' || status === 'DISMISSED' ? (resolvedAt || new Date()) : null })
       .where(eq(reportsTable.id, id))
       .returning();
     return updated;

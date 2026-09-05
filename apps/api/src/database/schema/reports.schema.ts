@@ -11,7 +11,7 @@ export const reportsTable = pgTable('reports', {
   reportedUserId: uuid('reported_user_id').references(() => usersTable.id, { onDelete: 'restrict' }),
   reason: varchar('reason', { length: 100 }).notNull(),
   description: text('description'),
-  status: varchar('status', { length: 20 }).notNull().default('OPEN'),
+  status: varchar('status', { length: 20 }).notNull().default('PENDING'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   resolvedAt: timestamp('resolved_at', { withTimezone: true }),
 });

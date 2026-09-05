@@ -42,6 +42,14 @@ export class ModerationController {
     return this.reportsService.getQueue(query.status, query.page, query.limit);
   }
 
+  @Patch('reports/:id/review')
+  @ApiOperation({ summary: 'Claim a pending report for review' })
+  @ApiResponse({ status: 200, description: 'Report moved to REVIEWING' })
+  @RequirePermission('moderation:manage')
+  startReportReview(@CurrentUser() user: any, @Param('id') id: string) {
+    return this.moderationService.startReportReview(user.sub, id);
+  }
+
   @Get('posts')
   @ApiOperation({ summary: 'Get paginated moderation posts queue (UNREVIEWED, APPROVED, BANNED, ALL)' })
   @ApiResponse({ status: 200, description: 'Paginated list of posts for moderation' })

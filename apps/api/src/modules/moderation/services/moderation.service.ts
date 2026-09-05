@@ -27,6 +27,36 @@ export class ModerationService {
     return this.postsRepo.findModerationPostsPaginated(moderationStatus, page, limit);
   }
 
+  async startReportReview(moderatorId: string, reportId: string) {
+    const report = await this.reportsRepo.findById(reportId);
+    if (!report) {
+      throw new NotFoundException({
+        statusCode: 404,
+        error: 'Not Found',
+        message: `Report '${reportId}' not found.`,
+        code: 'REPORT_NOT_FOUND',
+      });
+    }
+    if (!['OPEN', 'PENDING', 'REVIEWING'].includes(report.status)) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: `Report '${reportId}' is already ${report.status.toLowerCase()}.`,
+        code: 'REPORT_NOT_ACTIONABLE',
+      });
+    }
+
+    const updated = await this.reportsRepo.updateStatusTx(undefined, reportId, 'REVIEWING');
+    await this.auditLogService.log({
+      actor_id: moderatorId,
+      action: 'MODERATION_START_REVIEW',
+      entity_type: 'reports',
+      entity_id: reportId,
+      reason: 'Moderator claimed report for review',
+    });
+    return updated;
+  }
+
   async approvePost(moderatorId: string, postId: string) {
     const post = await this.postsRepo.findById(postId);
     if (!post) {

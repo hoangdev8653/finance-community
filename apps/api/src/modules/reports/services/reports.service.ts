@@ -86,7 +86,7 @@ export class ReportsService {
       reportedUserId: dto.reportedUserId || null,
       reason: dto.reason,
       description: dto.description || null,
-      status: 'OPEN',
+      status: 'PENDING',
     });
 
     // Auto-hide content on mass reports (>= 3 active reports)
