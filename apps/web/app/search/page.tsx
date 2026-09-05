@@ -6,10 +6,12 @@ import { SearchFilterBar } from '@/components/search/SearchFilterBar';
 import { SearchResultsList } from '@/components/search/SearchResultsList';
 import { SearchFilterState } from '@/types/search';
 import { Search, Compass, Loader2 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 function SearchPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useTranslation();
 
   const [filters, setFilters] = useState<SearchFilterState>({
     contentType: (searchParams.get('type') as any) || 'ALL',
@@ -50,13 +52,13 @@ function SearchPageContent() {
             <Compass className="h-6 w-6" aria-hidden="true" />
           </div>
           <div>
-            <h1 className="font-heading text-2xl font-bold text-foreground">
-              Khám phá và tìm kiếm
+          <h1 className="font-heading text-2xl font-bold text-foreground">
+              {t('search.title')}
             </h1>
             <p className="text-xs text-muted-foreground font-mono">
               {queryText
-                ? `Results for keyword "${queryText}"`
-                : 'Explore articles across analytical taxonomy, format, and topics.'}
+                ? t('search.resultsFor', { query: queryText })
+                : t('search.subtitle')}
             </p>
           </div>
         </div>

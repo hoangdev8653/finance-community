@@ -126,4 +126,20 @@ export const vi: TranslationDictionary = {
     series: 'Chuỗi bài Series',
     community: 'Thảo luận Cộng đồng',
   },
+  notifications: {
+    title: 'Trung tâm Thông báo',
+    subtitle: 'Cập nhật tương tác, phản hồi và hoạt động cộng đồng.',
+    markAllRead: 'Đánh dấu tất cả đã đọc',
+    allNotifications: 'Tất cả thông báo',
+    unread: 'Chưa đọc',
+    noUnread: 'Không có thông báo chưa đọc',
+    noUnreadDesc: 'Bạn đã đọc hết! Không có hoạt động mới.',
+    noNotifications: 'Chưa có thông báo nào',
+    noNotificationsDesc: 'Hộp thư thông báo của bạn hiện đang trống.',
+  },
+  search: {
+    title: 'Khám phá và tìm kiếm',
+    subtitle: 'Duyệt bài viết theo phân loại, định dạng và chủ đề.',
+    resultsFor: 'Kết quả cho từ khóa "{query}"',
+  },
 };

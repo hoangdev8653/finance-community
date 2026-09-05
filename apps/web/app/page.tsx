@@ -2,7 +2,6 @@
 
 import React, { Suspense, useState } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
-import { Flame } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { Breadcrumb } from '@/components/navigation/Breadcrumb';
 import { DailyLearningStrip } from '@/components/content/DailyLearningStrip';
@@ -105,6 +104,26 @@ function HomePageContent() {
 
         {/* Editorial Lead Story & Today's Latest Wire Grid */}
         <EditorialHeroGrid />
+
+        {/* Scope Navigation Tabs */}
+        <ScopeNavigationTabs
+          currentScope={currentScope}
+          onSelectScope={handleSelectScope}
+        />
+
+        {/* Category Filter Bar — visible when scope is not SERIES */}
+        {currentScope !== 'SERIES' && (
+          <CategoryFilterBar
+            selectedCategoryId={currentCategory}
+            onSelectCategory={handleSelectCategory}
+          />
+        )}
+
+        {/* Feed Sorting Controls */}
+        <FeedSorter
+          currentSort={currentSort}
+          onSortChange={handleSortChange}
+        />
 
         {/* Feed List Stream */}
         <FeedList

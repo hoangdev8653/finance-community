@@ -126,4 +126,20 @@ export interface TranslationDictionary {
     series: string;
     community: string;
   };
+  notifications: {
+    title: string;
+    subtitle: string;
+    markAllRead: string;
+    allNotifications: string;
+    unread: string;
+    noUnread: string;
+    noUnreadDesc: string;
+    noNotifications: string;
+    noNotificationsDesc: string;
+  };
+  search: {
+    title: string;
+    subtitle: string;
+    resultsFor: string;
+  };
 }

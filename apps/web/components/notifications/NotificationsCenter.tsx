@@ -10,8 +10,10 @@ import { NotificationList } from './NotificationList';
 import { Button } from '@/components/ui/Button';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { Bell, CheckCheck } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n/useTranslation';
 
 export function NotificationsCenter() {
+  const { t } = useTranslation();
   const [activeFilter, setActiveFilter] = useState<'all' | 'unread'>('all');
   const [page, setPage] = useState(1);
 
@@ -48,10 +50,10 @@ export function NotificationsCenter() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>
           <h1 className="font-heading text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-            Notification Center
+            {t('notifications.title')}
           </h1>
           <p className="text-xs text-muted-foreground font-mono pt-1">
-            Stay updated on research engagements, replies, and community activity.
+            {t('notifications.subtitle')}
           </p>
         </div>
 
@@ -64,7 +66,7 @@ export function NotificationsCenter() {
             className="font-mono text-xs gap-1.5 shrink-0"
           >
             <CheckCheck className="h-3.5 w-3.5" />
-            <span>Mark all as read</span>
+            <span>{t('notifications.markAllRead')}</span>
           </Button>
         )}
       </div>
@@ -81,7 +83,7 @@ export function NotificationsCenter() {
               : 'text-muted-foreground hover:text-foreground hover:bg-muted'
           }`}
         >
-          All Notifications
+          {t('notifications.allNotifications')}
         </button>
 
         <button
@@ -94,10 +96,10 @@ export function NotificationsCenter() {
               : 'text-muted-foreground hover:text-foreground hover:bg-muted'
           }`}
         >
-          <span>Unread</span>
+          <span>{t('notifications.unread')}</span>
           {unreadCount > 0 && (
             <span
-              className={`px-1.5 py-0.2 rounded-full text-xs ${
+              className={`px-1.5 py-0.5 rounded-full text-xs ${
                 activeFilter === 'unread'
                   ? 'bg-primary-foreground/20 text-primary-foreground'
                   : 'bg-muted text-muted-foreground'
@@ -122,11 +124,11 @@ export function NotificationsCenter() {
           isLoading={isLoading}
           hasNextPage={notificationsResponse?.meta?.hasNextPage}
           onLoadMore={() => setPage((p) => p + 1)}
-          emptyTitle={activeFilter === 'unread' ? 'No unread notifications' : 'No notifications yet'}
+          emptyTitle={activeFilter === 'unread' ? t('notifications.noUnread') : t('notifications.noNotifications')}
           emptyDescription={
             activeFilter === 'unread'
-              ? 'You are all caught up! No unread activity.'
-              : 'You do not have any notification records yet.'
+              ? t('notifications.noUnreadDesc')
+              : t('notifications.noNotificationsDesc')
           }
         />
       )}
