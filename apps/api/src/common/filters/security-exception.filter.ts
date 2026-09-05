@@ -49,11 +49,15 @@ export class SecurityExceptionFilter implements ExceptionFilter {
       message = 'An internal server error occurred.';
     }
 
+    const rawReqId = request.headers['x-request-id'] || response.getHeader('x-request-id');
+    const requestId = typeof rawReqId === 'string' ? rawReqId : Array.isArray(rawReqId) ? rawReqId[0] : undefined;
+
     response.status(status).json({
       statusCode: status,
       error: errorName,
       message,
       code,
+      requestId,
       timestamp: new Date().toISOString(),
       path: request.url,
       ...extraFields,

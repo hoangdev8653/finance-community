@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { CorrelationIdMiddleware } from './common/middleware/correlation-id.middleware';
 
 import { securityConfig } from './config/security.config';
 import { rateLimitConfig } from './config/rate-limit.config';
@@ -96,4 +97,8 @@ import { MarketModule } from './modules/market/market.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(CorrelationIdMiddleware).forRoutes('*');
+  }
+}

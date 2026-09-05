@@ -20,12 +20,12 @@ export function DialogContent({
       <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs animate-in fade-in-0" />
       <DialogPrimitive.Content
         className={cn(
-          'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-surface-elevated p-6 shadow-md animate-in fade-in-0 zoom-in-95 rounded-[var(--radius-lg,0.375rem)]',
+          'fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-border bg-surface-elevated p-6 shadow-md animate-in fade-in-0 zoom-in-95 rounded-lg',
           className
         )}
         {...props}
       >
-        <div className="flex flex-col space-y-1.5 text-center sm:text-left">
+        <div className="flex flex-col space-y-2 text-center sm:text-left">
           {title && <DialogPrimitive.Title className="text-lg font-semibold tracking-tight text-foreground">{title}</DialogPrimitive.Title>}
           {description && (
             <DialogPrimitive.Description className="text-xs text-muted-foreground">

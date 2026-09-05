@@ -17,6 +17,7 @@
 
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
 
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
@@ -63,6 +64,7 @@
     --muted-foreground: 215.4 25% 27%;
     --border: 214.3 20% 82%;
     --input: 214.3 20% 82%;
+    --ring: 160 84% 30%;
     --primary: 160 84% 30%;
     --primary-foreground: 0 0% 100%;
     --accent: 160 84% 30%;
@@ -92,13 +94,14 @@
 
     --border: 214.3 20% 82%;
     --input: 214.3 20% 82%;
+    --ring: 168 80% 28%;
 
-    /* PRIMARY — Industrial Slate (Trust & Precision) */
-    --primary: 215 35% 20%;
+    /* PRIMARY — Signature Emerald Green (Financial Growth & Trust) */
+    --primary: 168 80% 28%;
     --primary-foreground: 0 0% 100%;
 
-    /* ACCENT / CTA — Rich Forest Emerald Green */
-    --accent: 160 84% 30%;
+    /* ACCENT / SECONDARY — Deep Slate Navy */
+    --accent: 215 35% 20%;
     --accent-foreground: 0 0% 100%;
 
     --secondary: 215 25% 35%;
@@ -115,7 +118,7 @@
     --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
     --shadow-card-hover: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
     --shadow-elevated: 0 20px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
-    --shadow-glow: 0 0 25px hsla(160, 84%, 30%, 0.2);
+    --shadow-glow: 0 0 25px hsla(168, 80%, 28%, 0.2);
   }
 
   .dark {
@@ -133,13 +136,14 @@
 
     --border: 218 28% 21%;
     --input: 218 28% 21%;
+    --ring: 168 75% 42%;
 
-    /* PRIMARY — Brightened Slate Blue for Dark Mode */
-    --primary: 174 72% 38%;
+    /* PRIMARY — Luminous Emerald for Dark Canvas (Matches brand, high legibility) */
+    --primary: 168 75% 42%;
     --primary-foreground: 0 0% 100%;
 
-    /* ACCENT / CTA — Radiant Emerald */
-    --accent: 38 92% 50%;
+    /* ACCENT — Slate Silver */
+    --accent: 215 25% 75%;
     --accent-foreground: 222 47% 11%;
 
     --secondary: 210 40% 98%;
@@ -152,8 +156,8 @@
     --info: 199 89% 48%;
 
     --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.35), 0 1px 2px -1px rgba(0, 0, 0, 0.35);
-    --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px hsla(174, 72%, 38%, 0.1);
-    --shadow-glow: 0 0 30px hsla(174, 72%, 38%, 0.18);
+    --shadow-card-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 0 20px hsla(168, 75%, 42%, 0.1);
+    --shadow-glow: 0 0 30px hsla(168, 75%, 42%, 0.18);
   }
 
   * {
@@ -187,10 +191,10 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Crisp, Bold Lucide Icons across entire application */
+  /* Crisp Lucide Icons across entire application */
   svg.lucide,
   svg[class*="lucide-"] {
-    stroke-width: 2.25px !important;
+    stroke-width: 2px;
   }
 }
 

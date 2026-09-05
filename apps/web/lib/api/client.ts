@@ -6,6 +6,7 @@ export interface ApiErrorResponse {
   error: string;
   message: string | string[];
   code?: string;
+  requestId?: string;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
@@ -39,6 +40,7 @@ apiClient.interceptors.response.use(
       error: error.response?.data?.error || error.name || 'Network Error',
       message: error.response?.data?.message || error.message || 'An unexpected error occurred',
       code: error.response?.data?.code || 'UNKNOWN_ERROR',
+      requestId: error.response?.data?.requestId || (error.response?.headers?.['x-request-id'] as string),
     };
 
     // Authenticated API request returned 401 Unauthorized (exclude /auth/ credentials errors)

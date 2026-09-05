@@ -26,7 +26,7 @@ export function Select({ options, value, onChange, placeholder = 'Select...', la
       <SelectPrimitive.Root value={value} onValueChange={onChange}>
         <SelectPrimitive.Trigger
           className={cn(
-            'flex h-9 w-full items-center justify-between rounded-[var(--radius-md,0.25rem)] border border-input bg-background px-3 py-2 text-sm text-foreground shadow-none focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50',
+            'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-xs focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
         >
@@ -38,14 +38,14 @@ export function Select({ options, value, onChange, placeholder = 'Select...', la
 
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content
-            className="relative z-50 min-w-[8rem] overflow-hidden rounded-[var(--radius-md,0.25rem)] border border-border bg-surface-elevated text-foreground shadow-sm animate-in fade-in-80"
+            className="relative z-50 min-w-[8rem] overflow-hidden rounded-md border border-border bg-surface-elevated text-foreground shadow-sm animate-in fade-in-80"
           >
             <SelectPrimitive.Viewport className="p-1">
               {options.map((opt) => (
                 <SelectPrimitive.Item
                   key={opt.value}
                   value={opt.value}
-                  className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-muted focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                  className="relative flex w-full cursor-default select-none items-center rounded-sm py-2 pl-8 pr-2 text-sm outline-none focus:bg-muted focus:text-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 >
                   <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
                     <SelectPrimitive.ItemIndicator>

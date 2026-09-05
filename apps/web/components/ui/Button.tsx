@@ -12,20 +12,20 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'primary', size = 'md', isLoading = false, asChild = false, children, disabled, ...props }, ref) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-[var(--radius-md,0.25rem)]';
+      'inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none rounded-md';
 
     const variants = {
       primary: 'bg-primary text-primary-foreground hover:opacity-90 focus-visible:ring-primary',
-      secondary: 'bg-secondary text-secondary-foreground hover:opacity-90 focus-visible:ring-slate-600',
-      outline: 'border border-border bg-background hover:bg-surface text-foreground focus-visible:ring-slate-400',
-      ghost: 'bg-transparent text-foreground hover:bg-surface focus-visible:ring-slate-400',
-      destructive: 'bg-danger text-white hover:opacity-90 focus-visible:ring-red-600',
+      secondary: 'bg-secondary text-secondary-foreground hover:opacity-90 focus-visible:ring-primary',
+      outline: 'border border-border bg-background hover:bg-surface text-foreground focus-visible:ring-primary',
+      ghost: 'bg-transparent text-foreground hover:bg-surface focus-visible:ring-primary',
+      destructive: 'bg-danger text-white hover:opacity-90 focus-visible:ring-danger',
     };
 
     const sizes = {
       sm: 'h-8 px-3 text-xs',
-      md: 'h-9 px-4 text-sm',
-      lg: 'h-10 px-6 text-base',
+      md: 'h-10 px-4 text-sm',
+      lg: 'h-12 px-6 text-base',
     };
 
     if (asChild) {

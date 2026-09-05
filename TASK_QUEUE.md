@@ -21,6 +21,41 @@ Mức ưu tiên:
 
 <!-- Thêm task mới bên dưới theo mẫu này -->
 
+### [DONE] [P2] BE-08: Chuẩn hóa Backend API Design System & Architectural Standards
+
+- **Kết quả:**
+  - Xây dựng danh mục mã lỗi nghiệp vụ chuẩn hóa `ErrorCode` enum (`apps/api/src/common/constants/error-codes.enum.ts`) với phân loại theo miền nghiệp vụ: `AUTH_*`, `POST_*`, `COMMENT_*`, `CATEGORY_*`, `TAG_*`, `MEDIA_*`, `MODERATION_*`, `VALIDATION_*`, `RATE_LIMIT_*`.
+  - Thiết kế class ngoại lệ `BusinessException` (`apps/api/src/common/exceptions/business.exception.ts`) kế thừa `HttpException`, tự động đóng gói `errorCode`, `statusCode`, `message` và metadata chi tiết.
+  - Xây dựng `CorrelationIdMiddleware` (`apps/api/src/common/middleware/correlation-id.middleware.ts`) tự động cấp phát hoặc bảo lưu `X-Request-Id` (UUID v4) và tính toán thời gian phản hồi máy chủ `X-Response-Time` trong HTTP headers. Đăng ký middleware áp dụng toàn cục trong `AppModule`.
+  - Cập nhật `SecurityExceptionFilter` gắn `requestId` trực tiếp vào payload phản hồi lỗi JSON (`{ statusCode, error, message, code, requestId, timestamp, path }`), hỗ trợ truy vết lỗi tức thì.
+  - Đồng bộ bảng mã lỗi sang Frontend (`apps/web/lib/constants/error-codes.ts`) và bổ sung trường `requestId` vào `ApiErrorResponse` trong `apps/web/lib/api/client.ts`.
+  - Viết unit test suite `test/security/api-design-system.spec.ts` kiểm thử toàn diện.
+- **Files:** `apps/api/src/common/constants/error-codes.enum.ts`, `apps/api/src/common/exceptions/business.exception.ts`, `apps/api/src/common/middleware/correlation-id.middleware.ts`, `apps/api/src/common/filters/security-exception.filter.ts`, `apps/api/src/app.module.ts`, `apps/api/test/security/api-design-system.spec.ts`, `apps/web/lib/constants/error-codes.ts`, `apps/web/lib/api/client.ts`.
+- **Kiểm tra:** 10/10 test suites trong `test/security` pass 42/42 tests 100%, `npm run build` trong `apps/api` pass 100%, `npm run typecheck` trong `apps/web` pass 100%.
+
+---
+
+### [DONE] [P2] FE-08: Chuẩn hóa Design System, Semantic Tokens & Quy chuẩn 4px Grid
+
+- **Kết quả:**
+  - Chuẩn hóa hệ thống Semantic Tokens trong `globals.css`:
+    - Thống nhất họ màu nhận diện `--primary` là Signature Emerald Green (`168 80% 28%` cho Light Canvas, `168 75% 42%` cho Dark Canvas), không còn hiện tượng đổi tông sang Teal khi bật Dark Mode.
+    - Bổ sung token `--color-ring: hsl(var(--ring));` vào `@theme` hỗ trợ focus rings cho a11y.
+    - Gỡ bỏ `stroke-width: 2.25px !important` toàn cục sang `stroke-width: 2px` chuẩn.
+  - Chuẩn hóa bộ Form Controls & Primitives nguyên tử:
+    - `Button.tsx`: size `md` đạt chuẩn **40px (`h-10 px-4 text-sm`)**, bo góc `rounded-md`, token focus ring ngữ nghĩa `ring-primary`.
+    - `Input.tsx`: chuyển sang bo góc `rounded-md`, căn lề 4px grid (`space-y-1`, `px-3`), nhãn label `text-foreground`.
+    - `Select.tsx`: nâng trigger height lên **40px (`h-10`)**, bo góc `rounded-md`, thẳng hàng tuyệt đối với `Input` và `Button`.
+    - `Badge.tsx`: chuẩn hóa bo góc `rounded-sm`, chuyển các biến thể trạng thái sang semantic classes `bg-success text-white`, `bg-warning text-white`, `bg-danger text-white`.
+    - `Dialog.tsx`: chuẩn hóa bo góc `rounded-lg`, spacing `space-y-2` (8px).
+  - Loại bỏ các class hardcoded trong component chính:
+    - `AppShell.tsx`: thay `bg-slate-100 dark:bg-[#0b0f17]` bằng semantic token `bg-background`.
+    - `PostCard.tsx`: chuyển toàn bộ mã màu cứng (`border-slate-200 dark:border-[#253044]`, `text-slate-950 dark:text-slate-100`, `text-teal-700 dark:text-teal-400`) sang semantic tokens (`border-border`, `bg-muted/40`, `text-foreground`, `text-primary`, `text-muted-foreground`).
+- **Files:** `apps/web/app/globals.css`, `apps/web/components/ui/Button.tsx`, `Input.tsx`, `Select.tsx`, `Badge.tsx`, `Dialog.tsx`, `apps/web/components/layout/AppShell.tsx`, `apps/web/components/content/PostCard.tsx`.
+- **Kiểm tra:** `npm run typecheck` trong `apps/web` thành công code 0, toàn bộ test suite `Button`, `Input`, `PostCard` pass 100%.
+
+---
+
 ### [DONE] [P0] BE-01: Chuẩn hóa xử lý tiếng Việt cho Post Slug (slugify)
 
 - **Kết quả:** Xây dựng `SlugifyUtil` chuẩn hóa Unicode NFD, bóc tách dấu thanh tiếng Việt và chuyển đổi đ/Đ thành d, thay ký tự đặc biệt thành dấu gạch ngang và cắt gọt an toàn. Tích hợp trực tiếp vào `PostsService.slugify()`.
