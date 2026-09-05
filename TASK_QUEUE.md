@@ -19,6 +19,14 @@ Mức ưu tiên:
 
 ## Backlog
 
+### [DONE] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
+
+- **Mục tiêu:** Đồng bộ page Login với reference `login.png` bằng layout split-screen, brand panel, form card và illustration tài chính.
+- **Phạm vi:** Auth layout, login form, OAuth actions, responsive mobile, accessibility và asset illustration.
+- **Tiêu chí hoàn thành:** Giữ nguyên auth flow hiện tại; desktop/mobile bám sát reference; có loading/error/password visibility; typecheck và Login tests pass.
+- **Kết quả:** Đã triển khai split-screen responsive, illustration tài chính, Google/Facebook actions, password visibility, security notice và accessibility labels. Frontend typecheck pass; Login 3/3 và toàn bộ frontend 318/318 tests pass.
+- **Trạng thái:** Hoàn thành.
+
 ### [DONE] [P1] QA-01: Thiết lập E2E cho luồng đăng nhập và đăng bài
 
 - **Mục tiêu:** Kiểm tra luồng người dùng quan trọng trên trình duyệt thật.

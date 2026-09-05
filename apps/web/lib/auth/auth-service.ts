@@ -3,6 +3,7 @@ import {
   LoginDto,
   RegisterDto,
   GoogleAuthDto,
+  FacebookAuthDto,
   AuthResponse,
   UserMeResponse,
 } from '../../types/auth';
@@ -33,6 +34,12 @@ export const authService = {
   async loginWithGoogle(idToken: string): Promise<AuthResponse> {
     const payload: GoogleAuthDto = { idToken };
     const response = await apiClient.post<AuthResponse>('/auth/google', payload);
+    return response.data;
+  },
+
+  async loginWithFacebook(accessToken: string): Promise<AuthResponse> {
+    const payload: FacebookAuthDto = { accessToken };
+    const response = await apiClient.post<AuthResponse>('/auth/facebook', payload);
     return response.data;
   },
 

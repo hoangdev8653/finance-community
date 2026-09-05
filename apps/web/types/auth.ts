@@ -55,6 +55,10 @@ export interface GoogleAuthDto {
   idToken: string;
 }
 
+export interface FacebookAuthDto {
+  accessToken: string;
+}
+
 export interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
@@ -62,5 +66,6 @@ export interface AuthContextType {
   login: (dto: LoginDto) => Promise<void>;
   register: (dto: RegisterDto) => Promise<void>;
   loginWithGoogle: (idToken: string) => Promise<void>;
+  loginWithFacebook?: (accessToken: string) => Promise<void>;
   logout: () => void;
 }

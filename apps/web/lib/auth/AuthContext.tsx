@@ -119,6 +119,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginWithFacebook = async (accessToken: string): Promise<void> => {
+    setIsLoading(true);
+    try {
+      const response = await authService.loginWithFacebook(accessToken);
+      tokenStore.setToken(response.accessToken);
+      tokenStore.setRefreshToken(response.refreshToken);
+      await syncUserProfile(response.user);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -128,6 +140,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         loginWithGoogle,
+        loginWithFacebook,
         logout,
       }}
     >

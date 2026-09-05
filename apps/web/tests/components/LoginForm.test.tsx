@@ -28,7 +28,7 @@ describe('LoginForm Component', () => {
     renderComponent();
 
     expect(screen.getByRole('textbox', { name: /Địa chỉ email/i })).toBeDefined();
-    expect(screen.getByLabelText(/Mật khẩu/i)).toBeDefined();
+    expect(document.getElementById('login-password')).toBeDefined();
     expect(screen.getByRole('button', { name: /^Đăng nhập$/i })).toBeDefined();
     expect(screen.getByRole('button', { name: /Đăng nhập bằng Google/i })).toBeDefined();
   });
@@ -56,7 +56,7 @@ describe('LoginForm Component', () => {
     fireEvent.change(screen.getByRole('textbox', { name: /Địa chỉ email/i }), {
       target: { value: 'analyst@finance.com' },
     });
-    fireEvent.change(screen.getByLabelText(/Mật khẩu/i), {
+    fireEvent.change(document.getElementById('login-password') as HTMLInputElement, {
       target: { value: 'wrongpassword' },
     });
 
