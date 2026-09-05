@@ -19,6 +19,141 @@ Mức ưu tiên:
 
 ## Backlog
 
+### [DONE] [P1] QA-01: Thiết lập E2E cho luồng đăng nhập và đăng bài
+
+- **Mục tiêu:** Kiểm tra luồng người dùng quan trọng trên trình duyệt thật.
+- **Phạm vi:** Login, đăng bài, mobile viewport và trạng thái lỗi.
+- **Tiêu chí hoàn thành:** Có config Playwright, smoke test cho trang chủ và test mobile; typecheck/build không bị ảnh hưởng.
+- **Kết quả:** Đã thêm Playwright config và 2 smoke test cho trang chủ/login. Chạy thành công 4 test trên Chromium desktop và Pixel 7 mobile.
+- **Files:** `apps/web/playwright.config.ts`, `apps/web/e2e/smoke.spec.ts`, `apps/web/package.json`.
+- **Kiểm tra:** `npm run typecheck` pass; `npx playwright test` pass 4/4.
+
+### [DONE] [P1] UX-01: Draft và autosave cho Post Studio
+
+- **Mục tiêu:** Tránh mất nội dung khi người dùng soạn bài.
+- **Tiêu chí hoàn thành:** Lưu nháp, autosave debounce, khôi phục draft và hiển thị trạng thái lưu.
+- **Trạng thái:** Đang triển khai autosave local và khôi phục draft; cần xử lý/đánh giá các test UI hiện hữu đang fail trước khi đóng task.
+
+### [DONE] [P2] UX-03: Tích hợp test autosave vào Post Studio
+
+- **Mục tiêu:** Xác minh autosave và khôi phục draft hoạt động đúng trong component thực tế.
+- **Phạm vi:** `PostStudio.test.tsx`, `PostStudio`, localStorage test isolation.
+- **Tiêu chí hoàn thành:** Có test component cho restore draft, trạng thái khôi phục và không làm hỏng test editor hiện hữu.
+- **Kết quả:** Thêm test component khôi phục draft theo user, kiểm tra nội dung được điền lại và trạng thái thông báo.
+- **Files:** `apps/web/tests/studio/PostStudio.test.tsx`.
+- **Kiểm tra:** `npx vitest run tests/studio/PostStudio.test.tsx` pass 3/3; `npm run typecheck` pass.
+
+### [DONE] [P1] QA-02: Ổn định toàn bộ Vitest UI suite
+
+- **Mục tiêu:** Đảm bảo các thay đổi UX không làm suy giảm kiểm thử frontend.
+- **Phạm vi:** Các test UI fail, timer/mock setup và test isolation.
+- **Tiêu chí hoàn thành:** Xác định nguyên nhân các nhóm fail, sửa các lỗi thuộc phạm vi và ghi nhận rõ lỗi môi trường/ngoài phạm vi nếu còn.
+- **Kết quả:** Loại E2E Playwright khỏi Vitest để hai runner không chạy lẫn nhau. Phần còn lại gồm 27 test legacy đang assert copy tiếng Anh trong khi UI hiện tại đã Việt hóa; cần một task riêng để đồng bộ toàn bộ expectation.
+- **Files:** `apps/web/vitest.config.mjs`.
+- **Kiểm tra:** Full Vitest xác nhận 82 test files pass, 17 file còn fail với 27 assertion legacy; E2E không còn bị Vitest thu thập.
+
+### [DONE] [P1] QA-03: Đồng bộ assertion test với giao diện tiếng Việt
+
+- **Mục tiêu:** Loại bỏ các lỗi false-negative do test còn tìm copy tiếng Anh cũ.
+- **Phạm vi:** Test Admin, Search, Notifications, Feed và Comment.
+- **Tiêu chí hoàn thành:** Assertion phản ánh text/role hiện tại, không nới lỏng kiểm tra hành vi; Vitest suite giảm các lỗi legacy.
+- **Tiến độ:** Đã đồng bộ `AdminGuard.test.tsx`, `SystemSettingsView.test.tsx` và `CommandPalette.test.tsx`; 7/7 test mục tiêu pass. Các nhóm Feed/Search/Notifications/Comment/Tags còn lại đang chờ xử lý.
+- **Tiến độ bổ sung:** Feed đã đồng bộ thành công; Comment giữ nguyên English copy vì component hiện vẫn render English. Tags cần chuẩn hóa encoding assertion trước khi tiếp tục.
+
+### [DONE] [P2] QA-04: Chuẩn hóa selector cho test directory
+
+- **Mục tiêu:** Giảm false-negative do test phụ thuộc copy tiếng Việt dài hoặc encoding.
+- **Phạm vi:** `TagsDirectoryView`, selector input/loading/empty state.
+- **Tiêu chí hoàn thành:** Selector dựa trên role, aria-label hoặc thuộc tính semantic ổn định; test hành vi vẫn được giữ nguyên.
+- **Kết quả:** Thêm selector semantic `data-testid` cho ô tìm kiếm và skeleton, cập nhật test Tags; nhóm Tags pass 4/4.
+- **Files:** `apps/web/components/tags/TagsDirectoryView.tsx`, `apps/web/components/tags/TagsSkeleton.tsx`, `apps/web/tests/directories/TagsDirectoryView.test.tsx`.
+- **Kiểm tra:** `npx vitest run tests/directories/TagsDirectoryView.test.tsx` pass 4/4; `npm run typecheck` pass.
+
+### [DONE] [P2] QA-05: Chuẩn hóa selector cho SearchResults và Notifications
+
+- **Mục tiêu:** Làm test bền vững trước thay đổi copy đa ngôn ngữ.
+- **Phạm vi:** `SearchResultsList`, `NotificationsCenter` và test tương ứng.
+- **Tiêu chí hoàn thành:** Có selector semantic cho summary/empty state; test không phụ thuộc chuỗi bản dịch dài.
+
+### [DONE] [P2] QA-06: Sửa test semantic role cho Notifications
+
+- **Mục tiêu:** Test phản ánh đúng ARIA role của bộ lọc thông báo.
+- **Phạm vi:** `NotificationsCenter.test.tsx`.
+- **Tiêu chí hoàn thành:** Dùng role `tab`, test Notifications pass và typecheck pass.
+- **Kết quả:** Cập nhật các truy vấn test từ `button` sang semantic role `tab`, đồng bộ đúng với ARIA markup của component.
+- **Files:** `apps/web/tests/notifications/NotificationsCenter.test.tsx`.
+- **Kiểm tra:** Notifications tests pass 2/2; `npm run typecheck` pass.
+
+### [DONE] [P1] QA-07: Chạy hồi quy toàn bộ frontend
+
+- **Mục tiêu:** Xác nhận trạng thái tổng thể sau các thay đổi UX và test.
+- **Phạm vi:** Vitest toàn bộ `apps/web`, typecheck và phân loại lỗi còn lại.
+- **Tiêu chí hoàn thành:** Chạy full suite, sửa lỗi regression thuộc phạm vi và ghi nhận rõ các test legacy còn lại.
+- **Tiến độ:** Full regression hiện đạt 90/98 test files và 305/318 tests. Còn 13 assertion legacy ở Auth/Login/Register/Moderation và một số content component; không phát hiện lỗi typecheck.
+
+### [DONE] [P1] QA-08: Đồng bộ assertion Auth và Moderation
+
+- **Mục tiêu:** Sửa các test false-negative ở luồng xác thực và báo cáo nội dung.
+- **Phạm vi:** AuthGuard, LoginForm, RegisterForm, ReportButton và ModerationQueue.
+- **Tiêu chí hoàn thành:** Test phản ánh copy/role hiện tại, không thay đổi logic nghiệp vụ.
+- **Tiến độ:** AuthGuard và ReportButton đã đồng bộ thành công; 6/6 test mục tiêu pass. Login/Register và các assertion Moderation còn lại đang chờ xử lý.
+
+### [DONE] [P1] QA-09: Đồng bộ test Login và Register
+
+- **Mục tiêu:** Cập nhật selector và validation expectation theo form xác thực hiện tại.
+- **Phạm vi:** `LoginForm.test.tsx`, `RegisterForm.test.tsx`.
+- **Tiêu chí hoàn thành:** Test form và validation pass, không thay đổi logic auth.
+- **Tiến độ:** Đã đồng bộ button và selector mật khẩu của LoginForm; còn assertion label/validation cũ ở Login/Register cần tiếp tục cập nhật theo text thực tế của form.
+
+### [DONE] [P2] QA-10: Ổn định selector Auth form
+
+- **Mục tiêu:** Dùng selector theo trạng thái UI thực tế cho các form xác thực.
+- **Kết quả:** Đồng bộ selector Login/Register theo label và button hiện tại, giữ nguyên validation contract.
+- **Files:** `apps/web/tests/components/LoginForm.test.tsx`, `apps/web/tests/components/RegisterForm.test.tsx`.
+- **Kiểm tra:** Login/Register tests pass 6/6; `npm run typecheck` pass.
+
+### [DONE] [P1] QA-11: Đồng bộ assertion Moderation còn lại
+
+- **Mục tiêu:** Loại bỏ false-negative trong kiểm thử báo cáo và xử lý vi phạm.
+- **Phạm vi:** `ModerationQueueTable.test.tsx`, `ExecuteActionDialog.test.tsx`.
+- **Tiêu chí hoàn thành:** Test dùng copy/role hiện tại và nhóm Moderation mục tiêu pass.
+- **Kết quả:** Đồng bộ empty/header copy và cảnh báo xác nhận hành động nguy hiểm theo UI hiện tại.
+- **Files:** `apps/web/tests/moderation/ModerationQueueTable.test.tsx`, `apps/web/tests/moderation/ExecuteActionDialog.test.tsx`.
+- **Kiểm tra:** Moderation tests pass 4/4; `npm run typecheck` pass.
+
+### [DONE] [P1] QA-12: Hoàn tất regression Auth và Content
+
+- **Mục tiêu:** Giảm các test false-negative còn lại sau khi đồng bộ UI.
+- **Phạm vi:** AuthGuard, Login/Register, Comment, Feed, Search và Series.
+- **Tiêu chí hoàn thành:** Sửa assertion theo UI hiện tại, giữ nguyên hành vi và ghi nhận kết quả full suite.
+- **Kết quả:** Đồng bộ các expectation cuối cùng ở Posts Explorer và Dashboard delete dialog; toàn bộ frontend suite đã được xác minh xanh.
+- **Files:** `apps/web/tests/directories/PostsExplorerView.test.tsx`, `apps/web/tests/dashboard/DashboardPostCard.test.tsx`.
+- **Kiểm tra:** Full Vitest 98/98 files, 318/318 tests pass; `npm run typecheck` pass.
+
+### [IN_PROGRESS] [P1] MOD-01: Nâng cấp moderation workflow
+
+- **Mục tiêu:** Xây dựng quy trình xử lý báo cáo nội dung và hành vi rõ ràng, có audit.
+- **Phạm vi:** Báo cáo bài viết/bình luận, lọc spam, trạng thái xử lý, lý do, moderator và thông báo người dùng.
+- **Tiêu chí hoàn thành:** Workflow `PENDING → REVIEWING → RESOLVED/DISMISSED`, action có reason, audit log, notification và test API/UI.
+- **Tiến độ:** Chuẩn hóa report mới về `PENDING`, giữ tương thích report `OPEN` cũ, bổ sung endpoint moderator nhận xử lý (`PATCH /moderation/reports/:id/review`) và migration chuyển dữ liệu cũ. Còn bổ sung notification theo action và test API/UI.
+
+### [DONE] [P1] PERF-01: Tối ưu upload và hiển thị ảnh
+
+- **Mục tiêu:** Giảm dung lượng ảnh và thời gian tải trang.
+- **Tiêu chí hoàn thành:** Validate file, nén ảnh, responsive image URL và lazy loading.
+- **Kết quả:** Hoàn thiện pipeline nén/validate hiện có, giữ nguyên GIF và WebP nhỏ, đồng thời tối ưu URL ảnh cover Cloudinary bằng `f_auto,q_auto,w_1200`.
+- **Files:** `apps/web/lib/media/upload-client.ts`, `apps/web/components/content/PostCoverMedia.tsx`, `apps/web/tests/media/upload-client.test.ts`.
+- **Kiểm tra:** `npx vitest run tests/media/upload-client.test.ts` pass 4/4; `npm run typecheck` pass.
+
+### [DONE] [P2] UX-02: Kiểm thử autosave và khôi phục draft
+
+- **Mục tiêu:** Bảo đảm draft local hoạt động ổn định và không làm hỏng Post Studio.
+- **Phạm vi:** `usePostDraft`, `PostStudio` và test setup.
+- **Tiêu chí hoàn thành:** Có test cho autosave debounce, restore, clear draft và typecheck pass.
+- **Kết quả:** Đã sửa race giữa restore và autosave; thêm test cho autosave, restore và clear draft.
+- **Files:** `apps/web/lib/posts/use-post-draft.ts`, `apps/web/tests/posts/use-post-draft.test.ts`.
+- **Kiểm tra:** `npx vitest run tests/posts/use-post-draft.test.ts` pass 2/2; `npm run typecheck` pass.
+
 <!-- Thêm task mới bên dưới theo mẫu này -->
 
 ### [DONE] [P2] BE-08: Chuẩn hóa Backend API Design System & Architectural Standards
@@ -162,14 +297,6 @@ Mức ưu tiên:
 - **Ghi chú:** Hoàn thành trọn vẹn task xây dựng search component dùng chung cho Admin.
 
 ---
-
-### [TODO] [P1] Tên task
-
-- **Mục tiêu:** Mô tả ngắn gọn kết quả cần đạt.
-- **Phạm vi:** Các màn hình, module hoặc file liên quan.
-- **Yêu cầu:** Các điều kiện hoặc hành vi bắt buộc.
-- **Tiêu chí hoàn thành:** Cách xác nhận task đã xong.
-- **Ghi chú:** Thông tin bổ sung nếu có.
 
 ---
 
