@@ -131,6 +131,6 @@ describe('PostsExplorerView Component', () => {
 
     render(<PostsExplorerView />);
 
-    expect(screen.getByText('No published analyses found')).toBeInTheDocument();
+    expect(screen.getByText('Không tìm thấy bài phân tích')).toBeInTheDocument();
   });
 });

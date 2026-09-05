@@ -19,7 +19,8 @@ export async function sha256File(file: File): Promise<string> {
 }
 
 export async function compressImage(file: File, maxDimension = 2400, quality = 0.82): Promise<File> {
-  if (file.type === 'image/gif' || file.type === 'image/webp' && file.size <= MAX_COMPRESSED_FILE_SIZE_BYTES) return file;
+  // Preserve animated GIFs and already-small WebP files.
+  if (file.type === 'image/gif' || (file.type === 'image/webp' && file.size <= MAX_COMPRESSED_FILE_SIZE_BYTES)) return file;
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');

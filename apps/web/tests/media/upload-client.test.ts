@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { uploadClient, validateMediaFile } from '@/lib/media/upload-client';
+import { compressImage, uploadClient, validateMediaFile } from '@/lib/media/upload-client';
 
 describe('Upload Client & Validation', () => {
   beforeEach(() => {
@@ -22,6 +22,13 @@ describe('Upload Client & Validation', () => {
     const sizeResult = validateMediaFile(oversizedFile);
     expect(sizeResult.valid).toBe(false);
     expect(sizeResult.error).toContain('File exceeds the 10MB limit');
+  });
+
+  it('keeps GIF and small WebP files unchanged', async () => {
+    const gif = new File(['gif'], 'animated.gif', { type: 'image/gif' });
+    const webp = new File(['webp'], 'small.webp', { type: 'image/webp' });
+    expect(await compressImage(gif)).toBe(gif);
+    expect(await compressImage(webp)).toBe(webp);
   });
 
   it('uploadToCloudinary constructs FormData and handles successful response', async () => {

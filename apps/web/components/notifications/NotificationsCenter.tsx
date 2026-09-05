@@ -45,7 +45,7 @@ export function NotificationsCenter() {
   const notifications = notificationsResponse?.data || [];
 
   return (
-    <main className="mx-auto max-w-3xl px-4 sm:px-6 py-8 space-y-6">
+    <main data-testid="notifications-center" className="mx-auto max-w-3xl px-4 sm:px-6 py-8 space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
         <div>

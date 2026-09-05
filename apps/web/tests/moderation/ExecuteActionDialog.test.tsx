@@ -93,7 +93,7 @@ describe('ExecuteActionDialog Component', () => {
     fireEvent.click(submitBtn);
 
     // Should require checkbox confirmation
-    expect(screen.getByText(/Please confirm the destructive action checkbox/i)).toBeDefined();
+    expect(screen.getByText(/Vui lòng xác nhận ô kiểm tra hành động quan trọng/i)).toBeDefined();
     expect(mockExecuteAction).not.toHaveBeenCalled();
 
     // Check confirmation checkbox

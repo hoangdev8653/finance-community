@@ -34,7 +34,7 @@ describe('ReportButton Component', () => {
       />
     );
 
-    const button = screen.getByRole('button', { name: /Report Post/i });
+    const button = screen.getByRole('button', { name: /Đăng nhập để báo cáo Post/i });
     fireEvent.click(button);
 
     expect(mockPush).toHaveBeenCalledWith(
@@ -56,7 +56,7 @@ describe('ReportButton Component', () => {
       />
     );
 
-    const button = screen.getByRole('button', { name: /Report Comment/i });
+    const button = screen.getByRole('button', { name: /Báo cáo Comment/i });
     fireEvent.click(button);
 
     expect(screen.getByRole('dialog', { name: /Report Comment/i })).toBeDefined();

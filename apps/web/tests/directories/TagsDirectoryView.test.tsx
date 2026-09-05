@@ -50,7 +50,7 @@ describe('TagsDirectoryView Component', () => {
 
     render(<TagsDirectoryView />);
 
-    const searchInput = screen.getByRole('textbox', { name: /Filter market tags/i });
+    const searchInput = screen.getByTestId('tags-search-input');
     fireEvent.change(searchInput, { target: { value: 'Bank' } });
 
     expect(screen.getByText('Banking')).toBeInTheDocument();
@@ -66,10 +66,10 @@ describe('TagsDirectoryView Component', () => {
 
     render(<TagsDirectoryView />);
 
-    const searchInput = screen.getByRole('textbox', { name: /Filter market tags/i });
+    const searchInput = screen.getByTestId('tags-search-input');
     fireEvent.change(searchInput, { target: { value: 'NonexistentTag' } });
 
-    expect(screen.getByText(/No tags matching "NonexistentTag"/i)).toBeInTheDocument();
+    expect(screen.getByText(/Không có chủ đề phù hợp/i)).toBeInTheDocument();
   });
 
   it('renders loading skeleton when tags are being fetched', () => {
@@ -81,6 +81,6 @@ describe('TagsDirectoryView Component', () => {
 
     render(<TagsDirectoryView />);
 
-    expect(screen.getByLabelText('Loading market tags')).toBeInTheDocument();
+    expect(screen.getByTestId('tags-loading-skeleton')).toBeInTheDocument();
   });
 });

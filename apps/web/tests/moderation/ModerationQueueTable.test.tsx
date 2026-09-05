@@ -46,7 +46,7 @@ describe('ModerationQueueTable Component', () => {
 
     render(<ModerationQueueTable />);
 
-    expect(screen.getByText('Hàng đợi báo cáo')).toBeDefined();
+    expect(screen.getByText('Hàng đợi Báo cáo Vi phạm')).toBeDefined();
     expect(screen.getAllByText('Financial Misinformation').length).toBeGreaterThan(0);
     expect(screen.getAllByText('POST').length).toBeGreaterThan(0);
   });

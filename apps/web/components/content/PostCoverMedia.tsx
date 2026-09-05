@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { PostDetailResponse } from '@/types/content';
-import { resolveMediaUrl } from '@/lib/utils/media';
+import { optimizeCloudinaryUrl, resolveMediaUrl } from '@/lib/utils/media';
 
 interface PostCoverMediaProps {
   post: PostDetailResponse;
@@ -23,7 +23,9 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
     coverMedia = post.media[0];
   }
 
-  const resolvedUrl = coverMedia?.secureUrl || (post.coverMediaId ? resolveMediaUrl(post.coverMediaId) : null);
+  const resolvedUrl = coverMedia?.secureUrl
+    ? optimizeCloudinaryUrl(coverMedia.secureUrl, 1200)
+    : (post.coverMediaId ? resolveMediaUrl(post.coverMediaId, undefined) : null);
 
   if (!resolvedUrl) {
     return null;

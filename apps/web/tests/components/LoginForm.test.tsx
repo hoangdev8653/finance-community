@@ -27,16 +27,16 @@ describe('LoginForm Component', () => {
   it('renders email, password inputs and sign-in button', () => {
     renderComponent();
 
-    expect(screen.getByLabelText(/Email address/i)).toBeDefined();
-    expect(screen.getByLabelText(/^Password/i)).toBeDefined();
-    expect(screen.getByRole('button', { name: /^Sign In$/i })).toBeDefined();
-    expect(screen.getByRole('button', { name: /Sign in with Google/i })).toBeDefined();
+    expect(screen.getByRole('textbox', { name: /Địa chỉ email/i })).toBeDefined();
+    expect(screen.getByLabelText(/Mật khẩu/i)).toBeDefined();
+    expect(screen.getByRole('button', { name: /^Đăng nhập$/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Đăng nhập bằng Google/i })).toBeDefined();
   });
 
   it('displays client-side validation errors when submitted empty', async () => {
     renderComponent();
 
-    fireEvent.click(screen.getByRole('button', { name: /^Sign In$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^Đăng nhập$/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Email is required/i)).toBeDefined();
@@ -53,14 +53,14 @@ describe('LoginForm Component', () => {
 
     renderComponent();
 
-    fireEvent.change(screen.getByLabelText(/Email address/i), {
+    fireEvent.change(screen.getByRole('textbox', { name: /Địa chỉ email/i }), {
       target: { value: 'analyst@finance.com' },
     });
-    fireEvent.change(screen.getByLabelText(/^Password/i), {
+    fireEvent.change(screen.getByLabelText(/Mật khẩu/i), {
       target: { value: 'wrongpassword' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /^Sign In$/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^Đăng nhập$/i }));
 
     await waitFor(() => {
       expect(

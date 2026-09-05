@@ -38,8 +38,8 @@ describe('CommentComposer Component', () => {
 
     renderWithToast(<CommentComposer onSubmit={vi.fn()} />);
 
-    expect(screen.getByText(/Sign in to join the discussion/i)).toBeDefined();
-    const loginLink = screen.getByRole('link', { name: /Sign In to Comment/i });
+    expect(screen.getByText(/Đăng nhập để tham gia thảo luận/i)).toBeDefined();
+    const loginLink = screen.getByRole('link', { name: /Đăng nhập để bình luận/i });
     expect(loginLink.getAttribute('href')).toContain('/login?redirect=');
   });
 

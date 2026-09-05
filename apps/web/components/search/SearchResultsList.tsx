@@ -50,11 +50,11 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
 
   if (posts.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
+      <div data-testid="search-results-empty" className="rounded-xl border border-dashed border-border bg-surface p-12 text-center space-y-3">
         <SearchX className="h-10 w-10 text-muted-foreground mx-auto" />
         <div className="space-y-1">
           <h3 className="text-sm font-heading font-bold text-foreground">
-            No Matching Financial Articles
+            Không tìm thấy bài viết phù hợp
           </h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
             Try broadening your search criteria or selecting a different category or topic tag.
@@ -67,9 +67,9 @@ export function SearchResultsList({ filters, onPageChange }: SearchResultsListPr
   return (
     <div className="space-y-6">
       {/* Total Results Summary */}
-      <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
+      <div data-testid="search-results-summary" className="flex items-center justify-between text-xs font-mono text-muted-foreground">
         <span>
-          Showing {posts.length} {meta ? `of ${meta.totalItems}` : ''} publications
+          Tìm thấy {posts.length} {meta ? `trên tổng số ${meta.totalItems}` : ''} bài viết
         </span>
       </div>
 

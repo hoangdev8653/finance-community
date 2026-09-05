@@ -25,7 +25,7 @@ describe('FeedList Component', () => {
     render(<FeedList onResetFilters={vi.fn()} />);
 
     // PostCardSkeleton has animated pulse divs
-    expect(screen.queryByText(/No published analyses found/i)).toBeNull();
+    expect(screen.queryByText(/Không tìm thấy bài phân tích/i)).toBeNull();
   });
 
   it('renders EmptyState with reset button when feed returns 0 posts', () => {
@@ -44,8 +44,8 @@ describe('FeedList Component', () => {
     const onResetFilters = vi.fn();
     render(<FeedList onResetFilters={onResetFilters} />);
 
-    expect(screen.getByText(/No published analyses found/i)).toBeDefined();
-    const resetButton = screen.getByRole('button', { name: /Reset Filters/i });
+    expect(screen.getByText(/Không tìm thấy bài phân tích/i)).toBeDefined();
+    const resetButton = screen.getByRole('button', { name: /Xóa bộ lọc/i });
     fireEvent.click(resetButton);
     expect(onResetFilters).toHaveBeenCalledTimes(1);
   });
@@ -91,7 +91,7 @@ describe('FeedList Component', () => {
     expect(screen.getByText(/Global Semiconductor Market Valuation/i)).toBeDefined();
     expect(screen.getByText('Technology')).toBeDefined();
 
-    const loadMoreButton = screen.getByRole('button', { name: /Load More Articles/i });
+    const loadMoreButton = screen.getByRole('button', { name: /Xem thêm bài viết/i });
     fireEvent.click(loadMoreButton);
     expect(mockFetchNextPage).toHaveBeenCalledTimes(1);
   });

@@ -84,9 +84,9 @@ describe('DashboardPostCard Component', () => {
       fireEvent.click(deleteOption);
     });
 
-    expect(screen.getByText('Delete Research Note')).toBeInTheDocument();
+    expect(screen.getByText('Xóa bài viết')).toBeInTheDocument();
 
-    const confirmButton = screen.getByRole('button', { name: /Confirm Delete/i });
+    const confirmButton = screen.getByRole('button', { name: /Xác nhận xóa/i });
     await React.act(async () => {
       fireEvent.click(confirmButton);
     });

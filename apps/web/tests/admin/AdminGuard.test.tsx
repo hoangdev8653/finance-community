@@ -52,7 +52,7 @@ describe('AdminGuard Component', () => {
       </AdminGuard>
     );
 
-    expect(screen.getByText(/Administrative Access Required/i)).toBeDefined();
+    expect(screen.getByText(/Yêu cầu quyền quản trị/i)).toBeDefined();
     expect(screen.queryByText('Admin Dashboard Content')).toBeNull();
   });
 
@@ -69,6 +69,6 @@ describe('AdminGuard Component', () => {
       </AdminGuard>
     );
 
-    expect(screen.getByText(/Verifying administrative credentials/i)).toBeDefined();
+    expect(screen.getByText(/Đang xác minh quyền quản trị/i)).toBeDefined();
   });
 });

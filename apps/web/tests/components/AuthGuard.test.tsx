@@ -33,7 +33,7 @@ describe('AuthGuard Component', () => {
       </AuthGuard>
     );
 
-    expect(screen.getByText(/Verifying authentication session\.\.\./i)).toBeDefined();
+    expect(screen.getByText(/Đang xác minh phiên đăng nhập/i)).toBeDefined();
     expect(screen.queryByText('Protected Content')).toBeNull();
   });
 

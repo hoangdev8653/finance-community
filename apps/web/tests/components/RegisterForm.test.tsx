@@ -31,7 +31,7 @@ describe('RegisterForm Component', () => {
     expect(screen.getByLabelText(/^Username/i)).toBeDefined();
     expect(screen.getByLabelText(/^Password \(min 6 characters\)/i)).toBeDefined();
     expect(screen.getByLabelText(/Confirm Password/i)).toBeDefined();
-    expect(screen.getByRole('button', { name: /Create Account/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Tạo tài khoản/i })).toBeDefined();
   });
 
   it('validates password minimum length and mismatch', async () => {
@@ -50,7 +50,7 @@ describe('RegisterForm Component', () => {
       target: { value: '123456' }, // mismatch
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /Create Account/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Tạo tài khoản/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Password must be at least 6 characters/i)).toBeDefined();
@@ -79,7 +79,7 @@ describe('RegisterForm Component', () => {
       target: { value: 'password123' },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: /Create Account/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Tạo tài khoản/i }));
 
     await waitFor(() => {
       expect(screen.getByText(/Username is already taken\./i)).toBeDefined();

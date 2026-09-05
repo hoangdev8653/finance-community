@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { PostEntity } from '@/types/content';
 import { useAuth } from '@/lib/auth/AuthContext';
@@ -18,6 +18,7 @@ import { learningSeriesService } from '@/lib/learning/learning-series-service';
 import { Globe, ExternalLink } from 'lucide-react';
 import { apiClient } from '@/lib/api/client';
 import { useUploadMedia } from '@/lib/media/use-media';
+import { usePostDraft, PostDraft } from '@/lib/posts/use-post-draft';
 
 interface PostStudioProps {
   initialPost?: PostEntity;
@@ -70,6 +71,28 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const [isGeneratingDraft, setIsGeneratingDraft] = useState(false);
   const [imagePlan, setImagePlan] = useState<ImagePlan | undefined>();
   const [researchedSources, setResearchedSources] = useState<Array<{ title: string; url: string }>>([]);
+
+  const draftValue = useMemo<PostDraft>(() => ({
+    title, contentType, categoryId, domainId, seriesId, lessonOrder, tags,
+    coverMediaId, body, metaTitle, metaDescription,
+  }), [title, contentType, categoryId, domainId, seriesId, lessonOrder, tags, coverMediaId, body, metaTitle, metaDescription]);
+  const draftKey = `finance-community:post-draft:${user?.id || 'anonymous'}:${initialPost?.id || 'new'}`;
+  const { restoredDraft, status: draftStatus, clearDraft } = usePostDraft(draftKey, draftValue, !isEditing);
+
+  React.useEffect(() => {
+    if (!restoredDraft) return;
+    setTitle(restoredDraft.title);
+    setContentType(restoredDraft.contentType);
+    setCategoryId(restoredDraft.categoryId);
+    setDomainId(restoredDraft.domainId);
+    setSeriesId(restoredDraft.seriesId);
+    setLessonOrder(restoredDraft.lessonOrder);
+    setTags(restoredDraft.tags);
+    setCoverMediaId(restoredDraft.coverMediaId);
+    setBody(restoredDraft.body);
+    setMetaTitle(restoredDraft.metaTitle);
+    setMetaDescription(restoredDraft.metaDescription);
+  }, [restoredDraft]);
 
   const generateDraft = async () => {
     if (!title.trim() || !domainId || !categoryId) {
@@ -208,6 +231,12 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         onSaveDraft={() => handleSave('DRAFT')}
         onPublish={() => handleSave('PUBLISHED')}
       />
+      {!isEditing && draftStatus !== 'idle' && (
+        <div className="flex items-center justify-between rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground" role="status">
+          <span>{draftStatus === 'saving' ? 'Đang tự động lưu bản nháp…' : draftStatus === 'restored' ? 'Đã khôi phục bản nháp trên thiết bị này.' : 'Bản nháp đã được tự động lưu.'}</span>
+          {draftStatus === 'restored' && <button type="button" onClick={clearDraft} className="font-medium text-primary hover:underline">Xóa bản nháp</button>}
+        </div>
+      )}
 
       {/* Validation Error Feedback */}
       {error && (

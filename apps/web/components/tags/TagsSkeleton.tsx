@@ -1,9 +1,9 @@
 import React from 'react';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-export function TagsSkeleton() {
+export function TagsSkeleton({ 'data-testid': testId }: { 'data-testid'?: string } = {}) {
   return (
-    <div className="space-y-8 animate-pulse" aria-busy="true" aria-label="Đang tải chủ đề">
+    <div data-testid={testId} className="space-y-8 animate-pulse" aria-busy="true" aria-label="Đang tải chủ đề">
       {/* Search Bar Skeleton */}
       <div className="flex gap-3">
         <Skeleton className="h-10 w-full max-w-md rounded-md" />

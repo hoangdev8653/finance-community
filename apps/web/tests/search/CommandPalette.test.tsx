@@ -61,7 +61,7 @@ describe('CommandPalette Component', () => {
 
     render(<CommandPalette isOpen={true} onClose={mockClose} />);
 
-    const input = screen.getByPlaceholderText(/Search topics, categories, or tags/i);
+    const input = screen.getByPlaceholderText(/Tìm chủ đề, danh mục hoặc tag/i);
     fireEvent.keyDown(input, { key: 'Escape' });
 
     expect(mockClose).toHaveBeenCalled();

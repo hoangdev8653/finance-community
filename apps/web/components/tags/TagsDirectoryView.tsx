@@ -85,13 +85,14 @@ export function TagsDirectoryView() {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Tìm kiếm chủ đề theo từ khóa hoặc mã cổ phiếu (FPT, HPG, Fed...)..."
             aria-label="Lọc chủ đề"
+            data-testid="tags-search-input"
             className="h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs transition-colors"
           />
         </div>
       </div>
 
       {/* Loading State */}
-      {isLoading && <TagsSkeleton />}
+      {isLoading && <TagsSkeleton data-testid="tags-loading-skeleton" />}
 
       {/* Error State */}
       {isError && (

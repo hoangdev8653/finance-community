@@ -58,7 +58,7 @@ describe('SystemSettingsView Component', () => {
     const saveBtn = screen.getByRole('button', { name: /Save Configuration/i });
     fireEvent.click(saveBtn);
 
-    expect(screen.getByText(/Invalid JSON format/i)).toBeDefined();
+    expect(screen.getByText(/Định dạng JSON không hợp lệ/i)).toBeDefined();
     expect(mockUpdateSetting).not.toHaveBeenCalled();
 
     // Enter Valid JSON

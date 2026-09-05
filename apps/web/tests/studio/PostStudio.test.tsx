@@ -38,6 +38,7 @@ describe('PostStudio Component', () => {
   const createMutateMock = vi.fn();
 
   beforeEach(() => {
+    window.localStorage.clear();
     queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     vi.mocked(useAuth).mockReturnValue({
       isAuthenticated: true,
@@ -56,6 +57,22 @@ describe('PostStudio Component', () => {
       mutateAsync: vi.fn(),
       isPending: false,
     } as any);
+  });
+
+  it('restores a saved draft when opening a new studio', async () => {
+    window.localStorage.setItem('finance-community:post-draft:u-1:new', JSON.stringify({
+      title: 'Bản nháp đã lưu', contentType: 'COMMUNITY', lessonOrder: 1, tags: [],
+      coverMediaId: null, body: '<p>Nội dung đã khôi phục</p>', metaTitle: '', metaDescription: '',
+    }));
+
+    render(
+      <QueryClientProvider client={queryClient}>
+        <PostStudio />
+      </QueryClientProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByDisplayValue('Bản nháp đã lưu')).toBeDefined());
+    expect(screen.getByRole('status')).toHaveTextContent('Đã khôi phục');
   });
 
   it('validates title requirement and submits new post', async () => {
