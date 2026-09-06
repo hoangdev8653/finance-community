@@ -35,7 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/series`,
+      url: `${baseUrl}/chuoi-bai`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -75,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       seriesRoutes = seriesResult.data
         .filter((series) => series.slug)
         .map((series) => ({
-          url: `${baseUrl}/series/${encodeURIComponent(series.slug)}`,
+          url: `${baseUrl}/chuoi-bai/${encodeURIComponent(series.slug)}`,
           lastModified: new Date(series.createdAt),
           changeFrequency: 'weekly',
           priority: 0.8,

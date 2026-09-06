@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       data.series.description ||
       'Chuỗi bài học thực tế được xây dựng theo lộ trình rõ ràng trên Finance Community.';
-    const canonicalPath = `/series/${encodeURIComponent(slug)}`;
+    const canonicalPath = `/chuoi-bai/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -58,10 +58,10 @@ export default async function SeriesDetailPage({ params }: PageProps) {
   const itemListJsonLd = generateSeriesItemListJsonLd(seriesDetail);
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Chuỗi Bài Học', url: '/series' },
+    { name: 'Chuỗi Bài Học', url: '/chuoi-bai' },
     {
       name: seriesDetail.series.name,
-      url: `/series/${encodeURIComponent(slug)}`,
+      url: `/chuoi-bai/${encodeURIComponent(slug)}`,
     },
   ]);
 

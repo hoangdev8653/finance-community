@@ -8,7 +8,15 @@ import { MobileNavigation } from '@/components/navigation/MobileNavigation';
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAuth = pathname === '/login' || pathname === '/register' || pathname.startsWith('/login') || pathname.startsWith('/register');
+  const isAuth =
+    pathname === '/dang-nhap' ||
+    pathname === '/dang-ky' ||
+    pathname === '/login' ||
+    pathname === '/register' ||
+    pathname.startsWith('/dang-nhap/') ||
+    pathname.startsWith('/dang-ky/') ||
+    pathname.startsWith('/login/') ||
+    pathname.startsWith('/register/');
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/moderation';
   const hideChrome = isAuth || isAdmin;
 

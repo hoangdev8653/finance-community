@@ -17,7 +17,7 @@ export interface NavItemConfig {
 const mainNavConfig: NavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
   { labelKey: 'navigation.explore', href: '/posts', icon: Compass },
-  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
+  { labelKey: 'navigation.series', href: '/chuoi-bai', icon: BookOpen },
   { labelKey: 'navigation.categories', href: '/categories', icon: LayoutGrid },
   { labelKey: 'navigation.tags', href: '/tags', icon: Tag },
 ];

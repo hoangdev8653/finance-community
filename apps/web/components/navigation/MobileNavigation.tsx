@@ -16,7 +16,7 @@ interface MobileNavItemConfig {
 const mobileNavConfig: MobileNavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
   { labelKey: 'navigation.explore', href: '/posts', icon: Compass },
-  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
+  { labelKey: 'navigation.series', href: '/chuoi-bai', icon: BookOpen },
   { labelKey: 'navigation.categories', href: '/categories', icon: Grid },
   { labelKey: 'navigation.account', href: '/login', icon: User },
 ];
@@ -34,7 +34,7 @@ export function MobileNavigation() {
         {mobileNavConfig.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-          const label = item.href === '/series' ? 'Series' : t(item.labelKey);
+          const label = item.href === '/chuoi-bai' ? 'Series' : t(item.labelKey);
           return (
             <Link
               key={item.href}

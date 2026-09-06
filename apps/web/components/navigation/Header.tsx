@@ -34,7 +34,6 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { cn } from '@/lib/utils/cn';
 import { postsService } from '@/lib/posts/posts-service';
 import { useQuery } from '@tanstack/react-query';
-import { MarketTickerBar } from '@/components/market/MarketTickerBar';
 
 interface CategoryDropdownItem {
   title: string;
@@ -69,7 +68,7 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
   {
     title: 'Chuỗi bài Series',
     desc: 'Cẩm nang Đọc BCTC, Định giá bài bản & Chiến lược đầu tư',
-    href: '/series',
+    href: '/chuoi-bai',
     icon: BookOpen,
     color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
   },
@@ -135,35 +134,34 @@ export function Header() {
   const isDark = mounted ? theme === 'dark' || resolvedTheme === 'dark' : false;
 
   return (
-    <header className="sticky top-0 z-40 w-full max-w-full overflow-hidden border-b border-slate-200/90 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-md">
-      <MarketTickerBar />
+    <header className="sticky top-0 z-40 w-full max-w-full overflow-hidden border-t-[3px] border-t-slate-900 border-b border-slate-200/90 bg-white/95 backdrop-blur-md dark:border-t-slate-700 dark:border-b-[#253044] dark:bg-[#111827]/95">
       <div className="w-full max-w-[1440px] mx-auto flex h-16 sm:h-18 items-center justify-between px-3.5 sm:px-6 lg:px-8">
         {/* 1. Left: Brand Logo */}
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            title="MorningView"
-            aria-label="MorningView"
-            className="flex items-center gap-2.5 group"
+            title="Finance Community"
+            aria-label="Finance Community"
+            className="flex items-center gap-2 group"
           >
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden group-hover:scale-105 transition-transform">
+            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
               <Image
                 src="/images/logo.png"
-                alt="MorningView"
-                width={40}
-                height={40}
-                className="h-10 w-10 object-contain"
+                alt="Finance Community"
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
                 priority
               />
             </div>
-            <span className="font-heading text-xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
-              Morning<span className="text-teal-600 dark:text-teal-400">View</span>
+            <span className="font-heading text-base font-bold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
+              Finance Community
             </span>
           </Link>
         </div>
 
         {/* 2. Center: Top Horizontal Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 mx-auto px-6">
+        <nav className="hidden md:flex items-center gap-5 lg:gap-6 xl:gap-8 mx-auto px-3 lg:px-6">
           {/* Trang chủ */}
           <Link
             href="/"
@@ -174,7 +172,7 @@ export function Header() {
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
-            <Home className={cn('h-4.5 w-4.5 transition-colors', pathname === '/' ? 'text-teal-700 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300 group-hover:text-teal-700')} />
+            <Home className="hidden" aria-hidden="true" />
             <span>{t('navigation.home')}</span>
             {pathname === '/' && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
@@ -183,34 +181,34 @@ export function Header() {
 
           {/* Khám phá */}
           <Link
-            href="/posts"
+            href="/chuoi-bai"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/posts') && pathname !== '/posts/series'
+              pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
-            <Compass className="h-4.5 w-4.5 text-slate-700 dark:text-slate-300 group-hover:text-teal-700 dark:group-hover:text-slate-200" />
-            <span>{t('navigation.explore')}</span>
-            {pathname.startsWith('/posts') && pathname !== '/posts/series' && (
+            <Compass className="hidden" aria-hidden="true" />
+            <span>Series</span>
+            {(pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')) && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
 
           {/* Chuỗi bài Series */}
           <Link
-            href="/series"
+            href="/posts"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/series')
+              pathname.startsWith('/posts')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
-            <BookOpen className="h-4.5 w-4.5 text-slate-700 dark:text-slate-300 group-hover:text-teal-700 dark:group-hover:text-slate-200" />
-            <span>{t('navigation.series')}</span>
-            {pathname.startsWith('/series') && (
+            <BookOpen className="hidden" aria-hidden="true" />
+            <span>Bài viết cộng đồng</span>
+            {pathname.startsWith('/posts') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
@@ -233,7 +231,7 @@ export function Header() {
                   : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
               )}
             >
-              <LayoutGrid className="h-4.5 w-4.5 text-slate-700 dark:text-slate-300 group-hover:text-teal-700 dark:group-hover:text-slate-200" />
+            <LayoutGrid className="hidden" aria-hidden="true" />
               <span>{t('navigation.categories')}</span>
               <ChevronDown className={cn('h-4 w-4 transition-transform duration-200', isCategoryOpen && 'rotate-180 text-teal-600')} />
 
@@ -292,17 +290,17 @@ export function Header() {
 
           {/* Không gian làm việc */}
           <Link
-            href="/dashboard"
+            href="/tools"
             className={cn(
                 'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/dashboard')
+              pathname.startsWith('/tools')
                 ? 'text-teal-700 dark:text-teal-400 font-bold'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
             )}
           >
-            <Folder className="h-4 w-4 text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300" />
-            <span>{t('navigation.workspace')}</span>
-            {pathname.startsWith('/dashboard') && (
+            <Folder className="hidden" aria-hidden="true" />
+            <span>Công cụ</span>
+            {pathname.startsWith('/tools') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-500" />
             )}
           </Link>
@@ -327,8 +325,8 @@ export function Header() {
               type="text"
               value={headerSearch}
               onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="Tìm bài viết, mã CP..."
-              className="h-8 w-36 lg:w-44 xl:w-52 rounded-lg border border-input bg-background/80 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground transition-all focus:w-48 lg:focus:w-56 focus:outline-hidden focus:ring-1 focus:ring-primary"
+              placeholder="Tìm kiếm bài học, series, chủ đề..."
+              className="h-10 w-[240px] rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-xs text-foreground placeholder:font-medium placeholder:text-muted-foreground transition-colors focus:outline-hidden focus:ring-1 focus:ring-primary"
             />
           </form>
 
@@ -345,7 +343,7 @@ export function Header() {
           <IconButton
             variant="ghost"
             size="sm"
-            className="h-8.5 w-8.5 sm:h-9 sm:w-9"
+            className="hidden"
             label={t('common.toggleTheme')}
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
           >
@@ -378,7 +376,7 @@ export function Header() {
                 variant="primary"
                 size="sm"
                 asChild
-                className="rounded-lg font-bold text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 sm:py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
+                className="h-10 rounded-lg font-bold text-xs sm:text-sm px-3.5 sm:px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
               >
                 <Link href="/login">
                   <LogIn className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
