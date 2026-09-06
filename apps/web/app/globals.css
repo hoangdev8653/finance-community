@@ -54,7 +54,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --background: 210 25% 95%;
+    --background: 220 33.333% 98.235%;
     --foreground: 222.2 84% 4.9%;
     --surface: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
@@ -79,8 +79,8 @@
   }
 
   :root {
-    /* High contrast canvas: Slate-100 page background makes pure white cards pop crisply */
-    --background: 210 25% 95%;
+    /* Exact sampled canvas color from home.png: #F9FAFC. */
+    --background: 220 33.333% 98.235%;
     --foreground: 222.2 84% 4.9%;
 
     --surface: 0 0% 100%;
