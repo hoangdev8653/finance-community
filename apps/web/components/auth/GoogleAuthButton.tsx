@@ -104,7 +104,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
       <div
         ref={containerRef}
         id="google-signin-container"
-        className="w-full flex justify-center [&>iframe]:!w-full [&>iframe]:!max-w-[380px] [&>div]:!w-full [&>div]:!max-w-[380px] z-10"
+        className="hidden"
       />
 
       {/* Fallback button shown if Google script hasn't rendered yet or in mock dev mode */}
@@ -112,7 +112,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
         <Button
           type="button"
           variant="outline"
-          className="w-full max-w-[380px] justify-center gap-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold text-slate-800 dark:text-slate-100 h-11 text-sm shadow-xs cursor-pointer pointer-events-auto"
+          className="h-12 w-full justify-center gap-3 border border-input bg-white font-medium text-foreground shadow-xs hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer pointer-events-auto"
           onClick={handleCustomClick}
           disabled={isLoading}
           aria-label="Đăng nhập bằng Google"
@@ -135,7 +135,7 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
               fill="#EA4335"
             />
           </svg>
-          <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
+          <span>Tiếp tục với Google</span>
         </Button>
       </div>
     </div>

@@ -13,7 +13,7 @@ import { Input } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
 import { GoogleAuthButton } from './GoogleAuthButton';
 import { Divider } from '@/components/ui/Divider';
-import { Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
 
 export function LoginForm() {
   const router = useRouter();
@@ -70,9 +70,9 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="mx-auto w-full max-w-md space-y-4">
       <div className="space-y-2 text-center">
-        <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
+        <h1 className="font-heading text-[32px] font-bold leading-10 tracking-tight text-foreground">
           Đăng nhập
         </h1>
         <p className="text-sm text-muted-foreground">
@@ -90,46 +90,48 @@ export function LoginForm() {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        <div>
+        <div className="relative">
           <Input
-            label="Địa chỉ email"
+            label="Email"
             type="email"
-            placeholder="analyst@finance.com"
+            placeholder="Nhập email của bạn"
             error={errors.email?.message}
             {...register('email')}
             id="login-email"
             autoComplete="email"
+            aria-label="Địa chỉ email"
             aria-required="true"
+            className="h-12 rounded-lg border-slate-300/70 bg-white/80 pl-11"
           />
+          <Mail className="pointer-events-none absolute left-4 top-[37px] h-5 w-5 text-muted-foreground" aria-hidden="true" />
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs font-medium text-primary">
-              Quên mật khẩu?
-            </span>
-          </div>
-            <div className="relative">
-              <Input
+          <div className="relative">
+            <Input
               label="Mật khẩu"
               type={showPassword ? 'text' : 'password'}
-              placeholder="••••••••"
-            error={errors.password?.message}
-            {...register('password')}
-            id="login-password"
-            autoComplete="current-password"
+              placeholder="Nhập mật khẩu của bạn"
+              error={errors.password?.message}
+              {...register('password')}
+              id="login-password"
+              autoComplete="current-password"
               aria-required="true"
-              className="pr-11"
-              />
-              <button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiển thị mật khẩu'} className="absolute right-3 top-8 rounded-md p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+              className="h-12 rounded-lg border-slate-300/70 bg-white/80 pl-11 pr-11"
+            />
+            <LockKeyhole className="pointer-events-none absolute left-4 top-[37px] h-5 w-5 text-muted-foreground" aria-hidden="true" />
+            <button type="button" onClick={() => setShowPassword((visible) => !visible)} aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiển thị mật khẩu'} className="absolute right-3 top-8 rounded-md p-1 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                 {showPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
-              </button>
-            </div>
+            </button>
+          </div>
+          <div className="mt-2 text-right">
+            <span className="text-sm font-medium text-primary">Quên mật khẩu?</span>
+          </div>
         </div>
 
         <Button
           type="submit"
-          className="w-full justify-center h-10 font-semibold"
+          className="h-11 w-full justify-center bg-gradient-to-r from-emerald-600 to-green-500 font-semibold shadow-sm"
           isLoading={isSubmitting}
           disabled={isSubmitting}
         >
@@ -140,14 +142,14 @@ export function LoginForm() {
       <div className="relative">
         <Divider />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="bg-surface px-2 text-xs uppercase text-muted-foreground font-mono">
+          <span className="bg-surface px-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
             Hoặc tiếp tục với
           </span>
         </div>
       </div>
 
       <GoogleAuthButton onSuccess={handleGoogleSuccess} onError={setErrorMessage} />
-      <Button type="button" variant="outline" disabled={isFacebookLoading} isLoading={isFacebookLoading} onClick={async () => { setIsFacebookLoading(true); try { if (!loginWithFacebook) throw new Error('Đăng nhập Facebook chưa được cấu hình.'); await loginWithFacebook('mock_facebook_token_facebook_user'); handleGoogleSuccess(); } catch (err: any) { setErrorMessage(err.message || 'Đăng nhập Facebook thất bại.'); } finally { setIsFacebookLoading(false); } }} className="w-full justify-center gap-3 font-semibold">
+      <Button type="button" variant="outline" disabled={isFacebookLoading} isLoading={isFacebookLoading} onClick={async () => { setIsFacebookLoading(true); try { if (!loginWithFacebook) throw new Error('Đăng nhập Facebook chưa được cấu hình.'); await loginWithFacebook('mock_facebook_token_facebook_user'); handleGoogleSuccess(); } catch (err: any) { setErrorMessage(err.message || 'Đăng nhập Facebook thất bại.'); } finally { setIsFacebookLoading(false); } }} className="h-11 w-full justify-center gap-3 border-input bg-white font-medium hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800">
         <svg className="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.09 4.39 23.08 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.03 1.79-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.08 24 18.09 24 12.07Z" /></svg>
         Tiếp tục với Facebook
       </Button>
