@@ -19,7 +19,13 @@ Mức ưu tiên:
 
 ## Backlog
 
-### [DONE] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
+### [IN_PROGRESS] [P1] UI-HOME-01: Triển khai lại Home theo thiết kế home.png
+
+- **Mục tiêu:** Thay Home editorial hiện tại bằng trải nghiệm học tập theo `home.png`.
+- **Phạm vi:** Hero learning dashboard, danh mục, series, tiến độ học, bài viết cộng đồng, lợi ích, newsletter; các asset sách/chậu cây chờ người dùng cung cấp.
+- **Trạng thái:** Đã dựng UI responsive bằng React/CSS và chart SVG; cần gắn 2 asset Hero, thumbnail dữ liệu thật và tinh chỉnh trực quan.
+
+### [IN_PROGRESS] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
 
 - **Mục tiêu:** Đồng bộ page Login với reference `login.png` bằng layout split-screen, brand panel, form card và illustration tài chính.
 - **Phạm vi:** Auth layout, login form, OAuth actions, responsive mobile, accessibility và asset illustration.
@@ -451,3 +457,31 @@ Mức ưu tiên:
 - **Posts:** Là trang quản lý toàn bộ bài viết trong hệ thống. Có danh sách tất cả bài viết, tìm kiếm, lọc, phân trang và các thao tác thêm, sửa, xóa/ẩn bài viết.
 - **Post Moderation:** Là hàng đợi kiểm duyệt bài viết. Chỉ tập trung vào xem nội dung và quyết định `Duyệt` hoặc `Không duyệt/Ẩn`; không thêm, sửa hoặc xóa bài viết.
 - Hai trang phải có route, UI action và permission tách biệt; không dùng nút CRUD của Posts trong Post Moderation.
+
+## Roadmap giao diện sản phẩm (cập nhật 2026-09-06)
+
+> Phân biệt rõ: **đã hoàn thành** là trang sẵn sàng dùng; **UI mock** là đã có giao diện nhưng chưa kết nối dữ liệu thật từ back-end.
+
+### Đã hoàn thành
+
+- [DONE] `/` — Trang chủ.
+- [DONE] `/dang-nhap` — Đăng nhập.
+- [UI MOCK] `/chuoi-bai` — Thư viện Series đa chủ đề, có tìm kiếm và lọc mock; chờ API.
+
+### Thứ tự cần làm
+
+1. [P1] `/chuoi-bai/[slug]` — Chi tiết Series: bìa, mô tả, danh sách bài viết và liên kết đến từng bài. Sau khi chốt UI sẽ nối `GET /series/:slug`.
+2. [P1] `/bai-viet/[loai]/[slug]` — Trang đọc bài viết: nội dung, tác giả, thẻ, bình luận và bài liên quan.
+3. [P1] `/bai-viet` — Danh sách bài viết cộng đồng: feed, lọc và tìm kiếm.
+4. [P1] `/dang-ky` — Đăng ký và kiểm tra dữ liệu đầu vào.
+5. [P2] `/lo-trinh-hoc` và `/lo-trinh-hoc/[slug]` — Lộ trình học riêng, có tiến độ và các bài theo thứ tự.
+6. [P2] `/tim-kiem` — Tìm kiếm toàn hệ thống.
+7. [P2] `/ho-so/[username]` — Hồ sơ công khai.
+8. [P2] `/bai-viet-da-luu`, `/thong-bao`, `/bang-dieu-khien` — Khu vực cá nhân, yêu cầu đăng nhập.
+9. [P3] `/cong-cu`, `/danh-muc`, `/the`, `/lien-he`, `/chinh-sach-bao-mat`, `/dieu-khoan`.
+10. [P3] `/quan-tri/...` — Chỉ triển khai UI sau khi luồng công khai, xác thực và nội dung chính ổn định.
+
+### Quy ước sitemap
+
+- `/chuoi-bai` là thư viện **Series bài viết**; `/lo-trinh-hoc` là **lộ trình học**. Hai loại nội dung khác nhau, không tạo lại `/hoc-tap/kham-pha`.
+- URL công khai dùng tiếng Việt; API back-end vẫn giữ endpoint hiện hữu.
