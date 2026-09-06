@@ -1,12 +1,18 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const ci = Boolean(
+  (globalThis as typeof globalThis & {
+    process?: { env?: { CI?: string } };
+  }).process?.env?.CI,
+);
+
 export default defineConfig({
   testDir: './e2e',
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: true,
-  retries: process.env.CI ? 2 : 0,
-  reporter: process.env.CI ? 'github' : 'list',
+  retries: ci ? 2 : 0,
+  reporter: ci ? 'github' : 'list',
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
@@ -19,6 +25,6 @@ export default defineConfig({
   webServer: {
     command: 'npm run dev',
     url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !ci,
   },
 });
