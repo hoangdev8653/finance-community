@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils/cn';
 import { postsService } from '@/lib/posts/posts-service';
 import { useQuery } from '@tanstack/react-query';
 import { MarketTickerBar } from '@/components/market/MarketTickerBar';
+import { BRAND } from '@/lib/constants/brand';
 
 interface CategoryDropdownItem {
   title: string;
@@ -142,14 +143,14 @@ export function Header() {
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            title="MorningView"
-            aria-label="MorningView"
+            title={BRAND.name}
+            aria-label={BRAND.name}
             className="flex items-center gap-2 group"
           >
             <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
               <Image
                 src="/images/logo.png"
-                alt="MorningView"
+                alt={BRAND.name}
                 width={32}
                 height={32}
                 className="h-8 w-8 object-contain"
@@ -157,7 +158,7 @@ export function Header() {
               />
             </div>
             <span className="font-heading text-base font-bold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
-              MorningView
+              {BRAND.name}
             </span>
           </Link>
         </div>

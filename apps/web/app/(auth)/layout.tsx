@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BookOpen, UsersRound, ChartNoAxesCombined, BadgeCheck, ShieldCheck } from 'lucide-react';
+import { BRAND } from '@/lib/constants/brand';
 
 const benefits = [
   { icon: BookOpen, title: 'Học kiến thức tài chính thực tiễn', description: 'Các khóa học được biên soạn bởi chuyên gia', className: 'bg-emerald-50 text-emerald-600' },
@@ -15,11 +16,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen overflow-hidden bg-background text-foreground">
       <div className="mx-auto grid min-h-screen max-w-[1600px] grid-cols-1 lg:grid-cols-2">
         <section className="relative order-2 flex min-h-[560px] flex-col overflow-hidden px-6 pb-0 pt-8 sm:px-10 lg:order-1 lg:px-16 lg:pt-10 xl:px-20">
-          <Link href="/" className="relative z-10 inline-flex w-fit items-center gap-3 lg:-translate-y-3" aria-label="MorningView - Trang chủ">
-            <Image src="/images/logo.png" alt="MorningView" width={44} height={44} className="h-11 w-11 object-contain" priority />
+          <Link href="/" className="relative z-10 inline-flex w-fit items-center gap-3 lg:-translate-y-3" aria-label={`${BRAND.name} - Trang chủ`}>
+            <Image src="/images/logo.png" alt={BRAND.name} width={44} height={44} className="h-11 w-11 object-contain" priority />
             <span className="flex flex-col">
-              <span className="font-heading text-xl font-bold tracking-tight text-foreground">MorningView</span>
-              <span className="text-sm font-medium text-primary">Học · Chia sẻ · Phát triển</span>
+              <span className="font-heading text-xl font-bold tracking-tight text-foreground">{BRAND.name}</span>
+              <span className="text-sm font-medium text-primary">{BRAND.sloganShort}</span>
             </span>
           </Link>
           <div className="relative z-10 mt-14 max-w-xl lg:mt-6">

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowRight, Sparkles, TrendingUp, Users, BookOpen } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n/useTranslation';
+import { BRAND } from '@/lib/constants/brand';
 
 export function HeroSection() {
   const { t } = useTranslation();
@@ -33,7 +34,7 @@ export function HeroSection() {
         {/* Top Tagline Badge */}
         <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3.5 py-1 text-xs font-semibold text-emerald-300 backdrop-blur-xs">
           <Sparkles className="h-3.5 w-3.5 text-emerald-400" />
-          <span>MorningView Intelligence &bull; Verified Research</span>
+          <span>{BRAND.intelligenceBadge}</span>
         </div>
 
         {/* Main Title */}

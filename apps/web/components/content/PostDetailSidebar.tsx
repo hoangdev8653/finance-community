@@ -12,6 +12,7 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { PostTableOfContents } from './PostTableOfContents';
 import { ContentHeading } from './PostContentRenderer';
 import { Sparkles, UserPlus, UserCheck, BookOpen, Clock, Tag, ArrowRight } from 'lucide-react';
+import { BRAND } from '@/lib/constants/brand';
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
@@ -47,7 +48,7 @@ export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDet
     };
   }, [post.id]);
 
-  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : 'Ban Biên Tập Finance Pulse';
+  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : BRAND.editorialDesk;
   const authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
   const visibleTags = post.tags?.slice(0, VISIBLE_SIDEBAR_TAG_COUNT) ?? [];
   const hiddenTagCount = (post.tags?.length ?? 0) - visibleTags.length;
@@ -61,7 +62,7 @@ export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDet
         <div className="flex items-start gap-3.5">
           <Avatar
             src={authorAvatar}
-            fallback="FP"
+            fallback={BRAND.code}
             size="lg"
             className="ring-2 ring-slate-200 dark:ring-slate-700 rounded-full shrink-0"
           />

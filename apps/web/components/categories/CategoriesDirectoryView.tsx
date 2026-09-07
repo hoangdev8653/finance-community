@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
+import { BRAND } from '@/lib/constants/brand';
 
 export function CategoriesDirectoryView() {
   const { data: categories = [], isLoading, isError, error, refetch } = useCategories();
@@ -34,7 +35,7 @@ export function CategoriesDirectoryView() {
           Danh mục Tri thức & Khóa học
         </h1>
         <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-          Khám phá các phân mục nghiên cứu tài chính có cấu trúc, các lớp tài sản đầu tư và hệ thống giáo trình đào tạo bài bản trên MorningView.
+          Khám phá các phân mục nghiên cứu tài chính có cấu trúc, các lớp tài sản đầu tư và hệ thống giáo trình đào tạo bài bản trên {BRAND.name}.
         </p>
       </div>
 

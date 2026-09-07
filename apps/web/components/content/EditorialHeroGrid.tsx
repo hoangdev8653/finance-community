@@ -13,6 +13,7 @@ import { formatRelativeTime } from '@/lib/utils/date';
 import { calculateReadingMinutes, calculateReadingTime } from '@/lib/utils/reading-time';
 import { postsService } from '@/lib/posts/posts-service';
 import { queryKeys } from '@/lib/query/keys';
+import { BRAND } from '@/lib/constants/brand';
 
 interface LeadStoryItem {
   id: string;
@@ -31,7 +32,7 @@ const DEFAULT_LEAD_STORIES: LeadStoryItem[] = [
     id: 'lead-1',
     title: 'Fed chính thức hạ lãi suất: Bước ngoặt nới lỏng chính sách tiền tệ toàn cầu và tác động đến các thị trường mới nổi',
     summary: 'Phân tích toàn diện quyết định của FOMC: Lãi suất hạ về vùng mới, mở đầu chu kỳ nới lỏng định lượng và định hình lại dòng vốn thị trường.',
-    authorName: 'Ban Biên Tập MorningView',
+    authorName: BRAND.editorialDesk,
     authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
     image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1000&auto=format&fit=crop&q=80',
     readingMinutes: 7,
@@ -108,7 +109,7 @@ export function EditorialHeroGrid() {
         id: post.id,
         title: post.title,
         summary: post.metaDescription || (post.body ? post.body.slice(0, 160) + '...' : post.title),
-        authorName: post.author?.displayName || post.author?.username || (post.contentType === 'SERIES' ? 'Chuyên Gia MorningView' : 'Ban Biên Tập MorningView'),
+        authorName: post.author?.displayName || post.author?.username || (post.contentType === 'SERIES' ? BRAND.expertDesk : BRAND.editorialDesk),
         authorAvatar: (post.author?.avatarMediaId ? resolveMediaUrl(post.author.avatarMediaId) : post.author?.avatarUrl) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
         image: resolveMediaUrl(post.coverMediaId, 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1000&auto=format&fit=crop&q=80'),
         readingMinutes: Math.max(3, calculateReadingMinutes(post.body || post.metaDescription || post.title)),

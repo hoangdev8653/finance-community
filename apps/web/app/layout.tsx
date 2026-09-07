@@ -20,22 +20,22 @@ export const viewport: Viewport = {
   ],
 };
 
-import { getSiteUrlObject, siteConfig } from '@/lib/seo/site-config';
+import { getSiteUrlObject, siteConfig, BRAND } from '@/lib/seo/site-config';
 import { generateWebSiteJsonLd, generateOrganizationJsonLd } from '@/lib/seo/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrlObject(),
   title: {
-    default: `${siteConfig.name} — Tri thức & Thông tin Thị trường Tài chính`,
-    template: `%s | ${siteConfig.name}`,
+    default: `${BRAND.name} — ${BRAND.sloganShort}`,
+    template: `%s | ${BRAND.name}`,
   },
   description: siteConfig.description,
   openGraph: {
-    title: `${siteConfig.name} — Tri thức & Thông tin Thị trường Tài chính`,
+    title: `${BRAND.name} — ${BRAND.sloganShort}`,
     description: siteConfig.description,
     url: siteConfig.url,
-    siteName: siteConfig.name,
+    siteName: BRAND.name,
     locale: siteConfig.locale,
     type: 'website',
   },

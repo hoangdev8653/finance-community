@@ -24,6 +24,7 @@ import {
   ThumbsUp,
   UsersRound,
 } from "lucide-react";
+import { BRAND } from "@/lib/constants/brand";
 
 const categories = [
   [
@@ -384,7 +385,7 @@ export function LearningHomeView() {
         </section>
         <section className="mt-16">
           <h2 className="text-lg font-bold text-slate-900">
-            Vì sao nên chọn MorningView?
+            Vì sao nên chọn {BRAND.name}?
           </h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[

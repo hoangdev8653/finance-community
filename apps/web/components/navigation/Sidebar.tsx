@@ -7,6 +7,7 @@ import { BookOpen, Compass, LayoutGrid, Tag, Home, Folder, Calculator, LucideIco
 import { cn } from '@/lib/utils/cn';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { TranslationKey } from '@/lib/i18n/useTranslation';
+import { BRAND } from '@/lib/constants/brand';
 
 export interface NavItemConfig {
   labelKey: TranslationKey;
@@ -121,7 +122,7 @@ export function Sidebar({ className }: { className?: string }) {
 
       {/* Bottom Section: Footer */}
       <div className="px-2 pb-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
-        <p>MorningView v1.0</p>
+        <p>{BRAND.name} v1.0</p>
       </div>
     </aside>
   );

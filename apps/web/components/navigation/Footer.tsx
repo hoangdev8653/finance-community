@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { BookOpen, Layers3 } from "lucide-react";
+import { BRAND } from "@/lib/constants/brand";
 const columns = [
   [
     "Khóa học",
@@ -50,11 +51,11 @@ export function Footer() {
                 <Layers3 className="h-5 w-5" />
               </span>
               <span className="text-[17px] font-extrabold tracking-tight text-slate-900">
-                MorningView
+                {BRAND.name}
               </span>
             </Link>
             <p className="mt-3 max-w-[230px] text-[13px] font-medium leading-5 text-slate-500">
-              Nền tảng kiến thức tài chính hàng đầu cho người Việt.
+              {BRAND.slogan}
             </p>
             <div className="mt-4 flex gap-3.5">
               {[["f", "Facebook"], ["▶", "YouTube"], ["♪", "TikTok"], ["in", "LinkedIn"]].map(([symbol, label]) => {
@@ -73,10 +74,10 @@ export function Footer() {
           </div>
           {columns.map(([title, links]) => (
             <nav key={title}>
-              <h3 className="text-[13px] font-extrabold text-slate-900">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-900">
                 {title}
-              </h3>
-              <ul className="mt-3 space-y-2.5">
+              </p>
+              <ul className="mt-3.5 space-y-2.5">
                 {links.map(([label, href]) => (
                   <li key={label}>
                     <Link
@@ -95,11 +96,11 @@ export function Footer() {
       <div className="border-t border-slate-100">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-5 py-4 text-[13px] text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
           <span>
-            © {new Date().getFullYear()} MorningView. All rights reserved.
+            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
           </span>
           <span className="inline-flex items-center gap-1">
             Made with <BookOpen className="h-3.5 w-3.5 text-emerald-600" /> for
-            your financial freedom
+            your lifelong growth
           </span>
         </div>
       </div>

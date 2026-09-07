@@ -1,4 +1,5 @@
 import { TranslationDictionary } from '../types';
+import { BRAND } from '@/lib/constants/brand';
 
 export const vi: TranslationDictionary = {
   common: {
@@ -71,13 +72,13 @@ export const vi: TranslationDictionary = {
     curatedArticles: 'Bài viết & Phân tích từ Ban Biên Tập',
     filteredArticles: 'Danh sách bài viết theo bộ lọc',
     editorialStandards: 'Chuẩn mực Biên tập & Kiểm định',
-    editorialStandardsDesc: 'Mọi phân tích được xuất bản trên MorningView đều tuân thủ tính toàn vẹn và độc lập. Nội dung được kiểm duyệt chặt chẽ về phương pháp luận và tính minh bạch của số liệu.',
+    editorialStandardsDesc: `Mọi phân tích được xuất bản trên ${BRAND.name} đều tuân thủ tính toàn vẹn và độc lập. Nội dung được kiểm duyệt chặt chẽ về phương pháp luận và tính minh bạch của số liệu.`,
     topContributors: 'Chuyên gia hàng đầu',
   },
   macro: {
     flashBadge: 'TIN VĨ MÔ 24/7',
     leadBadge: 'BẢN TIN TIÊU ĐIỂM HÔM NAY',
-    editorialDesk: 'Ban Biên Tập MorningView',
+    editorialDesk: BRAND.editorialDesk,
     justUpdated: 'Vừa cập nhật',
     macroHeadline: 'Fed chính thức hạ 25 điểm cơ bản lãi suất: Bước ngoặt nới lỏng chính sách tiền tệ toàn cầu',
     macroSummary: 'Phân tích toàn diện quyết định của FOMC trong phiên đêm qua: Lãi suất điều hành hạ về vùng 4.75% - 5.00%, mở đầu chu kỳ nới lỏng định lượng và định hình lại dòng vốn liên ngân hàng, tỷ giá USD/VND và định giá thị trường chứng khoán.',
