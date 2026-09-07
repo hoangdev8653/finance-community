@@ -1,6 +1,6 @@
 # Báo Cáo Đánh Giá & Kế Hoạch Chuẩn Hóa Design System
 
-> **Dự án:** Finance Community (MorningView)  
+> **Dự án:** BrewSeven (Finance & Lifestyle Platform)  
 > **Phiên bản:** 1.0.0  
 > **Mục tiêu:** Chuẩn hóa hệ thống thiết kế (Design System), thống nhất bảng màu Semantic Tokens, đồng bộ kích thước Component nguyên tử và tuân thủ tuyệt đối quy tắc 4-Point Grid theo tài liệu quy ước.  
 > **Tham chiếu nền tảng:** `.agents/rules/ui_4pt_grid.md`
