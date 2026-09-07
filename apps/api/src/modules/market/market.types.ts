@@ -11,4 +11,5 @@ export interface MarketTickerItem {
   currency: CurrencyType;
   category: MarketCategory;
   updatedAt: string;
+  isMarketOpen?: boolean;
 }
