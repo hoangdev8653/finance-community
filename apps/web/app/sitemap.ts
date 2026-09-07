@@ -17,25 +17,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
-      url: `${baseUrl}/posts`,
+      url: `${baseUrl}/bai-viet`,
       lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/categories`,
+      url: `${baseUrl}/danh-muc`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/tags`,
+      url: `${baseUrl}/the`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/chuoi-bai`,
+      url: `${baseUrl}/series`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           const domain = domains.find((item) => item.id === post.domainId);
           const path = domain
             ? `/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`
-            : `/posts/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`;
+            : `/bai-viet/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`;
           return {
           url: `${baseUrl}${path}`,
           lastModified: new Date(post.updatedAt || post.publishedAt || post.createdAt),
@@ -75,7 +75,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       seriesRoutes = seriesResult.data
         .filter((series) => series.slug)
         .map((series) => ({
-          url: `${baseUrl}/chuoi-bai/${encodeURIComponent(series.slug)}`,
+          url: `${baseUrl}/series/${encodeURIComponent(series.slug)}`,
           lastModified: new Date(series.createdAt),
           changeFrequency: 'weekly',
           priority: 0.8,
@@ -93,7 +93,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       tagRoutes = tags
         .filter((tag) => tag.slug)
         .map((tag) => ({
-          url: `${baseUrl}/tags/${encodeURIComponent(tag.slug)}`,
+          url: `${baseUrl}/the/${encodeURIComponent(tag.slug)}`,
           lastModified: currentDate,
           changeFrequency: 'weekly',
           priority: 0.6,

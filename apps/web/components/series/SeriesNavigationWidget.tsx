@@ -103,7 +103,7 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
         <div className="flex items-center justify-between border-b border-border pb-3">
           <div className="flex items-center gap-2 text-primary font-heading font-bold text-base">
             <BookOpen className="h-5 w-5" />
-            <span>Mục lục Chuỗi bài học: {navData.series.name}</span>
+            <span>Mục lục Series: {navData.series.name}</span>
           </div>
           <span className="text-xs font-mono text-muted-foreground">
             Phần {navData.currentPostIndex} / {navData.totalPosts}

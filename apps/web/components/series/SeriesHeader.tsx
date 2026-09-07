@@ -36,7 +36,7 @@ export function SeriesHeader({
           aria-label="Quay lại danh mục giáo trình"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Tất cả Chuỗi bài Series</span>
+          <span>Tất cả Series</span>
         </Link>
         <span className="inline-flex items-center gap-1.5 text-xs font-bold py-1 px-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-lg">
           <BookOpen className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />

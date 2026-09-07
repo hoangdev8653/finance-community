@@ -55,7 +55,7 @@ describe('Dynamic Sitemap Generator', () => {
         expect.objectContaining({ url: `${baseUrl}` }),
         expect.objectContaining({ url: `${baseUrl}/series` }),
         expect.objectContaining({
-          url: `${baseUrl}/posts/community/valuation-analysis`,
+          url: `${baseUrl}/bai-viet/community/valuation-analysis`,
           priority: 0.9,
         }),
         expect.objectContaining({
@@ -63,7 +63,7 @@ describe('Dynamic Sitemap Generator', () => {
           priority: 0.8,
         }),
         expect.objectContaining({
-          url: `${baseUrl}/tags/macro`,
+          url: `${baseUrl}/the/macro`,
           priority: 0.6,
         }),
       ])
@@ -83,9 +83,9 @@ describe('Dynamic Sitemap Generator', () => {
     expect(result.length).toBeGreaterThanOrEqual(5);
     expect(result.map((r) => r.url)).toEqual([
       `${baseUrl}`,
-      `${baseUrl}/posts`,
-      `${baseUrl}/categories`,
-      `${baseUrl}/tags`,
+      `${baseUrl}/bai-viet`,
+      `${baseUrl}/danh-muc`,
+      `${baseUrl}/the`,
       `${baseUrl}/series`,
     ]);
   });

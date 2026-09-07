@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       post.metaDescription ||
       'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên MorningView.';
-    const canonicalPath = `/posts/${normalizedType}/${encodeURIComponent(slug)}`;
+    const canonicalPath = `/bai-viet/${normalizedType}/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -84,8 +84,8 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD
   const articleJsonLd = generateArticleJsonLd(post);
-  const sectionLabel = post.contentType === 'SERIES' ? 'Chuỗi Bài Học' : 'Cộng Đồng Phân Tích';
-  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/posts';
+  const sectionLabel = post.contentType === 'SERIES' ? 'Series' : 'Cộng Đồng Phân Tích';
+  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/bai-viet';
 
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
@@ -95,7 +95,7 @@ export default async function PostDetailPage({ params }: PageProps) {
     },
     {
       name: post.title,
-      url: `/posts/${normalizedType}/${encodeURIComponent(slug)}`,
+      url: `/bai-viet/${normalizedType}/${encodeURIComponent(slug)}`,
     },
   ]);
 

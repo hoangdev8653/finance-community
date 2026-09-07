@@ -19,11 +19,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   try {
     const data = await seriesService.getBySlug(slug, { page: 1, limit: 1 });
-    const title = `${data.series.name} | Chuỗi Bài Học Tài Chính`;
+    const title = `${data.series.name} | Series Bài Học Tài Chính`;
     const description =
       data.series.description ||
-      'Chuỗi bài học thực tế được xây dựng theo lộ trình rõ ràng trên Finance Community.';
-    const canonicalPath = `/chuoi-bai/${encodeURIComponent(slug)}`;
+      'Series bài học thực tế được xây dựng theo lộ trình rõ ràng trên MorningView.';
+    const canonicalPath = `/series/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return buildPageMetadata({
-      title: 'Không Tìm Thấy Chuỗi Bài Học',
+      title: 'Không Tìm Thấy Series',
       noIndex: true,
     });
   }
@@ -58,13 +58,12 @@ export default async function SeriesDetailPage({ params }: PageProps) {
   const itemListJsonLd = generateSeriesItemListJsonLd(seriesDetail);
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Chuỗi Bài Học', url: '/chuoi-bai' },
+    { name: 'Series', url: '/series' },
     {
       name: seriesDetail.series.name,
-      url: `/chuoi-bai/${encodeURIComponent(slug)}`,
+      url: `/series/${encodeURIComponent(slug)}`,
     },
   ]);
-
 
   return (
     <>

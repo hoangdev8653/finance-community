@@ -5,37 +5,37 @@ const columns = [
   [
     "Khóa học",
     [
-      ["Tất cả khóa học", "/courses"],
-      ["Series nổi bật", "/chuoi-bai"],
-      ["Học miễn phí", "/courses"],
-      ["Lộ trình học tập", "/dashboard"],
+      ["Tất cả khóa học", "/series"],
+      ["Series nổi bật", "/series"],
+      ["Học miễn phí", "/series"],
+      ["Lộ trình học tập", "/lo-trinh-hoc"],
     ],
   ],
   [
     "Cộng đồng",
     [
-      ["Bài viết", "/posts"],
-      ["Thảo luận", "/posts"],
-      ["Hỏi đáp", "/posts"],
-      ["Quy tắc cộng đồng", "/terms"],
+      ["Bài viết", "/bai-viet"],
+      ["Thảo luận", "/bai-viet"],
+      ["Hỏi đáp", "/bai-viet"],
+      ["Quy tắc cộng đồng", "/dieu-khoan"],
     ],
   ],
   [
     "Về chúng tôi",
     [
-      ["Giới thiệu", "/about"],
-      ["Sứ mệnh", "/about"],
-      ["Liên hệ", "/contact"],
-      ["Đóng góp nội dung", "/contact"],
+      ["Giới thiệu", "/gioi-thieu"],
+      ["Sứ mệnh", "/gioi-thieu"],
+      ["Liên hệ", "/lien-he"],
+      ["Đóng góp nội dung", "/lien-he"],
     ],
   ],
   [
     "Hỗ trợ",
     [
-      ["Trung tâm hỗ trợ", "/support"],
-      ["Hướng dẫn sử dụng", "/support"],
-      ["Điều khoản sử dụng", "/terms"],
-      ["Chính sách bảo mật", "/privacy"],
+      ["Trung tâm hỗ trợ", "/lien-he"],
+      ["Hướng dẫn sử dụng", "/lien-he"],
+      ["Điều khoản sử dụng", "/dieu-khoan"],
+      ["Chính sách bảo mật", "/chinh-sach-bao-mat"],
     ],
   ],
 ] as const;
@@ -50,7 +50,7 @@ export function Footer() {
                 <Layers3 className="h-5 w-5" />
               </span>
               <span className="text-[17px] font-extrabold tracking-tight text-slate-900">
-                Finance Community
+                MorningView
               </span>
             </Link>
             <p className="mt-3 max-w-[230px] text-[13px] font-medium leading-5 text-slate-500">
@@ -95,7 +95,7 @@ export function Footer() {
       <div className="border-t border-slate-100">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-5 py-4 text-[13px] text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
           <span>
-            © {new Date().getFullYear()} Finance Community. All rights reserved.
+            © {new Date().getFullYear()} MorningView. All rights reserved.
           </span>
           <span className="inline-flex items-center gap-1">
             Made with <BookOpen className="h-3.5 w-3.5 text-emerald-600" /> for

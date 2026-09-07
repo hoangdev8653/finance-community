@@ -16,15 +16,15 @@ export interface NavItemConfig {
 
 const mainNavConfig: NavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
-  { labelKey: 'navigation.explore', href: '/posts', icon: Compass },
-  { labelKey: 'navigation.series', href: '/chuoi-bai', icon: BookOpen },
-  { labelKey: 'navigation.categories', href: '/categories', icon: LayoutGrid },
-  { labelKey: 'navigation.tags', href: '/tags', icon: Tag },
+  { labelKey: 'navigation.explore', href: '/bai-viet', icon: Compass },
+  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
+  { labelKey: 'navigation.categories', href: '/danh-muc', icon: LayoutGrid },
+  { labelKey: 'navigation.tags', href: '/the', icon: Tag },
 ];
 
 const secondaryNavConfig: NavItemConfig[] = [
-  { labelKey: 'navigation.workspace', href: '/dashboard', icon: Folder },
-  { labelKey: 'navigation.tools', href: '/tools', icon: Calculator },
+  { labelKey: 'navigation.workspace', href: '/bang-dieu-khien', icon: Folder },
+  { labelKey: 'navigation.tools', href: '/cong-cu', icon: Calculator },
 ];
 
 export function Sidebar({ className }: { className?: string }) {
@@ -50,7 +50,10 @@ export function Sidebar({ className }: { className?: string }) {
           <nav className="space-y-1">
             {mainNavConfig.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
+              const isActive =
+                pathname === item.href ||
+                (item.href !== '/' && pathname.startsWith(item.href)) ||
+                (item.href === '/series' && pathname.startsWith('/chuoi-bai'));
               return (
                 <Link
                   key={item.href}
@@ -118,7 +121,7 @@ export function Sidebar({ className }: { className?: string }) {
 
       {/* Bottom Section: Footer */}
       <div className="px-2 pb-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
-        <p>Finance Community v1.0</p>
+        <p>MorningView v1.0</p>
       </div>
     </aside>
   );

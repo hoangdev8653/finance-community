@@ -15,10 +15,10 @@ interface MobileNavItemConfig {
 
 const mobileNavConfig: MobileNavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
-  { labelKey: 'navigation.explore', href: '/posts', icon: Compass },
-  { labelKey: 'navigation.series', href: '/chuoi-bai', icon: BookOpen },
-  { labelKey: 'navigation.categories', href: '/categories', icon: Grid },
-  { labelKey: 'navigation.account', href: '/login', icon: User },
+  { labelKey: 'navigation.explore', href: '/bai-viet', icon: Compass },
+  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
+  { labelKey: 'navigation.categories', href: '/danh-muc', icon: Grid },
+  { labelKey: 'navigation.account', href: '/dang-nhap', icon: User },
 ];
 
 export function MobileNavigation() {
@@ -33,8 +33,11 @@ export function MobileNavigation() {
       <div className="grid grid-cols-5 h-16 w-full max-w-md mx-auto items-center px-1">
         {mobileNavConfig.map((item) => {
           const Icon = item.icon;
-          const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-          const label = item.href === '/chuoi-bai' ? 'Series' : t(item.labelKey);
+          const isActive =
+            pathname === item.href ||
+            (item.href !== '/' && pathname.startsWith(item.href)) ||
+            (item.href === '/series' && pathname.startsWith('/chuoi-bai'));
+          const label = item.href === '/series' || item.href === '/chuoi-bai' ? 'Series' : t(item.labelKey);
           return (
             <Link
               key={item.href}

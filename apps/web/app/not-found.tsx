@@ -24,11 +24,11 @@ const quickExploreLinks = [
   {
     title: 'Khám phá bài viết',
     desc: 'Cập nhật phân tích thị trường & nhận định mới nhất',
-    href: '/posts',
+    href: '/bai-viet',
     icon: Compass,
   },
   {
-    title: 'Chuỗi bài học (Series)',
+    title: 'Series',
     desc: 'Học đầu tư có hệ thống từ cơ bản đến nâng cao',
     href: '/series',
     icon: BookOpen,
@@ -36,13 +36,13 @@ const quickExploreLinks = [
   {
     title: 'Danh mục chủ đề',
     desc: 'Chứng khoán, Vĩ mô, Bất động sản & Ngân hàng',
-    href: '/categories',
+    href: '/danh-muc',
     icon: Layers,
   },
   {
     title: 'Thư mục Tag',
     desc: 'Tra cứu theo mã cổ phiếu và từ khóa nóng',
-    href: '/tags',
+    href: '/the',
     icon: Tag,
   },
 ];
@@ -119,7 +119,7 @@ export default function NotFound() {
 
           {/* Quick Search Form */}
           <form
-            action="/search"
+            action="/tim-kiem"
             method="GET"
             className="mx-auto mt-8 max-w-md"
             role="search"
@@ -153,14 +153,14 @@ export default function NotFound() {
             </Button>
 
             <Button asChild variant="outline" size="md">
-              <Link href="/posts" className="gap-2">
+              <Link href="/bai-viet" className="gap-2">
                 <Compass className="h-4 w-4" aria-hidden="true" />
                 <span>Khám phá bài viết</span>
               </Link>
             </Button>
 
             <Button asChild variant="ghost" size="md">
-              <Link href="/search" className="gap-2 text-muted-foreground hover:text-foreground">
+              <Link href="/tim-kiem" className="gap-2 text-muted-foreground hover:text-foreground">
                 <Search className="h-4 w-4" aria-hidden="true" />
                 <span>Tra cứu nâng cao</span>
               </Link>
