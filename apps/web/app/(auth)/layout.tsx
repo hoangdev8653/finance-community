@@ -17,9 +17,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="mx-auto grid min-h-screen max-w-[1600px] grid-cols-1 lg:grid-cols-2">
         <section className="relative order-2 flex min-h-[560px] flex-col overflow-hidden px-6 pb-0 pt-8 sm:px-10 lg:order-1 lg:px-16 lg:pt-10 xl:px-20">
           <Link href="/" className="relative z-10 inline-flex w-fit items-center gap-3 lg:-translate-y-3" aria-label={`${BRAND.name} - Trang chủ`}>
-            <Image src="/images/logo.png" alt={BRAND.name} width={44} height={44} className="h-11 w-11 object-contain" priority />
+            <Image src="/images/logo.png" alt={BRAND.name} width={1953} height={805} className="h-12 w-[136px] object-contain" priority />
             <span className="flex flex-col">
-              <span className="font-heading text-xl font-bold tracking-tight text-foreground">{BRAND.name}</span>
               <span className="text-sm font-medium text-primary">{BRAND.sloganShort}</span>
             </span>
           </Link>

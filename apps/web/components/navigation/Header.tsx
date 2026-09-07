@@ -145,21 +145,18 @@ export function Header() {
             href="/"
             title={BRAND.name}
             aria-label={BRAND.name}
-            className="flex items-center gap-2 group"
+            className="flex items-center group"
           >
-            <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
+            <div className="relative flex h-11 w-[136px] items-center justify-center overflow-hidden sm:h-[52px] sm:w-[152px]">
               <Image
                 src="/images/logo.png"
                 alt={BRAND.name}
-                width={32}
-                height={32}
-                className="h-8 w-8 object-contain"
+                width={1953}
+                height={805}
+                className="h-full w-full object-contain transition-transform group-hover:scale-[1.02]"
                 priority
               />
             </div>
-            <span className="font-heading text-base font-bold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
-              {BRAND.name}
-            </span>
           </Link>
         </div>
 
@@ -201,17 +198,17 @@ export function Header() {
 
           {/* Chuỗi bài Series */}
           <Link
-            href="/bai-viet"
+            href="/bai-viet-cong-dong"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/bai-viet')
+              pathname.startsWith('/bai-viet-cong-dong')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <BookOpen className="hidden" aria-hidden="true" />
             <span>Bài viết cộng đồng</span>
-            {pathname.startsWith('/bai-viet') && (
+            {pathname.startsWith('/bai-viet-cong-dong') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>

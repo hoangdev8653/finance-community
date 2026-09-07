@@ -8,6 +8,13 @@ import { MobileNavigation } from '@/components/navigation/MobileNavigation';
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [isNotFoundPage, setIsNotFoundPage] = React.useState(false);
+  React.useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      setIsNotFoundPage(Boolean(document.querySelector('[data-not-found-page="true"]')));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
   const isAuth =
     pathname === '/dang-nhap' ||
     pathname === '/dang-ky' ||
@@ -18,7 +25,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     pathname.startsWith('/login/') ||
     pathname.startsWith('/register/');
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/moderation';
-  const hideChrome = isAuth || isAdmin;
+  const hideChrome = isAuth || isAdmin || isNotFoundPage;
 
   return <>
     {/* Skip Navigation Link — WCAG 2.1 Level A (2.4.1) */}

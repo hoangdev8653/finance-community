@@ -32,7 +32,7 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded-xl border border-border bg-muted my-6 aspect-video sm:aspect-21/9 shadow-sm">
+    <div className="relative my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-muted shadow-[0_12px_32px_rgba(15,23,42,0.10)] sm:aspect-21/9 dark:border-slate-800">
       <Image
         src={resolvedUrl}
         alt={post.title}

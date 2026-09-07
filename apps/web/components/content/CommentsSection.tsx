@@ -21,6 +21,7 @@ interface CommentsSectionProps {
 }
 
 export function CommentsSection({ postId }: CommentsSectionProps) {
+  const isDemoPost = postId === 'demo-community-article';
   const [page, setPage] = useState(1);
   const {
     data: commentsResponse,
@@ -62,7 +63,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
           className="font-heading text-2xl font-bold text-foreground flex items-center gap-2"
         >
           <MessageSquare className="h-5 w-5 text-primary" aria-hidden="true" />
-          <span>Discussion ({totalItems})</span>
+          <span>Thảo luận ({totalItems})</span>
         </h2>
       </div>
 
@@ -75,17 +76,17 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       {/* State Transitions: Loading, Error, Empty, List */}
       {isLoading ? (
         <CommentSkeleton />
-      ) : isError ? (
+      ) : isError && !isDemoPost ? (
         <ErrorState
           title="Không thể tải thảo luận"
           message="Không thể tải bình luận cho bài viết này."
           onRetry={() => refetch()}
         />
-      ) : threadedComments.length === 0 ? (
+      ) : threadedComments.length === 0 || isDemoPost ? (
         <EmptyState
           icon={MessageSquare}
-          title="No analytical comments yet"
-          description="Be the first to share your perspective, challenge assumptions, or add data context."
+          title="Chưa có bình luận"
+          description="Hãy là người đầu tiên chia sẻ góc nhìn hoặc đặt câu hỏi về bài viết này."
         />
       ) : (
         <div className="space-y-6 pt-2">
@@ -105,7 +106,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
                 onClick={() => setPage((prev) => prev + 1)}
                 className="font-mono text-xs"
               >
-                Load More Comments
+                  Xem thêm bình luận
               </Button>
             </div>
           )}

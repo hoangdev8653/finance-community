@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
       '/login': '/dang-nhap', '/register': '/dang-ky', '/dashboard': '/bang-dieu-khien',
       '/bookmarks': '/bai-viet-da-luu', '/categories': '/danh-muc', '/contact': '/lien-he',
       '/learning': '/hoc-tap', '/learning-paths': '/lo-trinh-hoc', '/moderation': '/kiem-duyet',
-      '/notifications': '/thong-bao', '/posts': '/bai-viet', '/privacy': '/chinh-sach-bao-mat',
+      '/notifications': '/thong-bao', '/posts': '/bai-viet-cong-dong', '/bai-viet': '/bai-viet-cong-dong', '/privacy': '/chinh-sach-bao-mat',
       '/profile': '/ho-so', '/search': '/tim-kiem', '/chuoi-bai': '/series', '/tags': '/the',
       '/terms': '/dieu-khoan', '/tools': '/cong-cu', '/admin': '/quan-tri',
       '/learning/explore': '/series', '/hoc-tap/kham-pha': '/series',

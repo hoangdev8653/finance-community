@@ -15,7 +15,7 @@ interface MobileNavItemConfig {
 
 const mobileNavConfig: MobileNavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
-  { labelKey: 'navigation.explore', href: '/bai-viet', icon: Compass },
+  { labelKey: 'navigation.explore', href: '/bai-viet-cong-dong', icon: Compass },
   { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
   { labelKey: 'navigation.categories', href: '/danh-muc', icon: Grid },
   { labelKey: 'navigation.account', href: '/dang-nhap', icon: User },

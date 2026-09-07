@@ -7,6 +7,7 @@ import { generateArticleJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/stru
 import { JsonLd } from '@/components/seo/JsonLd';
 import { PostDetailView } from '@/components/content/PostDetailView';
 import { PostDetailSkeleton } from '@/components/content/PostDetailSkeleton';
+import type { PostDetailResponse } from '@/types/content';
 
 interface PageProps {
   params: Promise<{
@@ -14,6 +15,31 @@ interface PageProps {
     slug: string;
   }>;
 }
+
+const demoArticle: PostDetailResponse = {
+  id: 'demo-community-article',
+  authorId: 'brewseven-editorial',
+  author: { displayName: 'Ban Biên Tập BrewSeven' },
+  contentType: 'COMMUNITY',
+  title: 'Xây dựng quỹ khẩn cấp: nền móng bình tĩnh cho mọi kế hoạch tài chính',
+  slug: 'demo',
+  body: `<p>Quỹ khẩn cấp là khoản tiền được chuẩn bị riêng cho những biến cố không dự đoán trước. Đây không phải là khoản đầu tư để tạo lợi nhuận, mà là lớp đệm giúp bạn giữ nhịp sống và không phải đưa ra quyết định vội vàng khi thu nhập bị gián đoạn.</p><h2>Vì sao nên bắt đầu từ quỹ khẩn cấp?</h2><p>Khi có một khoản dự phòng phù hợp, bạn có thêm thời gian để đánh giá lựa chọn thay vì vay nóng hoặc bán tài sản vào thời điểm bất lợi. Với người mới bắt đầu, mục tiêu dễ thực hiện nhất là tích lũy chi phí thiết yếu cho ba đến sáu tháng.</p><h2>Xác định con số phù hợp với bạn</h2><p>Hãy liệt kê các khoản chi không thể trì hoãn như nhà ở, ăn uống, y tế, đi lại và nghĩa vụ trả nợ. Nhân tổng số đó với số tháng bạn cần được bảo vệ. Con số này là mục tiêu; bạn có thể chia thành những cột mốc nhỏ hơn để tiến từng bước.</p><blockquote><p>Điều quan trọng không phải là tích lũy thật nhanh, mà là duy trì thói quen dành một phần thu nhập cho sự an tâm của chính mình.</p></blockquote><h2>Ba bước để bắt đầu ngay hôm nay</h2><ol><li>Tách một tài khoản dành riêng cho quỹ dự phòng.</li><li>Thiết lập khoản chuyển tự động ngay sau ngày nhận lương.</li><li>Chỉ dùng quỹ cho tình huống thực sự khẩn cấp và bổ sung lại sau đó.</li></ol><p>Khi nền móng tài chính đã vững hơn, bạn sẽ tự tin xây dựng các mục tiêu tiếp theo như đầu tư, học tập và trải nghiệm.</p>`,
+  coverMediaId: 'demo-cover',
+  categoryId: null,
+  status: 'PUBLISHED',
+  metaTitle: null,
+  metaDescription: 'Bài viết demo để xem trước giao diện đọc bài BrewSeven.',
+  viewCount: 128,
+  publishedAt: '2026-09-07T09:00:00.000Z',
+  createdAt: '2026-09-07T09:00:00.000Z',
+  updatedAt: '2026-09-07T09:00:00.000Z',
+  deletedAt: null,
+  tags: [
+    { id: 'personal-finance', name: 'Tài chính cá nhân', slug: 'tai-chinh-ca-nhan' },
+    { id: 'financial-habits', name: 'Thói quen tài chính', slug: 'thoi-quen-tai-chinh' },
+  ],
+  media: [{ id: 'demo-cover', purpose: 'cover', sortOrder: 0, secureUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1600&q=85' }],
+};
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { contentType, slug } = await params;
@@ -65,11 +91,15 @@ export default async function PostDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  let post;
-  try {
-    post = await postsService.getBySlug(contentType.toUpperCase(), slug);
-  } catch {
-    notFound();
+  let post: PostDetailResponse;
+  if (normalizedType === 'community' && slug === 'demo') {
+    post = demoArticle;
+  } else {
+    try {
+      post = await postsService.getBySlug(contentType.toUpperCase(), slug);
+    } catch {
+      notFound();
+    }
   }
 
   if (!post || post.status !== 'PUBLISHED') {

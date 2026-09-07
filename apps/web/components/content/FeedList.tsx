@@ -57,11 +57,12 @@ export function FeedList({
   const allPosts = data?.pages.flatMap((page) => page.data) || [];
 
   if (allPosts.length === 0 || isError) {
+    const isCommunity = contentType === 'COMMUNITY';
     return (
       <EmptyState
-        title="Không tìm thấy bài phân tích"
-        description="Không có bài viết nào phù hợp với bộ lọc hiện tại."
-        actionLabel="Xóa bộ lọc"
+        title={isCommunity ? 'Chưa có bài viết cộng đồng' : 'Không tìm thấy bài phân tích'}
+        description={isCommunity ? 'Hãy bắt đầu cuộc trò chuyện đầu tiên cùng cộng đồng BrewSeven.' : 'Không có bài viết nào phù hợp với bộ lọc hiện tại.'}
+        actionLabel={isCommunity ? undefined : 'Xóa bộ lọc'}
         onAction={onResetFilters}
       />
     );

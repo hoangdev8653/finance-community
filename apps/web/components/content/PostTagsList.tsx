@@ -19,17 +19,17 @@ export function PostTagsList({ tags }: PostTagsListProps) {
 
   return (
     <div className="pt-6 border-t border-border mt-10">
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="text-xs font-mono text-muted-foreground flex items-center gap-1 mr-1">
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="mr-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
           <TagIcon className="h-3.5 w-3.5" />
-          Topics:
+          Chủ đề:
         </span>
 
         {visibleTags.map((tag) => (
           <Link
             key={tag.id}
             href={`/?tag=${encodeURIComponent(tag.id)}`}
-            className="inline-flex items-center px-2.5 py-1 rounded-sm bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 font-mono text-xs transition-colors"
+            className="inline-flex items-center rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300"
           >
             #{tag.name}
           </Link>
@@ -37,7 +37,7 @@ export function PostTagsList({ tags }: PostTagsListProps) {
 
         {hiddenTagCount > 0 && (
           <span className="text-xs font-mono text-muted-foreground">
-            +{hiddenTagCount} more
+            +{hiddenTagCount} thẻ
           </span>
         )}
       </div>

@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { PostTableOfContents } from './PostTableOfContents';
 import { ContentHeading } from './PostContentRenderer';
-import { Sparkles, UserPlus, UserCheck, BookOpen, Clock, Tag, ArrowRight } from 'lucide-react';
+import { Sparkles, UserPlus, UserCheck, Clock, Tag, ArrowRight } from 'lucide-react';
 import { BRAND } from '@/lib/constants/brand';
 
 interface PostDetailSidebarProps {
@@ -22,7 +22,7 @@ interface PostDetailSidebarProps {
 
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
-export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDetailSidebarProps) {
+export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProps) {
   const { isAuthenticated } = useAuth();
   const [isFollowing, setIsFollowing] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
@@ -97,7 +97,7 @@ export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDet
               <span>Theo dõi tác giả</span>
             </>
           )}
-        </Button> : <Link href="/login" className="flex min-h-10 w-full items-center justify-center rounded-lg border border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5">Đăng nhập để theo dõi tác giả</Link>}
+        </Button> : <Link href="/dang-nhap" className="flex min-h-10 w-full items-center justify-center rounded-lg border border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5">Đăng nhập để theo dõi tác giả</Link>}
       </div>
 
       {/* 2. Related Articles Card */}
@@ -113,10 +113,10 @@ export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDet
         </div>
 
         <div className="space-y-3.5">
-          {relatedPosts.map((item) => (
+          {isLoadingRelated ? <div className="space-y-3" aria-label="Đang tải bài viết liên quan"><div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" /><div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" /></div> : relatedPosts.length ? relatedPosts.map((item) => (
             <Link
               key={item.id}
-              href={`/posts/${item.contentType.toLowerCase()}/${item.slug}`}
+              href={`/bai-viet/${item.contentType.toLowerCase()}/${item.slug}`}
               className="group flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
             >
               {/* Thumbnail */}
@@ -141,12 +141,12 @@ export function PostDetailSidebar({ post, categoryName, headings = [] }: PostDet
                 </div>
               </div>
             </Link>
-          ))}
+          )) : <p className="rounded-xl bg-slate-50 px-3 py-4 text-center text-xs leading-5 text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">Chưa có bài viết liên quan. Khám phá thêm các chủ đề mới nhất của BrewSeven.</p>}
         </div>
 
         <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
           <Link
-            href="/posts"
+            href="/bai-viet"
             className="flex items-center justify-between text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 group"
           >
             <span>Khám phá thêm bài viết</span>
