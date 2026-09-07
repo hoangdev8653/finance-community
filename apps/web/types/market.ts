@@ -11,6 +11,7 @@ export interface MarketTickerItem {
   currency: CurrencyType;
   category: MarketCategory;
   updatedAt: string;
+  isMarketOpen?: boolean;
 }
 
 export type TickFlashState = 'up' | 'down' | null;
