@@ -216,7 +216,7 @@ export class ModerationService {
     }
 
     // Single Atomic Transaction
-    return await this.db.transaction(async (tx) => {
+    const actionRecord = await this.db.transaction(async (tx) => {
       let resolvedTargetUserId: string | null = targetType === 'USER' ? targetId : null;
 
       if (dto.actionType === 'HIDE_CONTENT') {
@@ -240,7 +240,7 @@ export class ModerationService {
       }
 
       // Record Moderation Action
-      const actionRecord = await this.moderationRepo.createTx(tx, {
+      const record = await this.moderationRepo.createTx(tx, {
         moderatorId,
         reportId: dto.reportId || null,
         actionType: dto.actionType,
@@ -263,12 +263,79 @@ export class ModerationService {
           entity_type: targetType.toLowerCase() + 's',
           entity_id: targetId,
           reason: dto.reason,
-          metadata: { reportId: dto.reportId || null, actionId: actionRecord.id },
+          metadata: { reportId: dto.reportId || null, actionId: record.id },
         },
         tx,
       );
 
-      return actionRecord;
+      return record;
     });
+
+    // Non-blocking notification dispatch for reporter and offender
+    if (this.notificationsService) {
+      try {
+        if (dto.reportId && report?.reporterId) {
+          if (dto.actionType === 'DISMISS') {
+            await this.notificationsService.createNotification({
+              userId: report.reporterId,
+              type: 'REPORT_DISMISSED',
+              title: 'Báo cáo của bạn đã được xem xét',
+              message: 'Báo cáo vi phạm của bạn đã được xem xét và bỏ qua do chưa đủ căn cứ vi phạm.',
+              referencePostId: targetType === 'POST' ? targetId : undefined,
+              referenceCommentId: targetType === 'COMMENT' ? targetId : undefined,
+            });
+          } else {
+            await this.notificationsService.createNotification({
+              userId: report.reporterId,
+              type: 'REPORT_RESOLVED',
+              title: 'Báo cáo của bạn đã được xử lý',
+              message: 'Báo cáo vi phạm của bạn đã được ban kiểm duyệt xử lý. Cảm ơn bạn đã đóng góp xây dựng cộng đồng.',
+              referencePostId: targetType === 'POST' ? targetId : undefined,
+              referenceCommentId: targetType === 'COMMENT' ? targetId : undefined,
+            });
+          }
+        }
+
+        if (actionRecord.targetUserId) {
+          if (dto.actionType === 'HIDE_CONTENT') {
+            await this.notificationsService.createNotification({
+              userId: actionRecord.targetUserId,
+              type: 'CONTENT_HIDDEN',
+              title: 'Nội dung của bạn đã bị ẩn',
+              message: `Nội dung của bạn đã bị ẩn do vi phạm tiêu chuẩn cộng đồng: ${dto.reason}`,
+              referencePostId: targetType === 'POST' ? targetId : undefined,
+              referenceCommentId: targetType === 'COMMENT' ? targetId : undefined,
+            });
+          } else if (dto.actionType === 'SUSPEND') {
+            await this.notificationsService.createNotification({
+              userId: actionRecord.targetUserId,
+              type: 'ACCOUNT_SUSPENDED',
+              title: 'Tài khoản của bạn đã bị tạm khóa',
+              message: `Tài khoản đã bị tạm khóa: ${dto.reason}`,
+            });
+          } else if (dto.actionType === 'BAN') {
+            await this.notificationsService.createNotification({
+              userId: actionRecord.targetUserId,
+              type: 'ACCOUNT_BANNED',
+              title: 'Tài khoản của bạn đã bị cấm vĩnh viễn',
+              message: `Tài khoản đã bị cấm: ${dto.reason}`,
+            });
+          } else if (dto.actionType === 'WARN') {
+            await this.notificationsService.createNotification({
+              userId: actionRecord.targetUserId,
+              type: 'POST_MODERATED',
+              title: 'Cảnh báo vi phạm nội quy',
+              message: `Bạn đã nhận được cảnh báo từ ban kiểm duyệt: ${dto.reason}`,
+              referencePostId: targetType === 'POST' ? targetId : undefined,
+              referenceCommentId: targetType === 'COMMENT' ? targetId : undefined,
+            });
+          }
+        }
+      } catch {
+        // Non-blocking notification failure
+      }
+    }
+
+    return actionRecord;
   }
 }

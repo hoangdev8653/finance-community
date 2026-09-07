@@ -6,6 +6,7 @@ describe('MediaService', () => {
   let mockMediaRepo: jest.Mocked<MediaRepository>;
 
   beforeEach(() => {
+    process.env.CLOUDINARY_API_SECRET = 'test_secret';
     mockMediaRepo = {
       createTx: jest.fn().mockImplementation(async (tx, data) => ({
         id: 'media-uuid-1',
@@ -17,6 +18,7 @@ describe('MediaService', () => {
         width: data.width || null,
         height: data.height || null,
         fileSize: data.fileSize || null,
+        contentHash: data.contentHash || null,
         purpose: data.purpose || 'content',
         createdAt: new Date(),
         deletedAt: null,
@@ -63,6 +65,7 @@ describe('MediaService', () => {
       width: 100,
       height: 100,
       fileSize: 500,
+      contentHash: null,
       purpose: 'avatar',
       createdAt: new Date(),
       deletedAt: null,

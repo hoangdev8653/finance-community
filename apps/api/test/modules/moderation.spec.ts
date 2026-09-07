@@ -14,6 +14,7 @@ describe('Moderation & Reports Engine', () => {
   let mockCommentsService: any;
   let mockProfilesRepo: any;
   let mockAuditLogService: any;
+  let mockNotificationsService: any;
 
   beforeEach(() => {
     mockDb = {
@@ -96,6 +97,10 @@ describe('Moderation & Reports Engine', () => {
       log: jest.fn().mockResolvedValue({ id: 'audit-1' }),
     };
 
+    mockNotificationsService = {
+      createNotification: jest.fn().mockResolvedValue({ id: 'notif-1' }),
+    };
+
     reportsService = new ReportsService(
       mockDb,
       mockReportsRepo,
@@ -112,6 +117,7 @@ describe('Moderation & Reports Engine', () => {
       mockCommentsRepo,
       mockUsersRepo,
       mockAuditLogService,
+      mockNotificationsService,
     );
   });
 
@@ -148,6 +154,34 @@ describe('Moderation & Reports Engine', () => {
     expect(mockAuditLogService.log).toHaveBeenCalledWith(
       expect.objectContaining({ action: 'MODERATION_HIDE_CONTENT', entity_id: 'post-uuid-1' }),
       expect.anything(),
+    );
+    expect(mockNotificationsService.createNotification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-reporter-1',
+        type: 'REPORT_RESOLVED',
+      }),
+    );
+    expect(mockNotificationsService.createNotification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'author-1',
+        type: 'CONTENT_HIDDEN',
+      }),
+    );
+  });
+
+  it('should dispatch REPORT_DISMISSED notification on DISMISS action', async () => {
+    await moderationService.executeAction('mod-user-1', ['MODERATOR'], {
+      reportId: 'report-post-1',
+      actionType: 'DISMISS',
+      reason: 'No violation found',
+    });
+
+    expect(mockReportsRepo.updateStatusTx).toHaveBeenCalledWith(expect.anything(), 'report-post-1', 'DISMISSED');
+    expect(mockNotificationsService.createNotification).toHaveBeenCalledWith(
+      expect.objectContaining({
+        userId: 'user-reporter-1',
+        type: 'REPORT_DISMISSED',
+      }),
     );
   });
 

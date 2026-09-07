@@ -37,7 +37,17 @@ export class NotificationsService {
     } else if (category === 'social') {
       types = ['POST_REACTION', 'NEW_FOLLOWER'];
     } else if (category === 'system') {
-      types = ['POST_APPROVED', 'POST_BANNED', 'SYSTEM'];
+      types = [
+        'POST_APPROVED',
+        'POST_BANNED',
+        'POST_MODERATED',
+        'REPORT_RESOLVED',
+        'REPORT_DISMISSED',
+        'CONTENT_HIDDEN',
+        'ACCOUNT_SUSPENDED',
+        'ACCOUNT_BANNED',
+        'SYSTEM',
+      ];
     }
 
     if (type) {

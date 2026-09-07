@@ -66,6 +66,35 @@ export function NotificationCard({
           badge: 'Cảnh báo',
           badgeColor: 'text-destructive bg-destructive/10',
         };
+      case 'REPORT_RESOLVED':
+        return {
+          icon: <ShieldCheck className="h-4 w-4 text-emerald-500" />,
+          bg: 'bg-emerald-500/10',
+          badge: 'Báo cáo',
+          badgeColor: 'text-emerald-600 bg-emerald-500/10',
+        };
+      case 'REPORT_DISMISSED':
+        return {
+          icon: <Info className="h-4 w-4 text-muted-foreground" />,
+          bg: 'bg-muted/30',
+          badge: 'Báo cáo',
+          badgeColor: 'text-muted-foreground bg-muted',
+        };
+      case 'CONTENT_HIDDEN':
+        return {
+          icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
+          bg: 'bg-amber-500/10',
+          badge: 'Nội dung',
+          badgeColor: 'text-amber-600 bg-amber-500/10',
+        };
+      case 'ACCOUNT_SUSPENDED':
+      case 'ACCOUNT_BANNED':
+        return {
+          icon: <AlertTriangle className="h-4 w-4 text-destructive" />,
+          bg: 'bg-destructive/10',
+          badge: 'Tài khoản',
+          badgeColor: 'text-destructive bg-destructive/10',
+        };
       default:
         return {
           icon: <Info className="h-4 w-4 text-primary" />,
@@ -98,9 +127,9 @@ export function NotificationCard({
   // Determine navigation target
   let href: string | null = null;
   if (notification.referencePostId) {
-    href = `/posts/community?id=${encodeURIComponent(notification.referencePostId)}`;
+    href = `/bai-viet/community?id=${encodeURIComponent(notification.referencePostId)}`;
   } else if (notification.referenceUserId) {
-    href = `/profile/${encodeURIComponent(notification.referenceUserId)}`;
+    href = `/ho-so/${encodeURIComponent(notification.referenceUserId)}`;
   }
 
   const cardContent = (
