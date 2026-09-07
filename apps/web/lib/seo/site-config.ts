@@ -1,4 +1,7 @@
 import type { SiteConfig } from '../../types/seo';
+import { BRAND } from '../constants/brand';
+
+export { BRAND };
 
 /**
  * Determine the canonical public base URL for the application.
@@ -8,7 +11,7 @@ import type { SiteConfig } from '../../types/seo';
  * 2. VERCEL_PROJECT_PRODUCTION_URL (prefixed with https://)
  * 3. VERCEL_URL (prefixed with https://)
  * 4. In development/test environments (NODE_ENV !== 'production'): http://localhost:3000
- * 5. Production default fallback: https://morningview.community
+ * 5. Production default fallback: BRAND.fallbackUrl
  */
 export function getSiteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
@@ -29,7 +32,7 @@ export function getSiteUrl(): string {
     return 'http://localhost:3000';
   }
 
-  return 'https://morningview.community';
+  return BRAND.fallbackUrl;
 }
 
 /**
@@ -43,15 +46,14 @@ export function getSiteUrlObject(): URL {
  * Global site identity defaults.
  */
 export const siteConfig: SiteConfig = {
-  name: 'MorningView',
-  shortName: 'MorningView',
-  description:
-    'Nền tảng tri thức & phân tích thị trường chuyên sâu về nghiên cứu vĩ mô, mô hình định giá doanh nghiệp và series bài học đầu tư.',
+  name: BRAND.name,
+  shortName: BRAND.shortName,
+  description: `${BRAND.slogan} — Nền tảng học tập & phong cách sống: Tài chính, Thể thao & Kỹ năng.`,
   get url() {
     return getSiteUrl();
   },
   ogImage: '/images/logo.png',
-  twitterHandle: '@morningview',
+  twitterHandle: BRAND.social.twitter,
   locale: 'vi_VN',
 };
 
