@@ -6,7 +6,7 @@ import { Header } from '@/components/navigation/Header';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 
 describe('Header Component', () => {
-  it('renders brand logo link with MorningView label', () => {
+  it('renders brand logo link with BrewSeven label', () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
     render(
@@ -16,7 +16,7 @@ describe('Header Component', () => {
         </AuthProvider>
       </QueryClientProvider>
     );
-    expect(screen.getByRole('link', { name: /MorningView/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /BrewSeven/i })).toBeInTheDocument();
   });
 
   it('renders market ticker bar inside header', () => {

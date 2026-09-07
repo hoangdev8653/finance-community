@@ -43,25 +43,25 @@ describe('SEO Site Config & Canonical URL Resolver', () => {
     delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
     delete process.env.VERCEL_URL;
     (process.env as any).NODE_ENV = 'production';
-    expect(getSiteUrl()).toBe('https://morningview.community');
+    expect(getSiteUrl()).toBe('https://brewseven.vn');
   });
 
   it('getSiteUrlObject() returns valid URL instance', () => {
-    process.env.NEXT_PUBLIC_SITE_URL = 'https://morningview.community';
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://brewseven.vn';
     const urlObj = getSiteUrlObject();
     expect(urlObj).toBeInstanceOf(URL);
-    expect(urlObj.origin).toBe('https://morningview.community');
+    expect(urlObj.origin).toBe('https://brewseven.vn');
   });
 
   it('buildCanonicalUrl strips query params and normalizes slashes', () => {
-    process.env.NEXT_PUBLIC_SITE_URL = 'https://morningview.community';
+    process.env.NEXT_PUBLIC_SITE_URL = 'https://brewseven.vn';
 
-    expect(buildCanonicalUrl('/')).toBe('https://morningview.community');
+    expect(buildCanonicalUrl('/')).toBe('https://brewseven.vn');
     expect(buildCanonicalUrl('/posts/community/test-slug?sort=recent#heading')).toBe(
-      'https://morningview.community/posts/community/test-slug'
+      'https://brewseven.vn/posts/community/test-slug'
     );
     expect(buildCanonicalUrl('series/market-curriculum/')).toBe(
-      'https://morningview.community/series/market-curriculum'
+      'https://brewseven.vn/series/market-curriculum'
     );
   });
 });

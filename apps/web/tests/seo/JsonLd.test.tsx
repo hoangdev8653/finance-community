@@ -30,12 +30,12 @@ describe('JsonLd Component', () => {
       {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
-        name: 'MorningView',
+        name: 'BrewSeven',
       },
       {
         '@context': 'https://schema.org',
         '@type': 'Organization',
-        name: 'MorningView Organization',
+        name: 'BrewSeven Organization',
       },
     ];
 

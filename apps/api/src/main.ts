@@ -65,8 +65,8 @@ async function bootstrap() {
 
   // 6. Swagger / OpenAPI Documentation Initialization
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('MorningView Platform API')
-    .setDescription('Production-ready REST API for MorningView Platform (Phases 3.1 - 3.4)')
+    .setTitle('BrewSeven Platform API')
+    .setDescription('Production-ready REST API for BrewSeven Platform (Phases 3.1 - 3.4)')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -100,7 +100,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document, {
     jsonDocumentUrl: 'api/docs-json',
-    customSiteTitle: 'MorningView API Docs',
+    customSiteTitle: 'BrewSeven API Docs',
   });
 
   await app.listen(port);
