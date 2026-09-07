@@ -12,7 +12,7 @@ Tài liệu này lưu trữ toàn bộ các tính năng, nâng cấp trải nghi
 │ STT│ Tên Tính Năng                             │ Mức Độ Ưu   │ Phạm Vi (Scope)           │
 │    │                                           │ Tiên        │                           │
 ├────┼───────────────────────────────────────────┼─────────────┼───────────────────────────┤
-│ 1  │ 🔴 Thanh Chỉ Số Thị Trường Real-Time      │ ⚡ Cao      │ Backend + Frontend Header │
+│ 1  │ 🔴 Thanh Chỉ Số Thị Trường Real-Time      │ 💎 Đã xong  │ Backend + Frontend Header │
 │ 2  │ 📜 Mục Lục Trượt Mượt (Table of Contents) │ ⚡ Cao      │ Frontend Post Detail      │
 │ 3  │ 🧮 Bảng Tính Lãi Kép & Định Giá Cổ Phiếu  │ ⚡ Cao      │ Frontend Interactive Tool │
 │ 4  │ ⚡ Khung Đăng Nhanh Mạng Xã Hội           │ ⭐ Trung    │ Frontend + Backend Feed   │

@@ -25,7 +25,7 @@ Mức ưu tiên:
 - **Phạm vi:** Hero learning dashboard, danh mục, series, tiến độ học, bài viết cộng đồng, lợi ích, newsletter; các asset sách/chậu cây chờ người dùng cung cấp.
 - **Trạng thái:** Đã dựng UI responsive bằng React/CSS và chart SVG; cần gắn 2 asset Hero, thumbnail dữ liệu thật và tinh chỉnh trực quan.
 
-### [IN_PROGRESS] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
+### [DONE] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
 
 - **Mục tiêu:** Đồng bộ page Login với reference `login.png` bằng layout split-screen, brand panel, form card và illustration tài chính.
 - **Phạm vi:** Auth layout, login form, OAuth actions, responsive mobile, accessibility và asset illustration.
@@ -144,12 +144,21 @@ Mức ưu tiên:
 - **Files:** `apps/web/tests/directories/PostsExplorerView.test.tsx`, `apps/web/tests/dashboard/DashboardPostCard.test.tsx`.
 - **Kiểm tra:** Full Vitest 98/98 files, 318/318 tests pass; `npm run typecheck` pass.
 
-### [IN_PROGRESS] [P1] MOD-01: Nâng cấp moderation workflow
-
-- **Mục tiêu:** Xây dựng quy trình xử lý báo cáo nội dung và hành vi rõ ràng, có audit.
+### [DONE] [P1] MOD-01: Nâng cấp moderation workflow
+ 
+- **Mục tiêu:** Xây dựng quy trình xử lý báo cáo nội dung và hành vi rõ ràng, có audit và thông báo tự động.
 - **Phạm vi:** Báo cáo bài viết/bình luận, lọc spam, trạng thái xử lý, lý do, moderator và thông báo người dùng.
-- **Tiêu chí hoàn thành:** Workflow `PENDING → REVIEWING → RESOLVED/DISMISSED`, action có reason, audit log, notification và test API/UI.
-- **Tiến độ:** Chuẩn hóa report mới về `PENDING`, giữ tương thích report `OPEN` cũ, bổ sung endpoint moderator nhận xử lý (`PATCH /moderation/reports/:id/review`) và migration chuyển dữ liệu cũ. Còn bổ sung notification theo action và test API/UI.
+- **Tiêu chí hoàn thành:** Workflow `PENDING → REVIEWING → RESOLVED/DISMISSED`, action có reason, audit log, automated notification cho người báo cáo và người bị xử lý, và test API/UI.
+- **Kết quả:**
+  - Chuẩn hóa workflow `PENDING → REVIEWING → RESOLVED/DISMISSED`, bổ sung endpoint `PATCH /moderation/reports/:id/review`.
+  - Tích hợp gửi thông báo phi chặn (non-blocking) qua `NotificationsService` ngay sau khi `executeAction` thành công:
+    - Gửi `REPORT_RESOLVED` hoặc `REPORT_DISMISSED` đến người báo cáo (`reporterId`).
+    - Gửi `CONTENT_HIDDEN`, `ACCOUNT_SUSPENDED`, `ACCOUNT_BANNED` hoặc `POST_MODERATED` đến người vi phạm (`targetUserId`).
+  - Cập nhật category filter `system` trong `NotificationsService` bao gồm toàn bộ moderation types.
+  - Cập nhật `NotificationCard` trên frontend hỗ trợ badge, icon và navigation link cho các loại thông báo kiểm duyệt mới.
+- **Files:** `apps/api/src/modules/moderation/services/moderation.service.ts`, `apps/api/src/modules/notifications/services/notifications.service.ts`, `apps/api/test/modules/moderation.spec.ts`, `apps/web/components/notifications/NotificationCard.tsx`.
+- **Kiểm tra:** `apps/api` test `npm test -- test/modules/moderation.spec.ts` pass 5/5; full test suite `apps/api` pass 36/36 suites (164/164 tests); `npm run build` pass; frontend vitest pass 318/318 tests.
+- **Trạng thái:** Hoàn thành.
 
 ### [DONE] [P1] PERF-01: Tối ưu upload và hiển thị ảnh
 
@@ -168,7 +177,31 @@ Mức ưu tiên:
 - **Files:** `apps/web/lib/posts/use-post-draft.ts`, `apps/web/tests/posts/use-post-draft.test.ts`.
 - **Kiểm tra:** `npx vitest run tests/posts/use-post-draft.test.ts` pass 2/2; `npm run typecheck` pass.
 
-<!-- Thêm task mới bên dưới theo mẫu này -->
+### [DONE] [P1] FE-09: Tích hợp MarketTickerBar trực tiếp lên Header & Tối ưu hiệu ứng Marquee
+
+- **Kết quả:**
+  - Tích hợp component `MarketTickerBar` vào đỉnh `<header>` trong `Header.tsx` ([apps/web/components/navigation/Header.tsx](file:///d:/tools/finance-community/apps/web/components/navigation/Header.tsx)), hiển thị dải chỉ số thị trường trực tiếp (VN-INDEX, VN30, VCB, FPT, HPG, SJC, USD/VND, BTC, ETH).
+  - Tự động polling dữ liệu từ backend endpoint `/market/ticker` (đã tích hợp Yahoo Finance & Binance API ở `BE-07`) mỗi 15 giây, kèm hiệu ứng nháy sáng flash xanh/đỏ khi biến động giá.
+  - Bổ sung `@keyframes marquee-loop` trong `globals.css` (`translateX(0%)` đến `translateX(-100%)`) cùng 2 track chạy song song có đệm `pr-4`, đảm bảo chu trình marquee lặp vô tận mượt mà 100%, không bị giật hay nhảy hình.
+  - Hỗ trợ nút ẩn/hiện dải chỉ số với trạng thái lưu tự động vào `localStorage` (`market_ticker_visible`), tự động ghi nhớ tùy chọn hiển thị của người dùng khi chuyển trang.
+  - Gỡ bỏ thuộc tính `overflow-hidden` gây cắt menu thả xuống (dropdown) trên phần tử `<header>`, đồng thời chuẩn hóa typography và spacing theo 4px Grid Foundation.
+  - Viết bộ unit test `tests/market/MarketTickerBar.test.tsx` (4/4 passed) và cập nhật `tests/components/Header.test.tsx` (2/2 passed).
+- **Files:** `apps/web/components/navigation/Header.tsx`, `apps/web/components/market/MarketTickerBar.tsx`, `apps/web/app/globals.css`, `apps/web/tests/market/MarketTickerBar.test.tsx`, `apps/web/tests/components/Header.test.tsx`, `ROADMAP_CHUC_NANG_BO_SUNG.md`.
+- **Kiểm tra:** Unit tests `MarketTickerBar.test.tsx` và `Header.test.tsx` pass 100%.
+
+---
+
+### [DONE] [P1] FE-10: Chuẩn hóa toàn bộ Route /series và dọn dẹp legacy /chuoi-bai trên Frontend
+
+- **Kết quả:**
+  - Chuẩn hóa canonical path và giao diện sang `/series`: tạo mới `apps/web/app/series/page.tsx` (thư viện series với lọc chủ đề, tìm kiếm, responsive 4px grid) và `apps/web/app/series/[slug]/page.tsx` (chi tiết series, tích hợp `seriesService`, JSON-LD ItemList & Breadcrumbs).
+  - Cập nhật toàn bộ liên kết điều hướng trong ứng dụng: `Header.tsx`, `Sidebar.tsx`, `MobileNavigation.tsx`, `Footer.tsx`, `SeriesHeader.tsx`, `not-found.tsx`, `lo-trinh-hoc/page.tsx`, `bai-viet/[contentType]/[slug]/page.tsx`.
+  - Cập nhật sitemap động và tĩnh `sitemap.ts` sang `/series` và `/series/[slug]`.
+  - Cấu hình permanent redirect 308 trong `next.config.ts` (`/chuoi-bai` và `/chuoi-bai/:path*` trỏ sang `/series/:path*`) đảm bảo tương thích ngược 100%.
+  - Dọn dẹp và xóa bỏ thư mục legacy `apps/web/app/chuoi-bai`.
+  - Cập nhật và xác thực bộ unit test: `Sidebar.test.tsx`, `sitemap.test.ts` (pass 100%).
+- **Files:** `apps/web/app/series/page.tsx`, `apps/web/app/series/[slug]/page.tsx`, `apps/web/next.config.ts`, `apps/web/components/navigation/Header.tsx`, `apps/web/components/navigation/Sidebar.tsx`, `apps/web/components/navigation/MobileNavigation.tsx`, `apps/web/components/navigation/Footer.tsx`, `apps/web/components/series/SeriesHeader.tsx`, `apps/web/app/sitemap.ts`, `apps/web/app/not-found.tsx`, `apps/web/app/lo-trinh-hoc/page.tsx`, `apps/web/app/bai-viet/[contentType]/[slug]/page.tsx`.
+- **Kiểm tra:** `npm run typecheck` pass 0 errors; `npm run test` pass 323/323 tests.
 
 ### [DONE] [P2] BE-08: Chuẩn hóa Backend API Design System & Architectural Standards
 
@@ -275,17 +308,20 @@ Mức ưu tiên:
 
 ---
 
-### [DONE] [P2] BE-07: Nâng cấp Live Data Adapter cho Market Ticker
+### [DONE] [P1] BE-07: Nâng cấp Live Data Adapter Đa Sàn, Quản lý Giờ Giao Dịch, 15s Cadence & Sẵn Sàng Kết Nối ENV Provider
 
 - **Kết quả:**
-  - Nâng cấp `MarketService` tích hợp adapter cấp dữ liệu chứng khoán Việt Nam và chỉ số qua Yahoo Finance chart endpoint (`^VNINDEX.VN`, `VCB.VN`, `FPT.VN`, `HPG.VN`, `VND=X`, `GC=F`) song song với Binance Public API (`BTCUSDT`, `ETHUSDT`).
-  - Phản ánh đúng giá thị trường thực tế, bước nhảy giá, tỷ lệ phần trăm thay đổi và điều phối liên chỉ số (VN30 theo VN-Index).
-  - Tích hợp timeout an toàn bằng `AbortController` (3500ms) kèm xử lý `finally { clearTimeout(timeoutId) }` giải phóng timer triệt để, tránh open handles.
-  - Caching in-memory với TTL (15 giây) và cơ chế resilient fallback về baseline snapshot khi mất mạng hoặc nhà cung cấp đóng sàn.
-  - Mở rộng unit tests `test/modules/market.spec.ts` kiểm thử đầy đủ cả kịch bản API phản hồi thành công và kịch bản mạng lỗi ngoại lệ.
-- **Files:** `apps/api/src/modules/market/market.service.ts`, `apps/api/test/modules/market.spec.ts`.
-- **Kiểm tra:** `npm test -- test/modules/market.spec.ts` pass 5/5, `npm run build` trong `apps/api` code 0, `npm run typecheck` trong `apps/web` code 0.
-- **Ghi chú:** Hoàn thành trọn vẹn toàn bộ 7 task backend (BE-01 đến BE-07).
+  - Nâng cấp `MarketService` thiết lập chu kỳ lấy giá **15 giây/lần** (`CACHE_TTL_MS = 15000`) đồng bộ hoàn hảo với chu kỳ refetch của `MarketTickerBar` trên frontend.
+  - Sẵn sàng nhận cấu hình biến môi trường `.env` (`VIETNAM_MARKET_API_URL`, `VIETNAM_MARKET_API_KEY`, `VIETNAM_MARKET_ACCESS_TOKEN`): khi bạn có API Token/Key từ CTCK (SSI, TCBS, DNSE...) chỉ cần điền vào `.env`, backend sẽ tự động gắn header xác thực (`X-API-KEY` hoặc `Bearer Token`) và phân giải dữ liệu chuẩn hóa về hệ thống.
+  - Tích hợp hàm phát hiện phiên giao dịch `isVietnamStockMarketOpen()`:
+    - **Trong giờ giao dịch (Thứ 2 đến Thứ 6: 09:00 - 11:30 & 13:00 - 15:05 ICT)**: Tự động polling giá mới liên tục mỗi 15 giây và lưu ngay snapshot mới nhất vào Database (`system_settings` qua key `market_quotes_latest`).
+    - **Ngoài giờ giao dịch (Buổi tối, đêm, cuối tuần T7/CN, nghỉ trưa)**: Tự động đóng băng, **không gọi API ngoài** để tránh spam request/rate limit; lấy chính xác giá chốt phiên đóng cửa gần nhất (ví dụ: phiên chiều Thứ 6 chốt giá bao nhiêu thì giữ nguyên suốt cuối tuần đến 09:00 Thứ 2).
+    - Khi server khởi động lại (restart) vào cuối tuần, tự động phục hồi giá đóng cửa từ Database snapshot mà không bị mất dữ liệu.
+  - Thị trường Crypto (BTC, ETH) giao dịch 24/7 qua Binance Public API và Tỷ giá USD/VND / Vàng qua Yahoo Finance.
+  - Cập nhật file mẫu `.env.example` với danh mục biến cấu hình rõ ràng.
+  - Mở rộng unit tests `test/modules/market.spec.ts` kiểm thử toàn diện cả phiên mở cửa, phiên đóng cửa, cuối tuần, cấu hình custom env provider, và cơ chế phục hồi snapshot từ Database (6/6 passed).
+- **Files:** `apps/api/src/modules/market/market.service.ts`, `apps/api/src/modules/market/market.module.ts`, `apps/api/src/modules/market/market.types.ts`, `apps/web/types/market.ts`, `apps/api/.env.example`, `apps/api/test/modules/market.spec.ts`.
+- **Kiểm tra:** Unit tests `test/modules/market.spec.ts` pass 100%.
 
 ---
 
