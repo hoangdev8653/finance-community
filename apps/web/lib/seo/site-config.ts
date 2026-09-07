@@ -46,7 +46,7 @@ export const siteConfig: SiteConfig = {
   name: 'MorningView',
   shortName: 'MorningView',
   description:
-    'Nền tảng tri thức & phân tích thị trường chuyên sâu về nghiên cứu vĩ mô, mô hình định giá doanh nghiệp và chuỗi bài học đầu tư.',
+    'Nền tảng tri thức & phân tích thị trường chuyên sâu về nghiên cứu vĩ mô, mô hình định giá doanh nghiệp và series bài học đầu tư.',
   get url() {
     return getSiteUrl();
   },

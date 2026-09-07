@@ -13,19 +13,19 @@ export const metadata: Metadata = buildPageMetadata({
   title: 'Thư Mục Thẻ Chủ Đề & Mã Cổ Phiếu',
   description:
     'Tra cứu toàn bộ thẻ chủ đề tài chính, mã chứng khoán và từ khóa thị trường được phân loại trên MorningView.',
-  canonicalPath: '/tags',
+  canonicalPath: '/the',
 });
 
 export default function TagsPage() {
   const collectionSchema = generateCollectionPageJsonLd(
     'Thư Mục Thẻ Chủ Đề & Mã Cổ Phiếu',
     'Danh mục thẻ phân loại thị trường, nhóm tài sản và chủ đề tài chính trên MorningView.',
-    '/tags'
+    '/the'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Thẻ Chủ Đề', url: '/tags' },
+    { name: 'Thẻ Chủ Đề', url: '/the' },
   ]);
 
 

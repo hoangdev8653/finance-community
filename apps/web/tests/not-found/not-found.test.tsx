@@ -23,11 +23,11 @@ describe('NotFound (404) Page', () => {
 
     const postsLinks = screen.getAllByRole('link', { name: /Khám phá bài viết/i });
     expect(postsLinks.length).toBeGreaterThan(0);
-    expect(postsLinks[0].getAttribute('href')).toBe('/posts');
+    expect(postsLinks[0].getAttribute('href')).toBe('/bai-viet');
 
     const searchLink = screen.getByRole('link', { name: /Tra cứu nâng cao/i });
     expect(searchLink).toBeDefined();
-    expect(searchLink.getAttribute('href')).toBe('/search');
+    expect(searchLink.getAttribute('href')).toBe('/tim-kiem');
   });
 
 
@@ -42,7 +42,7 @@ describe('NotFound (404) Page', () => {
   it('renders quick directory shortcuts', () => {
     render(<NotFound />);
 
-    expect(screen.getByText('Chuỗi bài học (Series)')).toBeDefined();
+    expect(screen.getByText('Series')).toBeDefined();
     expect(screen.getByText('Danh mục chủ đề')).toBeDefined();
     expect(screen.getByText('Thư mục Tag')).toBeDefined();
   });

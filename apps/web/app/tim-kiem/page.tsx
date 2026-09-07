@@ -36,7 +36,7 @@ function SearchPageContent() {
     if (newFilters.order && newFilters.order !== 'DESC') params.set('order', newFilters.order);
     if (newFilters.page && newFilters.page > 1) params.set('page', newFilters.page.toString());
 
-    router.push(`/search?${params.toString()}`);
+    router.push(`/tim-kiem?${params.toString()}`);
   };
 
   const handlePageChange = (newPage: number) => {

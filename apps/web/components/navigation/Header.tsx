@@ -34,6 +34,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { cn } from '@/lib/utils/cn';
 import { postsService } from '@/lib/posts/posts-service';
 import { useQuery } from '@tanstack/react-query';
+import { MarketTickerBar } from '@/components/market/MarketTickerBar';
 
 interface CategoryDropdownItem {
   title: string;
@@ -66,9 +67,9 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
     color: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
   },
   {
-    title: 'Chuỗi bài Series',
+    title: 'Series',
     desc: 'Cẩm nang Đọc BCTC, Định giá bài bản & Chiến lược đầu tư',
-    href: '/chuoi-bai',
+    href: '/series',
     icon: BookOpen,
     color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
   },
@@ -134,20 +135,21 @@ export function Header() {
   const isDark = mounted ? theme === 'dark' || resolvedTheme === 'dark' : false;
 
   return (
-    <header className="sticky top-0 z-40 w-full max-w-full overflow-hidden border-t-[3px] border-t-slate-900 border-b border-slate-200/90 bg-white/95 backdrop-blur-md dark:border-t-slate-700 dark:border-b-[#253044] dark:bg-[#111827]/95">
+    <header className="sticky top-0 z-40 w-full max-w-full border-t-[3px] border-t-slate-900 border-b border-border bg-background/95 backdrop-blur-md dark:border-t-slate-700">
+      <MarketTickerBar />
       <div className="w-full max-w-[1440px] mx-auto flex h-16 sm:h-18 items-center justify-between px-3.5 sm:px-6 lg:px-8">
         {/* 1. Left: Brand Logo */}
         <div className="flex items-center shrink-0">
           <Link
             href="/"
-            title="Finance Community"
-            aria-label="Finance Community"
+            title="MorningView"
+            aria-label="MorningView"
             className="flex items-center gap-2 group"
           >
             <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden group-hover:scale-105 transition-transform">
               <Image
                 src="/images/logo.png"
-                alt="Finance Community"
+                alt="MorningView"
                 width={32}
                 height={32}
                 className="h-8 w-8 object-contain"
@@ -155,7 +157,7 @@ export function Header() {
               />
             </div>
             <span className="font-heading text-base font-bold tracking-tight text-slate-950 dark:text-slate-100 hidden sm:inline-block">
-              Finance Community
+              MorningView
             </span>
           </Link>
         </div>
@@ -181,34 +183,34 @@ export function Header() {
 
           {/* Khám phá */}
           <Link
-            href="/chuoi-bai"
+            href="/series"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')
+              pathname.startsWith('/series') || pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <Compass className="hidden" aria-hidden="true" />
             <span>Series</span>
-            {(pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')) && (
+            {(pathname.startsWith('/series') || pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')) && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
 
           {/* Chuỗi bài Series */}
           <Link
-            href="/posts"
+            href="/bai-viet"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/posts')
+              pathname.startsWith('/bai-viet')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <BookOpen className="hidden" aria-hidden="true" />
             <span>Bài viết cộng đồng</span>
-            {pathname.startsWith('/posts') && (
+            {pathname.startsWith('/bai-viet') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
@@ -226,7 +228,7 @@ export function Header() {
               aria-expanded={isCategoryOpen}
               className={cn(
                 'relative flex items-center gap-1.5 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap cursor-pointer group',
-                isCategoryOpen || pathname.startsWith('/categories')
+                isCategoryOpen || pathname.startsWith('/danh-muc')
                   ? 'text-teal-800 dark:text-teal-400'
                   : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
               )}
@@ -235,7 +237,7 @@ export function Header() {
               <span>{t('navigation.categories')}</span>
               <ChevronDown className={cn('h-4 w-4 transition-transform duration-200', isCategoryOpen && 'rotate-180 text-teal-600')} />
 
-              {(isCategoryOpen || pathname.startsWith('/categories')) && (
+              {(isCategoryOpen || pathname.startsWith('/danh-muc')) && (
                 <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
               )}
             </button>
@@ -249,7 +251,7 @@ export function Header() {
                       Chuyên mục & Phạm vi phân tích
                     </span>
                     <Link
-                      href="/categories"
+                      href="/danh-muc"
                       onClick={() => setIsCategoryOpen(false)}
                       className="text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
                     >
@@ -290,17 +292,17 @@ export function Header() {
 
           {/* Không gian làm việc */}
           <Link
-            href="/tools"
+            href="/cong-cu"
             className={cn(
                 'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/tools')
+              pathname.startsWith('/cong-cu')
                 ? 'text-teal-700 dark:text-teal-400 font-bold'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
             )}
           >
             <Folder className="hidden" aria-hidden="true" />
             <span>Công cụ</span>
-            {pathname.startsWith('/tools') && (
+            {pathname.startsWith('/cong-cu') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-500" />
             )}
           </Link>
@@ -313,9 +315,9 @@ export function Header() {
             onSubmit={(e) => {
               e.preventDefault();
               if (headerSearch.trim()) {
-                router.push(`/search?q=${encodeURIComponent(headerSearch.trim())}`);
+                router.push(`/tim-kiem?q=${encodeURIComponent(headerSearch.trim())}`);
               } else {
-                router.push('/search');
+                router.push('/tim-kiem');
               }
             }}
             className="hidden md:flex items-center relative"
@@ -332,7 +334,7 @@ export function Header() {
 
           {/* Mobile Search Icon Button */}
           <Link
-            href="/search"
+            href="/tim-kiem"
             className="md:hidden flex h-8.5 w-8.5 items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
             aria-label="Tìm kiếm bài viết"
           >
@@ -359,7 +361,7 @@ export function Header() {
             <NotificationBell />
           ) : (
             <Link
-              href="/login"
+              href="/dang-nhap"
               className="hidden sm:inline-flex items-center justify-center h-9 w-9 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label={t('common.notifications')}
             >
@@ -378,7 +380,7 @@ export function Header() {
                 asChild
                 className="h-10 rounded-lg font-bold text-xs sm:text-sm px-3.5 sm:px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-teal-500 dark:hover:bg-teal-400 dark:text-slate-950 transition-all cursor-pointer inline-flex items-center gap-1.5 whitespace-nowrap shadow-xs"
               >
-                <Link href="/login">
+                <Link href="/dang-nhap">
                   <LogIn className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>{t('common.signIn')}</span>
                 </Link>

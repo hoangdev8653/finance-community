@@ -50,7 +50,7 @@ export function PostDetailView({ initialPost }: PostDetailViewProps) {
             items={[
               { label: 'Trang chủ', href: '/' },
               {
-                label: isSeries ? 'Chuỗi bài học' : 'Bảng tin thị trường',
+                label: isSeries ? 'Series' : 'Bảng tin thị trường',
                 href: isSeries ? '/?type=SERIES' : '/',
               },
               { label: post.title },

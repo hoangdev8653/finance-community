@@ -46,7 +46,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
         router.push(item.url);
       } else if (query.trim()) {
         onClose();
-        router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+        router.push(`/tim-kiem?q=${encodeURIComponent(query.trim())}`);
       }
     } else if (e.key === 'Escape') {
       e.preventDefault();
@@ -153,7 +153,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
                 aria-selected={selectedIndex === results.length}
                 onClick={() => {
                   onClose();
-                  router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+                  router.push(`/tim-kiem?q=${encodeURIComponent(query.trim())}`);
                 }}
                 onMouseEnter={() => setSelectedIndex(results.length)}
                 className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${

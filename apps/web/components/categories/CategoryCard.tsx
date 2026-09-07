@@ -29,7 +29,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-200 border-slate-300 dark:border-slate-700'
             }`}
           >
-            {category.scope === 'SERIES' ? 'Chuỗi bài' : 'Cộng đồng'}
+            {category.scope === 'SERIES' ? 'Series' : 'Cộng đồng'}
           </span>
         </div>
 

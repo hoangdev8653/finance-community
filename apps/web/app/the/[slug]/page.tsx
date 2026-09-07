@@ -34,10 +34,10 @@ export default function TagExplorePage({ params }: TagPageProps) {
     <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 space-y-8">
       {/* Navigation Breadcrumb */}
       <div>
-        <Link href="/search">
+        <Link href="/tim-kiem">
           <Button variant="ghost" size="sm" className="gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground -ml-2">
             <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Back to Discovery</span>
+            <span>Quay lại Tìm kiếm</span>
           </Button>
         </Link>
       </div>

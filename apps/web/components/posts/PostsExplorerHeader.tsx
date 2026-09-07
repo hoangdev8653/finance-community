@@ -40,7 +40,7 @@ export function PostsExplorerHeader({
           Khám phá Bài viết & Nghiên cứu Tài chính
         </h1>
         <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-          Tìm kiếm, phân loại và nghiên cứu các bài viết phân tích vĩ mô, bóc tách doanh nghiệp và chuỗi bài giảng chuyên sâu từ các chuyên gia cộng đồng.
+          Tìm kiếm, phân loại và nghiên cứu các bài viết phân tích vĩ mô, bóc tách doanh nghiệp và series bài giảng chuyên sâu từ các chuyên gia cộng đồng.
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export function PostsExplorerHeader({
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-100'
             }`}
           >
-            Chuỗi bài Series
+            Series
           </button>
         </div>
 

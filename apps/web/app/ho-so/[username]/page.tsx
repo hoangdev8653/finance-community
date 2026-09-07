@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       profile.bio ||
       'Hồ sơ nhà phân tích và cộng tác viên nghiên cứu tài chính trên nền tảng MorningView.';
-    const canonicalPath = `/profile/${encodeURIComponent(username)}`;
+    const canonicalPath = `/ho-so/${encodeURIComponent(username)}`;
 
     return buildPageMetadata({
       title,
@@ -61,7 +61,7 @@ export default async function ProfilePage({ params }: PageProps) {
     { name: 'Trang chủ', url: '/' },
     {
       name: `@${profile.username}`,
-      url: `/profile/${encodeURIComponent(username)}`,
+      url: `/ho-so/${encodeURIComponent(username)}`,
     },
   ]);
 

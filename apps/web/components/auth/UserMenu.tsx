@@ -63,21 +63,21 @@ export function UserMenu() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem asChild>
-          <Link href={`/profile/${user.username}`} className="flex items-center cursor-pointer">
+          <Link href={`/ho-so/${encodeURIComponent(user.username)}`} className="flex items-center cursor-pointer">
             <UserCircle className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/dashboard" className="flex items-center cursor-pointer">
+          <Link href="/bang-dieu-khien" className="flex items-center cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>Analyst Dashboard</span>
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href="/posts/create" className="flex items-center cursor-pointer">
+          <Link href="/bai-viet/tao-moi" className="flex items-center cursor-pointer">
             <PenSquare className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>Write Analysis</span>
           </Link>
@@ -85,7 +85,7 @@ export function UserMenu() {
 
         {(isAdmin || isModerator) && (
           <DropdownMenuItem asChild>
-            <Link href="/moderation" className="flex items-center cursor-pointer">
+            <Link href="/kiem-duyet" className="flex items-center cursor-pointer">
               <Shield className="mr-2 h-4 w-4 text-muted-foreground" />
               <span>Moderation Desk</span>
             </Link>

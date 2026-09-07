@@ -110,8 +110,8 @@ export function LearningHomeView() {
     event.preventDefault();
     router.push(
       query.trim()
-        ? `/search?q=${encodeURIComponent(query.trim())}`
-        : "/search",
+        ? `/tim-kiem?q=${encodeURIComponent(query.trim())}`
+        : "/tim-kiem",
     );
   };
 
@@ -384,7 +384,7 @@ export function LearningHomeView() {
         </section>
         <section className="mt-16">
           <h2 className="text-lg font-bold text-slate-900">
-            Vì sao nên chọn Finance Community?
+            Vì sao nên chọn MorningView?
           </h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {[

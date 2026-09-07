@@ -56,7 +56,7 @@ describe('CategoriesDirectoryView Component', () => {
 
     expect(screen.getByText(/Danh mục Tri thức & Khóa học/i)).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 2, name: /Phân mục Nghiên cứu & Phân tích Thị trường/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { level: 2, name: /Giáo trình & Chuỗi bài Đào tạo Chuyên sâu/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: /Giáo trình & Series Đào tạo Chuyên sâu/i })).toBeInTheDocument();
 
     expect(screen.getByText('Equity Valuation')).toBeInTheDocument();
     expect(screen.getByText('Macro Strategy')).toBeInTheDocument();

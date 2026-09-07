@@ -155,7 +155,7 @@ export function LoginForm() {
       </Button>
       <div className="flex items-center justify-center gap-2 pt-1 text-sm text-muted-foreground">
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><ShieldCheck className="h-4 w-4" aria-hidden="true" /></span>
-        <span>Thông tin của bạn được bảo mật tuyệt đối<br />bởi Finance Community.</span>
+        <span>Thông tin của bạn được bảo mật tuyệt đối<br />bởi MorningView.</span>
       </div>
     </div>
   );

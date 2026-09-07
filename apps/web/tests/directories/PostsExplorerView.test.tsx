@@ -82,7 +82,7 @@ describe('PostsExplorerView Component', () => {
     expect(screen.getByText(/Khám phá Bài viết & Nghiên cứu Tài chính/i)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Tất cả nội dung' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Bài phân tích' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Chuỗi bài Series' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Series' })).toBeInTheDocument();
 
     expect(screen.getByText('Semiconductor Foundry Free Cash Flow Forecast')).toBeInTheDocument();
   });

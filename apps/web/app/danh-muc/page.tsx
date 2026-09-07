@@ -12,20 +12,20 @@ import { AppShell } from '@/components/layout/AppShell';
 export const metadata: Metadata = buildPageMetadata({
   title: 'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
   description:
-    'Khám phá các lĩnh vực nghiên cứu tài chính, danh mục kinh tế vĩ mô và chuỗi bài học chuyên ngành trên MorningView.',
-  canonicalPath: '/categories',
+    'Khám phá các lĩnh vực nghiên cứu tài chính, danh mục kinh tế vĩ mô và series bài học chuyên ngành trên MorningView.',
+  canonicalPath: '/danh-muc',
 });
 
 export default function CategoriesPage() {
   const collectionSchema = generateCollectionPageJsonLd(
     'Danh Mục Chủ Đề & Lĩnh Vực Nghiên Cứu',
-    'Danh mục phân loại có cấu trúc về các lĩnh vực nghiên cứu tài chính và chuỗi bài học trên MorningView.',
-    '/categories'
+    'Danh mục phân loại có cấu trúc về các lĩnh vực nghiên cứu tài chính và series bài học trên MorningView.',
+    '/danh-muc'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Danh Mục', url: '/categories' },
+    { name: 'Danh Mục', url: '/danh-muc' },
   ]);
 
 

@@ -22,7 +22,7 @@ function PostCardComponent({ post, categoryName }: PostCardProps) {
   const coverUrl = resolveMediaUrl(post.coverMediaId);
 
   // Category label fallback
-  const displayCategory = categoryName || (post.contentType === 'SERIES' ? 'Chuỗi bài Series' : 'Thị trường tài chính');
+  const displayCategory = categoryName || (post.contentType === 'SERIES' ? 'Series' : 'Thị trường tài chính');
 
   return (
     <article className="group flex flex-col sm:flex-row items-start gap-4 sm:gap-6 py-5 border-b border-dashed border-border last:border-b-0 transition-colors">

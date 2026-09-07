@@ -103,10 +103,10 @@ export function CategoriesDirectoryView() {
                       id="series-categories-heading"
                       className="font-heading text-2xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100"
                     >
-                      Giáo trình & Chuỗi bài Đào tạo Chuyên sâu
+                      Giáo trình & Series Đào tạo Chuyên sâu
                     </h2>
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-400 ml-auto font-mono">
-                      {seriesCategories.length} chuỗi bài
+                      {seriesCategories.length} series
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

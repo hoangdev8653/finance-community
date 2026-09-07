@@ -14,19 +14,19 @@ export const metadata: Metadata = buildPageMetadata({
   title: 'Kho Phân Tích & Nghiên Cứu Tài Chính',
   description:
     'Tra cứu, chọn lọc và đón đọc các bài phân tích kinh tế vĩ mô, định giá cổ phiếu và giáo trình đầu tư chuyên sâu trên MorningView.',
-  canonicalPath: '/posts',
+  canonicalPath: '/bai-viet',
 });
 
 export default function PostsPage() {
   const collectionSchema = generateCollectionPageJsonLd(
     'Kho Nghiên Cứu Tài Chính',
-    'Kho lưu trữ toàn diện các bài phân tích tài chính cộng đồng, nhận định thị trường và chuỗi bài học chuyên ngành.',
-    '/posts'
+    'Kho lưu trữ toàn diện các bài phân tích tài chính cộng đồng, nhận định thị trường và series bài học chuyên ngành.',
+    '/bai-viet'
   );
 
   const breadcrumbsSchema = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Kho Phân Tích', url: '/posts' },
+    { name: 'Kho Phân Tích', url: '/bai-viet' },
   ]);
 
 

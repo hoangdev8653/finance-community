@@ -15,10 +15,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     <div className="min-h-screen overflow-hidden bg-background text-foreground">
       <div className="mx-auto grid min-h-screen max-w-[1600px] grid-cols-1 lg:grid-cols-2">
         <section className="relative order-2 flex min-h-[560px] flex-col overflow-hidden px-6 pb-0 pt-8 sm:px-10 lg:order-1 lg:px-16 lg:pt-10 xl:px-20">
-          <Link href="/" className="relative z-10 inline-flex w-fit items-center gap-3 lg:-translate-y-3" aria-label="Finance Community - Trang chủ">
-            <Image src="/images/logo.png" alt="Finance Community" width={44} height={44} className="h-11 w-11 object-contain" priority />
+          <Link href="/" className="relative z-10 inline-flex w-fit items-center gap-3 lg:-translate-y-3" aria-label="MorningView - Trang chủ">
+            <Image src="/images/logo.png" alt="MorningView" width={44} height={44} className="h-11 w-11 object-contain" priority />
             <span className="flex flex-col">
-              <span className="font-heading text-xl font-bold tracking-tight text-foreground">Finance Community</span>
+              <span className="font-heading text-xl font-bold tracking-tight text-foreground">MorningView</span>
               <span className="text-sm font-medium text-primary">Học · Chia sẻ · Phát triển</span>
             </span>
           </Link>
