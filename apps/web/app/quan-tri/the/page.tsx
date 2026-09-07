@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { AdminTagsTable } from '@/components/admin/AdminTagsTable';
 
 export const metadata: Metadata = {
-  title: 'Quản Lý Thẻ (Tags) | MorningView Admin',
+  title: 'Quản Lý Thẻ (Tags) | BrewSeven Admin',
   description: 'Quản lý toàn bộ thẻ phân loại nội dung trong hệ thống.',
   robots: {
     index: false,

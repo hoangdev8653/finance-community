@@ -3,9 +3,10 @@ import type { Metadata } from 'next';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { NotificationsCenter } from '@/components/notifications/NotificationsCenter';
 import { AppShell } from '@/components/layout/AppShell';
+import { BRAND } from '@/lib/constants/brand';
 
 export const metadata: Metadata = {
-  title: 'Trung Tâm Thông Báo | MorningView',
+  title: `Trung Tâm Thông Báo | ${BRAND.name}`,
   description: 'Quản lý các hoạt động, phản hồi bình luận và cập nhật mới nhất từ cộng đồng.',
   robots: {
     index: false,

@@ -3,32 +3,33 @@ import type { Metadata } from 'next';
 import { FileText } from 'lucide-react';
 import { AppShell } from '@/components/layout/AppShell';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { BRAND } from '@/lib/constants/brand';
 
 export const metadata: Metadata = {
   title: 'Điều khoản sử dụng',
-  description: 'Điều khoản sử dụng nền tảng MorningView.',
+  description: `Điều khoản sử dụng nền tảng ${BRAND.name}.`,
 };
 
 const sections = [
   {
     title: '1. Phạm vi sử dụng',
-    body: 'MorningView cung cấp nội dung phân tích, dữ liệu tham khảo và tài liệu học tập về tài chính. Khi truy cập hoặc sử dụng nền tảng, bạn đồng ý sử dụng thông tin một cách hợp pháp, tôn trọng quyền sở hữu trí tuệ và không gây ảnh hưởng đến hoạt động của hệ thống.',
+    body: `${BRAND.name} cung cấp nội dung phân tích, dữ liệu tham khảo và tài liệu học tập về tài chính, thể thao và phong cách sống. Khi truy cập hoặc sử dụng nền tảng, bạn đồng ý sử dụng thông tin một cách hợp pháp, tôn trọng quyền sở hữu trí tuệ và không gây ảnh hưởng đến hoạt động của hệ thống.`,
   },
   {
     title: '2. Nội dung phân tích',
-    body: 'Các bài viết, nhận định và dữ liệu trên MorningView chỉ phục vụ mục đích cung cấp tri thức và tham khảo. Nội dung không cấu thành lời khuyên đầu tư, khuyến nghị mua bán chứng khoán, hàng hóa, tiền mã hóa hoặc bất kỳ tài sản tài chính nào.',
+    body: `Các bài viết, nhận định và dữ liệu trên ${BRAND.name} chỉ phục vụ mục đích cung cấp tri thức và tham khảo. Nội dung không cấu thành lời khuyên đầu tư, khuyến nghị mua bán chứng khoán, hàng hóa, tiền mã hóa hoặc bất kỳ tài sản tài chính nào.`,
   },
   {
     title: '3. Trách nhiệm của người dùng',
-    body: 'Người dùng tự chịu trách nhiệm với quyết định tài chính của mình. Bạn cần tự kiểm chứng thông tin, đánh giá mức độ phù hợp với khẩu vị rủi ro cá nhân và tham khảo chuyên gia độc lập khi cần thiết.',
+    body: 'Người dùng tự chịu trách nhiệm với quyết định tài chính và sức khỏe của mình. Bạn cần tự kiểm chứng thông tin, đánh giá mức độ phù hợp với thể trạng, khẩu vị rủi ro cá nhân và tham khảo chuyên gia độc lập khi cần thiết.',
   },
   {
     title: '4. Tài khoản và nội dung đóng góp',
-    body: 'Nếu bạn tạo tài khoản hoặc đăng nội dung, bạn chịu trách nhiệm về tính chính xác, nguồn gốc và tính hợp pháp của nội dung đó. MorningView có quyền chỉnh sửa, ẩn hoặc gỡ nội dung vi phạm chuẩn mực cộng đồng hoặc quy định pháp luật.',
+    body: `Nếu bạn tạo tài khoản hoặc đăng nội dung, bạn chịu trách nhiệm về tính chính xác, nguồn gốc và tính hợp pháp của nội dung đó. ${BRAND.name} có quyền chỉnh sửa, ẩn hoặc gỡ nội dung vi phạm chuẩn mực cộng đồng hoặc quy định pháp luật.`,
   },
   {
     title: '5. Thay đổi điều khoản',
-    body: 'MorningView có thể cập nhật điều khoản sử dụng để phản ánh thay đổi về sản phẩm, pháp lý hoặc vận hành. Phiên bản mới có hiệu lực kể từ khi được đăng tải trên nền tảng.',
+    body: `${BRAND.name} có thể cập nhật điều khoản sử dụng để phản ánh thay đổi về sản phẩm, pháp lý hoặc vận hành. Phiên bản mới có hiệu lực kể từ khi được đăng tải trên nền tảng.`,
   },
 ];
 
@@ -40,7 +41,7 @@ export default function TermsPage() {
           icon={FileText}
           label="Legal"
           title="Điều khoản sử dụng"
-          subtitle="Các nguyên tắc khi truy cập, đọc, đóng góp và sử dụng nội dung trên MorningView."
+          subtitle={`Các nguyên tắc khi truy cập, đọc, đóng góp và sử dụng nội dung trên ${BRAND.name}.`}
         />
 
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-6">

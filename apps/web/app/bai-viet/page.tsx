@@ -13,7 +13,7 @@ import { AppShell } from '@/components/layout/AppShell';
 export const metadata: Metadata = buildPageMetadata({
   title: 'Kho Phân Tích & Nghiên Cứu Tài Chính',
   description:
-    'Tra cứu, chọn lọc và đón đọc các bài phân tích kinh tế vĩ mô, định giá cổ phiếu và giáo trình đầu tư chuyên sâu trên MorningView.',
+    'Tra cứu, chọn lọc và đón đọc các bài phân tích kinh tế vĩ mô, định giá cổ phiếu và giáo trình đầu tư chuyên sâu trên BrewSeven.',
   canonicalPath: '/bai-viet',
 });
 

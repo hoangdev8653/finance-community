@@ -14,10 +14,11 @@ import {
   TrendingUp,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { BRAND } from '@/lib/constants/brand';
 
 export const metadata: Metadata = {
   title: '404 - Không tìm thấy trang',
-  description: 'Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển trên MorningView.',
+  description: `Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển trên ${BRAND.name}.`,
 };
 
 const quickExploreLinks = [
@@ -173,7 +174,7 @@ export default function NotFound() {
               <h3 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
                 Gợi ý lối tắt phổ biến
               </h3>
-              <span className="text-xs text-muted-foreground">MorningView Directory</span>
+              <span className="text-xs text-muted-foreground">BrewSeven Directory</span>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -206,7 +207,7 @@ export default function NotFound() {
 
       {/* Standalone Minimal Footer */}
       <footer className="text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} MorningView. Bảo lưu mọi quyền.
+        © {new Date().getFullYear()} {BRAND.name}. Bảo lưu mọi quyền.
       </footer>
     </div>
   );
