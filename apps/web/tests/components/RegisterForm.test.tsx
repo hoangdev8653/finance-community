@@ -27,33 +27,33 @@ describe('RegisterForm Component', () => {
   it('renders all required registration inputs', () => {
     renderComponent();
 
-    expect(screen.getByLabelText(/Email address/i)).toBeDefined();
-    expect(screen.getByLabelText(/^Username/i)).toBeDefined();
-    expect(screen.getByLabelText(/^Password \(min 6 characters\)/i)).toBeDefined();
-    expect(screen.getByLabelText(/Confirm Password/i)).toBeDefined();
+    expect(screen.getByLabelText(/Địa chỉ email|Email address/i)).toBeDefined();
+    expect(screen.getByLabelText(/^(Tên người dùng|Username)/i)).toBeDefined();
+    expect(screen.getByLabelText(/^(Mật khẩu|Password)/i)).toBeDefined();
+    expect(screen.getByLabelText(/Xác nhận mật khẩu|Confirm Password/i)).toBeDefined();
     expect(screen.getByRole('button', { name: /Tạo tài khoản/i })).toBeDefined();
   });
 
   it('validates password minimum length and mismatch', async () => {
     renderComponent();
 
-    fireEvent.change(screen.getByLabelText(/Email address/i), {
+    fireEvent.change(screen.getByLabelText(/Địa chỉ email|Email address/i), {
       target: { value: 'user@finance.com' },
     });
-    fireEvent.change(screen.getByLabelText(/^Username/i), {
+    fireEvent.change(screen.getByLabelText(/^(Tên người dùng|Username)/i), {
       target: { value: 'valid_user' },
     });
-    fireEvent.change(screen.getByLabelText(/^Password \(min 6 characters\)/i), {
+    fireEvent.change(screen.getByLabelText(/^(Mật khẩu|Password)/i), {
       target: { value: '123' }, // short
     });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
+    fireEvent.change(screen.getByLabelText(/Xác nhận mật khẩu|Confirm Password/i), {
       target: { value: '123456' }, // mismatch
     });
 
     fireEvent.click(screen.getByRole('button', { name: /Tạo tài khoản/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/Password must be at least 6 characters/i)).toBeDefined();
+      expect(screen.getByText(/Mật khẩu phải có ít nhất 6 ký tự|Password must be at least 6 characters/i)).toBeDefined();
     });
   });
 
@@ -66,16 +66,16 @@ describe('RegisterForm Component', () => {
 
     renderComponent();
 
-    fireEvent.change(screen.getByLabelText(/Email address/i), {
+    fireEvent.change(screen.getByLabelText(/Địa chỉ email|Email address/i), {
       target: { value: 'unique@finance.com' },
     });
-    fireEvent.change(screen.getByLabelText(/^Username/i), {
+    fireEvent.change(screen.getByLabelText(/^(Tên người dùng|Username)/i), {
       target: { value: 'existing_user' },
     });
-    fireEvent.change(screen.getByLabelText(/^Password \(min 6 characters\)/i), {
+    fireEvent.change(screen.getByLabelText(/^(Mật khẩu|Password)/i), {
       target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByLabelText(/Confirm Password/i), {
+    fireEvent.change(screen.getByLabelText(/Xác nhận mật khẩu|Confirm Password/i), {
       target: { value: 'password123' },
     });
 

@@ -18,7 +18,7 @@ const columns = [
       ["Bài viết", "/bai-viet"],
       ["Thảo luận", "/bai-viet"],
       ["Hỏi đáp", "/bai-viet"],
-      ["Quy tắc cộng đồng", "/dieu-khoan"],
+      ["Quy tắc cộng đồng", "/quy-tac-cong-dong"],
     ],
   ],
   [
@@ -33,8 +33,8 @@ const columns = [
   [
     "Hỗ trợ",
     [
-      ["Trung tâm hỗ trợ", "/lien-he"],
-      ["Hướng dẫn sử dụng", "/lien-he"],
+      ["Trung tâm hỗ trợ", "/tro-giup"],
+      ["Hướng dẫn sử dụng", "/tro-giup"],
       ["Điều khoản sử dụng", "/dieu-khoan"],
       ["Chính sách bảo mật", "/chinh-sach-bao-mat"],
     ],

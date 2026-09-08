@@ -74,10 +74,10 @@ export function RegisterForm() {
     <div className="w-full max-w-md mx-auto space-y-6">
       <div className="space-y-2 text-center">
         <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
-          Create your account
+          Tạo tài khoản
         </h1>
         <p className="text-sm text-slate-600 dark:text-slate-400">
-          Join our financial knowledge community to publish analysis and participate in discussions.
+          Tham gia cộng đồng tri thức tài chính để đăng tải bài phân tích và thảo luận.
         </p>
       </div>
 
@@ -90,7 +90,7 @@ export function RegisterForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <div>
           <Input
-            label="Email address"
+            label="Địa chỉ email"
             type="email"
             placeholder="analyst@finance.com"
             error={errors.email?.message}
@@ -103,7 +103,7 @@ export function RegisterForm() {
 
         <div>
           <Input
-            label="Username"
+            label="Tên người dùng"
             type="text"
             placeholder="johndoe_analyst"
             error={errors.username?.message}
@@ -116,7 +116,7 @@ export function RegisterForm() {
 
         <div>
           <Input
-            label="Password (min 6 characters)"
+            label="Mật khẩu (tối thiểu 6 ký tự)"
             type="password"
             placeholder="••••••••"
             error={errors.password?.message}
@@ -129,7 +129,7 @@ export function RegisterForm() {
 
         <div>
           <Input
-            label="Confirm Password"
+            label="Xác nhận mật khẩu"
             type="password"
             placeholder="••••••••"
             error={errors.confirmPassword?.message}
@@ -154,7 +154,7 @@ export function RegisterForm() {
         <Divider />
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="bg-surface px-3 text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
-            Or continue with
+            Hoặc tiếp tục với
           </span>
         </div>
       </div>
@@ -162,9 +162,9 @@ export function RegisterForm() {
       <GoogleAuthButton onSuccess={handleGoogleSuccess} onError={setErrorMessage} />
 
       <div className="text-center text-sm text-slate-600 dark:text-slate-400 pt-2">
-        Already have an account?{' '}
+        Đã có tài khoản?{' '}
         <Link
-          href={`/login${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`}
+          href={`/dang-nhap${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`}
           className="font-semibold text-primary hover:underline"
         >
           Đăng nhập

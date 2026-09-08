@@ -126,7 +126,12 @@ export function LoginForm() {
             </button>
           </div>
           <div className="mt-2 text-right">
-            <span className="text-sm font-medium text-primary">Quên mật khẩu?</span>
+            <Link
+              href="/quen-mat-khau"
+              className="text-sm font-medium text-primary hover:underline transition-colors"
+            >
+              Quên mật khẩu?
+            </Link>
           </div>
         </div>
 
