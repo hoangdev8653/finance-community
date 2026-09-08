@@ -19,6 +19,65 @@ Mức ưu tiên:
 
 ## Backlog
 
+### [DONE] [P1] PAGE-REMOVE-REDIRECTS-01: Xóa các điều kiện chuyển hướng tự động, link cũ trả về trang 404
+
+- **Mục tiêu:** Loại bỏ toàn bộ các điều kiện chuyển hướng (redirects) tự động từ link cũ sang link mới theo đúng yêu cầu người dùng; mọi link cũ không còn tồn tại (như `/bai-viet-cong-dong/*`, `/community/*`, `/posts/*`, v.v.) sẽ trực tiếp hiển thị trang 404.
+- **Phạm vi:**
+  - Xóa bỏ hoàn toàn hàm `redirects()` trong `apps/web/next.config.ts`.
+  - Xóa bỏ thư mục `apps/web/app/bai-viet-cong-dong`.
+  - Xóa bỏ điều kiện fallback/redirect `normalizedType === 'community'` trong `apps/web/app/bai-viet/[contentType]/[slug]/page.tsx`, chuyển thành `notFound()` (404).
+- **Tiêu chí hoàn thành:** TypeScript typecheck 0 lỗi, 105/105 test files (331/331 tests) pass 100%.
+- **Trạng thái:** Hoàn thành.
+
+### [DONE] [P1] POSTS-ROUTING-STANDARDIZATION-01: Chuẩn hóa kiến trúc luồng Bài viết (Phân định rạch ròi Series và Cộng đồng)
+
+- **Mục tiêu:** Khôi phục trang Hub `/bai-viet` toàn diện, loại bỏ việc chuyển hướng ép buộc sang bài viết cộng đồng; chuẩn hóa cấu trúc đối xứng `/bai-viet/series/[slug]` và `/bai-viet/cong-dong/[slug]`; bổ sung huy hiệu nhận diện rõ rệt trên PostCard.
+- **Phạm vi:**
+  - Nâng cấp `apps/web/app/bai-viet/page.tsx` thành Hub bài viết với bộ lọc 3 tab: Tất cả bài viết, Bài học Series, Bài viết Cộng đồng.
+  - Tạo trang chuyên biệt `apps/web/app/bai-viet/cong-dong/page.tsx` và `apps/web/app/bai-viet/series/page.tsx`.
+  - Cập nhật `PostCard.tsx` hiển thị huy hiệu (Badge) phân biệt màu sắc giữa "Bài học Series" (indigo) và "Cộng đồng" (emerald).
+  - Chuẩn hóa canonical path, breadcrumbs và URL đọc bài viết thành `/bai-viet/cong-dong/[slug]`.
+  - Cấu hình 308 redirects trong `next.config.ts` cho các đường dẫn cũ `/bai-viet-cong-dong/*`.
+  - Cập nhật điều hướng Header, Sidebar, MobileNavigation và sitemap.
+- **Tiêu chí hoàn thành:** TypeScript typecheck 0 lỗi, 105/105 test files (331/331 tests) pass 100%.
+- **Trạng thái:** Hoàn thành.
+
+### [DONE] [P1] PAGE-COMMUNITY-CONGDONG-01: Chuẩn hóa toàn bộ routing và văn bản từ community sang cong-dong / cộng đồng
+
+- **Mục tiêu:** Thay đổi toàn bộ các đường dẫn và văn bản frontend còn chứa `community` sang chuẩn tiếng Việt `cong-dong` và `cộng đồng`.
+- **Phạm vi:**
+  - Cập nhật URLs bài viết từ `/posts/community/...` thành `/bai-viet-cong-dong/...` trong `EditorialHeroGrid.tsx`, `MacroLeadStory.tsx`, `NotificationCard.tsx`.
+  - Chuẩn hóa routing động `[contentType]/[slug]` nhận diện `cong-dong` và ánh xạ chuẩn SEO canonical `/bai-viet-cong-dong/[slug]`.
+  - Cập nhật `next.config.ts` thêm redirects tự động cho `/community`, `/cong-dong`, `/posts/community/:slug*`, `/bai-viet/community/:slug*` sang `/bai-viet-cong-dong/:slug*`.
+  - Bản địa hóa thông điệp và nhãn còn sót bằng tiếng Anh sang tiếng Việt trong `RegisterForm.tsx`, `DashboardPostsList.tsx`, `ReportModal.tsx`.
+- **Tiêu chí hoàn thành:** Typecheck 0 lỗi, 105/105 test suites (331/331 tests) pass hoàn toàn.
+- **Kết quả:** Hoàn thành 100%. TypeScript và Vitest toàn dự án xanh.
+- **Trạng thái:** Hoàn thành.
+
+### [DONE] [P1] PAGE-TOOLS-SEO-01: Tách các trang Công cụ Tài chính độc lập chuẩn SEO
+
+- **Mục tiêu:** Tách 3 công cụ tài chính tương tác thành 3 trang Landing Page độc lập tối ưu SEO, OpenGraph và Schema.org.
+- **Phạm vi:** `/cong-cu/lai-kep`, `/cong-cu/tinh-khoan-vay`, `/cong-cu/dinh-gia-co-phieu`, cập nhật liên kết trong `/cong-cu`.
+- **Tiêu chí hoàn thành:** Tối ưu metadata SEO chuẩn, breadcrumb structured data, khối kiến thức toán tài chính thực tiễn, typecheck 0 lỗi, unit tests pass.
+- **Kết quả:** Đã triển khai xong 3 trang công cụ độc lập, bổ sung unit test `tests/tools/StandaloneToolsPages.test.tsx` pass 3/3. Typecheck pass 100%.
+- **Trạng thái:** Hoàn thành.
+
+### [DONE] [P1] PAGE-CATEGORY-SETTINGS-01: Xử lý 404, Trang Giới thiệu, Chi tiết Danh mục và Cài đặt tài khoản
+
+- **Mục tiêu:** Xử lý triệt để các liên kết hỏng/404, tạo trang Giới thiệu, Chi tiết danh mục và Cài đặt tài khoản cá nhân.
+- **Phạm vi:** `/gioi-thieu`, `/danh-muc/[slug]`, `/cai-dat`, cập nhật `Header.tsx`, `CategoryCard.tsx`, `cong-cu/page.tsx`, `UserMenu.tsx`.
+- **Tiêu chí hoàn thành:** Bám sát quy chuẩn 4-Point Grid, UI đồng bộ các trang mẫu; typecheck 0 lỗi, unit tests pass.
+- **Kết quả:** Đã tạo xong `/gioi-thieu`, `/danh-muc/[slug]`, `/cai-dat`, sửa toàn bộ link gãy trong Header, CategoryCard và công cụ. Thêm 2 test files `tests/about/AboutPage.test.tsx`, `tests/settings/AccountSettings.test.tsx`, `tests/categories/CategoryCard.test.tsx`. Typecheck pass 100%.
+- **Trạng thái:** Hoàn thành.
+
+### [DONE] [P1] PAGE-AUTH-SUPPORT-01: Bổ sung các trang Auth, FAQ và Quy tắc cộng đồng
+
+- **Mục tiêu:** Bổ sung các trang còn thiếu trong luồng xác thực và hỗ trợ người dùng theo phong cách thiết kế của `login.png`, `404.png`.
+- **Phạm vi:** `/quen-mat-khau`, `/dat-lai-mat-khau`, `/xac-thuc-email`, `/tro-giup`, `/faq`, `/quy-tac-cong-dong`, cập nhật Footer, LoginForm và SiteChrome.
+- **Tiêu chí hoàn thành:** Giao diện bám sát chuẩn 4-Point Grid, typecheck và unit tests pass 100%.
+- **Kết quả:** Đã triển khai xong 5 trang cùng 2 test files `tests/auth/ForgotPassword.test.tsx` và `tests/auth/ResetPassword.test.tsx`. Cập nhật `not-found.test.tsx` đồng bộ với 404 mới. Typecheck pass 0 lỗi; Vitest unit tests pass.
+- **Trạng thái:** Hoàn thành.
+
 ### [IN_PROGRESS] [P1] UI-HOME-01: Triển khai lại Home theo thiết kế home.png
 
 - **Mục tiêu:** Thay Home editorial hiện tại bằng trải nghiệm học tập theo `home.png`.
@@ -145,7 +204,7 @@ Mức ưu tiên:
 - **Kiểm tra:** Full Vitest 98/98 files, 318/318 tests pass; `npm run typecheck` pass.
 
 ### [DONE] [P1] MOD-01: Nâng cấp moderation workflow
- 
+
 - **Mục tiêu:** Xây dựng quy trình xử lý báo cáo nội dung và hành vi rõ ràng, có audit và thông báo tự động.
 - **Phạm vi:** Báo cáo bài viết/bình luận, lọc spam, trạng thái xử lý, lý do, moderator và thông báo người dùng.
 - **Tiêu chí hoàn thành:** Workflow `PENDING → REVIEWING → RESOLVED/DISMISSED`, action có reason, audit log, automated notification cho người báo cáo và người bị xử lý, và test API/UI.
@@ -272,7 +331,7 @@ Mức ưu tiên:
 
 ### [DONE] [P1] BE-04: Loại bỏ In-Memory Fallback & Fix EmailVerificationGuard
 
-- **Kết quả:** 
+- **Kết quả:**
   - Cập nhật `AuthService` và `JitProvisioningService`: trong môi trường production, hệ thống tuyệt đối không lưu dữ liệu người dùng tạm bợ vào RAM (loại bỏ `fallbackMemoryCredentials` tĩnh), ném lỗi 503 khi DB gặp sự cố kết nối thay vì âm thầm ghi memory.
   - Chuẩn hóa việc cấp phát JWT: thêm `email_confirmed_at` vào JWT payload trong hàm `issueTokens()` cho cả Access Token và Refresh Token, giúp `EmailVerificationGuard` đọc chính xác trạng thái xác thực email mà không bị chặn nhầm.
   - Kiểm tra trạng thái tài khoản (`BANNED`, `SUSPENDED`, `DEACTIVATED`) ngay trong hàm `refresh()` để ngăn chặn tài khoản bị cấm tiếp tục gia hạn token.
@@ -430,6 +489,7 @@ Mức ưu tiên:
 - **Ghi chú:** Đã loại bỏ hoàn toàn tình trạng layout riêng lẻ hoặc lệch chuẩn trong dashboard admin.
 
 ---
+
 ### [DONE] [P2] Đồng bộ font-family giữa Website và Dashboard Admin
 
 - **Kết quả:**
@@ -471,6 +531,7 @@ Mức ưu tiên:
 - **Kiểm tra:** 100% tests security và module tests pass, `npm run build` trong `apps/api` thành công code 0.
 
 ---
+
 ### [DONE] [P1] Bổ sung phân trang cho các trang chưa có
 
 - **Kết quả:**
@@ -488,6 +549,7 @@ Mức ưu tiên:
 - **Files:** `apps/web/components/admin/AdminPagination.tsx`, `apps/web/components/admin/AdminPostsTable.tsx`, `apps/web/components/admin/PostModerationTable.tsx`, `apps/web/components/admin/UserManagementView.tsx`, `apps/web/components/admin/CategoryManagementView.tsx`, `apps/web/components/admin/AdminTagsTable.tsx`, `apps/web/components/admin/AdminCommentsTable.tsx`, `apps/web/components/moderation/ModerationQueueTable.tsx`, `apps/web/components/admin/AuditLogsTable.tsx`.
 - **Kiểm tra:** `npm run typecheck` thành công code 0, 28/28 tests trong `tests/admin` pass 100%.
 - **Ghi chú:** Hoàn thành trọn vẹn task bổ sung phân trang dùng chung.
+
 ### Quy ước nghiệp vụ: Posts và Post Moderation
 
 - **Posts:** Là trang quản lý toàn bộ bài viết trong hệ thống. Có danh sách tất cả bài viết, tìm kiếm, lọc, phân trang và các thao tác thêm, sửa, xóa/ẩn bài viết.
