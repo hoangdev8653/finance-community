@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { AppShell } from '@/components/layout/AppShell';
 import { CompoundInterestTool } from '@/components/tools/CompoundInterestTool';
 import { LoanCalculatorTool } from '@/components/tools/LoanCalculatorTool';
@@ -40,7 +41,7 @@ function ToolsContent() {
 
   const handleTabChange = (tab: ToolTab) => {
     setActiveTab(tab);
-    router.replace(`/tools?tab=${tab}`, { scroll: false });
+    router.replace(`/cong-cu?tab=${tab}`, { scroll: false });
   };
 
   const handleCopyShare = () => {
@@ -130,6 +131,22 @@ function ToolsContent() {
           <BarChart3 className="h-4 w-4 shrink-0" />
           <span>Định giá cổ phiếu & Cổ tức</span>
         </button>
+      </div>
+
+      {/* Quick links to standalone SEO pages */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1 text-xs text-muted-foreground">
+        <span>Xem trang chuyên sâu độc lập (tối ưu chia sẻ & lưu trữ):</span>
+        <div className="flex flex-wrap items-center gap-3">
+          <Link href="/cong-cu/lai-kep" className="font-semibold text-primary hover:underline">
+            Lãi kép & Tự do tài chính →
+          </Link>
+          <Link href="/cong-cu/tinh-khoan-vay" className="font-semibold text-primary hover:underline">
+            Tính lãi vay ngân hàng →
+          </Link>
+          <Link href="/cong-cu/dinh-gia-co-phieu" className="font-semibold text-primary hover:underline">
+            Định giá cổ phiếu →
+          </Link>
+        </div>
       </div>
 
       {/* Active Tool View */}
