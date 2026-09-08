@@ -2,35 +2,116 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, ChevronDown, FileCheck2, FileSearch, Flag, FolderTree, LayoutDashboard, Layers3, MessageSquare, ShieldAlert, Sliders, Users } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthContext';
-import { BRAND } from '@/lib/constants/brand';
+import {
+  BookOpen,
+  CheckSquare,
+  Crown,
+  FileText,
+  Home,
+  Layers,
+  MessageCircle,
+  MessagesSquare,
+  Settings,
+  Users,
+} from 'lucide-react';
 
-const groups = ['Không gian làm việc', 'Nội dung', 'Cộng đồng', 'Phân loại nội dung', 'Quản trị'] as const;
-const links = [
-  { href: '/admin', label: 'Tổng quan', icon: LayoutDashboard, exact: true, group: groups[0] },
-  { href: '/admin/posts', label: 'Bài học', icon: BookOpen, exact: true, group: groups[1] },
-  { href: '/admin/learning', label: 'Duyệt bài học', icon: FileCheck2, exact: true, group: groups[1] },
-  { href: '/admin/learning/create', label: 'Tạo bài học', icon: FileCheck2, exact: true, group: groups[1] },
-  { href: '/admin/learning/paths', label: 'Series', icon: Layers3, exact: true, group: groups[1] },
-  { href: '/admin/moderation', label: 'Bài viết cộng đồng', icon: MessageSquare, group: groups[2] },
-  { href: '/moderation', label: 'Hàng chờ báo cáo', icon: ShieldAlert, group: groups[2] },
-  { href: '/admin/users', label: 'Người dùng', icon: Users, group: groups[2] },
-  { href: '/admin/learning/categories', label: 'Danh mục', icon: FolderTree, exact: true, group: groups[3] },
-  { href: '/admin/audit-logs', label: 'Báo cáo', icon: FileSearch, group: groups[4] },
-  { href: '/admin/feature-flags', label: 'Tính năng', icon: Flag, group: groups[4] },
-  { href: '/admin/settings', label: 'Cấu hình', icon: Sliders, group: groups[4] },
-] as const;
+const navItems = [
+  { href: '/quan-tri', label: 'Tổng quan', icon: Home, exact: true },
+  { href: '/quan-tri/nguoi-dung', label: 'Người dùng', icon: Users },
+  { href: '/quan-tri/hoc-tap', label: 'Khóa học', icon: BookOpen },
+  { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: MessagesSquare },
+  { href: '/quan-tri/danh-muc', label: 'Danh mục', icon: Layers },
+  { href: '/quan-tri/nhat-ky-he-thong', label: 'Báo cáo', icon: FileText },
+  { href: '/quan-tri/binh-luan', label: 'Bình luận', icon: MessageCircle },
+  { href: '/quan-tri/kiem-duyet', label: 'Quản lý yêu cầu', icon: CheckSquare },
+  { href: '/quan-tri/cai-dat', label: 'Cài đặt', icon: Settings },
+];
 
 export function AdminNav() {
   const pathname = usePathname();
-  const { user } = useAuth();
-  const active = (href: string, exact?: boolean) => exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
-  const initials = (user?.displayName || user?.username || 'A').slice(0, 2).toUpperCase();
 
-  return <aside className="fixed inset-y-0 left-0 z-30 hidden w-[232px] shrink-0 flex-col overflow-hidden border-r border-[#e8edf0] bg-white px-4 py-5 lg:flex">
-    <div className="px-1"><img src="/images/logo.png" alt={BRAND.name} className="h-10 w-[128px] object-contain object-left" /><p className="mt-1 truncate text-xs text-slate-500">Admin Dashboard</p></div>
-    <nav aria-label="Điều hướng quản trị" className="mt-8 flex-1 space-y-4 overflow-y-auto pr-1">{groups.map(group => <div key={group} className="space-y-1">{group !== groups[0] && <p className="mb-1 px-3 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{group}</p>}{links.filter(link => link.group === group).map(link => { const Icon = link.icon; const isActive = active(link.href, 'exact' in link && link.exact); return <Link key={`${link.href}-${link.label}`} href={link.href} className={`relative flex h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 ${isActive ? 'bg-emerald-50 font-semibold text-emerald-700' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}>{isActive && <span className="absolute bottom-2 left-0 top-2 w-0.5 rounded-full bg-emerald-600" />}<Icon className="h-[18px] w-[18px] shrink-0" strokeWidth={2} aria-hidden="true" />{link.label}</Link>; })}</div>)}</nav>
-    <div className="mt-4 flex items-center gap-2 rounded-xl border border-slate-200 p-3"><div className="grid h-8 w-8 place-items-center overflow-hidden rounded-full bg-emerald-50 text-xs font-semibold text-emerald-700">{user?.avatarUrl ? <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" /> : initials}</div><div className="min-w-0 flex-1"><p className="truncate text-xs font-semibold text-slate-800">{user?.displayName || user?.username || 'Quản trị viên'}</p><p className="text-[11px] text-slate-500">Quản trị viên</p></div><ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" /></div>
-  </aside>;
+  const isActive = (href: string, exact?: boolean) => {
+    if (exact) {
+      return pathname === href || pathname === '/admin';
+    }
+    return pathname === href || pathname.startsWith(`${href}/`);
+  };
+
+  return (
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[256px] shrink-0 flex-col justify-between border-r border-slate-100 bg-white px-4 py-6 lg:flex dark:border-slate-800 dark:bg-slate-900">
+      <div className="space-y-6">
+        {/* Brand Logo & Slogan */}
+        <div className="flex items-center gap-3 px-2">
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-md shadow-emerald-500/20">
+            {/* Geometric Book Icon in Logo */}
+            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
+              <path d="M6 6h10" />
+              <path d="M6 10h10" />
+              <path d="M12 2v20" stroke="#f97316" strokeWidth="2.5" />
+            </svg>
+          </div>
+          <div className="min-w-0">
+            <h1 className="truncate font-heading text-[17px] font-bold tracking-tight text-slate-900 dark:text-white">
+              Finance Community
+            </h1>
+            <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+              Học • Chia sẻ • Phát triển
+            </p>
+          </div>
+        </div>
+
+        {/* Navigation List */}
+        <nav aria-label="Điều hướng quản trị" className="space-y-1 pt-2">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.href, item.exact);
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`group flex h-11 items-center gap-3.5 rounded-xl px-3.5 text-sm font-medium transition-all duration-200 ${
+                  active
+                    ? 'bg-[#00B074] text-white shadow-sm shadow-emerald-600/30'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
+                }`}
+              >
+                <Icon
+                  className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                    active ? 'text-white' : 'text-slate-500 dark:text-slate-400'
+                  }`}
+                  strokeWidth={active ? 2.2 : 1.9}
+                  aria-hidden="true"
+                />
+                <span className="truncate">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Bottom Illustration Card: Admin Panel */}
+      <div className="relative mt-auto overflow-hidden rounded-2xl border border-emerald-100/80 bg-gradient-to-b from-slate-50/90 to-emerald-50/40 p-4 pt-4 dark:border-slate-800 dark:from-slate-800/60 dark:to-slate-900">
+        <div className="flex items-center gap-2">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+            <Crown className="h-4 w-4 fill-amber-500 text-amber-500" />
+          </div>
+          <div>
+            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">Admin Panel</h3>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">Quản trị hệ thống</p>
+          </div>
+        </div>
+
+        {/* 3D Stack of books & plant image matching dashboard.png */}
+        <div className="mt-2 flex items-end justify-center">
+          <img
+            src="/images/admin-books-plant.png"
+            alt="Admin Panel illustration"
+            className="h-24 w-full object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 hover:scale-105 dark:mix-blend-normal"
+          />
+        </div>
+      </div>
+    </aside>
+  );
 }
