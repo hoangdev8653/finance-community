@@ -44,8 +44,9 @@ const demoArticle: PostDetailResponse = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
+  const isCommunity = normalizedType === 'cong-dong';
 
-  if (normalizedType !== 'community' && normalizedType !== 'series') {
+  if (!isCommunity && normalizedType !== 'series') {
     return buildPageMetadata({
       title: 'Không Tìm Thấy Bài Viết',
       noIndex: true,
@@ -53,7 +54,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   try {
-    const post = await postsService.getBySlug(contentType.toUpperCase(), slug);
+    const apiContentType = isCommunity ? 'COMMUNITY' : 'SERIES';
+    const post = await postsService.getBySlug(apiContentType, slug);
     const coverMedia = post.coverMediaId
       ? post.media.find((m) => m.id === post.coverMediaId)
       : post.media[0];
@@ -62,7 +64,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       post.metaDescription ||
       'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên BrewSeven.';
-    const canonicalPath = `/bai-viet/${normalizedType}/${encodeURIComponent(slug)}`;
+    const canonicalPath = isCommunity
+      ? `/bai-viet/cong-dong/${encodeURIComponent(slug)}`
+      : `/bai-viet/series/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -86,17 +90,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function PostDetailPage({ params }: PageProps) {
   const { contentType, slug } = await params;
   const normalizedType = contentType.toLowerCase();
+  const isCommunity = normalizedType === 'cong-dong';
 
-  if (normalizedType !== 'community' && normalizedType !== 'series') {
+  if (!isCommunity && normalizedType !== 'series') {
     notFound();
   }
 
   let post: PostDetailResponse;
-  if (normalizedType === 'community' && slug === 'demo') {
+  if (isCommunity && slug === 'demo') {
     post = demoArticle;
   } else {
     try {
-      post = await postsService.getBySlug(contentType.toUpperCase(), slug);
+      const apiContentType = isCommunity ? 'COMMUNITY' : 'SERIES';
+      post = await postsService.getBySlug(apiContentType, slug);
     } catch {
       notFound();
     }
@@ -114,8 +120,8 @@ export default async function PostDetailPage({ params }: PageProps) {
 
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD
   const articleJsonLd = generateArticleJsonLd(post);
-  const sectionLabel = post.contentType === 'SERIES' ? 'Series' : 'Cộng Đồng Phân Tích';
-  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/bai-viet';
+  const sectionLabel = post.contentType === 'SERIES' ? 'Series' : 'Bài Viết Cộng Đồng';
+  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/bai-viet/cong-dong';
 
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
@@ -125,7 +131,9 @@ export default async function PostDetailPage({ params }: PageProps) {
     },
     {
       name: post.title,
-      url: `/bai-viet/${normalizedType}/${encodeURIComponent(slug)}`,
+      url: isCommunity
+        ? `/bai-viet/cong-dong/${encodeURIComponent(slug)}`
+        : `/bai-viet/series/${encodeURIComponent(slug)}`,
     },
   ]);
 

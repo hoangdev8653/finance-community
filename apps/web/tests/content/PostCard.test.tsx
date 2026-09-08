@@ -43,6 +43,6 @@ describe('PostCard Component', () => {
     const titleLink = screen.getByRole('link', {
       name: /Yield Curve Inversion Deep Dive/i,
     });
-    expect(titleLink.getAttribute('href')).toBe('/posts/community/yield-curve-inversion-deep-dive');
+    expect(titleLink.getAttribute('href')).toBe('/bai-viet/cong-dong/yield-curve-inversion-deep-dive');
   });
 });

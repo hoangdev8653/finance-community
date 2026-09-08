@@ -54,7 +54,7 @@ export default function NotFound() {
             </Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="min-h-11 gap-2 border-slate-300 bg-white px-6 text-slate-800 hover:bg-slate-50">
-            <Link href="/bai-viet-cong-dong">
+            <Link href="/bai-viet">
               Khám phá bài viết
               <Compass className="h-4 w-4" aria-hidden="true" />
             </Link>

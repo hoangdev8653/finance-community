@@ -55,7 +55,7 @@ describe('ReportModal Component', () => {
         reason: 'Spam or Commercial Promotion',
         description: 'Contains repetitive telegram promo links.',
       });
-      expect(screen.getByText(/Report submitted successfully/i)).toBeDefined();
+      expect(screen.getByText(/Báo cáo đã được gửi thành công|Report submitted successfully/i)).toBeDefined();
     });
   });
 
@@ -78,7 +78,7 @@ describe('ReportModal Component', () => {
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(screen.getByText(/You have already filed an active report/i)).toBeDefined();
+      expect(screen.getByText(/Bạn đã gửi báo cáo|You have already filed an active report/i)).toBeDefined();
     });
   });
 });

@@ -183,7 +183,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         });
 
         if (status === 'PUBLISHED') {
-          router.push(`/posts/${updated.contentType}/${updated.slug}`);
+          router.push(
+            updated.contentType === 'SERIES'
+              ? `/bai-viet/series/${updated.slug}`
+              : `/bai-viet/cong-dong/${updated.slug}`
+          );
         } else {
           router.push('/');
         }
@@ -204,7 +208,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         if (seriesId) await learningSeriesService.addLesson(seriesId, created.id, lessonOrder);
 
         if (status === 'PUBLISHED') {
-          router.push(`/posts/${created.contentType}/${created.slug}`);
+          router.push(
+            created.contentType === 'SERIES'
+              ? `/bai-viet/series/${created.slug}`
+              : `/bai-viet/cong-dong/${created.slug}`
+          );
         } else {
           router.push('/');
         }

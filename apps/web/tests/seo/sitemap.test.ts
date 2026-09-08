@@ -55,7 +55,7 @@ describe('Dynamic Sitemap Generator', () => {
         expect.objectContaining({ url: `${baseUrl}` }),
         expect.objectContaining({ url: `${baseUrl}/series` }),
         expect.objectContaining({
-          url: `${baseUrl}/bai-viet/community/valuation-analysis`,
+          url: `${baseUrl}/bai-viet/cong-dong/valuation-analysis`,
           priority: 0.9,
         }),
         expect.objectContaining({
@@ -80,10 +80,11 @@ describe('Dynamic Sitemap Generator', () => {
 
     const result = await sitemap();
 
-    expect(result.length).toBeGreaterThanOrEqual(5);
+    expect(result.length).toBeGreaterThanOrEqual(6);
     expect(result.map((r) => r.url)).toEqual([
       `${baseUrl}`,
       `${baseUrl}/bai-viet`,
+      `${baseUrl}/bai-viet/cong-dong`,
       `${baseUrl}/danh-muc`,
       `${baseUrl}/the`,
       `${baseUrl}/series`,

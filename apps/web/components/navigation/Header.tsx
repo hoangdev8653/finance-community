@@ -49,21 +49,21 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
   {
     title: 'Tài chính Việt Nam',
     desc: 'Vĩ mô trong nước, Doanh nghiệp niêm yết, BĐS & Ngân hàng',
-    href: '/posts?tag=corporate-finance',
+    href: '/the/corporate-finance',
     icon: Building2,
     color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
   },
   {
     title: 'Tài chính Quốc tế',
     desc: 'Chính sách Fed, Lãi suất toàn cầu, Phố Wall, Tỷ giá DXY',
-    href: '/posts?tag=macroeconomics',
+    href: '/the/macroeconomics',
     icon: Globe,
     color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
   },
   {
     title: 'Hàng hóa & Giá Vàng',
     desc: 'Diễn biến giá vàng SJC, Dầu thô Brent, Hàng hóa chiến lược',
-    href: '/posts?tag=commodities',
+    href: '/the/commodities',
     icon: Coins,
     color: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
   },
@@ -77,14 +77,14 @@ const CATEGORY_ITEMS: CategoryDropdownItem[] = [
   {
     title: 'Định giá & Phân tích',
     desc: 'Mô hình DCF, P/E, EV/EBITDA, Phân tích Báo cáo tài chính',
-    href: '/categories/valuation',
+    href: '/danh-muc/valuation',
     icon: BarChart3,
     color: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
   },
   {
     title: 'Tài chính Cá nhân',
     desc: 'Xây dựng dòng tiền tự do, Phân bổ tài sản & Quản trị rủi ro',
-    href: '/categories/tai-chinh-ca-nhan',
+    href: '/danh-muc/tai-chinh-ca-nhan',
     icon: Wallet,
     color: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
   },
@@ -196,19 +196,19 @@ export function Header() {
             )}
           </Link>
 
-          {/* Chuỗi bài Series */}
+          {/* Bài viết */}
           <Link
-            href="/bai-viet-cong-dong"
+            href="/bai-viet"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/bai-viet-cong-dong')
+              pathname.startsWith('/bai-viet')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <BookOpen className="hidden" aria-hidden="true" />
-            <span>Bài viết cộng đồng</span>
-            {pathname.startsWith('/bai-viet-cong-dong') && (
+            <span>Bài viết</span>
+            {pathname.startsWith('/bai-viet') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>

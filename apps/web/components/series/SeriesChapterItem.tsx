@@ -23,7 +23,7 @@ export function SeriesChapterItem({
       })
     : 'Bản nháp';
 
-  const readerUrl = `/posts/SERIES/${encodeURIComponent(chapter.slug)}`;
+  const readerUrl = `/bai-viet/series/${encodeURIComponent(chapter.slug)}`;
 
   return (
     <article

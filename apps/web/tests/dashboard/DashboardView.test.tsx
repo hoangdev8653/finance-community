@@ -133,10 +133,10 @@ describe('DashboardView Component', () => {
 
     render(<DashboardView />);
 
-    expect(screen.getByText('No Published Research Notes')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Write Analysis/i })).toHaveAttribute(
+    expect(screen.getByText(/Chưa có bài phân tích xuất bản|No Published Research Notes/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Viết bài phân tích|Write Analysis/i })).toHaveAttribute(
       'href',
-      '/posts/create'
+      '/bai-viet/tao-moi'
     );
   });
 

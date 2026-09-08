@@ -57,9 +57,9 @@ export function ReportModal({
       const result = await fileReportMutation.mutateAsync(payload);
 
       if (result.isDuplicate) {
-        setSuccessInfo('You have already filed an active report for this item. Our moderation team is reviewing it.');
+        setSuccessInfo('Bạn đã gửi báo cáo cho nội dung này trước đó. Đội ngũ kiểm duyệt đang xem xét.');
       } else {
-        setSuccessInfo('Report submitted successfully for moderator review. Thank you for keeping the community safe.');
+        setSuccessInfo('Báo cáo đã được gửi thành công để kiểm duyệt. Cảm ơn bạn đã giữ cho cộng đồng an toàn và văn minh.');
       }
 
       setTimeout(() => {

@@ -61,7 +61,7 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {navData.previousPost ? (
           <Link
-            href={`/posts/series/${navData.previousPost.slug}`}
+            href={`/bai-viet/series/${navData.previousPost.slug}`}
             className="group rounded-xl border border-border bg-surface p-4 space-y-1 hover:border-primary/50 transition-all shadow-2xs flex flex-col justify-between"
           >
             <span className="inline-flex items-center gap-1 text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
@@ -80,7 +80,7 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
 
         {navData.nextPost ? (
           <Link
-            href={`/posts/series/${navData.nextPost.slug}`}
+            href={`/bai-viet/series/${navData.nextPost.slug}`}
             className="group rounded-xl border border-border bg-surface p-4 space-y-1 hover:border-primary/50 transition-all shadow-2xs flex flex-col justify-between sm:text-right"
           >
             <span className="inline-flex items-center justify-end gap-1 text-xs font-mono text-muted-foreground group-hover:text-primary transition-colors">
@@ -114,7 +114,7 @@ export function SeriesNavigationWidget({ postId }: SeriesNavigationWidgetProps) 
           {navData.tableOfContents.map((item) => (
             <Link
               key={item.id}
-              href={`/posts/series/${item.slug}`}
+              href={`/bai-viet/series/${item.slug}`}
               className={`flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                 item.isCurrent
                   ? 'bg-primary/10 text-primary font-bold border border-primary/30 shadow-2xs'

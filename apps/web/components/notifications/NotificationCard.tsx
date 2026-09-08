@@ -127,7 +127,7 @@ export function NotificationCard({
   // Determine navigation target
   let href: string | null = null;
   if (notification.referencePostId) {
-    href = `/bai-viet/community?id=${encodeURIComponent(notification.referencePostId)}`;
+    href = `/bai-viet?id=${encodeURIComponent(notification.referencePostId)}`;
   } else if (notification.referenceUserId) {
     href = `/ho-so/${encodeURIComponent(notification.referenceUserId)}`;
   }

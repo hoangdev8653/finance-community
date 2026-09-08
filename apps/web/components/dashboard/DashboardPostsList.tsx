@@ -44,7 +44,7 @@ export function DashboardPostsList({
           Đã xảy ra lỗi khi tải danh sách bài viết. Vui lòng làm mới hoặc thử lại.
         </p>
         <Button variant="outline" size="sm" onClick={() => onPageChange(page)}>
-          Retry
+          Thử lại
         </Button>
       </div>
     );
@@ -53,19 +53,19 @@ export function DashboardPostsList({
   if (!isLoading && posts.length === 0) {
     const emptyMessages = {
       published: {
-        title: 'No Published Research Notes',
-        description: 'You haven\'t published any financial analyses yet. Share your market models and insights with the community.',
-        cta: 'Write Analysis',
+        title: 'Chưa có bài phân tích xuất bản',
+        description: 'Bạn chưa xuất bản bài viết phân tích tài chính nào. Hãy chia sẻ góc nhìn và mô hình thị trường cùng cộng đồng.',
+        cta: 'Viết bài phân tích',
       },
       drafts: {
-        title: 'No Active Drafts',
-        description: 'Your workspace is clear. Ready to begin your next valuation model or market report?',
-        cta: 'Create Draft',
+        title: 'Chưa có bản nháp nào',
+        description: 'Khu vực làm việc đang trống. Bạn đã sẵn sàng bắt đầu xây dựng mô hình định giá hoặc bài nhận định tiếp theo chưa?',
+        cta: 'Tạo bản nháp',
       },
       archived: {
-        title: 'No Archived Notes',
-        description: 'Archived research articles will be organized here.',
-        cta: 'Create Analysis',
+        title: 'Chưa có bài viết lưu trữ',
+        description: 'Các bài viết nghiên cứu được lưu trữ sẽ xuất hiện tại đây.',
+        cta: 'Tạo bài phân tích',
       },
       bookmarks: {
         title: 'Chưa có bài viết nào được lưu',
@@ -86,7 +86,7 @@ export function DashboardPostsList({
           <p className="text-xs text-muted-foreground max-w-md mx-auto">{empty.description}</p>
         </div>
         <Button variant="primary" size="sm" asChild>
-          <Link href="/posts/create" className="inline-flex items-center gap-1.5">
+          <Link href="/bai-viet/tao-moi" className="inline-flex items-center gap-1.5">
             <PenSquare className="h-4 w-4" />
             <span>{empty.cta}</span>
           </Link>

@@ -61,10 +61,14 @@ export function DashboardPostCard({
     }
   };
 
+  const editUrl = `/bai-viet/${post.contentType.toLowerCase()}/chinh-sua?id=${encodeURIComponent(post.id)}`;
+
   const publicUrl =
     post.status === 'PUBLISHED'
-      ? `/posts/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`
-      : `/posts/${post.id}/edit`;
+      ? post.contentType === 'SERIES'
+        ? `/bai-viet/series/${encodeURIComponent(post.slug)}`
+        : `/bai-viet/cong-dong/${encodeURIComponent(post.slug)}`
+      : editUrl;
 
   return (
     <article className="rounded-lg border border-border bg-surface p-5 transition-shadow hover:shadow-xs flex flex-col justify-between gap-4">
@@ -96,9 +100,9 @@ export function DashboardPostCard({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
-                  <Link href={`/posts/${post.id}/edit`} className="flex items-center cursor-pointer">
+                  <Link href={editUrl} className="flex items-center cursor-pointer">
                     <Edit3 className="mr-2 h-4 w-4 text-muted-foreground" />
-                    <span>Edit in Studio</span>
+                    <span>Chỉnh sửa trong Studio</span>
                   </Link>
                 </DropdownMenuItem>
 
@@ -167,7 +171,7 @@ export function DashboardPostCard({
         </div>
 
         <Button variant="ghost" size="sm" asChild className="h-8 text-sm font-bold text-emerald-800 dark:text-emerald-400 hover:text-emerald-950">
-          <Link href={`/posts/${post.id}/edit`}>Chỉnh sửa</Link>
+          <Link href={editUrl}>Chỉnh sửa</Link>
         </Button>
       </div>
 

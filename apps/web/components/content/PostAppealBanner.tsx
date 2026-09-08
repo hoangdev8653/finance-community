@@ -80,7 +80,7 @@ export function PostAppealBanner({ post }: PostAppealBannerProps) {
 
           <div className="flex items-center gap-2">
             <Link
-              href={`/posts/${post.contentType.toLowerCase()}/edit?id=${post.id}`}
+              href={`/bai-viet/${post.contentType.toLowerCase()}/chinh-sua?id=${post.id}`}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface text-foreground hover:bg-muted font-semibold transition-colors"
             >
               <Edit3 className="h-3.5 w-3.5" />

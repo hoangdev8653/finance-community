@@ -35,7 +35,39 @@ export function PostEditor(props: PostEditorProps) {
     <div className="space-y-4 rounded-lg border border-border bg-surface p-4 shadow-2xs sm:p-6">
       <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
         <div className="w-full flex-1 space-y-1.5"><div className="flex items-center justify-between text-xs"><label htmlFor="post-title-input" className="font-medium text-foreground">Tiêu đề bài viết <span className="text-danger">*</span></label><span className="font-mono text-muted-foreground">{title.length} / 300</span></div><input id="post-title-input" type="text" value={title} onChange={(event) => props.onTitleChange(event.target.value)} maxLength={300} placeholder="Ví dụ: Lãi kép là gì và cách áp dụng trong thực tế?" className="h-10 w-full rounded-md border border-input bg-background px-3 text-base text-foreground" /></div>
-        <div className="shrink-0 space-y-1.5"><span className="block text-xs font-medium text-foreground">Loại nội dung</span><div className={`inline-flex rounded-md border px-3 py-1.5 text-xs font-mono font-semibold ${isAdmin ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400' : 'border-border bg-muted text-foreground'}`}>BÀI HỌC / SERIES</div></div>
+        <div className="shrink-0 space-y-1.5">
+          <span className="block text-xs font-medium text-foreground">Loại nội dung</span>
+          {isAdmin ? (
+            <div className="inline-flex rounded-lg border border-border p-0.5 bg-muted/30">
+              <button
+                type="button"
+                onClick={() => props.onContentTypeChange('COMMUNITY')}
+                className={`rounded-md px-2.5 py-1 text-xs font-mono font-semibold transition-colors ${
+                  contentType === 'COMMUNITY'
+                    ? 'bg-primary text-primary-foreground shadow-2xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                CỘNG ĐỒNG
+              </button>
+              <button
+                type="button"
+                onClick={() => props.onContentTypeChange('SERIES')}
+                className={`rounded-md px-2.5 py-1 text-xs font-mono font-semibold transition-colors ${
+                  contentType === 'SERIES'
+                    ? 'bg-emerald-600 text-white shadow-2xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                BÀI HỌC / SERIES
+              </button>
+            </div>
+          ) : (
+            <div className="inline-flex rounded-md border border-border bg-muted px-3 py-1.5 text-xs font-mono font-semibold text-foreground">
+              {contentType === 'COMMUNITY' ? 'BÀI VIẾT CỘNG ĐỒNG' : 'BÀI HỌC / SERIES'}
+            </div>
+          )}
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-4 border-t border-border/60 pt-2 sm:grid-cols-2"><DomainSelector value={domainId} onChange={props.onDomainChange ?? (() => undefined)} /><CategorySelector value={categoryId} scope={contentType} domainId={domainId} onChange={props.onCategoryChange} /><SeriesSelector value={seriesId} lessonOrder={lessonOrder} domainId={domainId} onChange={props.onSeriesChange ?? (() => undefined)} onOrderChange={props.onLessonOrderChange ?? (() => undefined)} /><TagAutocompleteInput selectedTags={tags} onChange={props.onTagsChange} /></div>
       {props.onCoverMediaChange && <div className="grid gap-4 border-t border-border/60 pt-2 lg:grid-cols-[minmax(0,1.15fr)_minmax(360px,0.85fr)]"><div><CoverImagePicker value={coverMediaId || null} onChange={props.onCoverMediaChange} onPendingFileChange={props.onPendingCoverFileChange} /></div><div className="space-y-3 rounded-lg border border-border bg-background/40 p-4"><div><h3 className="text-sm font-semibold text-foreground">Gợi ý prompt tạo ảnh</h3><p className="mt-1 text-xs text-muted-foreground">Sao chép prompt để dùng trong GPT hoặc công cụ tạo ảnh.</p></div><div className="space-y-2"><label className="text-xs font-medium text-foreground">Ảnh đại diện</label><div className="flex items-stretch gap-2"><textarea readOnly value={avatarPrompt} className="min-h-28 flex-1 resize-y rounded-md border border-input bg-background p-3 text-xs leading-5 text-foreground" /><button type="button" onClick={() => copyPrompt(avatarPrompt)} className="h-10 shrink-0 self-start rounded-md border border-primary px-3 text-xs font-semibold text-primary hover:bg-primary/10" aria-label="Sao chép prompt ảnh đại diện"><Copy className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />Sao chép</button></div></div><div className="space-y-2"><label className="text-xs font-medium text-foreground">Ảnh trong nội dung (tối đa 3 ảnh)</label><div className="flex items-stretch gap-2"><textarea readOnly value={contentPrompt} className="min-h-28 flex-1 resize-y rounded-md border border-input bg-background p-3 text-xs leading-5 text-foreground" /><button type="button" onClick={() => copyPrompt(contentPrompt)} className="h-10 shrink-0 self-start rounded-md border border-primary px-3 text-xs font-semibold text-primary hover:bg-primary/10" aria-label="Sao chép prompt ảnh nội dung"><Copy className="mr-1 inline h-3.5 w-3.5" aria-hidden="true" />Sao chép</button></div></div></div></div>}

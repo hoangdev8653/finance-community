@@ -38,7 +38,7 @@ describe('SeriesChapterList Component', () => {
     const firstLink = screen.getByRole('link', {
       name: /Đọc Chương 1: Discounted Cash Flow Fundamentals/i,
     });
-    expect(firstLink.getAttribute('href')).toBe('/posts/SERIES/dcf-fundamentals');
+    expect(firstLink.getAttribute('href')).toBe('/bai-viet/series/dcf-fundamentals');
   });
 
   it('renders load-more button when hasNextPage is true and triggers callback', () => {

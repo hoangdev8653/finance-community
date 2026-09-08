@@ -66,7 +66,7 @@ export const siteConfig: SiteConfig = {
  * - Normalizes leading/trailing slashes (no trailing slash).
  * - Preserves root path as clean URL without trailing slash.
  *
- * @param path - Relative or absolute path segment (e.g. "/posts/community/valuation-multiples?sort=latest")
+ * @param path - Relative or absolute path segment (e.g. "/bai-viet-cong-dong/valuation-multiples?sort=latest")
  */
 export function buildCanonicalUrl(path: string = '/'): string {
   const baseUrl = getSiteUrl();

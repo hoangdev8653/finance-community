@@ -23,6 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${baseUrl}/bai-viet/cong-dong`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.85,
+    },
+    {
       url: `${baseUrl}/danh-muc`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
@@ -52,9 +58,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .filter((post) => post.status === 'PUBLISHED' && post.slug)
         .map((post) => {
           const domain = domains.find((item) => item.id === post.domainId);
+          const typeSegment = post.contentType === 'COMMUNITY' ? 'cong-dong' : post.contentType.toLowerCase();
           const path = domain
             ? `/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`
-            : `/bai-viet/${post.contentType.toLowerCase()}/${encodeURIComponent(post.slug)}`;
+            : `/bai-viet/${typeSegment}/${encodeURIComponent(post.slug)}`;
           return {
           url: `${baseUrl}${path}`,
           lastModified: new Date(post.updatedAt || post.publishedAt || post.createdAt),

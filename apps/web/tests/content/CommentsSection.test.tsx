@@ -73,7 +73,7 @@ describe('CommentsSection Component', () => {
 
     renderWithToast(<CommentsSection postId="post-1" />);
 
-    expect(screen.getByRole('heading', { level: 2, name: /Discussion/i })).toBeDefined();
+    expect(screen.getByRole('heading', { level: 2, name: /Thảo luận|Discussion/i })).toBeDefined();
   });
 
   it('renders empty state when no comments exist', () => {
@@ -86,7 +86,7 @@ describe('CommentsSection Component', () => {
 
     renderWithToast(<CommentsSection postId="post-1" />);
 
-    expect(screen.getByText(/No analytical comments yet/i)).toBeDefined();
+    expect(screen.getByText(/Chưa có bình luận|No analytical comments yet/i)).toBeDefined();
   });
 
   it('renders comments stream and total count when comments are loaded', () => {
@@ -123,7 +123,7 @@ describe('CommentsSection Component', () => {
 
     renderWithToast(<CommentsSection postId="post-1" />);
 
-    expect(screen.getByRole('heading', { level: 2, name: /Discussion \(1\)/i })).toBeDefined();
+    expect(screen.getByRole('heading', { level: 2, name: /Thảo luận \(1\)|Discussion \(1\)/i })).toBeDefined();
     expect(screen.getByText(/Outstanding analysis of credit spreads./i)).toBeDefined();
   });
 });

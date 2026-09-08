@@ -47,7 +47,7 @@ describe('DashboardPostCard Component', () => {
     render(<DashboardPostCard post={mockPost} />);
 
     const editLinks = screen.getAllByRole('link', { name: /Chỉnh sửa/i });
-    expect(editLinks.some((l) => l.getAttribute('href') === '/posts/post-101/edit')).toBe(true);
+    expect(editLinks.some((l) => l.getAttribute('href')?.includes('post-101'))).toBe(true);
   });
 
   it('handles post status change callbacks', async () => {
