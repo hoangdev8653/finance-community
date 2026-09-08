@@ -20,10 +20,16 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     pathname === '/dang-ky' ||
     pathname === '/login' ||
     pathname === '/register' ||
+    pathname === '/quen-mat-khau' ||
+    pathname === '/dat-lai-mat-khau' ||
+    pathname === '/xac-thuc-email' ||
     pathname.startsWith('/dang-nhap/') ||
     pathname.startsWith('/dang-ky/') ||
     pathname.startsWith('/login/') ||
-    pathname.startsWith('/register/');
+    pathname.startsWith('/register/') ||
+    pathname.startsWith('/quen-mat-khau/') ||
+    pathname.startsWith('/dat-lai-mat-khau/') ||
+    pathname.startsWith('/xac-thuc-email/');
   const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/moderation';
   const hideChrome = isAuth || isAdmin || isNotFoundPage;
 

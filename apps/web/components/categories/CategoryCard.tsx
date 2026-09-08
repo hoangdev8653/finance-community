@@ -10,7 +10,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category }: CategoryCardProps) {
   const isSeries = category.scope === 'SERIES';
-  const targetHref = isSeries ? `/series` : `/posts?categoryId=${encodeURIComponent(category.id)}`;
+  const targetHref = isSeries ? `/series` : `/danh-muc/${encodeURIComponent(category.slug || category.id)}`;
 
   return (
     <Link

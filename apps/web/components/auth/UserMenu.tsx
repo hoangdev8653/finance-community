@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { User, LogOut, Shield, UserCircle, LayoutDashboard, PenSquare } from 'lucide-react';
+import { User, LogOut, Shield, UserCircle, LayoutDashboard, PenSquare, Settings } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import {
   DropdownMenu,
@@ -80,6 +80,13 @@ export function UserMenu() {
           <Link href="/bai-viet/tao-moi" className="flex items-center cursor-pointer">
             <PenSquare className="mr-2 h-4 w-4 text-muted-foreground" />
             <span>Write Analysis</span>
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link href="/cai-dat" className="flex items-center cursor-pointer">
+            <Settings className="mr-2 h-4 w-4 text-muted-foreground" />
+            <span>Cài đặt tài khoản</span>
           </Link>
         </DropdownMenuItem>
 

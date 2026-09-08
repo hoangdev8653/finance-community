@@ -73,7 +73,7 @@ describe('CategoriesDirectoryView Component', () => {
     render(<CategoriesDirectoryView />);
 
     const communityCardLink = screen.getByRole('link', { name: /Equity Valuation/i });
-    expect(communityCardLink).toHaveAttribute('href', '/posts?categoryId=cat-1');
+    expect(communityCardLink).toHaveAttribute('href', '/danh-muc/equity-valuation');
 
     const seriesCardLink = screen.getByRole('link', { name: /Fixed Income Academy/i });
     expect(seriesCardLink).toHaveAttribute('href', '/series');
