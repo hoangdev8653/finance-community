@@ -38,7 +38,7 @@ export function AdminNav() {
   };
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[256px] shrink-0 flex-col justify-between border-r border-slate-100 bg-white px-4 py-6 lg:flex dark:border-slate-800 dark:bg-slate-900">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col justify-between border-r border-border bg-card px-4 py-6 lg:flex text-card-foreground">
       <div className="space-y-6">
         {/* Brand Logo & Slogan */}
         <div className="flex items-center gap-3 px-2">
@@ -52,10 +52,10 @@ export function AdminNav() {
             </svg>
           </div>
           <div className="min-w-0">
-            <h1 className="truncate font-heading text-[17px] font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="truncate font-heading text-base font-bold tracking-tight text-foreground">
               Finance Community
             </h1>
-            <p className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+            <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
               Học • Chia sẻ • Phát triển
             </p>
           </div>

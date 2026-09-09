@@ -22,7 +22,7 @@ export default function AdminLayout({
     <div className="admin-light-mode min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
       <AdminGuard>
         <AdminNav />
-        <div className="lg:pl-[256px]">
+        <div className="lg:pl-64">
           <AdminHeader />
           <main className="min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {children}

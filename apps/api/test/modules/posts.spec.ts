@@ -48,9 +48,6 @@ describe('PostsService (Content Engine)', () => {
         moderationReason: null,
         metaTitle: data.metaTitle || null,
         metaDescription: data.metaDescription || null,
-        sourceType: data.sourceType || 'USER',
-        sourceUrl: data.sourceUrl || null,
-        sourceName: data.sourceName || null,
         viewCount: 0,
         publishedAt: data.publishedAt || null,
         createdAt: new Date(),
@@ -75,9 +72,6 @@ describe('PostsService (Content Engine)', () => {
         moderationReason: null,
         metaTitle: null,
         metaDescription: null,
-        sourceType: data.sourceType || 'USER',
-        sourceUrl: data.sourceUrl || null,
-        sourceName: data.sourceName || null,
         viewCount: 0,
         publishedAt: data.publishedAt !== undefined ? data.publishedAt : null,
         createdAt: new Date(),
@@ -102,9 +96,6 @@ describe('PostsService (Content Engine)', () => {
         moderationReason: null,
         metaTitle: null,
         metaDescription: null,
-        sourceType: 'USER',
-        sourceUrl: null,
-        sourceName: null,
         viewCount: 0,
         publishedAt: null,
         createdAt: new Date(),
@@ -274,47 +265,6 @@ describe('PostsService (Content Engine)', () => {
     expect(post.body).toContain('<p>Safe content</p>');
   });
 
-  it('34.4a: should create and update NEWS source metadata', async () => {
-    const created = await postsService.createPost('author-uuid-1', {
-      title: 'Market News',
-      contentType: 'COMMUNITY',
-      domainId: 'domain-money',
-      categoryId: 'cat-uuid-1',
-      body: 'News body',
-      status: 'DRAFT',
-      sourceType: 'EDITORIAL',
-      sourceUrl: 'https://example.com/market-news',
-      sourceName: 'Example Finance',
-    });
-
-    expect(mockPostsRepo.createTx).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        contentType: 'COMMUNITY',
-        domainId: 'domain-money',
-        sourceType: 'EDITORIAL',
-        sourceUrl: 'https://example.com/market-news',
-        sourceName: 'Example Finance',
-      }),
-    );
-    expect(created.contentType).toBe('COMMUNITY');
-
-    await postsService.updatePost('author-uuid-1', ['MEMBER'], 'post-uuid-1', {
-      sourceType: 'AI_CURATED',
-      sourceUrl: 'https://example.com/updated-news',
-      sourceName: 'Updated Source',
-    });
-
-    expect(mockPostsRepo.updateTx).toHaveBeenCalledWith(
-      expect.anything(),
-      'post-uuid-1',
-      expect.objectContaining({
-        sourceType: 'AI_CURATED',
-        sourceUrl: 'https://example.com/updated-news',
-        sourceName: 'Updated Source',
-      }),
-    );
-  });
 
   it('34.5: should generate unique slug and handle collision with SAVEPOINT fallback', async () => {
     // Simulate slug collision on initial createTx call
@@ -341,9 +291,6 @@ describe('PostsService (Content Engine)', () => {
         moderationReason: null,
         metaTitle: null,
         metaDescription: null,
-        sourceType: 'USER',
-        sourceUrl: null,
-        sourceName: null,
         viewCount: 0,
         publishedAt: null,
         createdAt: new Date(),
@@ -455,9 +402,6 @@ describe('PostsService (Content Engine)', () => {
       moderationReason: null,
       metaTitle: null,
       metaDescription: null,
-      sourceType: 'USER',
-      sourceUrl: null,
-      sourceName: null,
       viewCount: 0,
       publishedAt: new Date(),
       createdAt: new Date(),

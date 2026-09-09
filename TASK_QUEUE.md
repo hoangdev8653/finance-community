@@ -78,11 +78,12 @@ Mức ưu tiên:
 - **Kết quả:** Đã triển khai xong 5 trang cùng 2 test files `tests/auth/ForgotPassword.test.tsx` và `tests/auth/ResetPassword.test.tsx`. Cập nhật `not-found.test.tsx` đồng bộ với 404 mới. Typecheck pass 0 lỗi; Vitest unit tests pass.
 - **Trạng thái:** Hoàn thành.
 
-### [IN_PROGRESS] [P1] UI-HOME-01: Triển khai lại Home theo thiết kế home.png
+### [DONE] [P1] UI-HOME-01: Triển khai lại Home theo thiết kế home.png
 
-- **Mục tiêu:** Thay Home editorial hiện tại bằng trải nghiệm học tập theo `home.png`.
-- **Phạm vi:** Hero learning dashboard, danh mục, series, tiến độ học, bài viết cộng đồng, lợi ích, newsletter; các asset sách/chậu cây chờ người dùng cung cấp.
-- **Trạng thái:** Đã dựng UI responsive bằng React/CSS và chart SVG; cần gắn 2 asset Hero, thumbnail dữ liệu thật và tinh chỉnh trực quan.
+- **Mục tiêu:** Thay Home editorial cũ bằng trải nghiệm học tập theo `home.png` và kết nối dữ liệu động.
+- **Phạm vi:** Hero learning dashboard, danh mục, series bài học, tiến độ học, bài viết cộng đồng nổi bật, lợi ích, newsletter; hỗ trợ Dark Mode toàn diện và kết nối React Query nạp dữ liệu từ backend API với cơ chế graceful fallback.
+- **Kết quả:** Đã hoàn thiện toàn bộ giao diện theo chuẩn 4-Point Grid, kết nối `postsService.getCategories()`, `seriesService.getAllSeries()` và `postsService.getFeed()`, bổ sung unit test `tests/home/LearningHomeView.test.tsx` pass 3/3; typecheck 0 lỗi.
+- **Trạng thái:** Hoàn thành.
 
 ### [DONE] [P1] UI-LOGIN-01: Triển khai lại Login theo thiết kế login.png
 

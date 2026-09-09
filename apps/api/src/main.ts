@@ -65,8 +65,8 @@ async function bootstrap() {
 
   // 6. Swagger / OpenAPI Documentation Initialization
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('BrewSeven Platform API')
-    .setDescription('Production-ready REST API for BrewSeven Platform (Phases 3.1 - 3.4)')
+    .setTitle('Finance Community Platform API')
+    .setDescription('Production-ready REST API for Finance Community Platform')
     .setVersion('1.0')
     .addBearerAuth(
       {
@@ -74,7 +74,7 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'Authorization',
-        description: 'Enter Supabase Bearer JWT token',
+        description: 'Enter JWT Bearer access token',
         in: 'header',
       },
       'JWT-auth',
@@ -100,7 +100,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api/docs', app, document, {
     jsonDocumentUrl: 'api/docs-json',
-    customSiteTitle: 'BrewSeven API Docs',
+    customSiteTitle: 'Finance Community API Docs',
   });
 
   await app.listen(port);
