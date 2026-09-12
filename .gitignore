@@ -64,9 +64,9 @@ backup_before_*.sql
 dashboard_example.png
 
 # Agent skills & generated design systems
-.agents/skills/
-skills/
+/skills/
 design-system/
+!.agents/skills/
 
 # Roadmaps, tasks & planning docs
 *TASK*.md
