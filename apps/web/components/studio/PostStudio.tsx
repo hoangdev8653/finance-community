@@ -106,6 +106,8 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         body: string;
         imagePlan: ImagePlan;
         sources?: Array<{ title: string; url: string }>;
+        metaTitle?: string;
+        metaDescription?: string;
       }>('/ai-editorial/draft', {
         title: title.trim(),
         domain: domainId,
@@ -117,6 +119,12 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
       setImagePlan(data.imagePlan);
       if (data.sources && data.sources.length > 0) {
         setResearchedSources(data.sources);
+      }
+      if (data.metaTitle && !metaTitle) {
+        setMetaTitle(data.metaTitle);
+      }
+      if (data.metaDescription && !metaDescription) {
+        setMetaDescription(data.metaDescription);
       }
     } catch {
       setError('Không thể tạo bản nháp AI. Vui lòng kiểm tra cấu hình AI hoặc thử lại.');
