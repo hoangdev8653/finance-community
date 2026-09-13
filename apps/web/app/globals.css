@@ -392,3 +392,53 @@ select[aria-label="Lọc theo trạng thái"] option[value="DEACTIVATED"] { colo
   }
 }
 
+/* The community-post management screen uses quieter separators than the
+   application-wide admin token so dense table rows stay visually calm. */
+.admin-posts-surface {
+  --border: 214 28% 92.5%;
+  --input: 214 28% 92.5%;
+}
+
+.admin-posts-surface input[type="text"],
+.admin-posts-surface select,
+.admin-posts-surface button.border-border {
+  border-color: #e7edf4;
+  background-color: #fbfcfe;
+  box-shadow: none;
+}
+
+.admin-posts-surface input[type="text"]:focus,
+.admin-posts-surface select:focus {
+  border-color: #10b981;
+}
+
+/* Give select controls a restrained elevation so filter choices read as
+   interactive controls without bringing back the previous heavy borders. */
+.admin-posts-surface select {
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.05), 0 2px 5px rgb(15 23 42 / 0.035);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.admin-posts-surface select:hover,
+.admin-posts-surface select:focus {
+  box-shadow: 0 3px 8px rgb(15 23 42 / 0.08);
+}
+
+.admin-posts-surface .border-border,
+.admin-posts-surface .divide-border > :not(:last-child) {
+  border-color: #e7edf4 !important;
+}
+
+.admin-posts-surface .text-muted-foreground {
+  color: #526783;
+}
+
+.admin-posts-surface thead {
+  color: #405775;
+}
+
+.admin-posts-surface tbody {
+  color: #243b5a;
+  font-weight: 500;
+}
+

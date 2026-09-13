@@ -245,7 +245,7 @@ export default function AdminOverviewPage() {
     },
     {
       label: 'Bình luận',
-      value: overview?.totalComments ? formatter.format(overview.totalComments) : '18,942',
+      value: overview?.totalComments !== undefined ? formatter.format(overview.totalComments) : '0',
       trend: '22%',
       isUp: true,
       icon: MessageCircle,
@@ -575,9 +575,9 @@ export default function AdminOverviewPage() {
           </div>
 
           {/* Tables Row: Latest Courses & New Users */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
             {/* Box 3: Khóa học mới nhất */}
-            <div className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="self-start overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between p-5 pb-3">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Khóa học mới nhất
@@ -675,7 +675,7 @@ export default function AdminOverviewPage() {
             </div>
 
             {/* Box 4: Người dùng mới nhất */}
-            <div className="flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="h-auto self-start overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between p-5 pb-3">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Người dùng mới nhất

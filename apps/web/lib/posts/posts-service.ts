@@ -189,7 +189,7 @@ export const postsService = {
 
   /**
    * Get series navigation details (previous, next, and table of contents)
-   * GET /api/v1/series/posts/:id/navigation
+   * GET /api/v1/khoa-hoc/posts/:id/navigation
    */
   async getSeriesNavigation(postId: string): Promise<{
     series: { id: string; name: string; slug: string };
@@ -199,7 +199,7 @@ export const postsService = {
     nextPost: { id: string; title: string; slug: string } | null;
     tableOfContents: Array<{ index: number; id: string; title: string; slug: string; isCurrent: boolean }>;
   }> {
-    const response = await apiClient.get(`/series/posts/${encodeURIComponent(postId)}/navigation`);
+    const response = await apiClient.get(`/khoa-hoc/posts/${encodeURIComponent(postId)}/navigation`);
     return response.data;
   },
 };

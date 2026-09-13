@@ -6,6 +6,7 @@ import { PaginatedModerationPostsResponse, ModerationPostItem } from '../../type
 
 export function useModerationPosts(params?: {
   moderationStatus?: string;
+  contentType?: 'COMMUNITY' | 'SERIES';
   page?: number;
   limit?: number;
 }) {

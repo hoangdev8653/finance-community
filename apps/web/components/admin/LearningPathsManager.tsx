@@ -13,10 +13,10 @@ import {
   X,
   RefreshCw,
 } from 'lucide-react';
-import { learningSeriesService } from '@/lib/learning/learning-series-service';
+import { learningCourseService } from '@/lib/learning/learning-course-service';
 import { postsService } from '@/lib/posts/posts-service';
 import type { CategoryEntity, DomainEntity, PostEntity } from '@/types/content';
-import type { LearningPathDetail, LearningSeries } from '@/types/learning-series';
+import type { LearningPathDetail, LearningCourse } from '@/types/learning-course';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { useToast } from '@/lib/toast/ToastContext';
@@ -32,13 +32,13 @@ const slugify = (value: string) =>
 
 export function LearningPathsManager() {
   const { toast } = useToast();
-  const [paths, setPaths] = useState<LearningSeries[]>([]);
+  const [paths, setPaths] = useState<LearningCourse[]>([]);
   const [domains, setDomains] = useState<DomainEntity[]>([]);
   const [categories, setCategories] = useState<CategoryEntity[]>([]);
   const [lessons, setLessons] = useState<PostEntity[]>([]);
   const [selected, setSelected] = useState<LearningPathDetail | null>(null);
   const [modal, setModal] = useState<'create' | 'edit' | null>(null);
-  const [editing, setEditing] = useState<LearningSeries | null>(null);
+  const [editing, setEditing] = useState<LearningCourse | null>(null);
   const [form, setForm] = useState({
     title: '',
     slug: '',
@@ -64,7 +64,7 @@ export function LearningPathsManager() {
     setLoading(true);
     try {
       const [nextPaths, nextDomains, nextCategories, feed] = await Promise.all([
-        learningSeriesService.list(),
+        learningCourseService.list(),
         postsService.getDomains(),
         postsService.getCategories('SERIES'),
         postsService.getFeed({ contentType: 'SERIES', limit: 100, sortBy: 'publishedAt' }),
@@ -86,7 +86,7 @@ export function LearningPathsManager() {
 
   const selectPath = async (id: string) => {
     try {
-      setSelected(await learningSeriesService.getAdminPath(id));
+      setSelected(await learningCourseService.getAdminPath(id));
       setLessonId('');
     } catch {
       setError('Không thể tải nội dung lộ trình.');
@@ -105,7 +105,7 @@ export function LearningPathsManager() {
     setModal('create');
   };
 
-  const openEdit = (path: LearningSeries) => {
+  const openEdit = (path: LearningCourse) => {
     setEditing(path);
     setForm({
       title: path.title,
@@ -128,10 +128,10 @@ export function LearningPathsManager() {
     setBusy(true);
     try {
       if (modal === 'create') {
-        await learningSeriesService.createPath(form);
+        await learningCourseService.createPath(form);
         toast.success('Đã tạo lộ trình mới.');
       } else if (editing) {
-        await learningSeriesService.updatePath(editing.id, form);
+        await learningCourseService.updatePath(editing.id, form);
         toast.success('Đã cập nhật lộ trình.');
       }
       setModal(null);
@@ -145,9 +145,9 @@ export function LearningPathsManager() {
     }
   };
 
-  const togglePublish = async (path: LearningSeries) => {
+  const togglePublish = async (path: LearningCourse) => {
     try {
-      await learningSeriesService.updatePath(path.id, { isPublished: !path.isPublished });
+      await learningCourseService.updatePath(path.id, { isPublished: !path.isPublished });
       toast.success(path.isPublished ? 'Đã chuyển sang bản nháp.' : 'Đã xuất bản lộ trình.');
       await load();
     } catch {
@@ -157,10 +157,10 @@ export function LearningPathsManager() {
     }
   };
 
-  const removePath = async (path: LearningSeries) => {
+  const removePath = async (path: LearningCourse) => {
     if (!window.confirm(`Xóa lộ trình “${path.title}”?`)) return;
     try {
-      await learningSeriesService.deletePath(path.id);
+      await learningCourseService.deletePath(path.id);
       toast.success(`Đã xóa lộ trình “${path.title}”.`);
       if (selected?.series.id === path.id) setSelected(null);
       await load();
@@ -175,7 +175,7 @@ export function LearningPathsManager() {
     if (!selected || !lessonId) return;
     setBusy(true);
     try {
-      await learningSeriesService.addLesson(selected.series.id, lessonId, selected.lessons.length + 1);
+      await learningCourseService.addLesson(selected.series.id, lessonId, selected.lessons.length + 1);
       toast.success('Đã thêm bài học vào lộ trình.');
       await selectPath(selected.series.id);
     } catch (reason: any) {
@@ -189,20 +189,20 @@ export function LearningPathsManager() {
 
   const move = async (postId: string, order: number) => {
     if (!selected) return;
-    await learningSeriesService.reorderLesson(selected.series.id, postId, order);
+    await learningCourseService.reorderLesson(selected.series.id, postId, order);
     await selectPath(selected.series.id);
   };
 
   const toggleRequired = async (postId: string, required: boolean) => {
     if (!selected) return;
-    await learningSeriesService.updateLesson(selected.series.id, postId, !required);
+    await learningCourseService.updateLesson(selected.series.id, postId, !required);
     await selectPath(selected.series.id);
   };
 
   const removeLesson = async (postId: string) => {
     if (!selected || !window.confirm('Gỡ bài học này khỏi lộ trình?')) return;
     try {
-      await learningSeriesService.removeLesson(selected.series.id, postId);
+      await learningCourseService.removeLesson(selected.series.id, postId);
       toast.success('Đã gỡ bài học khỏi lộ trình.');
       await selectPath(selected.series.id);
     } catch (reason: any) {

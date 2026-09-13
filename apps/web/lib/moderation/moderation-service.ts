@@ -55,12 +55,13 @@ export const moderationService = {
    */
   async getModerationPosts(params?: {
     moderationStatus?: string;
+    contentType?: 'COMMUNITY' | 'SERIES';
     page?: number;
     limit?: number;
   }) {
     const response = await apiClient.get('/moderation/posts', {
       params: params
-        ? { status: params.moderationStatus, page: params.page, limit: params.limit }
+        ? { status: params.moderationStatus, contentType: params.contentType, page: params.page, limit: params.limit }
         : undefined,
     });
     return response.data;

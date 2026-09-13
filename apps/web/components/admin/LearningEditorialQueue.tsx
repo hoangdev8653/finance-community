@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { BookOpen, ChevronDown, Loader2, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { BookOpen, ChevronDown, Loader2, Map, RefreshCw } from 'lucide-react';
 import { learningAdminService } from '@/lib/learning/learning-admin-service';
 import type { EditorialStatus, LearningAdminPost } from '@/types/learning-admin';
 import { Button } from '@/components/ui/Button';
@@ -87,16 +88,25 @@ export function LearningEditorialQueue() {
           <span>•</span>
           <span>Trạng thái: {statuses.find((s) => s.value === filter)?.label}</span>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => void load()}
-          disabled={loading}
-          className="h-8 text-xs self-start sm:self-auto"
-        >
-          <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-          <span>Làm mới dữ liệu</span>
-        </Button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <Link
+            href="/quan-tri/hoc-tap/lo-trinh"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-border bg-surface px-3 text-xs font-semibold text-muted-foreground transition-colors hover:border-emerald-300 hover:text-emerald-700 dark:hover:text-emerald-300"
+          >
+            <Map className="h-3.5 w-3.5" aria-hidden="true" />
+            Lộ trình học tập
+          </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void load()}
+            disabled={loading}
+            className="h-8 text-xs"
+          >
+            <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+            <span>Làm mới dữ liệu</span>
+          </Button>
+        </div>
       </div>
 
       {/* Content Container */}

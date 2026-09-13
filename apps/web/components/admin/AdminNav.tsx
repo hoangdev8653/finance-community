@@ -9,22 +9,50 @@ import {
   FileText,
   Home,
   Layers,
+  Map,
   MessageCircle,
   MessagesSquare,
   Settings,
+  Tags,
   Users,
 } from 'lucide-react';
 
-const navItems = [
-  { href: '/quan-tri', label: 'Tổng quan', icon: Home, exact: true },
-  { href: '/quan-tri/nguoi-dung', label: 'Người dùng', icon: Users },
-  { href: '/quan-tri/hoc-tap', label: 'Khóa học', icon: BookOpen },
-  { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: MessagesSquare },
-  { href: '/quan-tri/danh-muc', label: 'Danh mục', icon: Layers },
-  { href: '/quan-tri/nhat-ky-he-thong', label: 'Báo cáo', icon: FileText },
-  { href: '/quan-tri/binh-luan', label: 'Bình luận', icon: MessageCircle },
-  { href: '/quan-tri/kiem-duyet', label: 'Quản lý yêu cầu', icon: CheckSquare },
-  { href: '/quan-tri/cai-dat', label: 'Cài đặt', icon: Settings },
+const navGroups = [
+  {
+    items: [
+      { href: '/quan-tri', label: 'Tổng quan', icon: Home, exact: true },
+      { href: '/quan-tri/nguoi-dung', label: 'Người dùng', icon: Users },
+    ],
+  },
+  {
+    label: 'HỌC TẬP',
+    items: [
+      { href: '/quan-tri/hoc-tap', label: 'Bài học', icon: BookOpen, exact: true },
+      { href: '/quan-tri/hoc-tap/lo-trinh', label: 'Khóa học & lộ trình', icon: Map },
+    ],
+  },
+  {
+    label: 'CỘNG ĐỒNG',
+    items: [
+      { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: MessagesSquare },
+      { href: '/quan-tri/binh-luan', label: 'Bình luận', icon: MessageCircle },
+      { href: '/quan-tri/kiem-duyet', label: 'Kiểm duyệt', icon: CheckSquare },
+    ],
+  },
+  {
+    label: 'PHÂN LOẠI',
+    items: [
+      { href: '/quan-tri/danh-muc', label: 'Danh mục', icon: Layers },
+      { href: '/quan-tri/the', label: 'Thẻ', icon: Tags },
+    ],
+  },
+  {
+    label: 'HỆ THỐNG',
+    items: [
+      { href: '/quan-tri/nhat-ky-he-thong', label: 'Nhật ký hệ thống', icon: FileText },
+      { href: '/quan-tri/cai-dat', label: 'Cài đặt', icon: Settings },
+    ],
+  },
 ];
 
 export function AdminNav() {
@@ -63,37 +91,45 @@ export function AdminNav() {
 
         {/* Navigation List */}
         <nav aria-label="Điều hướng quản trị" className="space-y-1 pt-2">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.href, item.exact);
+          {navGroups.map((group, groupIndex) => (
+            <div key={group.label || 'main'} className="space-y-0.5">
+              {group.label && (
+                <p className={`px-3 text-[10px] font-bold tracking-[0.12em] text-slate-400 dark:text-slate-500 ${groupIndex > 0 ? 'pb-0.5 pt-0.5' : ''}`}>
+                  {group.label}
+                </p>
+              )}
+              {group.items.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href, item.exact);
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`group flex h-11 items-center gap-3.5 rounded-xl px-3.5 text-sm font-medium transition-all duration-200 ${
-                  active
-                    ? 'bg-[#00B074] text-white shadow-sm shadow-emerald-600/30'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
-                }`}
-              >
-                <Icon
-                  className={`h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-105 ${
-                    active ? 'text-white' : 'text-slate-500 dark:text-slate-400'
-                  }`}
-                  strokeWidth={active ? 2.2 : 1.9}
-                  aria-hidden="true"
-                />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            );
-          })}
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`group flex h-10 items-center gap-3 rounded-xl px-3.5 text-sm font-medium transition-all duration-200 ${
+                      active
+                        ? 'bg-[#00B074] text-white shadow-sm shadow-emerald-600/30'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
+                    }`}
+                  >
+                    <Icon
+                      className={`h-[18px] w-[18px] shrink-0 transition-transform duration-200 group-hover:scale-105 ${
+                        active ? 'text-white' : 'text-slate-500 dark:text-slate-400'
+                      }`}
+                      strokeWidth={active ? 2.2 : 1.9}
+                      aria-hidden="true"
+                    />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
       </div>
 
-      {/* Bottom Illustration Card: Admin Panel */}
-      <div className="relative mt-auto overflow-hidden rounded-2xl border border-emerald-100/80 bg-gradient-to-b from-slate-50/90 to-emerald-50/40 p-4 pt-4 dark:border-slate-800 dark:from-slate-800/60 dark:to-slate-900">
-        <div className="flex items-center gap-2">
+      <div className="mt-auto pb-1 pt-5">
+        <div className="flex items-center justify-center gap-2">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
             <Crown className="h-4 w-4 fill-amber-500 text-amber-500" />
           </div>
@@ -102,13 +138,11 @@ export function AdminNav() {
             <p className="text-[10px] text-slate-500 dark:text-slate-400">Quản trị hệ thống</p>
           </div>
         </div>
-
-        {/* 3D Stack of books & plant image matching dashboard.png */}
-        <div className="mt-2 flex items-end justify-center">
+        <div className="mt-1 flex items-end justify-center">
           <img
             src="/images/admin-books-plant.png"
             alt="Admin Panel illustration"
-            className="h-24 w-full object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 hover:scale-105 dark:mix-blend-normal"
+            className="h-28 w-[128%] max-w-none object-contain mix-blend-multiply drop-shadow-sm transition-transform duration-300 hover:scale-105 dark:mix-blend-normal"
           />
         </div>
       </div>

@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import {
   useSystemSettings,
   useUpdateSystemSetting,
 } from '@/lib/admin/use-admin';
 import { SystemSettingEntity } from '@/types/admin';
 import { Button } from '@/components/ui/Button';
-import { Sliders, AlertCircle, CheckCircle2, Save, Edit3, X } from 'lucide-react';
+import { Sliders, AlertCircle, CheckCircle2, Save, Edit3, Flag, X } from 'lucide-react';
 
 export function SystemSettingsView() {
   const { data: settings, isLoading, isError, refetch } = useSystemSettings();
@@ -80,6 +81,13 @@ export function SystemSettingsView() {
             Cấu hình tham số vận hành, giới hạn truy cập và ngưỡng hoạt động của hệ thống.
           </p>
         </div>
+        <Link
+          href="/quan-tri/tinh-nang"
+          className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-surface px-3 text-xs font-semibold text-muted-foreground transition-colors hover:border-emerald-300 hover:text-emerald-700 dark:hover:text-emerald-300"
+        >
+          <Flag className="h-3.5 w-3.5" aria-hidden="true" />
+          Tính năng thử nghiệm
+        </Link>
       </div>
 
       {feedback && (

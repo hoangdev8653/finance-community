@@ -7,6 +7,15 @@ import * as usePostMutations from '@/lib/posts/use-post-mutations';
 
 vi.mock('@/lib/moderation/use-post-moderation');
 vi.mock('@/lib/posts/use-post-mutations');
+vi.mock('@/lib/posts/use-posts-feed', () => ({
+  useCategories: () => ({
+    data: [
+      { id: 'cat-1', name: 'Tài chính cá nhân' },
+      { id: 'cat-2', name: 'Đầu tư' },
+    ],
+    isLoading: false,
+  }),
+}));
 vi.mock('@/lib/toast/ToastContext', () => ({
   useToast: () => ({
     toast: { success: vi.fn(), error: vi.fn() },

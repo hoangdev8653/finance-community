@@ -191,7 +191,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
             </h1>
           </div>
           <p className="text-xs text-muted-foreground font-mono mt-1">
-            Thêm, chỉnh sửa và quản lý danh mục cho series bài viết và cộng đồng
+            Thêm, chỉnh sửa và quản lý danh mục cho khóa học và cộng đồng
           </p>
         </div>
         <Button
@@ -249,7 +249,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
               {[
                 { key: 'ALL', label: 'Tất cả' },
                 { key: 'COMMUNITY', label: 'Cộng đồng' },
-                { key: 'SERIES', label: 'Series' },
+                { key: 'SERIES', label: 'Khóa học' },
               ].map((tab) => (
                 <button
                   key={tab.key}
@@ -544,7 +544,7 @@ export function CategoryManagementView({ learningOnly = false }: { learningOnly?
                   >
                     <option value="COMMUNITY">COMMUNITY (Community Discussions)</option>
                     
-                    <option value="SERIES">SERIES (Curriculum Series)</option>
+                    <option value="SERIES">KHÓA HỌC</option>
                   </select>
                 </div>
               )}
