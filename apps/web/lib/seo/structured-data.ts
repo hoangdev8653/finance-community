@@ -1,7 +1,7 @@
 import { siteConfig, buildCanonicalUrl } from './site-config';
 import type { SchemaOrgEntity, BreadcrumbItem } from '../../types/seo';
 import type { PostDetailResponse } from '../../types/content';
-import type { SeriesDetailResponse } from '../../types/series';
+import type { CourseDetailResponse } from '../../types/course';
 import type { PublicProfile } from '../../types/users';
 
 /**
@@ -89,8 +89,8 @@ export function generateArticleJsonLd(post: PostDetailResponse, canonicalPath?: 
 /**
  * Generate Schema.org ItemList JSON-LD for Educational Series.
  */
-export function generateSeriesItemListJsonLd(seriesDetail: SeriesDetailResponse): SchemaOrgEntity {
-  const canonicalUrl = buildCanonicalUrl(`/series/${encodeURIComponent(seriesDetail.series.slug)}`);
+export function generateCourseItemListJsonLd(seriesDetail: CourseDetailResponse): SchemaOrgEntity {
+  const canonicalUrl = buildCanonicalUrl(`/khoa-hoc/${encodeURIComponent(seriesDetail.series.slug)}`);
 
   return {
     '@context': 'https://schema.org',
@@ -103,7 +103,7 @@ export function generateSeriesItemListJsonLd(seriesDetail: SeriesDetailResponse)
       '@type': 'ListItem',
       position: index + 1,
       name: article.title,
-      url: buildCanonicalUrl(`/posts/series/${encodeURIComponent(article.slug)}`),
+        url: buildCanonicalUrl(`/khoa-hoc/${encodeURIComponent(seriesDetail.series.slug)}/${encodeURIComponent(article.slug)}`),
     })),
   };
 }

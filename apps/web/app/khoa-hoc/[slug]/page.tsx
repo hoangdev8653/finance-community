@@ -1,12 +1,12 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { seriesService } from '@/lib/series/series-service';
+import { courseService } from '@/lib/courses/course-service';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
-import { generateSeriesItemListJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/structured-data';
+import { generateCourseItemListJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
-import { SeriesView } from '@/components/series/SeriesView';
-import { SeriesSkeleton } from '@/components/series/SeriesSkeleton';
+import { CourseView } from '@/components/courses/CourseView';
+import { CourseSkeleton } from '@/components/courses/CourseSkeleton';
 
 interface PageProps {
   params: Promise<{
@@ -18,12 +18,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
 
   try {
-    const data = await seriesService.getBySlug(slug, { page: 1, limit: 1 });
-    const title = `${data.series.name} | Series Bài Học Tài Chính`;
+    const data = await courseService.getBySlug(slug, { page: 1, limit: 1 });
+    const title = `${data.series.name} | Khóa học tài chính`;
     const description =
       data.series.description ||
-      'Series bài học thực tế được xây dựng theo lộ trình rõ ràng trên BrewSeven.';
-    const canonicalPath = `/series/${encodeURIComponent(slug)}`;
+      'Khóa học thực tế được xây dựng theo lộ trình rõ ràng trên BrewSeven.';
+    const canonicalPath = `/khoa-hoc/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     });
   } catch {
     return buildPageMetadata({
-      title: 'Không Tìm Thấy Series',
+      title: 'Không tìm thấy khóa học',
       noIndex: true,
     });
   }
@@ -45,7 +45,7 @@ export default async function SeriesDetailPage({ params }: PageProps) {
 
   let seriesDetail;
   try {
-    seriesDetail = await seriesService.getBySlug(slug, { page: 1, limit: 20 });
+    seriesDetail = await courseService.getBySlug(slug, { page: 1, limit: 20 });
   } catch {
     notFound();
   }
@@ -55,21 +55,21 @@ export default async function SeriesDetailPage({ params }: PageProps) {
   }
 
   // Schema.org ItemList and Breadcrumbs JSON-LD
-  const itemListJsonLd = generateSeriesItemListJsonLd(seriesDetail);
+  const itemListJsonLd = generateCourseItemListJsonLd(seriesDetail);
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
-    { name: 'Series', url: '/series' },
+    { name: 'Khóa học', url: '/khoa-hoc' },
     {
       name: seriesDetail.series.name,
-      url: `/series/${encodeURIComponent(slug)}`,
+      url: `/khoa-hoc/${encodeURIComponent(slug)}`,
     },
   ]);
 
   return (
     <>
       <JsonLd data={[itemListJsonLd, breadcrumbsJsonLd]} />
-      <Suspense fallback={<SeriesSkeleton variant="detail" />}>
-        <SeriesView initialData={seriesDetail} slug={slug} />
+      <Suspense fallback={<CourseSkeleton variant="detail" />}>
+        <CourseView initialData={seriesDetail} slug={slug} />
       </Suspense>
     </>
   );

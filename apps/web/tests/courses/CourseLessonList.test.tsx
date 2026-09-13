@@ -1,11 +1,11 @@
 import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { SeriesChapterList } from '@/components/series/SeriesChapterList';
-import { SeriesArticleItem } from '@/types/series';
+import { CourseLessonList } from '@/components/courses/CourseLessonList';
+import { CourseLesson } from '@/types/course';
 
-describe('SeriesChapterList Component', () => {
-  const mockChapters: SeriesArticleItem[] = [
+describe('CourseLessonList Component', () => {
+  const mockChapters: CourseLesson[] = [
     {
       id: 'c-1',
       title: 'Discounted Cash Flow Fundamentals',
@@ -25,7 +25,7 @@ describe('SeriesChapterList Component', () => {
   ];
 
   it('renders chapter sequence numbering, titles, view counts, and reader links', () => {
-    render(<SeriesChapterList chapters={mockChapters} />);
+    render(<CourseLessonList chapters={mockChapters} seriesSlug="fixed-income-bond-math" />);
 
     expect(screen.getByText('01')).toBeDefined();
     expect(screen.getByText('Discounted Cash Flow Fundamentals')).toBeDefined();
@@ -38,21 +38,22 @@ describe('SeriesChapterList Component', () => {
     const firstLink = screen.getByRole('link', {
       name: /Đọc Chương 1: Discounted Cash Flow Fundamentals/i,
     });
-    expect(firstLink.getAttribute('href')).toBe('/bai-viet/series/dcf-fundamentals');
+    expect(firstLink.getAttribute('href')).toBe('/khoa-hoc/fixed-income-bond-math/dcf-fundamentals');
   });
 
   it('renders load-more button when hasNextPage is true and triggers callback', () => {
     const onLoadMore = vi.fn();
 
     render(
-      <SeriesChapterList
+      <CourseLessonList
         chapters={mockChapters}
+        seriesSlug="fixed-income-bond-math"
         hasNextPage={true}
         onLoadMore={onLoadMore}
       />
     );
 
-    const loadMoreBtn = screen.getByRole('button', { name: /Load More Chapters/i });
+    const loadMoreBtn = screen.getByRole('button', { name: /Xem thêm bài học/i });
     expect(loadMoreBtn).toBeDefined();
 
     fireEvent.click(loadMoreBtn);
@@ -60,7 +61,7 @@ describe('SeriesChapterList Component', () => {
   });
 
   it('renders empty state when chapter list is empty', () => {
-    render(<SeriesChapterList chapters={[]} />);
-    expect(screen.getByText(/No published chapters in this series yet/i)).toBeDefined();
+    render(<CourseLessonList chapters={[]} seriesSlug="fixed-income-bond-math" />);
+    expect(screen.getByText(/Khóa học này chưa có bài học được xuất bản/i)).toBeDefined();
   });
 });

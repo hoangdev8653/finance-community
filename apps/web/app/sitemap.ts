@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getSiteUrl } from '@/lib/seo/site-config';
 import { postsService } from '@/lib/posts/posts-service';
-import { seriesService } from '@/lib/series/series-service';
+import { courseService } from '@/lib/courses/course-service';
 import { searchService } from '@/lib/search/search-service';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -29,60 +29,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
-      url: `${baseUrl}/danh-muc`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/the`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/series`,
+      url: `${baseUrl}/khoa-hoc`,
       lastModified: currentDate,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
   ];
 
-  // Fetch published posts
-  let postRoutes: MetadataRoute.Sitemap = [];
-  let domains = await postsService.getDomains().catch(() => []);
-  try {
-    const postsResult = await postsService.getFeed({ limit: 100 });
-    if (postsResult && Array.isArray(postsResult.data)) {
-      postRoutes = postsResult.data
-        .filter((post) => post.status === 'PUBLISHED' && post.slug)
-        .map((post) => {
-          const domain = domains.find((item) => item.id === post.domainId);
-          const typeSegment = post.contentType === 'COMMUNITY' ? 'cong-dong' : post.contentType.toLowerCase();
-          const path = domain
-            ? `/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`
-            : `/bai-viet/${typeSegment}/${encodeURIComponent(post.slug)}`;
-          return {
-          url: `${baseUrl}${path}`,
-          lastModified: new Date(post.updatedAt || post.publishedAt || post.createdAt),
-          changeFrequency: 'weekly',
-          priority: 0.9,
-          };
-        });
-    }
-  } catch {
-    postRoutes = [];
-  }
-
-  // Fetch published series
+  // Fetch published series first so each lesson can use its nested canonical URL.
   let seriesRoutes: MetadataRoute.Sitemap = [];
+  const seriesById = new Map<string, string>();
   try {
-    const seriesResult = await seriesService.getAllSeries({ limit: 50 });
+    const seriesResult = await courseService.getAllCourses({ limit: 50 });
     if (seriesResult && Array.isArray(seriesResult.data)) {
+      seriesResult.data.forEach((series) => seriesById.set(series.id, series.slug));
       seriesRoutes = seriesResult.data
         .filter((series) => series.slug)
         .map((series) => ({
-          url: `${baseUrl}/series/${encodeURIComponent(series.slug)}`,
+          url: `${baseUrl}/khoa-hoc/${encodeURIComponent(series.slug)}`,
           lastModified: new Date(series.createdAt),
           changeFrequency: 'weekly',
           priority: 0.8,
@@ -90,6 +60,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   } catch {
     seriesRoutes = [];
+  }
+
+  // Fetch published posts.
+  let postRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const postsResult = await postsService.getFeed({ limit: 100 });
+    if (postsResult && Array.isArray(postsResult.data)) {
+      postRoutes = postsResult.data.reduce<MetadataRoute.Sitemap>((routes, post) => {
+        if (post.status !== 'PUBLISHED' || !post.slug) return routes;
+
+        const seriesSlug = post.categoryId
+          ? seriesById.get(post.categoryId)
+          : undefined;
+        const path = post.contentType === 'COMMUNITY'
+          ? `/bai-viet/cong-dong/${encodeURIComponent(post.slug)}`
+          : post.contentType === 'SERIES' && seriesSlug
+            ? `/khoa-hoc/${encodeURIComponent(seriesSlug)}/${encodeURIComponent(post.slug)}`
+            : null;
+
+        if (path) {
+          routes.push({
+            url: `${baseUrl}${path}`,
+            lastModified: new Date(post.updatedAt || post.publishedAt || post.createdAt),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+          });
+        }
+        return routes;
+      }, []);
+    }
+  } catch {
+    postRoutes = [];
   }
 
   // Fetch taxonomy tags

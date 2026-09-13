@@ -5,42 +5,39 @@ import Link from 'next/link';
 import { ArrowLeft, BookOpen, Calendar, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 
-interface SeriesHeaderProps {
+interface CourseHeaderProps {
   name: string;
   description: string | null;
   totalArticles: number;
   createdAt: string;
 }
 
-export function SeriesHeader({
+export function CourseHeader({
   name,
   description,
   totalArticles,
   createdAt,
-}: SeriesHeaderProps) {
+}: CourseHeaderProps) {
   const formattedDate = new Date(createdAt).toLocaleDateString('vi-VN', {
     month: 'long',
     year: 'numeric',
   });
-
-  const articleLabel =
-    totalArticles === 1 ? '1 Chapter' : `${totalArticles} Chapters`;
 
   return (
     <header className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-6 sm:p-8 space-y-6 shadow-xs">
       {/* Back Link & Track Tag */}
       <div className="flex items-center justify-between gap-4">
         <Link
-          href="/series"
+          href="/khoa-hoc"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-xs"
-          aria-label="Quay lại danh mục giáo trình"
+          aria-label="Quay lại danh sách khóa học"
         >
           <ArrowLeft className="h-3.5 w-3.5" />
-          <span>Tất cả Series</span>
+          <span>Tất cả khóa học</span>
         </Link>
         <span className="inline-flex items-center gap-1.5 text-xs font-bold py-1 px-3 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 rounded-lg">
           <BookOpen className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-          <span>Giáo trình chuẩn</span>
+          <span>Khóa học</span>
         </span>
       </div>
 
@@ -60,7 +57,7 @@ export function SeriesHeader({
       <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 pt-4 border-t border-slate-100 dark:border-slate-800">
         <div className="flex items-center gap-1.5 font-semibold text-emerald-700 dark:text-emerald-400">
           <Layers className="h-3.5 w-3.5" />
-          <span>{totalArticles} bài học chuyên sâu</span>
+          <span>{totalArticles} bài học</span>
         </div>
         <span>•</span>
         <div className="flex items-center gap-1.5">

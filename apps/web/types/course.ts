@@ -1,4 +1,4 @@
-export interface SeriesItem {
+export interface CourseItem {
   id: string;
   name: string;
   slug: string;
@@ -8,7 +8,7 @@ export interface SeriesItem {
   createdAt: string;
 }
 
-export interface SeriesArticleItem {
+export interface CourseLesson {
   id: string;
   title: string;
   slug: string;
@@ -17,7 +17,7 @@ export interface SeriesArticleItem {
   viewCount: number;
 }
 
-export interface SeriesDetailResponse {
+export interface CourseDetailResponse {
   series: {
     id: string;
     name: string;
@@ -26,7 +26,7 @@ export interface SeriesDetailResponse {
     sortOrder: number;
     createdAt: string;
   };
-  articles: SeriesArticleItem[];
+  articles: CourseLesson[];
   meta: {
     page: number;
     limit: number;
@@ -37,7 +37,7 @@ export interface SeriesDetailResponse {
   };
 }
 
-export interface QuerySeriesParams {
+export interface QueryCourseParams {
   page?: number;
   limit?: number;
 }

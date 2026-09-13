@@ -2,15 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { SeriesItem } from '@/types/series';
+import { CourseItem } from '@/types/course';
 import { Badge } from '@/components/ui/Badge';
 import { BookOpen, ArrowRight } from 'lucide-react';
 
-interface SeriesCardProps {
-  series: SeriesItem;
+interface CourseCardProps {
+  series: CourseItem;
 }
 
-export function SeriesCard({ series }: SeriesCardProps) {
+export function CourseCard({ series }: CourseCardProps) {
   const articleLabel =
     series.publishedArticleCount === 1 ? '1 Bài học' : `${series.publishedArticleCount} Bài học`;
 
@@ -31,7 +31,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
         {/* Series Title — Enlarged Font & Bold Weight */}
         <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">
           <Link
-            href={`/series/${encodeURIComponent(series.slug)}`}
+            href={`/khoa-hoc/${encodeURIComponent(series.slug)}`}
             className="focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-xs"
           >
             {series.name}
@@ -51,7 +51,7 @@ export function SeriesCard({ series }: SeriesCardProps) {
         </span>
 
         <Link
-          href={`/series/${encodeURIComponent(series.slug)}`}
+          href={`/khoa-hoc/${encodeURIComponent(series.slug)}`}
           className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 hover:underline focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-emerald-500 rounded-xs"
           aria-label={`Khám phá giáo trình ${series.name}`}
         >

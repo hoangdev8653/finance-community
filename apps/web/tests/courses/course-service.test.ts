@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { seriesService } from '@/lib/series/series-service';
+import { courseService } from '@/lib/courses/course-service';
 import { apiClient } from '@/lib/api/client';
 
 describe('Series Service', () => {
@@ -7,7 +7,7 @@ describe('Series Service', () => {
     vi.restoreAllMocks();
   });
 
-  it('getAllSeries() calls GET /series with query parameters', async () => {
+  it('getAllCourses() calls GET /khoa-hoc with query parameters', async () => {
     const mockResponse = {
       data: [
         {
@@ -32,13 +32,13 @@ describe('Series Service', () => {
 
     const getSpy = vi.spyOn(apiClient, 'get').mockResolvedValueOnce({ data: mockResponse } as any);
 
-    const result = await seriesService.getAllSeries({ page: 1, limit: 20 });
+    const result = await courseService.getAllCourses({ page: 1, limit: 20 });
 
-    expect(getSpy).toHaveBeenCalledWith('/series', { params: { page: 1, limit: 20 } });
+    expect(getSpy).toHaveBeenCalledWith('/khoa-hoc', { params: { page: 1, limit: 20 } });
     expect(result).toEqual(mockResponse);
   });
 
-  it('getBySlug() calls GET /series/:slug with encoded slug and params', async () => {
+  it('getBySlug() calls GET /khoa-hoc/:slug with encoded slug and params', async () => {
     const mockDetailResponse = {
       series: {
         id: 'cat-series-1',
@@ -70,9 +70,9 @@ describe('Series Service', () => {
 
     const getSpy = vi.spyOn(apiClient, 'get').mockResolvedValueOnce({ data: mockDetailResponse } as any);
 
-    const result = await seriesService.getBySlug('macroeconomic-frameworks', { page: 1, limit: 20 });
+    const result = await courseService.getBySlug('macroeconomic-frameworks', { page: 1, limit: 20 });
 
-    expect(getSpy).toHaveBeenCalledWith('/series/macroeconomic-frameworks', {
+    expect(getSpy).toHaveBeenCalledWith('/khoa-hoc/macroeconomic-frameworks', {
       params: { page: 1, limit: 20 },
     });
     expect(result).toEqual(mockDetailResponse);

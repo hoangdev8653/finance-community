@@ -1,18 +1,18 @@
 import { apiClient } from '../api/client';
 import {
-  SeriesItem,
-  SeriesDetailResponse,
-  QuerySeriesParams,
-} from '../../types/series';
+  CourseItem,
+  CourseDetailResponse,
+  QueryCourseParams,
+} from '../../types/course';
 import { PaginatedResult } from '../../types/content';
 
-export const seriesService = {
+export const courseService = {
   /**
    * Get list of published educational series directly from Backend API
-   * GET /api/v1/series
+   * GET /api/v1/khoa-hoc
    */
-  async getAllSeries(params?: QuerySeriesParams): Promise<PaginatedResult<SeriesItem>> {
-    const response = await apiClient.get<PaginatedResult<SeriesItem>>('/series', {
+  async getAllCourses(params?: QueryCourseParams): Promise<PaginatedResult<CourseItem>> {
+    const response = await apiClient.get<PaginatedResult<CourseItem>>('/series', {
       params,
     });
     return response.data;
@@ -20,17 +20,16 @@ export const seriesService = {
 
   /**
    * Get series curriculum overview and paginated post list by slug directly from Backend API
-   * GET /api/v1/series/:slug
+   * GET /api/v1/khoa-hoc/:slug
    */
   async getBySlug(
     slug: string,
-    params?: QuerySeriesParams
-  ): Promise<SeriesDetailResponse> {
-    const response = await apiClient.get<SeriesDetailResponse>(
+    params?: QueryCourseParams
+  ): Promise<CourseDetailResponse> {
+    const response = await apiClient.get<CourseDetailResponse>(
       `/series/${encodeURIComponent(slug)}`,
       { params }
     );
     return response.data;
   },
 };
-

@@ -42,11 +42,11 @@ export default function PostsHubPage() {
 
             <div className="flex items-center gap-3">
               <Link
-                href="/series"
+                href="/khoa-hoc"
                 className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition hover:bg-muted"
               >
                 <BookOpen className="h-4 w-4 text-primary" />
-                <span>Xem Series</span>
+                <span>Xem khóa học</span>
               </Link>
               <Link
                 href="/bai-viet/tao-moi"
@@ -83,7 +83,7 @@ export default function PostsHubPage() {
               }`}
             >
               <BookOpen className="h-4 w-4" />
-              <span>Bài học theo Series</span>
+              <span>Bài học theo khóa học</span>
             </button>
 
             <button
@@ -109,7 +109,7 @@ export default function PostsHubPage() {
               <h2 className="flex items-center gap-2 font-heading text-lg font-bold text-foreground">
                 <TrendingUp className="h-4 w-4 text-primary" />
                 {activeTab === 'ALL' && 'Mới cập nhật gần đây'}
-                {activeTab === 'SERIES' && 'Các bài học thuộc Series'}
+                {activeTab === 'SERIES' && 'Các bài học thuộc khóa học'}
                 {activeTab === 'COMMUNITY' && 'Góc nhìn & Thảo luận cộng đồng'}
               </h2>
               <span className="text-xs font-semibold text-muted-foreground">
@@ -130,16 +130,16 @@ export default function PostsHubPage() {
             <div className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-50/70 to-card p-5 dark:border-indigo-900/60 dark:from-indigo-950/20">
               <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-400">
                 <BookOpen className="h-5 w-5" />
-                <h3 className="font-heading font-bold text-sm">Học theo chuỗi Series</h3>
+                <h3 className="font-heading font-bold text-sm">Học theo khóa học</h3>
               </div>
               <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
                 Các bài viết được biên tập có hệ thống từ cơ bản đến chuyên sâu, có thứ tự chương bài và lưu trữ tiến độ học tập.
               </p>
               <Link
-                href="/series"
+                href="/khoa-hoc"
                 className="mt-3 inline-flex items-center text-xs font-bold text-indigo-700 hover:underline dark:text-indigo-400"
               >
-                Khám phá các Series ➔
+                Khám phá các khóa học ➔
               </Link>
             </div>
 

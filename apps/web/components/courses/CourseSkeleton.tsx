@@ -3,11 +3,11 @@
 import React from 'react';
 import { Skeleton } from '@/components/ui/Skeleton';
 
-interface SeriesSkeletonProps {
+interface CourseSkeletonProps {
   variant?: 'grid' | 'detail';
 }
 
-export function SeriesSkeleton({ variant = 'grid' }: SeriesSkeletonProps) {
+export function CourseSkeleton({ variant = 'grid' }: CourseSkeletonProps) {
   if (variant === 'detail') {
     return (
       <div className="space-y-8 animate-pulse">

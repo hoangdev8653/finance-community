@@ -1,11 +1,11 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { SeriesCard } from '@/components/series/SeriesCard';
-import { SeriesItem } from '@/types/series';
+import { CourseCard } from '@/components/courses/CourseCard';
+import { CourseItem } from '@/types/course';
 
-describe('SeriesCard Component', () => {
-  const mockSeries: SeriesItem = {
+describe('CourseCard Component', () => {
+  const mockSeries: CourseItem = {
     id: 's-1',
     name: 'Advanced Equity Valuation',
     slug: 'advanced-equity-valuation',
@@ -16,7 +16,7 @@ describe('SeriesCard Component', () => {
   };
 
   it('renders series name, description, exact chapter count badge, and link', () => {
-    render(<SeriesCard series={mockSeries} />);
+    render(<CourseCard series={mockSeries} />);
 
     expect(screen.getByText('Advanced Equity Valuation')).toBeDefined();
     expect(
@@ -27,16 +27,16 @@ describe('SeriesCard Component', () => {
     expect(screen.getByText('8 Bài học')).toBeDefined();
 
     const links = screen.getAllByRole('link', { name: /Advanced Equity Valuation/i });
-    expect(links[0].getAttribute('href')).toBe('/series/advanced-equity-valuation');
+    expect(links[0].getAttribute('href')).toBe('/khoa-hoc/advanced-equity-valuation');
   });
 
   it('handles singular chapter count correctly', () => {
-    const singleChapterSeries: SeriesItem = {
+    const singleChapterSeries: CourseItem = {
       ...mockSeries,
       publishedArticleCount: 1,
     };
 
-    render(<SeriesCard series={singleChapterSeries} />);
+    render(<CourseCard series={singleChapterSeries} />);
     expect(screen.getByText('1 Bài học')).toBeDefined();
   });
 });

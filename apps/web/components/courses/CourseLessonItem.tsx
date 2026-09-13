@@ -2,18 +2,20 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { SeriesArticleItem } from '@/types/series';
+import type { CourseLesson } from '@/types/course';
 import { Eye, Calendar, ArrowRight } from 'lucide-react';
 
-interface SeriesChapterItemProps {
-  chapter: SeriesArticleItem;
+interface CourseLessonProps {
+  chapter: CourseLesson;
   sequenceNumber: number;
+  seriesSlug: string;
 }
 
-export function SeriesChapterItem({
+export function CourseLessonItem({
   chapter,
   sequenceNumber,
-}: SeriesChapterItemProps) {
+  seriesSlug,
+}: CourseLessonProps) {
   const formattedIndex = String(sequenceNumber).padStart(2, '0');
   const formattedDate = chapter.publishedAt
     ? new Date(chapter.publishedAt).toLocaleDateString('vi-VN', {
@@ -23,7 +25,7 @@ export function SeriesChapterItem({
       })
     : 'Bản nháp';
 
-  const readerUrl = `/bai-viet/series/${encodeURIComponent(chapter.slug)}`;
+  const readerUrl = `/khoa-hoc/${encodeURIComponent(seriesSlug)}/${encodeURIComponent(chapter.slug)}`;
 
   return (
     <article

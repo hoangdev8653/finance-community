@@ -1,22 +1,22 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { SeriesView } from '@/components/series/SeriesView';
-import { seriesService } from '@/lib/series/series-service';
-import { SeriesDetailResponse } from '@/types/series';
+import { CourseView } from '@/components/courses/CourseView';
+import { courseService } from '@/lib/courses/course-service';
+import { CourseDetailResponse } from '@/types/course';
 
-vi.mock('@/lib/series/series-service', () => ({
-  seriesService: {
+vi.mock('@/lib/courses/course-service', () => ({
+  courseService: {
     getBySlug: vi.fn(),
   },
 }));
 
-describe('SeriesView Component', () => {
+describe('CourseView Component', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  const mockInitialData: SeriesDetailResponse = {
+  const mockInitialData: CourseDetailResponse = {
     series: {
       id: 's-1',
       name: 'Fixed Income & Bond Math',
@@ -46,15 +46,15 @@ describe('SeriesView Component', () => {
   };
 
   it('renders initial series header and chapter list', () => {
-    render(<SeriesView initialData={mockInitialData} slug="fixed-income-bond-math" />);
+    render(<CourseView initialData={mockInitialData} slug="fixed-income-bond-math" />);
 
     expect(screen.getByRole('heading', { level: 1, name: 'Fixed Income & Bond Math' })).toBeDefined();
     expect(screen.getByText('Macaulay & Modified Duration')).toBeDefined();
-    expect(screen.getByRole('button', { name: /Load More Chapters/i })).toBeDefined();
+    expect(screen.getByRole('button', { name: /Xem thêm bài học/i })).toBeDefined();
   });
 
   it('handles load more chapters without duplicate numbering', async () => {
-    vi.mocked(seriesService.getBySlug).mockResolvedValueOnce({
+    vi.mocked(courseService.getBySlug).mockResolvedValueOnce({
       series: mockInitialData.series,
       articles: [
         {
@@ -76,15 +76,15 @@ describe('SeriesView Component', () => {
       },
     });
 
-    render(<SeriesView initialData={mockInitialData} slug="fixed-income-bond-math" />);
+    render(<CourseView initialData={mockInitialData} slug="fixed-income-bond-math" />);
 
-    const loadMoreBtn = screen.getByRole('button', { name: /Load More Chapters/i });
+    const loadMoreBtn = screen.getByRole('button', { name: /Xem thêm bài học/i });
     fireEvent.click(loadMoreBtn);
 
     await waitFor(() => {
       expect(screen.getByText('Convexity & Immunization')).toBeDefined();
       expect(screen.getByText('02')).toBeDefined();
-      expect(screen.queryByRole('button', { name: /Load More Chapters/i })).toBeNull();
+      expect(screen.queryByRole('button', { name: /Xem thêm bài học/i })).toBeNull();
     });
   });
 });
