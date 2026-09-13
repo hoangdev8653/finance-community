@@ -65,8 +65,8 @@ dashboard_example.png
 
 # Agent skills & generated design systems
 /skills/
+/.agents/skills/
 design-system/
-!.agents/skills/
 
 # Roadmaps, tasks & planning docs
 *TASK*.md
