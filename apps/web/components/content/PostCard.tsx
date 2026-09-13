@@ -18,14 +18,14 @@ function PostCardComponent({ post, categoryName }: PostCardProps) {
   const timeLabel = formatRelativeTime(displayDate);
   const isSeries = post.contentType === 'SERIES';
   const postHref = isSeries
-    ? `/bai-viet/series/${post.slug}`
+    ? `/bai-viet/khoa-hoc/${post.slug}`
     : `/bai-viet/cong-dong/${post.slug}`;
 
   // Cover image from post or default
   const coverUrl = resolveMediaUrl(post.coverMediaId);
 
   // Category label fallback
-  const displayCategory = categoryName || (isSeries ? 'Series bài học' : 'Thị trường tài chính');
+  const displayCategory = categoryName || (isSeries ? 'Khóa học' : 'Thị trường tài chính');
 
   return (
     <article className="group flex flex-col sm:flex-row items-start gap-4 sm:gap-6 py-5 border-b border-dashed border-border last:border-b-0 transition-colors">
@@ -51,7 +51,7 @@ function PostCardComponent({ post, categoryName }: PostCardProps) {
         <div className="flex items-center gap-2">
           {isSeries ? (
             <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-bold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-800/40">
-              Bài học Series
+              Bài học trong khóa học
             </span>
           ) : (
             <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40">

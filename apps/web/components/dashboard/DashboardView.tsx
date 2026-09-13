@@ -85,7 +85,6 @@ export function DashboardView({ initialTab }: DashboardViewProps = {}) {
     totalAnalyses: 0,
     draftsCount: 0,
     totalViews: 0,
-    followersCount: 0,
   };
 
   return (
@@ -102,17 +101,17 @@ export function DashboardView({ initialTab }: DashboardViewProps = {}) {
             Bảng điều khiển Học tập
           </h1>
           <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-2xl font-normal leading-relaxed">
-            Theo dõi những gì bạn đang học, khám phá series mới và duy trì tiến độ mỗi ngày.
+            Theo dõi những gì bạn đang học, khám phá khóa học mới và duy trì tiến độ mỗi ngày.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           <Link
-            href="/series"
+            href="/khoa-hoc"
             className="inline-flex items-center gap-2 rounded-xl bg-slate-950 hover:bg-slate-800 dark:bg-emerald-600 dark:hover:bg-emerald-500 px-5 py-3 text-sm font-bold text-white transition-all shadow-sm"
           >
             <PenSquare className="h-4.5 w-4.5" />
-            <span>Khám phá series</span>
+            <span>Khám phá khóa học</span>
           </Link>
         </div>
       </div>

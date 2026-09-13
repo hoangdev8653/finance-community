@@ -15,12 +15,14 @@ import { ErrorState } from '@/components/feedback/ErrorState';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { MessageSquare } from 'lucide-react';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 interface CommentsSectionProps {
   postId: string;
 }
 
 export function CommentsSection({ postId }: CommentsSectionProps) {
+  const { isAuthenticated } = useAuth();
   const isDemoPost = postId === 'demo-community-article';
   const [page, setPage] = useState(1);
   const {
@@ -55,12 +57,12 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   const threadedComments = buildCommentTree(comments);
 
   return (
-    <section aria-labelledby="comments-heading" className="space-y-6 pt-10 mt-10 border-t border-border">
+    <section id="comments" aria-labelledby="comments-heading" className="mt-10 space-y-6 border-t border-slate-200 pt-10 dark:border-slate-800">
       {/* Section Header */}
       <div className="flex items-center justify-between">
         <h2
           id="comments-heading"
-          className="font-heading text-2xl font-bold text-foreground flex items-center gap-2"
+          className="flex items-center gap-2 font-heading text-2xl font-bold text-foreground"
         >
           <MessageSquare className="h-5 w-5 text-primary" aria-hidden="true" />
           <span>Thảo luận ({totalItems})</span>
@@ -76,13 +78,13 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       {/* State Transitions: Loading, Error, Empty, List */}
       {isLoading ? (
         <CommentSkeleton />
-      ) : isError && !isDemoPost ? (
+      ) : isError && !isDemoPost && isAuthenticated ? (
         <ErrorState
           title="Không thể tải thảo luận"
           message="Không thể tải bình luận cho bài viết này."
           onRetry={() => refetch()}
         />
-      ) : threadedComments.length === 0 || isDemoPost ? (
+      ) : (threadedComments.length === 0 || isDemoPost) && isAuthenticated ? (
         <EmptyState
           icon={MessageSquare}
           title="Chưa có bình luận"

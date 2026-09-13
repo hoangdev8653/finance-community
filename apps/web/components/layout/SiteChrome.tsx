@@ -30,7 +30,12 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
     pathname.startsWith('/quen-mat-khau/') ||
     pathname.startsWith('/dat-lai-mat-khau/') ||
     pathname.startsWith('/xac-thuc-email/');
-  const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/') || pathname === '/moderation';
+  const isAdmin =
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/') ||
+    pathname === '/quan-tri' ||
+    pathname.startsWith('/quan-tri/') ||
+    pathname === '/moderation';
   const hideChrome = isAuth || isAdmin || isNotFoundPage;
 
   return <>

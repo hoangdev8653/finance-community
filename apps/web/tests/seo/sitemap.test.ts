@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import sitemap from '@/app/sitemap';
 import { postsService } from '@/lib/posts/posts-service';
-import { seriesService } from '@/lib/series/series-service';
+import { courseService } from '@/lib/courses/course-service';
 import { searchService } from '@/lib/search/search-service';
 import { getSiteUrl } from '@/lib/seo/site-config';
 
 vi.mock('@/lib/posts/posts-service');
-vi.mock('@/lib/series/series-service');
+vi.mock('@/lib/courses/course-service');
 vi.mock('@/lib/search/search-service');
 
 describe('Dynamic Sitemap Generator', () => {
@@ -32,7 +32,7 @@ describe('Dynamic Sitemap Generator', () => {
     });
     vi.mocked(postsService.getDomains).mockResolvedValueOnce([]);
 
-    vi.mocked(seriesService.getAllSeries).mockResolvedValueOnce({
+    vi.mocked(courseService.getAllCourses).mockResolvedValueOnce({
       data: [
         {
           id: 's1',
@@ -53,13 +53,13 @@ describe('Dynamic Sitemap Generator', () => {
     expect(result).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ url: `${baseUrl}` }),
-        expect.objectContaining({ url: `${baseUrl}/series` }),
+        expect.objectContaining({ url: `${baseUrl}/khoa-hoc` }),
         expect.objectContaining({
           url: `${baseUrl}/bai-viet/cong-dong/valuation-analysis`,
           priority: 0.9,
         }),
         expect.objectContaining({
-          url: `${baseUrl}/series/fixed-income`,
+          url: `${baseUrl}/khoa-hoc/fixed-income`,
           priority: 0.8,
         }),
         expect.objectContaining({
@@ -75,19 +75,18 @@ describe('Dynamic Sitemap Generator', () => {
 
     vi.mocked(postsService.getFeed).mockRejectedValueOnce(new Error('Network error'));
     vi.mocked(postsService.getDomains).mockRejectedValueOnce(new Error('Network error'));
-    vi.mocked(seriesService.getAllSeries).mockRejectedValueOnce(new Error('Network error'));
+    vi.mocked(courseService.getAllCourses).mockRejectedValueOnce(new Error('Network error'));
     vi.mocked(searchService.searchTags).mockRejectedValueOnce(new Error('Network error'));
 
     const result = await sitemap();
 
-    expect(result.length).toBeGreaterThanOrEqual(6);
+    expect(result.length).toBeGreaterThanOrEqual(5);
     expect(result.map((r) => r.url)).toEqual([
       `${baseUrl}`,
       `${baseUrl}/bai-viet`,
       `${baseUrl}/bai-viet/cong-dong`,
-      `${baseUrl}/danh-muc`,
       `${baseUrl}/the`,
-      `${baseUrl}/series`,
+      `${baseUrl}/khoa-hoc`,
     ]);
   });
 });

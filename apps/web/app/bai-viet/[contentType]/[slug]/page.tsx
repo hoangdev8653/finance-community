@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
-import { notFound, permanentRedirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { postsService } from '@/lib/posts/posts-service';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
 import { generateArticleJsonLd, generateBreadcrumbsJsonLd } from '@/lib/seo/structured-data';
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const normalizedType = contentType.toLowerCase();
   const isCommunity = normalizedType === 'cong-dong';
 
-  if (!isCommunity && normalizedType !== 'series') {
+  if (!isCommunity) {
     return buildPageMetadata({
       title: 'Không Tìm Thấy Bài Viết',
       noIndex: true,
@@ -54,8 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   try {
-    const apiContentType = isCommunity ? 'COMMUNITY' : 'SERIES';
-    const post = await postsService.getBySlug(apiContentType, slug);
+    const post = await postsService.getBySlug('COMMUNITY', slug);
     const coverMedia = post.coverMediaId
       ? post.media.find((m) => m.id === post.coverMediaId)
       : post.media[0];
@@ -64,9 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const description =
       post.metaDescription ||
       'Phân tích tài chính chuyên sâu, mô hình định giá và thông tin thị trường trên BrewSeven.';
-    const canonicalPath = isCommunity
-      ? `/bai-viet/cong-dong/${encodeURIComponent(slug)}`
-      : `/bai-viet/series/${encodeURIComponent(slug)}`;
+    const canonicalPath = `/bai-viet/cong-dong/${encodeURIComponent(slug)}`;
 
     return buildPageMetadata({
       title,
@@ -92,7 +89,7 @@ export default async function PostDetailPage({ params }: PageProps) {
   const normalizedType = contentType.toLowerCase();
   const isCommunity = normalizedType === 'cong-dong';
 
-  if (!isCommunity && normalizedType !== 'series') {
+  if (!isCommunity) {
     notFound();
   }
 
@@ -101,8 +98,7 @@ export default async function PostDetailPage({ params }: PageProps) {
     post = demoArticle;
   } else {
     try {
-      const apiContentType = isCommunity ? 'COMMUNITY' : 'SERIES';
-      post = await postsService.getBySlug(apiContentType, slug);
+      post = await postsService.getBySlug('COMMUNITY', slug);
     } catch {
       notFound();
     }
@@ -112,28 +108,19 @@ export default async function PostDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const domains = await postsService.getDomains().catch(() => []);
-  const domain = post.domainId ? domains.find((item) => item.id === post.domainId) : undefined;
-  if (domain) {
-    permanentRedirect(`/${encodeURIComponent(domain.slug)}/bai-viet/${encodeURIComponent(post.slug)}`);
-  }
-
   // Generate safe Schema.org Article & Breadcrumbs JSON-LD
-  const articleJsonLd = generateArticleJsonLd(post);
-  const sectionLabel = post.contentType === 'SERIES' ? 'Series' : 'Bài Viết Cộng Đồng';
-  const sectionUrl = post.contentType === 'SERIES' ? '/series' : '/bai-viet/cong-dong';
+  const canonicalPath = `/bai-viet/cong-dong/${encodeURIComponent(slug)}`;
+  const articleJsonLd = generateArticleJsonLd(post, canonicalPath);
 
   const breadcrumbsJsonLd = generateBreadcrumbsJsonLd([
     { name: 'Trang chủ', url: '/' },
     {
-      name: sectionLabel,
-      url: sectionUrl,
+      name: 'Bài Viết Cộng Đồng',
+      url: '/bai-viet/cong-dong',
     },
     {
       name: post.title,
-      url: isCommunity
-        ? `/bai-viet/cong-dong/${encodeURIComponent(slug)}`
-        : `/bai-viet/series/${encodeURIComponent(slug)}`,
+      url: canonicalPath,
     },
   ]);
 

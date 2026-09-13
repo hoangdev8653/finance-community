@@ -1,24 +1,20 @@
 'use client';
 
 import React from 'react';
-import { FileText, Users } from 'lucide-react';
+import { FileText } from 'lucide-react';
 
-export type ProfileTabType = 'analyses' | 'followers' | 'following';
+export type ProfileTabType = 'analyses';
 
 interface ProfileTabsProps {
   activeTab: ProfileTabType;
   onTabChange: (tab: ProfileTabType) => void;
   analysesCount?: number;
-  followersCount?: number;
-  followingCount?: number;
 }
 
 export function ProfileTabs({
   activeTab,
   onTabChange,
   analysesCount,
-  followersCount,
-  followingCount,
 }: ProfileTabsProps) {
   const tabs = [
     {
@@ -26,18 +22,6 @@ export function ProfileTabs({
       label: 'Analyses',
       icon: FileText,
       count: analysesCount,
-    },
-    {
-      id: 'followers' as const,
-      label: 'Followers',
-      icon: Users,
-      count: followersCount,
-    },
-    {
-      id: 'following' as const,
-      label: 'Following',
-      icon: Users,
-      count: followingCount,
     },
   ];
 

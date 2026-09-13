@@ -61,7 +61,7 @@ describe('SEO Site Config & Canonical URL Resolver', () => {
       'https://brewseven.vn/posts/community/test-slug'
     );
     expect(buildCanonicalUrl('series/market-curriculum/')).toBe(
-      'https://brewseven.vn/series/market-curriculum'
+      'https://brewseven.vn/khoa-hoc/market-curriculum'
     );
   });
 });

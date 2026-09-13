@@ -49,8 +49,6 @@ describe('ProfileHeader Component', () => {
       <QueryClientProvider client={queryClient}>
         <ProfileHeader
           profile={mockProfile}
-          followersCount={1250}
-          followingCount={42}
           analysesCount={18}
         />
       </QueryClientProvider>
@@ -60,8 +58,6 @@ describe('ProfileHeader Component', () => {
     expect(screen.getByText(/@macro_analyst/i)).toBeDefined();
     expect(screen.getByText(/Chuyên gia #u-123456/i)).toBeDefined();
     expect(screen.getByText(/Covering global sovereign debt/i)).toBeDefined();
-    expect(screen.getByText('1250')).toBeDefined();
-    expect(screen.getByText('42')).toBeDefined();
     expect(screen.getByText('18')).toBeDefined();
     expect(screen.getByText(/Thành viên từ/i)).toBeDefined();
   });
@@ -87,8 +83,6 @@ describe('ProfileHeader Component', () => {
       <QueryClientProvider client={queryClient}>
         <ProfileHeader
           profile={mockProfile}
-          followersCount={1250}
-          followingCount={42}
           analysesCount={18}
         />
       </QueryClientProvider>

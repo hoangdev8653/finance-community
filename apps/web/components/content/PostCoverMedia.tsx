@@ -27,14 +27,13 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
     ? optimizeCloudinaryUrl(coverMedia.secureUrl, 1200)
     : (post.coverMediaId ? resolveMediaUrl(post.coverMediaId, undefined) : null);
 
-  if (!resolvedUrl) {
-    return null;
-  }
+  const source = resolvedUrl || (post.contentType === 'SERIES' ? '/images/courses-hero-banner.png' : null);
+  if (!source) return null;
 
   return (
     <div className="relative my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-muted shadow-[0_12px_32px_rgba(15,23,42,0.10)] sm:aspect-21/9 dark:border-slate-800">
       <Image
-        src={resolvedUrl}
+        src={source}
         alt={post.title}
         fill
         priority={priority}

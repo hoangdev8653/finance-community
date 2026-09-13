@@ -53,7 +53,7 @@ export default function TagExplorePage({ params }: TagPageProps) {
               #{tag ? tag.name : decodedSlug}
             </h1>
             <p className="text-xs font-mono text-muted-foreground">
-              Curated market publications, analyses, and series under this topic
+              Curated market publications, analyses, and courses under this topic
             </p>
           </div>
         </div>

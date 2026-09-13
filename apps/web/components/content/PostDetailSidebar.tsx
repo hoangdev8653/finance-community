@@ -1,18 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostDetailResponse, PostEntity } from '@/types/content';
 import { postsService } from '@/lib/posts/posts-service';
 import { resolveMediaUrl } from '@/lib/utils/media';
-import { Avatar } from '@/components/ui/Avatar';
-import { Button } from '@/components/ui/Button';
-import { useAuth } from '@/lib/auth/AuthContext';
 import { PostTableOfContents } from './PostTableOfContents';
+import { CourseNavigationWidget } from '@/components/courses/CourseNavigationWidget';
 import { ContentHeading } from './PostContentRenderer';
-import { Sparkles, UserPlus, UserCheck, Clock, Tag, ArrowRight } from 'lucide-react';
-import { BRAND } from '@/lib/constants/brand';
+import { Sparkles, Clock, Tag, ArrowRight } from 'lucide-react';
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
@@ -23,8 +20,6 @@ interface PostDetailSidebarProps {
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
 export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProps) {
-  const { isAuthenticated } = useAuth();
-  const [isFollowing, setIsFollowing] = useState(false);
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
 
@@ -48,59 +43,22 @@ export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProp
     };
   }, [post.id]);
 
-  const authorName = post.contentType === 'SERIES' ? 'Ban Biên Tập Chuyên Đề' : BRAND.editorialDesk;
-  const authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80';
   const visibleTags = post.tags?.slice(0, VISIBLE_SIDEBAR_TAG_COUNT) ?? [];
   const hiddenTagCount = (post.tags?.length ?? 0) - visibleTags.length;
-  const authorRole = 'Hội đồng Thẩm định & Phân tích Tài chính';
+
+  const isSeries = post.contentType === 'SERIES';
 
   return (
-    <aside className="space-y-6 sticky top-24">
-      {headings.length > 0 && <PostTableOfContents headings={headings} />}
-      {/* 1. Author Profile Card */}
-      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
-        <div className="flex items-start gap-3.5">
-          <Avatar
-            src={authorAvatar}
-            fallback={BRAND.code}
-            size="lg"
-            className="ring-2 ring-slate-200 dark:ring-slate-700 rounded-full shrink-0"
-          />
-          <div className="min-w-0 flex-1">
-            <h3 className="font-heading text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100 truncate">
-              {authorName}
-            </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 leading-snug">
-              {authorRole}
-            </p>
-          </div>
+    <aside className={isSeries ? 'flex h-full flex-col gap-6' : 'space-y-6'}>
+      {isSeries && <CourseNavigationWidget postId={post.id} currentTitle={post.title} />}
+      {isSeries && headings.length > 0 && (
+        <div className="min-h-0 flex-1">
+          <PostTableOfContents headings={headings} className="mt-4 sticky !top-32 self-start" />
         </div>
+      )}
+      {!isSeries && headings.length > 0 && <PostTableOfContents headings={headings} />}
 
-        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-          Tổng hợp & thẩm định các phân tích vĩ mô, thị trường tài chính và kinh tế quốc tế.
-        </p>
-
-        {isAuthenticated ? <Button
-          variant={isFollowing ? 'outline' : 'primary'}
-          size="sm"
-          onClick={() => setIsFollowing((prev) => !prev)}
-          className="w-full justify-center gap-1.5 font-sans text-xs font-semibold rounded-lg shadow-2xs cursor-pointer"
-        >
-          {isFollowing ? (
-            <>
-              <UserCheck className="h-3.5 w-3.5 text-emerald-600" />
-              <span>Đang theo dõi tác giả</span>
-            </>
-          ) : (
-            <>
-              <UserPlus className="h-3.5 w-3.5" />
-              <span>Theo dõi tác giả</span>
-            </>
-          )}
-        </Button> : <Link href="/dang-nhap" className="flex min-h-10 w-full items-center justify-center rounded-lg border border-primary/30 px-3 text-xs font-semibold text-primary hover:bg-primary/5">Đăng nhập để theo dõi tác giả</Link>}
-      </div>
-
-      {/* 2. Related Articles Card */}
+      {/* Related Articles Card */}
       <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm sm:text-base">
@@ -156,7 +114,7 @@ export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProp
       </div>
 
       {/* 3. Related Tags */}
-      {post.tags && post.tags.length > 0 && (
+      {!isSeries && post.tags && post.tags.length > 0 && (
         <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-3 shadow-xs">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm">
             <Tag className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />

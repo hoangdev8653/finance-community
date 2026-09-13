@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, PenTool, Eye, Users } from 'lucide-react';
+import { FileText, PenTool, Eye } from 'lucide-react';
 import { DashboardMetrics } from '../../types/dashboard';
 
 interface DashboardMetricsBarProps {
@@ -30,17 +30,10 @@ export function DashboardMetricsBar({ metrics, isLoading }: DashboardMetricsBarP
       icon: Eye,
       color: 'text-blue-600 dark:text-blue-400',
     },
-    {
-      label: 'Người theo dõi',
-      value: metrics.followersCount.toLocaleString(),
-      description: 'Độc giả đang quan tâm',
-      icon: Users,
-      color: 'text-purple-600 dark:text-purple-400',
-    },
   ];
 
   return (
-    <section aria-label="Portfolio Metrics" className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <section aria-label="Portfolio Metrics" className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
       {cards.map((card) => {
         const Icon = card.icon;
         return (

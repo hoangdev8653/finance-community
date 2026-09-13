@@ -41,7 +41,6 @@ export function AccountSettingsView() {
 
   // Notification toggles
   const [notifyComments, setNotifyComments] = useState(true);
-  const [notifySeries, setNotifySeries] = useState(true);
   const [notifyNewsletter, setNotifyNewsletter] = useState(false);
 
   // Form submission feedback
@@ -425,23 +424,6 @@ export function AccountSettingsView() {
                   type="checkbox"
                   checked={notifyComments}
                   onChange={(e) => setNotifyComments(e.target.checked)}
-                  className="h-5 w-5 rounded-md text-emerald-600 focus:ring-primary cursor-pointer accent-emerald-600"
-                />
-              </div>
-
-              <div className="flex items-center justify-between py-4">
-                <div className="space-y-0.5 max-w-md">
-                  <p className="text-sm font-semibold text-foreground">
-                    Bài học mới trong Series đang theo dõi
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    Nhận thông báo khi Ban biên tập xuất bản chương mới trong lộ trình bạn đang học.
-                  </p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={notifySeries}
-                  onChange={(e) => setNotifySeries(e.target.checked)}
                   className="h-5 w-5 rounded-md text-emerald-600 focus:ring-primary cursor-pointer accent-emerald-600"
                 />
               </div>

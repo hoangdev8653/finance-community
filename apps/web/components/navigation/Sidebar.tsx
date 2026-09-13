@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Compass, LayoutGrid, Tag, Home, Folder, Calculator, LucideIcon } from 'lucide-react';
+import { BookOpen, Compass, Tag, Home, Folder, Calculator, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useTranslation } from '@/lib/i18n/useTranslation';
 import { TranslationKey } from '@/lib/i18n/useTranslation';
@@ -18,8 +18,7 @@ export interface NavItemConfig {
 const mainNavConfig: NavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
   { labelKey: 'navigation.explore', href: '/bai-viet', icon: Compass },
-  { labelKey: 'navigation.series', href: '/series', icon: BookOpen },
-  { labelKey: 'navigation.categories', href: '/danh-muc', icon: LayoutGrid },
+  { labelKey: 'navigation.series', href: '/khoa-hoc', icon: BookOpen },
   { labelKey: 'navigation.tags', href: '/the', icon: Tag },
 ];
 
@@ -54,7 +53,7 @@ export function Sidebar({ className }: { className?: string }) {
               const isActive =
                 pathname === item.href ||
                 (item.href !== '/' && pathname.startsWith(item.href)) ||
-                (item.href === '/series' && pathname.startsWith('/chuoi-bai'));
+                (item.href === '/khoa-hoc' && pathname.startsWith('/chuoi-bai'));
               return (
                 <Link
                   key={item.href}

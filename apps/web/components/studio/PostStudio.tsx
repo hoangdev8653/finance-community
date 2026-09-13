@@ -13,8 +13,8 @@ import { LearningSourceManager } from '@/components/learning/LearningSourceManag
 import { LearningQuizManager } from '@/components/learning/LearningQuizManager';
 import { learningService } from '@/lib/learning/learning-service';
 import { LearningAuditHistory } from '@/components/learning/LearningAuditHistory';
-import { SeriesSelector } from './SeriesSelector';
-import { learningSeriesService } from '@/lib/learning/learning-series-service';
+import { CourseSelector } from './CourseSelector';
+import { learningCourseService } from '@/lib/learning/learning-course-service';
 import { Globe, ExternalLink } from 'lucide-react';
 import { apiClient } from '@/lib/api/client';
 import { useUploadMedia } from '@/lib/media/use-media';
@@ -193,7 +193,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
         if (status === 'PUBLISHED') {
           router.push(
             updated.contentType === 'SERIES'
-              ? `/bai-viet/series/${updated.slug}`
+              ? `/bai-viet/khoa-hoc/${updated.slug}`
               : `/bai-viet/cong-dong/${updated.slug}`
           );
         } else {
@@ -213,12 +213,12 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           metaDescription: metaDescription.trim() || undefined,
         });
 
-        if (seriesId) await learningSeriesService.addLesson(seriesId, created.id, lessonOrder);
+        if (seriesId) await learningCourseService.addLesson(seriesId, created.id, lessonOrder);
 
         if (status === 'PUBLISHED') {
           router.push(
             created.contentType === 'SERIES'
-              ? `/bai-viet/series/${created.slug}`
+              ? `/bai-viet/khoa-hoc/${created.slug}`
               : `/bai-viet/cong-dong/${created.slug}`
           );
         } else {

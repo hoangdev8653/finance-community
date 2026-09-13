@@ -7,7 +7,6 @@ export interface DashboardMetrics {
   totalAnalyses: number;
   draftsCount: number;
   totalViews: number;
-  followersCount: number;
 }
 
 /**

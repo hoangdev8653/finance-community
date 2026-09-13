@@ -6,9 +6,9 @@ const columns = [
   [
     "Khóa học",
     [
-      ["Tất cả khóa học", "/series"],
-      ["Series nổi bật", "/series"],
-      ["Học miễn phí", "/series"],
+      ["Tất cả khóa học", "/khoa-hoc"],
+      ["Khóa học nổi bật", "/khoa-hoc"],
+      ["Học miễn phí", "/khoa-hoc"],
       ["Lộ trình học tập", "/lo-trinh-hoc"],
     ],
   ],

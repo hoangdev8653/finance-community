@@ -66,7 +66,7 @@ export function DashboardPostCard({
   const publicUrl =
     post.status === 'PUBLISHED'
       ? post.contentType === 'SERIES'
-        ? `/bai-viet/series/${encodeURIComponent(post.slug)}`
+        ? `/bai-viet/khoa-hoc/${encodeURIComponent(post.slug)}`
         : `/bai-viet/cong-dong/${encodeURIComponent(post.slug)}`
       : editUrl;
 

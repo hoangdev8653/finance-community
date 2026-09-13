@@ -1,17 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { dashboardService } from '@/lib/dashboard/dashboard-service';
 import { postsService } from '@/lib/posts/posts-service';
-import { usersService } from '@/lib/users/users-service';
 
 vi.mock('@/lib/posts/posts-service');
-vi.mock('@/lib/users/users-service');
 
 describe('Dashboard Service', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('aggregates metrics correctly from published posts, drafts, and followers', async () => {
+  it('aggregates metrics correctly from published posts and drafts', async () => {
     vi.mocked(postsService.getFeed).mockImplementation(async (params) => {
       if (params?.status === 'PUBLISHED') {
         return {
@@ -34,22 +32,15 @@ describe('Dashboard Service', () => {
       };
     });
 
-    vi.mocked(usersService.getFollowers).mockResolvedValueOnce({
-      data: [],
-      meta: { page: 1, limit: 1, totalItems: 42, totalPages: 42, hasNextPage: true, hasPreviousPage: false },
-    });
-
     const metrics = await dashboardService.getAuthorMetrics('user-1');
 
     expect(metrics.totalAnalyses).toBe(2);
     expect(metrics.draftsCount).toBe(4);
     expect(metrics.totalViews).toBe(500);
-    expect(metrics.followersCount).toBe(42);
   });
 
   it('returns fallback zero metrics if service calls fail', async () => {
     vi.mocked(postsService.getFeed).mockRejectedValueOnce(new Error('Network error'));
-    vi.mocked(usersService.getFollowers).mockRejectedValueOnce(new Error('Network error'));
 
     const metrics = await dashboardService.getAuthorMetrics('user-error');
 
@@ -57,7 +48,6 @@ describe('Dashboard Service', () => {
       totalAnalyses: 0,
       draftsCount: 0,
       totalViews: 0,
-      followersCount: 0,
     });
   });
 

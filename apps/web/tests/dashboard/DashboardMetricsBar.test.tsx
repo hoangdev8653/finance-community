@@ -4,12 +4,11 @@ import { render, screen } from '@testing-library/react';
 import { DashboardMetricsBar } from '@/components/dashboard/DashboardMetricsBar';
 
 describe('DashboardMetricsBar Component', () => {
-  it('renders all four KPI metric cards with formatted numbers', () => {
+  it('renders all KPI metric cards with formatted numbers', () => {
     const mockMetrics = {
       totalAnalyses: 12,
       draftsCount: 3,
       totalViews: 45200,
-      followersCount: 180,
     };
 
     render(<DashboardMetricsBar metrics={mockMetrics} />);
@@ -23,8 +22,6 @@ describe('DashboardMetricsBar Component', () => {
     expect(screen.getByText('Tổng lượt xem')).toBeInTheDocument();
     expect(screen.getByText('45,200')).toBeInTheDocument();
 
-    expect(screen.getByText('Người theo dõi')).toBeInTheDocument();
-    expect(screen.getByText('180')).toBeInTheDocument();
   });
 
   it('renders dashes when isLoading is true', () => {
@@ -32,12 +29,11 @@ describe('DashboardMetricsBar Component', () => {
       totalAnalyses: 0,
       draftsCount: 0,
       totalViews: 0,
-      followersCount: 0,
     };
 
     render(<DashboardMetricsBar metrics={emptyMetrics} isLoading={true} />);
 
     const dashes = screen.getAllByText('—');
-    expect(dashes).toHaveLength(4);
+    expect(dashes).toHaveLength(3);
   });
 });

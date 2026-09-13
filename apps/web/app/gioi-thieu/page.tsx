@@ -48,7 +48,7 @@ const CORE_VALUES = [
   {
     icon: Award,
     title: 'Biên soạn & Thẩm định chuyên sâu',
-    desc: `Mỗi bài học trong Series đều được kiểm duyệt bởi ${BRAND.editorialDesk} và tham vấn ý kiến từ các chuyên gia tài chính giàu kinh nghiệm.`,
+    desc: `Mỗi bài học trong khóa học đều được kiểm duyệt bởi ${BRAND.editorialDesk} và tham vấn ý kiến từ các chuyên gia tài chính giàu kinh nghiệm.`,
   },
   {
     icon: HeartHandshake,
@@ -192,15 +192,15 @@ export default function AboutPage() {
                 Bắt đầu hành trình cùng chúng tôi hôm nay
               </h3>
               <p className="max-w-xl text-sm leading-relaxed text-emerald-50/90 sm:text-base">
-                Tham gia các series bài học tài chính thực chiến hoặc gia nhập cộng đồng thảo luận cùng hàng nghìn độc giả.
+                Tham gia các khóa học tài chính thực chiến hoặc gia nhập cộng đồng thảo luận cùng hàng nghìn độc giả.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-3 shrink-0">
               <Button asChild size="lg" className="bg-white text-emerald-800 font-bold hover:bg-emerald-50 shadow-md">
-                <Link href="/series" className="inline-flex items-center gap-2">
+                <Link href="/khoa-hoc" className="inline-flex items-center gap-2">
                   <BookOpen className="h-4 w-4" />
-                  <span>Khám phá Series</span>
+                  <span>Khám phá khóa học</span>
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-white/40 text-white hover:bg-white/10">

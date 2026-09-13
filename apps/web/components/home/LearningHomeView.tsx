@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { BRAND } from "@/lib/constants/brand";
 import { postsService } from "@/lib/posts/posts-service";
-import { seriesService } from "@/lib/series/series-service";
+import { courseService } from "@/lib/courses/course-service";
 
 const DEFAULT_CATEGORIES = [
   [
@@ -225,7 +225,7 @@ export function LearningHomeView() {
   // 2. Fetch series from backend API
   const { data: remoteSeries } = useQuery({
     queryKey: ["home", "series"],
-    queryFn: () => seriesService.getAllSeries({ limit: 5 }),
+    queryFn: () => courseService.getAllCourses({ limit: 5 }),
     staleTime: 60 * 1000,
   });
 
@@ -245,7 +245,7 @@ export function LearningHomeView() {
           id: cat.id,
           label: cat.name,
           slug: cat.slug,
-          href: `/danh-muc/${cat.slug}`,
+          href: '/bai-viet/cong-dong',
           Icon,
           tone,
         };
@@ -255,7 +255,7 @@ export function LearningHomeView() {
       id: slug,
       label,
       slug,
-      href: `/danh-muc/${slug}`,
+      href: '/bai-viet/cong-dong',
       Icon,
       tone,
     }));
@@ -268,7 +268,7 @@ export function LearningHomeView() {
         id: item.id,
         title: item.name,
         slug: item.slug,
-        href: `/series/${item.slug}`,
+        href: `/khoa-hoc/${item.slug}`,
         lessons: `${item.publishedArticleCount ?? 0} bài học`,
         author: "Chuyên gia",
         tint: TINTS[index % TINTS.length],
@@ -278,7 +278,7 @@ export function LearningHomeView() {
       id: slug,
       title,
       slug,
-      href: `/series/${slug}`,
+      href: `/khoa-hoc/${slug}`,
       lessons,
       author,
       tint,
@@ -339,7 +339,7 @@ export function LearningHomeView() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 aria-label="Tìm kiếm bài học"
-                placeholder="Tìm kiếm bài học, series, chủ đề..."
+                placeholder="Tìm kiếm bài học, khóa học, chủ đề..."
                 className="min-w-0 flex-1 bg-transparent px-3 text-sm text-foreground outline-none placeholder:font-semibold placeholder:text-muted-foreground"
               />
               <button
@@ -353,7 +353,7 @@ export function LearningHomeView() {
             <div className="mt-8 grid max-w-[560px] grid-cols-2 gap-5 sm:grid-cols-4">
               {[
                 [BookOpen, "1,248", "Bài học", "text-emerald-600 dark:text-emerald-400"],
-                [BriefcaseBusiness, "156", "Series", "text-blue-600 dark:text-blue-400"],
+                [BriefcaseBusiness, "156", "Khóa học", "text-blue-600 dark:text-blue-400"],
                 [UsersRound, "12,589", "Thành viên", "text-violet-600 dark:text-violet-400"],
                 [Star, "4.9/5", "Đánh giá", "text-amber-500 dark:text-amber-400"],
               ].map(([Icon, value, label, color]) => {
@@ -485,9 +485,9 @@ export function LearningHomeView() {
         </section>
         <section className="mt-14">
           <Heading
-            title="Danh mục phổ biến"
-            href="/danh-muc"
-            label="Xem tất cả danh mục"
+            title="Chủ đề cộng đồng"
+            href="/bai-viet/cong-dong"
+            label="Khám phá cộng đồng"
           />
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
             {displayCategories.map((cat) => {
@@ -513,9 +513,9 @@ export function LearningHomeView() {
         </section>
         <section className="mt-16">
           <Heading
-            title="Series nổi bật"
-            href="/series"
-            label="Xem tất cả series"
+            title="Khóa học nổi bật"
+            href="/khoa-hoc"
+            label="Xem tất cả khóa học"
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {displaySeries.map((item, index) => (

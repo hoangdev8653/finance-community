@@ -72,9 +72,9 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'series-1',
     category: 'series',
-    question: 'Các series bài học trên nền tảng có mất phí không?',
+    question: 'Các khóa học trên nền tảng có mất phí không?',
     answer:
-      `Hiện tại phần lớn các series bài học kiến thức nền tảng (như Quản lý tài chính cá nhân, Lập quỹ khẩn cấp, Đọc báo cáo tài chính căn bản) đều được phát hành hoàn toàn miễn phí cho cộng đồng.`,
+      `Hiện tại phần lớn các khóa học kiến thức nền tảng (như Quản lý tài chính cá nhân, Lập quỹ khẩn cấp, Đọc báo cáo tài chính căn bản) đều được phát hành hoàn toàn miễn phí cho cộng đồng.`,
   },
   {
     id: 'series-2',
@@ -88,7 +88,7 @@ const FAQ_DATA: FAQItem[] = [
     category: 'series',
     question: 'Nội dung bài học do ai biên soạn và thẩm định?',
     answer:
-      `Tất cả các series bài học học thuật được biên soạn và kiểm chứng nghiêm ngặt bởi ${BRAND.editorialDesk} cùng các chuyên gia có chứng chỉ chuyên môn tài chính (CFA, CPA hoặc kinh nghiệm thực chiến trên thị trường).`,
+      `Tất cả các khóa học được biên soạn và kiểm chứng nghiêm ngặt bởi ${BRAND.editorialDesk} cùng các chuyên gia có chứng chỉ chuyên môn tài chính (CFA, CPA hoặc kinh nghiệm thực chiến trên thị trường).`,
   },
 
   // 3. Cộng đồng & Đăng bài

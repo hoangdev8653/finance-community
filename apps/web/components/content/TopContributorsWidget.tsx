@@ -1,11 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { UserCheck, UserPlus } from 'lucide-react';
 import { Avatar } from '@/components/ui/Avatar';
 import { useTranslation } from '@/lib/i18n/useTranslation';
-import { useAuth } from '@/lib/auth/AuthContext';
 
 const TOP_CONTRIBUTORS = [
   {
@@ -44,15 +42,6 @@ const TOP_CONTRIBUTORS = [
 
 export function TopContributorsWidget() {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
-  const [followingMap, setFollowingMap] = useState<Record<string, boolean>>({});
-
-  const toggleFollow = (id: string, e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setFollowingMap((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
   return (
     <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3.5 shadow-xs">
       <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100">
@@ -61,7 +50,6 @@ export function TopContributorsWidget() {
 
       <div className="space-y-3">
         {TOP_CONTRIBUTORS.map((contributor) => {
-          const isFollowing = !!followingMap[contributor.id];
           return (
             <div
               key={contributor.id}
@@ -89,28 +77,6 @@ export function TopContributorsWidget() {
                   </span>
                 </div>
               </Link>
-
-              {isAuthenticated && <button
-                type="button"
-                onClick={(e) => toggleFollow(contributor.id, e)}
-                className={`shrink-0 inline-flex h-8 items-center gap-1.5 px-3 text-xs font-bold rounded-lg transition-all cursor-pointer shadow-2xs ${
-                  isFollowing
-                    ? 'bg-teal-100 dark:bg-teal-950 text-teal-950 dark:text-teal-200 border border-teal-300 dark:border-teal-800'
-                    : 'bg-slate-900 dark:bg-[#162033] hover:bg-slate-800 text-white dark:text-slate-200'
-                }`}
-              >
-                {isFollowing ? (
-                  <>
-                    <UserCheck className="h-3 w-3 text-teal-700" />
-                    <span>Đang theo dõi</span>
-                  </>
-                ) : (
-                  <>
-                    <UserPlus className="h-3 w-3" />
-                    <span>Theo dõi</span>
-                  </>
-                )}
-              </button>}
             </div>
           );
         })}

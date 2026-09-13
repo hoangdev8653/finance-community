@@ -37,59 +37,6 @@ import { useQuery } from '@tanstack/react-query';
 import { MarketTickerBar } from '@/components/market/MarketTickerBar';
 import { BRAND } from '@/lib/constants/brand';
 
-interface CategoryDropdownItem {
-  title: string;
-  desc: string;
-  href: string;
-  icon: React.ElementType;
-  color: string;
-}
-
-const CATEGORY_ITEMS: CategoryDropdownItem[] = [
-  {
-    title: 'Tài chính Việt Nam',
-    desc: 'Vĩ mô trong nước, Doanh nghiệp niêm yết, BĐS & Ngân hàng',
-    href: '/the/corporate-finance',
-    icon: Building2,
-    color: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-  },
-  {
-    title: 'Tài chính Quốc tế',
-    desc: 'Chính sách Fed, Lãi suất toàn cầu, Phố Wall, Tỷ giá DXY',
-    href: '/the/macroeconomics',
-    icon: Globe,
-    color: 'text-blue-500 bg-blue-500/10 border-blue-500/20',
-  },
-  {
-    title: 'Hàng hóa & Giá Vàng',
-    desc: 'Diễn biến giá vàng SJC, Dầu thô Brent, Hàng hóa chiến lược',
-    href: '/the/commodities',
-    icon: Coins,
-    color: 'text-teal-500 bg-teal-500/10 border-teal-500/20',
-  },
-  {
-    title: 'Series',
-    desc: 'Cẩm nang Đọc BCTC, Định giá bài bản & Chiến lược đầu tư',
-    href: '/series',
-    icon: BookOpen,
-    color: 'text-purple-500 bg-purple-500/10 border-purple-500/20',
-  },
-  {
-    title: 'Định giá & Phân tích',
-    desc: 'Mô hình DCF, P/E, EV/EBITDA, Phân tích Báo cáo tài chính',
-    href: '/danh-muc/valuation',
-    icon: BarChart3,
-    color: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
-  },
-  {
-    title: 'Tài chính Cá nhân',
-    desc: 'Xây dựng dòng tiền tự do, Phân bổ tài sản & Quản trị rủi ro',
-    href: '/danh-muc/tai-chinh-ca-nhan',
-    icon: Wallet,
-    color: 'text-rose-500 bg-rose-500/10 border-rose-500/20',
-  },
-];
-
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -111,7 +58,6 @@ export function Header() {
     setMounted(true);
   }, []);
 
-  // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -136,7 +82,7 @@ export function Header() {
   const isDark = mounted ? theme === 'dark' || resolvedTheme === 'dark' : false;
 
   return (
-    <header className="sticky top-0 z-40 w-full max-w-full border-t-[3px] border-t-slate-900 border-b border-border bg-background/95 backdrop-blur-md dark:border-t-slate-700">
+    <header className="sticky top-0 z-40 w-full max-w-full border-b border-slate-200/80 bg-background/95 shadow-[0_1px_0_rgba(15,23,42,0.03),0_10px_24px_rgba(15,23,42,0.045)] backdrop-blur-xl dark:border-slate-800/90 dark:shadow-[0_1px_0_rgba(255,255,255,0.03),0_10px_24px_rgba(0,0,0,0.18)]">
       <MarketTickerBar />
       <div className="w-full max-w-[1440px] mx-auto flex h-16 sm:h-18 items-center justify-between px-3.5 sm:px-6 lg:px-8">
         {/* 1. Left: Brand Logo */}
@@ -181,34 +127,40 @@ export function Header() {
 
           {/* Khám phá */}
           <Link
-            href="/series"
+            href="/khoa-hoc"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/series') || pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')
+              pathname.startsWith('/khoa-hoc') ||
+                pathname.startsWith('/chuoi-bai') ||
+                pathname.startsWith('/lo-trinh-hoc') ||
+                pathname.startsWith('/bai-viet/khoa-hoc')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <Compass className="hidden" aria-hidden="true" />
-            <span>Series</span>
-            {(pathname.startsWith('/series') || pathname.startsWith('/chuoi-bai') || pathname.startsWith('/lo-trinh-hoc')) && (
+            <span>Khóa học</span>
+            {(pathname.startsWith('/khoa-hoc') ||
+              pathname.startsWith('/chuoi-bai') ||
+              pathname.startsWith('/lo-trinh-hoc') ||
+              pathname.startsWith('/bai-viet/khoa-hoc')) && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
 
           {/* Bài viết */}
           <Link
-            href="/bai-viet"
+            href="/bai-viet/cong-dong"
             className={cn(
               'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/bai-viet')
+              pathname.startsWith('/bai-viet/cong-dong')
                 ? 'text-teal-800 dark:text-teal-400'
                 : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
             )}
           >
             <BookOpen className="hidden" aria-hidden="true" />
-            <span>Bài viết</span>
-            {pathname.startsWith('/bai-viet') && (
+            <span>Cộng đồng</span>
+            {pathname.startsWith('/bai-viet/cong-dong') && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
@@ -218,7 +170,7 @@ export function Header() {
             ref={dropdownRef}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className="relative"
+            className="relative hidden"
           >
             <button
               type="button"
@@ -325,7 +277,7 @@ export function Header() {
               type="text"
               value={headerSearch}
               onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="Tìm kiếm bài học, series, chủ đề..."
+              placeholder="Tìm kiếm bài học, khóa học, chủ đề..."
               className="h-10 w-[240px] rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-xs text-foreground placeholder:font-medium placeholder:text-muted-foreground transition-colors focus:outline-hidden focus:ring-1 focus:ring-primary"
             />
           </form>

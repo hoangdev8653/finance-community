@@ -95,13 +95,5 @@ describe('ProfileView Component', () => {
 
     expect(screen.getByRole('heading', { level: 1, name: /Portfolio Manager/i })).toBeDefined();
     expect(screen.getByRole('tab', { name: /Analyses/i })).toBeDefined();
-    expect(screen.getByRole('tab', { name: /Followers/i })).toBeDefined();
-    expect(screen.getByRole('tab', { name: /Following/i })).toBeDefined();
-
-    // Switch to Followers tab
-    const followersTab = screen.getByRole('tab', { name: /Followers/i });
-    fireEvent.click(followersTab);
-
-    expect(screen.getByText(/No followers yet/i)).toBeDefined();
   });
 });

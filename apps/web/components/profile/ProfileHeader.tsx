@@ -6,7 +6,6 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { FollowButton } from './FollowButton';
 import { EditProfileModal } from './EditProfileModal';
 import { ReportButton } from '@/components/moderation/ReportButton';
 import { ReputationBadge } from '@/components/ui/ReputationBadge';
@@ -14,18 +13,12 @@ import { Calendar, Users, Edit3 } from 'lucide-react';
 
 interface ProfileHeaderProps {
   profile: PublicProfile;
-  followersCount: number;
-  followingCount: number;
   analysesCount: number;
-  onFollowChange?: (following: boolean) => void;
 }
 
 export function ProfileHeader({
   profile,
-  followersCount,
-  followingCount,
   analysesCount,
-  onFollowChange,
 }: ProfileHeaderProps) {
   const { user } = useAuth();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -75,11 +68,6 @@ export function ProfileHeader({
               </Button>
             ) : (
               <>
-                <FollowButton
-                  targetUserId={profile.userId}
-                  targetUsername={profile.username}
-                  onFollowChange={onFollowChange}
-                />
                 <ReportButton
                   targetType="USER"
                   targetId={profile.userId}
@@ -104,14 +92,6 @@ export function ProfileHeader({
             <div>
               <strong className="text-slate-950 dark:text-slate-100 font-bold text-base">{analysesCount}</strong>{' '}
               <span>Bài viết</span>
-            </div>
-            <div>
-              <strong className="text-slate-950 dark:text-slate-100 font-bold text-base">{followersCount}</strong>{' '}
-              <span>Người theo dõi</span>
-            </div>
-            <div>
-              <strong className="text-slate-950 dark:text-slate-100 font-bold text-base">{followingCount}</strong>{' '}
-              <span>Đang theo dõi</span>
             </div>
           </div>
 

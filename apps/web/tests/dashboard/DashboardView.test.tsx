@@ -28,7 +28,6 @@ describe('DashboardView Component', () => {
     totalAnalyses: 5,
     draftsCount: 2,
     totalViews: 12500,
-    followersCount: 89,
   };
 
   const mockPosts = [
@@ -99,14 +98,13 @@ describe('DashboardView Component', () => {
     render(<DashboardView />);
 
     expect(screen.getByText(/Bảng điều khiển Học tập/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /Khám phá series/i })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: /Khám phá khóa học/i })).toHaveAttribute(
       'href',
-      '/series'
+      '/khoa-hoc'
     );
 
     // KPI Metrics
     expect(screen.getByText('12,500')).toBeInTheDocument();
-    expect(screen.getByText('89')).toBeInTheDocument();
 
     // Posts stream
     expect(screen.getByText('Macro Valuation In Tech')).toBeInTheDocument();

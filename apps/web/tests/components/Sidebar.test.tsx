@@ -8,8 +8,7 @@ describe('Sidebar Component', () => {
     render(<Sidebar />);
     expect(screen.getByRole('link', { name: /Trang chủ|Home/i })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: /Khám phá|Explore/i })).toHaveAttribute('href', '/bai-viet');
-    expect(screen.getByRole('link', { name: /Chuỗi bài|Series/i })).toHaveAttribute('href', '/series');
-    expect(screen.getByRole('link', { name: /Danh mục|Categories/i })).toHaveAttribute('href', '/danh-muc');
+    expect(screen.getByRole('link', { name: /Chuỗi bài|Khóa học/i })).toHaveAttribute('href', '/khoa-hoc');
     expect(screen.getByRole('link', { name: /Thẻ chủ đề|Mã & Thẻ|Tags/i })).toHaveAttribute('href', '/the');
   });
 

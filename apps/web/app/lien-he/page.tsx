@@ -19,7 +19,7 @@ const contactItems = [
   },
   {
     title: 'Hợp tác chuyên môn',
-    description: 'Trao đổi về series học tập, bài phân tích chuyên sâu hoặc chương trình cộng tác.',
+    description: 'Trao đổi về khóa học, bài phân tích chuyên sâu hoặc chương trình cộng tác.',
     value: BRAND.emails.partners,
   },
   {

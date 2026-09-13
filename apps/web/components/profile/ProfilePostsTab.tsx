@@ -66,7 +66,7 @@ export function ProfilePostsTab({ userId }: ProfilePostsTabProps) {
       <EmptyState
         icon={FileText}
         title="No published analyses yet"
-        description="This analyst has not published any public research notes or educational series."
+        description="This analyst has not published any public research notes or courses."
       />
     );
   }

@@ -50,7 +50,7 @@ describe('PostEditor Component', () => {
 
     expect(screen.getByText(/Nội dung bài viết/i)).toBeDefined();
 
-    // Switch to SERIES
-    expect(screen.getByText(/BÀI HỌC \/ SERIES/i)).toBeDefined();
+    // Switch to course content
+    expect(screen.getByText(/BÀI HỌC \/ KHÓA HỌC/i)).toBeDefined();
   });
 });

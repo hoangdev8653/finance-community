@@ -30,20 +30,20 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-lg border border-border bg-muted/20 p-5 text-center space-y-3">
-        <div className="flex justify-center text-muted-foreground">
-          <MessageSquare className="h-6 w-6" aria-hidden="true" />
+      <div className="rounded-2xl border border-slate-200/80 bg-white px-5 py-5 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:px-6">
+        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <MessageSquare className="h-5 w-5" aria-hidden="true" />
         </div>
-        <p className="text-sm text-foreground font-medium">
+        <p className="mt-3 font-heading text-base font-bold text-foreground">
           Đăng nhập để tham gia thảo luận
         </p>
-        <p className="text-xs text-muted-foreground max-w-md mx-auto">
-          Share your market perspective, ask questions about the valuation model, or challenge assumptions.
+        <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-muted-foreground">
+          Chia sẻ góc nhìn, đặt câu hỏi và trao đổi một cách tôn trọng với cộng đồng.
         </p>
-        <div className="pt-1">
+        <div className="mt-4">
           <Link
             href={`/login?redirect=${encodeURIComponent(pathname || '/')}`}
-            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
           >
             <LogIn className="h-3.5 w-3.5" aria-hidden="true" />
             Đăng nhập để bình luận
@@ -130,7 +130,7 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
           disabled={isLoading || isUploading || isRateLimited}
           aria-label="Write a comment"
           placeholder="Chia sẻ góc nhìn phân tích, số liệu định giá, hoặc đính kèm ảnh biểu đồ..."
-          className="w-full rounded-md border border-input bg-background p-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+          className="w-full resize-y rounded-2xl border border-input bg-background p-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
         />
 
         {/* Attached image preview */}

@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { LearningHomeView } from '@/components/home/LearningHomeView';
 import { postsService } from '@/lib/posts/posts-service';
-import { seriesService } from '@/lib/series/series-service';
+import { courseService } from '@/lib/courses/course-service';
 
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
@@ -34,7 +34,7 @@ describe('LearningHomeView Component', () => {
 
   it('renders learning hero, search bar, and fallback categories when API is empty', () => {
     vi.spyOn(postsService, 'getCategories').mockResolvedValueOnce([]);
-    vi.spyOn(seriesService, 'getAllSeries').mockResolvedValueOnce({
+    vi.spyOn(courseService, 'getAllCourses').mockResolvedValueOnce({
       data: [],
       meta: { page: 1, limit: 5, totalItems: 0, totalPages: 0, hasNextPage: false, hasPreviousPage: false },
     });
@@ -75,7 +75,7 @@ describe('LearningHomeView Component', () => {
       },
     ]);
 
-    vi.spyOn(seriesService, 'getAllSeries').mockResolvedValueOnce({
+    vi.spyOn(courseService, 'getAllCourses').mockResolvedValueOnce({
       data: [
         {
           id: 'series-1',

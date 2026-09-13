@@ -16,9 +16,10 @@ import type { ContentHeading } from './PostContentRenderer';
 interface PostTableOfContentsProps {
   headings: ContentHeading[];
   isMobile?: boolean;
+  className?: string;
 }
 
-export function PostTableOfContents({ headings, isMobile = false }: PostTableOfContentsProps) {
+export function PostTableOfContents({ headings, isMobile = false, className = '' }: PostTableOfContentsProps) {
   const [activeId, setActiveId] = useState(headings[0]?.id ?? '');
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -154,14 +155,14 @@ export function PostTableOfContents({ headings, isMobile = false }: PostTableOfC
   return (
     <nav
       aria-label="Mục lục bài viết"
-      className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-3 sticky top-24"
+      className={`flex flex-col space-y-4 rounded-2xl border border-slate-200 bg-white p-5 font-sans shadow-xs dark:border-slate-800 dark:bg-slate-900 ${className}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-border pb-3">
-        <div className="flex items-center gap-2 font-heading text-sm font-bold text-foreground">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+        <div className="flex items-center gap-2 text-sm font-bold text-foreground">
           <List className="h-4 w-4 text-primary" />
           <span>Mục lục bài viết</span>
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-bold text-primary">
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-bold text-primary">
             {headings.length}
           </span>
         </div>
@@ -178,12 +179,12 @@ export function PostTableOfContents({ headings, isMobile = false }: PostTableOfC
       </div>
 
       {/* Reading Progress Indicator */}
-      <div className="space-y-1">
-        <div className="flex items-center justify-between text-[11px] font-mono text-muted-foreground">
+      <div className="space-y-1.5">
+        <div className="flex items-center justify-between text-xs text-muted-foreground">
           <span>Tiến độ đọc</span>
           <span className="font-bold text-foreground">{readingProgress}%</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
           <div
             className="h-full bg-primary transition-all duration-150"
             style={{ width: `${readingProgress}%` }}
@@ -194,7 +195,7 @@ export function PostTableOfContents({ headings, isMobile = false }: PostTableOfC
       {/* Headings List */}
       {!isCollapsed && (
         <div className="max-h-[55vh] overflow-y-auto pr-1">
-          <ol className="relative space-y-1 border-l border-border pl-2">
+          <ol className="relative space-y-1.5 border-l border-emerald-100 pl-2 dark:border-emerald-950">
             {headings.map((heading) => {
               const isActive = activeId === heading.id;
               const isCopied = copiedId === heading.id;
@@ -205,13 +206,13 @@ export function PostTableOfContents({ headings, isMobile = false }: PostTableOfC
                     href={`#${heading.id}`}
                     onClick={(e) => handleHeadingClick(heading.id, e)}
                     aria-current={isActive ? 'location' : undefined}
-                    className={`flex items-center justify-between rounded-lg py-1.5 px-2 text-xs leading-relaxed transition-all ${
+                    className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-sm leading-snug transition-all ${
                       heading.level === 3
-                        ? 'pl-5 text-muted-foreground'
-                        : 'font-semibold text-foreground/90'
+                        ? 'pl-4 text-muted-foreground'
+                        : 'font-medium text-foreground/90'
                     } ${
                       isActive
-                        ? 'bg-primary/10 text-primary font-bold shadow-2xs'
+                        ? 'bg-emerald-50 text-emerald-800 font-semibold dark:bg-emerald-950/40 dark:text-emerald-300'
                         : 'hover:bg-muted/60 hover:text-foreground'
                     }`}
                   >
@@ -239,11 +240,11 @@ export function PostTableOfContents({ headings, isMobile = false }: PostTableOfC
       )}
 
       {/* Footer / Scroll to Top */}
-      <div className="pt-2 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+      <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-3 text-sm text-muted-foreground dark:border-slate-800">
         <button
           type="button"
           onClick={scrollToTop}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition hover:text-primary"
         >
           <ArrowUp className="h-3.5 w-3.5" />
           <span>Về đầu bài viết</span>

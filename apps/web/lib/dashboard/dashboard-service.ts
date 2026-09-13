@@ -1,5 +1,4 @@
 import { postsService } from '../posts/posts-service';
-import { usersService } from '../users/users-service';
 import { PostEntity, PaginatedResult } from '../../types/content';
 import { DashboardMetrics, DashboardPostsParams } from '../../types/dashboard';
 
@@ -9,15 +8,13 @@ export const dashboardService = {
    */
   async getAuthorMetrics(authorId: string): Promise<DashboardMetrics> {
     try {
-      const [publishedResult, draftsResult, followersResult] = await Promise.all([
+      const [publishedResult, draftsResult] = await Promise.all([
         postsService.getFeed({ authorId, status: 'PUBLISHED', limit: 100 }),
         postsService.getFeed({ authorId, status: 'DRAFT', limit: 1 }),
-        usersService.getFollowers(authorId, { limit: 1 }),
       ]);
 
       const totalAnalyses = publishedResult.meta.totalItems;
       const draftsCount = draftsResult.meta.totalItems;
-      const followersCount = followersResult.meta.totalItems;
       const totalViews = publishedResult.data.reduce(
         (sum, post) => sum + (post.viewCount || 0),
         0
@@ -27,14 +24,12 @@ export const dashboardService = {
         totalAnalyses,
         draftsCount,
         totalViews,
-        followersCount,
       };
     } catch {
       return {
         totalAnalyses: 0,
         draftsCount: 0,
         totalViews: 0,
-        followersCount: 0,
       };
     }
   },

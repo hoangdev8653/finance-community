@@ -3,14 +3,14 @@ import {
   generateWebSiteJsonLd,
   generateOrganizationJsonLd,
   generateArticleJsonLd,
-  generateSeriesItemListJsonLd,
+  generateCourseItemListJsonLd,
   generateProfileJsonLd,
   generateBreadcrumbsJsonLd,
   generateCollectionPageJsonLd,
 } from '@/lib/seo/structured-data';
 import { siteConfig } from '@/lib/seo/site-config';
 import type { PostDetailResponse } from '@/types/content';
-import type { SeriesDetailResponse } from '@/types/series';
+import type { CourseDetailResponse } from '@/types/course';
 import type { PublicProfile } from '@/types/users';
 
 describe('Schema.org Structured Data Generators', () => {
@@ -101,8 +101,8 @@ describe('Schema.org Structured Data Generators', () => {
     expect(jsonLd['@type']).toBe('EducationalArticle');
   });
 
-  it('generateSeriesItemListJsonLd() produces structured ItemList with items', () => {
-    const mockSeries: SeriesDetailResponse = {
+  it('generateCourseItemListJsonLd() produces structured ItemList with items', () => {
+    const mockSeries: CourseDetailResponse = {
       series: {
         id: 's-1',
         name: 'Fixed Income Fundamentals',
@@ -131,7 +131,7 @@ describe('Schema.org Structured Data Generators', () => {
       },
     };
 
-    const jsonLd = generateSeriesItemListJsonLd(mockSeries);
+    const jsonLd = generateCourseItemListJsonLd(mockSeries);
 
     expect(jsonLd['@type']).toBe('ItemList');
     expect(jsonLd.name).toBe('Fixed Income Fundamentals');
@@ -164,8 +164,8 @@ describe('Schema.org Structured Data Generators', () => {
   it('generateBreadcrumbsJsonLd() produces valid BreadcrumbList', () => {
     const breadcrumbs = generateBreadcrumbsJsonLd([
       { name: 'Home', url: '/' },
-      { name: 'Educational Series', url: '/series' },
-      { name: 'Curriculum', url: '/series/curriculum' },
+      { name: 'Educational Series', url: '/khoa-hoc' },
+      { name: 'Curriculum', url: '/khoa-hoc/curriculum' },
     ]);
 
     expect(breadcrumbs['@type']).toBe('BreadcrumbList');
@@ -178,9 +178,9 @@ describe('Schema.org Structured Data Generators', () => {
   });
 
   it('generateCollectionPageJsonLd() produces valid CollectionPage entity', () => {
-    const collection = generateCollectionPageJsonLd('All Series', 'List of series', '/series');
+    const collection = generateCollectionPageJsonLd('All Series', 'List of series', '/khoa-hoc');
     expect(collection['@type']).toBe('CollectionPage');
     expect(collection.name).toBe('All Series');
-    expect(collection.url).toBe(`${siteConfig.url}/series`);
+    expect(collection.url).toBe(`${siteConfig.url}/khoa-hoc`);
   });
 });

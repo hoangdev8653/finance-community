@@ -58,10 +58,10 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
   return (
     <section
       aria-label="Post engagement"
-      className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-border bg-surface shadow-2xs my-6"
+      className="my-6 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between sm:p-4"
     >
       {/* Reactions & Comment Jump */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         <ReactionButton
           total={total}
           userReacted={userReacted}
@@ -75,32 +75,32 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
           type="button"
           onClick={handleScrollToComments}
           aria-label="Jump to discussion comments"
-          className="inline-flex items-center gap-2 text-sm font-mono font-medium px-3.5 py-2 min-h-[44px] rounded-md border border-border bg-surface text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-slate-50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:hover:bg-slate-800"
         >
           <MessageSquare className="h-4 w-4" aria-hidden="true" />
-          <span>{commentCount !== undefined ? commentCount : 'Comments'}</span>
+          <span>{commentCount !== undefined ? `${commentCount} thảo luận` : 'Thảo luận'}</span>
         </button>
       </div>
 
       {/* Bookmark & Share Actions */}
-      <div className="flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center gap-2">
         <BookmarkButton postId={postId} variant="labeled" size="md" className="min-h-[44px]" />
 
         <button
           type="button"
           onClick={handleShare}
           aria-label="Share this analysis link"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground hover:text-foreground px-3 py-2 min-h-[44px] rounded-md border border-border/60 hover:bg-muted/40 transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary cursor-pointer"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-border px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-slate-50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:hover:bg-slate-800"
         >
           {copied ? (
             <>
               <Check className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              <span className="text-primary font-medium">Link Copied</span>
+              <span className="text-primary font-medium">Đã sao chép</span>
             </>
           ) : (
             <>
               <Share2 className="h-3.5 w-3.5" aria-hidden="true" />
-              <span>Share</span>
+              <span>Chia sẻ</span>
             </>
           )}
         </button>
