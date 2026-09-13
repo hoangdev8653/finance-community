@@ -1,13 +1,22 @@
-import { pgTable, uuid, varchar, text, integer, boolean, timestamp, unique, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, integer, boolean, timestamp, unique, index, jsonb } from 'drizzle-orm/pg-core';
 import { domainsTable } from './domains.schema';
 import { categoriesTable } from './categories.schema';
 import { postsTable } from './posts.schema';
+import { mediaTable } from './media.schema';
 
 export const learningSeriesTable = pgTable('learning_series', {
   id: uuid('id').primaryKey().defaultRandom(),
   title: varchar('title', { length: 300 }).notNull(),
   slug: varchar('slug', { length: 320 }).notNull().unique(),
   description: text('description'),
+  estimatedDurationMinutes: integer('estimated_duration_minutes'),
+  learningOutcomes: jsonb('learning_outcomes').$type<string[]>().notNull().default([]),
+  heroMediaId: uuid('hero_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
+  heroAltText: varchar('hero_alt_text', { length: 250 }),
+  outcomesMediaId: uuid('outcomes_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
+  outcomesAltText: varchar('outcomes_alt_text', { length: 250 }),
+  ctaMediaId: uuid('cta_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
+  ctaAltText: varchar('cta_alt_text', { length: 250 }),
   domainId: uuid('domain_id').notNull().references(() => domainsTable.id, { onDelete: 'restrict' }),
   categoryId: uuid('category_id').notNull().references(() => categoriesTable.id, { onDelete: 'restrict' }),
   status: varchar('status', { length: 20 }).notNull().default('DRAFT'),

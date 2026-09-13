@@ -1,13 +1,27 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { LearningSeriesRepository } from '../../../database/repositories/learning-series.repository';
 import { AddSeriesLessonDto, CreateLearningSeriesDto, UpdateLearningSeriesDto, UpdateSeriesLessonDto, UpdateSeriesLessonOrderDto } from '../dto/create-learning-series.dto';
+import { MediaService } from '../../media/services/media.service';
 
 @Injectable()
 export class LearningSeriesService {
-  constructor(private readonly repo: LearningSeriesRepository) {}
+  constructor(
+    private readonly repo: LearningSeriesRepository,
+    private readonly mediaService: MediaService,
+  ) {}
   list() { return this.repo.list(); }
   listPublished() { return this.repo.listPublished(); }
+  private async validateSeriesMedia(userId: string, dto: CreateLearningSeriesDto | UpdateLearningSeriesDto): Promise<void> {
+    const mediaIds = [dto.heroMediaId, dto.outcomesMediaId, dto.ctaMediaId].filter((id): id is string => Boolean(id));
+    for (const mediaId of mediaIds) {
+      const media = await this.mediaService.getMediaById(mediaId);
+      if (media.resourceType !== 'image' || media.uploaderId !== userId) {
+        throw new ForbiddenException('Series media must be an image uploaded by the series owner.');
+      }
+    }
+  }
   async create(userId: string, dto: CreateLearningSeriesDto) {
+    await this.validateSeriesMedia(userId, dto);
     try { return await this.repo.create({ ...dto, createdBy: userId }); }
     catch { throw new ConflictException('Slug Series đã tồn tại.'); }
   }
@@ -43,6 +57,8 @@ export class LearningSeriesService {
     catch { throw new ConflictException('Số thứ tự bài học hoặc bài viết đã tồn tại trong Series.'); }
   }
   async update(id: string, dto: UpdateLearningSeriesDto) {
+    const existing = await this.repo.findById(id);
+    if (existing) await this.validateSeriesMedia(existing.createdBy, dto);
     if (!(await this.repo.findById(id))) throw new NotFoundException('Không tìm thấy Series.');
     try { return await this.repo.update(id, { ...dto, status: dto.isPublished === undefined ? undefined : dto.isPublished ? 'PUBLISHED' : 'DRAFT' }); }
     catch { throw new ConflictException('Slug Series đã tồn tại.'); }

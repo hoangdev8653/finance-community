@@ -23,8 +23,8 @@ export class ModerationService {
     @Optional() private readonly notificationsService?: NotificationsService,
   ) {}
 
-  async getPostsQueue(moderationStatus = 'UNREVIEWED', page = 1, limit = 20) {
-    return this.postsRepo.findModerationPostsPaginated(moderationStatus, page, limit);
+  async getPostsQueue(moderationStatus = 'UNREVIEWED', page = 1, limit = 20, contentType?: string) {
+    return this.postsRepo.findModerationPostsPaginated(moderationStatus, page, limit, contentType);
   }
 
   async startReportReview(moderatorId: string, reportId: string) {

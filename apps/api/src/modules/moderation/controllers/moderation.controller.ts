@@ -57,10 +57,11 @@ export class ModerationController {
   @RequirePermission('moderation:manage')
   getPostsQueue(
     @Query('status') status = 'UNREVIEWED',
+    @Query('contentType') contentType?: string,
     @Query('page') page = 1,
     @Query('limit') limit = 20,
   ) {
-    return this.moderationService.getPostsQueue(status, Number(page), Number(limit));
+    return this.moderationService.getPostsQueue(status, Number(page), Number(limit), contentType);
   }
 
   @Patch('posts/:id/approve')

@@ -275,6 +275,7 @@ export class PostsRepository {
     moderationStatus?: string,
     page = 1,
     limit = 20,
+    contentType?: string,
   ): Promise<PaginatedResult<any>> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(100, Math.max(1, limit));
@@ -283,6 +284,9 @@ export class PostsRepository {
     const conditions = [isNull(postsTable.deletedAt)];
     if (moderationStatus && moderationStatus !== 'ALL') {
       conditions.push(eq(postsTable.moderationStatus, moderationStatus));
+    }
+    if (contentType && ['COMMUNITY', 'SERIES'].includes(contentType)) {
+      conditions.push(eq(postsTable.contentType, contentType));
     }
 
     const whereClause = and(...conditions);

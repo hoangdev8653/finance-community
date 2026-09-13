@@ -231,6 +231,19 @@ describe('PostsService (Content Engine)', () => {
     expect(post.publishedAt).toBeInstanceOf(Date);
   });
 
+  it('34.2a: should require a cover image before publishing a course lesson', async () => {
+    mockCategoriesService.getCategoryById.mockResolvedValueOnce({
+      id: 'cat-uuid-1', scope: 'SERIES', domainId: 'domain-money', contentTypes: ['SERIES'],
+    } as any);
+    await expect(postsService.createPost('author-uuid-1', {
+      title: 'Lesson without cover',
+      contentType: 'SERIES',
+      domainId: 'domain-money',
+      categoryId: 'cat-uuid-1',
+      status: 'PUBLISHED',
+    }, ['ADMIN'])).rejects.toMatchObject({ response: expect.objectContaining({ code: 'SERIES_COVER_REQUIRED' }) });
+  });
+
   it('34.3: should enforce ownership permissions on update and delete operations', async () => {
     // Non-author without moderator permissions should be rejected
     await expect(

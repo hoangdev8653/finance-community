@@ -12,6 +12,20 @@ describe('LearningService', () => {
     await expect(service.submitQuiz('post-1', { answers: [{ questionId: 'question-1', optionId: 'a' }] })).resolves.toEqual({ score: 1, total: 1, percentage: 100 });
   });
 
+  it('does not mark a lesson complete when a learner passes its quiz', async () => {
+    const db = {
+      select: jest.fn()
+        .mockReturnValueOnce({ from: jest.fn().mockReturnValue({ where: jest.fn().mockReturnValue({ limit: jest.fn().mockResolvedValue([{ id: 'quiz-1' }]) }) }) })
+        .mockReturnValueOnce({ from: jest.fn().mockReturnValue({ where: jest.fn().mockResolvedValue([{ id: 'question-1', options: [{ id: 'a', isCorrect: true }] }]) }) }),
+    } as any;
+    const service = new LearningService(db);
+    const updateProgress = jest.spyOn(service, 'updateProgress');
+
+    await service.submitQuiz('post-1', { answers: [{ questionId: 'question-1', optionId: 'a' }] }, 'learner-1');
+
+    expect(updateProgress).not.toHaveBeenCalled();
+  });
+
   it('does not return correct-answer flags in the public quiz payload', async () => {
     const db = {
       select: jest.fn()

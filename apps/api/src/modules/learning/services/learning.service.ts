@@ -87,7 +87,6 @@ export class LearningService {
     const answerMap = new Map(dto.answers.map((answer) => [answer.questionId, answer.optionId]));
     const correct = questions.filter((question) => (question.options as Array<{ id: string; isCorrect: boolean }>).some((option) => option.id === answerMap.get(question.id) && option.isCorrect)).length;
     const result = { score: correct, total: questions.length, percentage: questions.length ? Math.round((correct / questions.length) * 100) : 0 };
-    if (userId && result.percentage >= 70) await this.updateProgress(userId, postId, { completed: true });
     return result;
   }
 

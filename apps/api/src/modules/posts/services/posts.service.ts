@@ -188,6 +188,21 @@ export class PostsService {
     }
   }
 
+  private assertPublishedSeriesHasCover(
+    contentType: string,
+    status: string,
+    coverMediaId: string | null | undefined,
+  ): void {
+    if (contentType === 'SERIES' && status === 'PUBLISHED' && !coverMediaId) {
+      throw new BadRequestException({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Published course lessons must have a cover image.',
+        code: 'SERIES_COVER_REQUIRED',
+      });
+    }
+  }
+
   public async generateUniqueSlugPg(
     tx: any,
     contentType: string,
@@ -283,6 +298,7 @@ export class PostsService {
     // 5.1 Content Safety Evaluation (Anti-Phishing & Spam Filter)
     const safetyCheck = ContentSafetyUtil.evaluate(`${dto.title} ${dto.body || ''}`);
     const effectiveStatus = safetyCheck.isSevereSpam ? 'HIDDEN' : dto.status;
+    this.assertPublishedSeriesHasCover(dto.contentType, effectiveStatus, dto.coverMediaId);
 
     // 6. Calculate PublishedAt
     const publishedAt = effectiveStatus === 'PUBLISHED' ? new Date() : null;
@@ -474,6 +490,11 @@ export class PostsService {
         publishedAt = null;
       }
     }
+    this.assertPublishedSeriesHasCover(
+      existing.contentType,
+      dto.status ?? existing.status,
+      dto.coverMediaId !== undefined ? dto.coverMediaId : existing.coverMediaId,
+    );
 
     // 7. Atomic Transaction Update
     return await this.db.transaction(async (tx) => {
