@@ -17,6 +17,41 @@ Mức ưu tiên:
 - `P2`: Cải thiện chất lượng hoặc trải nghiệm
 - `P3`: Nice-to-have
 
+## Bản đồ trang hiện có (cập nhật 2026-09-12)
+
+> Dùng mục này làm ghi chú nhanh về các trang public đã có route. Trạng thái `UI mock` nghĩa là layout đã có, nhưng một phần nội dung vẫn là dữ liệu mẫu hoặc chưa kết nối hoàn toàn với API.
+
+### Khám phá và học tập
+
+- [DONE] `/` — Trang chủ.
+- [DONE] `/khoa-hoc` — Danh sách khóa học.
+- [UI MOCK] `/khoa-hoc/[slug]` — Chi tiết khóa học: hero, tiến độ, lộ trình bài học, thông tin series, CTA và series liên quan.
+  - Cải tiến sau: kết nối tiến độ thực theo tài khoản; trạng thái hoàn thành/đang học/bị khóa; nút “Tiếp tục học” trỏ tới bài khả dụng kế tiếp và tự mở bài tiếp theo sau khi hoàn thành.
+- [UI MOCK] `/lo-trinh-hoc` — Danh sách lộ trình học.
+- [UI MOCK] `/lo-trinh-hoc/[slug]` — Chi tiết lộ trình học, dùng chung UI chi tiết khóa học.
+- [DONE — UI] `/khoa-hoc/[slug]/[postSlug]` — Đọc bài học trong khóa học: cover bài viết, nội dung, lộ trình, mục lục theo khi cuộn, tiến độ và thao tác hoàn thành thủ công.
+  - Ghi chú cải tiến sau: tiếp tục tinh chỉnh trải nghiệm đọc/lộ trình; bổ sung chặn quyền truy cập backend tuyệt đối cho URL bài học chưa mở khóa.
+
+### Nội dung, cộng đồng và tìm kiếm
+
+- [DONE] `/bai-viet`, `/bai-viet/cong-dong`, `/bai-viet/khoa-hoc` — Các danh sách bài viết.
+- [DONE] `/bai-viet/[contentType]/[slug]` — Trang đọc bài viết.
+- [DONE] `/tim-kiem` — Tìm kiếm toàn hệ thống.
+- [DONE] `/the`, `/the/[slug]` — Danh sách và chi tiết thẻ.
+- [DONE] `/ho-so/[username]` — Hồ sơ công khai.
+
+### Công cụ và tài khoản
+
+- [DONE] `/cong-cu`, `/cong-cu/lai-kep`, `/cong-cu/tinh-khoan-vay`, `/cong-cu/dinh-gia-co-phieu`.
+- [DONE] `/dang-nhap`, `/dang-ky`, `/quen-mat-khau`, `/dat-lai-mat-khau`, `/xac-thuc-email`.
+- [DONE] `/bang-dieu-khien`, `/bai-viet-da-luu`, `/thong-bao`, `/cai-dat`.
+
+### Hỗ trợ, pháp lý và quản trị
+
+- [DONE] `/gioi-thieu`, `/lien-he`, `/tro-giup`, `/faq`, `/quy-tac-cong-dong`.
+- [DONE] `/chinh-sach-bao-mat`, `/dieu-khoan`.
+- [DONE] `/quan-tri` và các trang con `/quan-tri/*`.
+
 ## Backlog
 
 ### [DONE] [P1] PAGE-REMOVE-REDIRECTS-01: Xóa các điều kiện chuyển hướng tự động, link cũ trả về trang 404
