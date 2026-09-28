@@ -33,7 +33,7 @@ export function ReportButton({
 
     if (!isAuthenticated) {
       const returnUrl = encodeURIComponent(pathname || '/');
-      router.push(`/login?returnUrl=${returnUrl}`);
+      router.push(`/dang-nhap?redirect=${returnUrl}`);
       return;
     }
 

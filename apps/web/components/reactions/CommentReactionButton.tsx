@@ -23,7 +23,7 @@ export function CommentReactionButton({ commentId }: CommentReactionButtonProps)
 
   const handleToggleReaction = () => {
     if (!isAuthenticated) {
-      const redirectUrl = `/login?redirect=${encodeURIComponent(pathname || '/')}`;
+      const redirectUrl = `/dang-nhap?redirect=${encodeURIComponent(pathname || '/')}`;
       router.push(redirectUrl);
       return;
     }

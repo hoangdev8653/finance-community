@@ -4,8 +4,8 @@ import { AuthGuard } from '@/components/auth/AuthGuard';
 import { PostStudio } from '@/components/studio/PostStudio';
 
 export const metadata: Metadata = {
-  title: 'Soạn Thảo Bài Viết Mới | BrewSeven Studio',
-  description: 'Biên tập và xuất bản bài nghiên cứu, nhận định thị trường tài chính chuyên nghiệp.',
+  title: 'Viết bài cộng đồng | BrewSeven',
+  description: 'Chia sẻ kinh nghiệm, đặt câu hỏi và trao đổi kiến thức cùng cộng đồng BrewSeven.',
   robots: {
     index: false,
     follow: false,
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function CreatePostPage() {
   return (
     <AuthGuard>
-      <PostStudio />
+      <PostStudio defaultContentType="COMMUNITY" allowLearningAuthoring={false} />
     </AuthGuard>
   );
 }

@@ -42,7 +42,7 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
         </p>
         <div className="mt-4">
           <Link
-            href={`/login?redirect=${encodeURIComponent(pathname || '/')}`}
+            href={`/dang-nhap?redirect=${encodeURIComponent(pathname || '/')}`}
             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
           >
             <LogIn className="h-3.5 w-3.5" aria-hidden="true" />

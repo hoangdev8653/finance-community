@@ -107,10 +107,13 @@ export const postsService = {
    * GET /api/v1/tags
    */
   async getTags(search?: string, limit?: number): Promise<TagEntity[]> {
-    const response = await apiClient.get<TagEntity[]>('/tags', {
+    const response = await apiClient.get<Array<TagEntity & { postCount?: number }>>('/tags', {
       params: { search, limit },
     });
-    return response.data;
+    return response.data.map((tag) => ({
+      ...tag,
+      usageCount: tag.usageCount ?? tag.postCount ?? 0,
+    }));
   },
 
   /**

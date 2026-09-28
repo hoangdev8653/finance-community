@@ -1,6 +1,6 @@
-import Image from 'next/image';
-import { PostDetailResponse } from '@/types/content';
-import { optimizeCloudinaryUrl, resolveMediaUrl } from '@/lib/utils/media';
+import Image from "next/image";
+import { PostDetailResponse } from "@/types/content";
+import { optimizeCloudinaryUrl, resolveMediaUrl } from "@/lib/utils/media";
 
 interface PostCoverMediaProps {
   post: PostDetailResponse;
@@ -15,7 +15,7 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
 
   // 2. Check purpose === 'cover'
   if (!coverMedia) {
-    coverMedia = post.media.find((m) => m.purpose === 'cover');
+    coverMedia = post.media.find((m) => m.purpose === "cover");
   }
 
   // 3. Fallback to first available media item
@@ -25,13 +25,17 @@ export function PostCoverMedia({ post, priority = true }: PostCoverMediaProps) {
 
   const resolvedUrl = coverMedia?.secureUrl
     ? optimizeCloudinaryUrl(coverMedia.secureUrl, 1200)
-    : (post.coverMediaId ? resolveMediaUrl(post.coverMediaId, undefined) : null);
+    : post.coverMediaId
+      ? resolveMediaUrl(post.coverMediaId, undefined)
+      : null;
 
-  const source = resolvedUrl || (post.contentType === 'SERIES' ? '/images/courses-hero-banner.png' : null);
+  const source =
+    resolvedUrl ||
+    (post.contentType === "SERIES" ? "/images/courses-hero-banner.png" : null);
   if (!source) return null;
 
   return (
-    <div className="relative my-6 aspect-video w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-muted shadow-[0_12px_32px_rgba(15,23,42,0.10)] sm:aspect-21/9 dark:border-slate-800">
+    <div className="relative my-6 aspect-video w-full overflow-hidden rounded-lg border border-slate-100 bg-muted shadow-sm sm:aspect-21/9 dark:border-slate-800">
       <Image
         src={source}
         alt={post.title}

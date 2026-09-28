@@ -20,11 +20,13 @@ import {
 interface NotificationCardProps {
   notification: NotificationEntity;
   onNavigate?: () => void;
+  compact?: boolean;
 }
 
 export function NotificationCard({
   notification,
   onNavigate,
+  compact = false,
 }: NotificationCardProps) {
   const markAsReadMutation = useMarkAsRead();
 
@@ -33,72 +35,72 @@ export function NotificationCard({
       case 'NEW_FOLLOWER':
         return {
           icon: <UserPlus className="h-4 w-4 text-purple-500" />,
-          bg: 'bg-purple-500/10',
+          bg: 'bg-purple-500/10 dark:bg-purple-500/20',
           badge: 'Theo dõi',
-          badgeColor: 'text-purple-600 bg-purple-500/10',
+          badgeColor: 'text-purple-600 dark:text-purple-400 bg-purple-500/10',
         };
       case 'COMMENT_REPLY':
       case 'NEW_COMMENT':
         return {
           icon: <MessageSquare className="h-4 w-4 text-blue-500" />,
-          bg: 'bg-blue-500/10',
+          bg: 'bg-blue-500/10 dark:bg-blue-500/20',
           badge: 'Bình luận',
-          badgeColor: 'text-blue-600 bg-blue-500/10',
+          badgeColor: 'text-blue-600 dark:text-blue-400 bg-blue-500/10',
         };
       case 'POST_REACTION':
         return {
           icon: <Heart className="h-4 w-4 text-rose-500 fill-rose-500/20" />,
-          bg: 'bg-rose-500/10',
+          bg: 'bg-rose-500/10 dark:bg-rose-500/20',
           badge: 'Tương tác',
-          badgeColor: 'text-rose-600 bg-rose-500/10',
+          badgeColor: 'text-rose-600 dark:text-rose-400 bg-rose-500/10',
         };
       case 'POST_APPROVED':
         return {
           icon: <ShieldCheck className="h-4 w-4 text-emerald-500" />,
-          bg: 'bg-emerald-500/10',
+          bg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
           badge: 'Đã duyệt',
-          badgeColor: 'text-emerald-600 bg-emerald-500/10',
+          badgeColor: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
         };
       case 'POST_BANNED':
         return {
           icon: <AlertTriangle className="h-4 w-4 text-destructive" />,
-          bg: 'bg-destructive/10',
+          bg: 'bg-destructive/10 dark:bg-destructive/20',
           badge: 'Cảnh báo',
           badgeColor: 'text-destructive bg-destructive/10',
         };
       case 'REPORT_RESOLVED':
         return {
           icon: <ShieldCheck className="h-4 w-4 text-emerald-500" />,
-          bg: 'bg-emerald-500/10',
+          bg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
           badge: 'Báo cáo',
-          badgeColor: 'text-emerald-600 bg-emerald-500/10',
+          badgeColor: 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10',
         };
       case 'REPORT_DISMISSED':
         return {
           icon: <Info className="h-4 w-4 text-muted-foreground" />,
-          bg: 'bg-muted/30',
+          bg: 'bg-muted/50 dark:bg-muted/70',
           badge: 'Báo cáo',
           badgeColor: 'text-muted-foreground bg-muted',
         };
       case 'CONTENT_HIDDEN':
         return {
           icon: <AlertTriangle className="h-4 w-4 text-amber-500" />,
-          bg: 'bg-amber-500/10',
+          bg: 'bg-amber-500/10 dark:bg-amber-500/20',
           badge: 'Nội dung',
-          badgeColor: 'text-amber-600 bg-amber-500/10',
+          badgeColor: 'text-amber-600 dark:text-amber-400 bg-amber-500/10',
         };
       case 'ACCOUNT_SUSPENDED':
       case 'ACCOUNT_BANNED':
         return {
           icon: <AlertTriangle className="h-4 w-4 text-destructive" />,
-          bg: 'bg-destructive/10',
+          bg: 'bg-destructive/10 dark:bg-destructive/20',
           badge: 'Tài khoản',
           badgeColor: 'text-destructive bg-destructive/10',
         };
       default:
         return {
           icon: <Info className="h-4 w-4 text-primary" />,
-          bg: 'bg-primary/10',
+          bg: 'bg-primary/10 dark:bg-primary/20',
           badge: 'Hệ thống',
           badgeColor: 'text-primary bg-primary/10',
         };
@@ -132,10 +134,80 @@ export function NotificationCard({
     href = `/ho-so/${encodeURIComponent(notification.referenceUserId)}`;
   }
 
+  // Compact layout (used inside NotificationBell dropdown)
+  if (compact) {
+    const compactContent = (
+      <div
+        onClick={handleClick}
+        className={`group relative flex items-start gap-3 rounded-xl p-3 transition-all duration-150 cursor-pointer ${
+          notification.isRead
+            ? 'bg-transparent text-foreground/80 hover:bg-muted/70'
+            : 'bg-primary/[0.04] dark:bg-primary/[0.08] text-foreground hover:bg-primary/[0.08] dark:hover:bg-primary/[0.14]'
+        }`}
+      >
+        {/* Type Icon */}
+        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${meta.bg} mt-0.5 shadow-2xs`}>
+          {meta.icon}
+        </div>
+
+        {/* Content */}
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex items-center justify-between gap-1.5">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className={`inline-flex shrink-0 items-center rounded px-1.5 py-0.2 font-mono text-[9px] font-bold ${meta.badgeColor}`}>
+                {meta.badge}
+              </span>
+              <span className="font-semibold text-xs text-foreground truncate">
+                {notification.title}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5 shrink-0">
+              {!notification.isRead && (
+                <span className="h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-emerald-500/20" title="Chưa đọc" />
+              )}
+              {!notification.isRead && (
+                <button
+                  type="button"
+                  onClick={handleMarkAsRead}
+                  disabled={markAsReadMutation.isPending}
+                  aria-label="Đánh dấu đã đọc"
+                  className="rounded-md p-0.5 text-muted-foreground hover:bg-muted hover:text-primary transition opacity-0 group-hover:opacity-100 focus:opacity-100"
+                >
+                  <Check className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {notification.message && (
+            <p className="text-[11px] text-muted-foreground leading-snug line-clamp-2">
+              {notification.message}
+            </p>
+          )}
+
+          <div className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground/80 pt-0.5">
+            <span>{formatRelativeTime(notification.createdAt)}</span>
+          </div>
+        </div>
+      </div>
+    );
+
+    if (href) {
+      return (
+        <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
+          {compactContent}
+        </Link>
+      );
+    }
+    return <div>{compactContent}</div>;
+  }
+
+  // Full page layout (used inside NotificationsCenter)
   const cardContent = (
     <div
       onClick={handleClick}
-      className={`group relative flex items-start gap-3.5 rounded-xl border p-4 transition-all ${
+      className={`group relative flex items-start gap-3.5 rounded-xl border p-4 transition-all duration-150 cursor-pointer ${
         notification.isRead
           ? 'border-border bg-card text-foreground/85 hover:border-border/80 hover:bg-muted/30'
           : 'border-primary/30 bg-primary/5 text-foreground shadow-xs hover:border-primary/50 hover:bg-primary/10'

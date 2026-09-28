@@ -28,7 +28,7 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
 
   const handleToggleReaction = () => {
     if (!isAuthenticated) {
-      const redirectUrl = `/login?redirect=${encodeURIComponent(pathname || '/')}`;
+      const redirectUrl = `/dang-nhap?redirect=${encodeURIComponent(pathname || '/')}`;
       router.push(redirectUrl);
       return;
     }

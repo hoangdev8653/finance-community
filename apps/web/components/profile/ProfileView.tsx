@@ -35,7 +35,7 @@ export function ProfileView({ initialProfile }: ProfileViewProps) {
   const analysesCount = postsData?.meta?.totalItems ?? 0;
 
   return (
-    <main className="mx-auto max-w-4xl px-4 sm:px-6 py-8 space-y-8">
+    <div className="w-full space-y-6 sm:space-y-8">
       {/* Profile Header */}
       <ProfileHeader
         profile={profile}
@@ -43,17 +43,17 @@ export function ProfileView({ initialProfile }: ProfileViewProps) {
       />
 
       {/* Tabs & Content Panels */}
-      <div className="space-y-6">
+      <div className="w-full space-y-6">
         <ProfileTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
           analysesCount={analysesCount}
         />
 
-        <div role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`}>
+        <div role="tabpanel" id={`panel-${activeTab}`} aria-labelledby={`tab-${activeTab}`} className="w-full">
           {activeTab === 'analyses' && <ProfilePostsTab userId={profile.userId} />}
         </div>
       </div>
-    </main>
+    </div>
   );
 }

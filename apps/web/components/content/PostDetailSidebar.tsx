@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { PostDetailResponse, PostEntity } from '@/types/content';
-import { postsService } from '@/lib/posts/posts-service';
-import { resolveMediaUrl } from '@/lib/utils/media';
-import { PostTableOfContents } from './PostTableOfContents';
-import { CourseNavigationWidget } from '@/components/courses/CourseNavigationWidget';
-import { ContentHeading } from './PostContentRenderer';
-import { Sparkles, Clock, Tag, ArrowRight } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { PostDetailResponse, PostEntity } from "@/types/content";
+import { postsService } from "@/lib/posts/posts-service";
+import { resolveMediaUrl } from "@/lib/utils/media";
+import { PostTableOfContents } from "./PostTableOfContents";
+import { CourseNavigationWidget } from "@/components/courses/CourseNavigationWidget";
+import { ContentHeading } from "./PostContentRenderer";
+import { Sparkles, Clock, Tag, ArrowRight } from "lucide-react";
+import { UserRound, UsersRound } from "lucide-react";
 
 interface PostDetailSidebarProps {
   post: PostDetailResponse;
@@ -19,14 +20,17 @@ interface PostDetailSidebarProps {
 
 const VISIBLE_SIDEBAR_TAG_COUNT = 4;
 
-export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProps) {
+export function PostDetailSidebar({
+  post,
+  headings = [],
+}: PostDetailSidebarProps) {
   const [relatedPosts, setRelatedPosts] = useState<PostEntity[]>([]);
   const [isLoadingRelated, setIsLoadingRelated] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     postsService
-      .getFeed({ limit: 4, sortBy: 'publishedAt' })
+      .getFeed({ limit: 4, sortBy: "publishedAt" })
       .then((res) => {
         if (!isMounted || !res?.data) return;
         // Filter out current post
@@ -46,20 +50,75 @@ export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProp
   const visibleTags = post.tags?.slice(0, VISIBLE_SIDEBAR_TAG_COUNT) ?? [];
   const hiddenTagCount = (post.tags?.length ?? 0) - visibleTags.length;
 
-  const isSeries = post.contentType === 'SERIES';
+  const isSeries = post.contentType === "SERIES";
 
   return (
-    <aside className={isSeries ? 'flex h-full flex-col gap-6' : 'space-y-6'}>
-      {isSeries && <CourseNavigationWidget postId={post.id} currentTitle={post.title} />}
+    <aside className={isSeries ? "flex h-full flex-col gap-6" : "space-y-6"}>
+      {!isSeries && (
+        <section className="rounded-lg border border-slate-100 bg-white p-5 shadow-sm">
+          <h2 className="flex items-center gap-2 font-heading text-base font-bold text-slate-900">
+            <UserRound className="h-4 w-4 text-emerald-600" /> Về tác giả
+          </h2>
+          <div className="mt-4 flex items-center gap-3">
+            <img
+              src={post.author?.avatarUrl || "https://i.pravatar.cc/96?img=47"}
+              alt=""
+              className="h-12 w-12 rounded-full object-cover"
+            />
+            <div>
+              <p className="text-sm font-bold text-slate-900">
+                {post.author?.displayName ||
+                  post.author?.username ||
+                  "BrewSeven"}
+              </p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                Thành viên tích cực
+              </p>
+            </div>
+          </div>
+          <p className="mt-4 text-sm leading-6 text-slate-600">
+            Chia sẻ những góc nhìn thực tế để xây dựng thói quen tài chính bền
+            vững mỗi ngày.
+          </p>
+          <div className="mt-4 grid grid-cols-3 divide-x divide-slate-100 text-center">
+            <div>
+              <p className="text-sm font-bold">24</p>
+              <p className="text-[11px] text-slate-500">Bài viết</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold">3.2K</p>
+              <p className="text-[11px] text-slate-500">Lượt thích</p>
+            </div>
+            <div>
+              <p className="text-sm font-bold">1.1K</p>
+              <p className="text-[11px] text-slate-500">Theo dõi</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="mt-4 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3 text-sm font-bold text-white shadow-sm hover:bg-emerald-700"
+          >
+            <UsersRound className="h-4 w-4" /> Theo dõi
+          </button>
+        </section>
+      )}
+      {isSeries && (
+        <CourseNavigationWidget postId={post.id} currentTitle={post.title} />
+      )}
       {isSeries && headings.length > 0 && (
         <div className="min-h-0 flex-1">
-          <PostTableOfContents headings={headings} className="mt-4 sticky !top-32 self-start" />
+          <PostTableOfContents
+            headings={headings}
+            className="mt-4 sticky !top-32 self-start"
+          />
         </div>
       )}
-      {!isSeries && headings.length > 0 && <PostTableOfContents headings={headings} />}
+      {!isSeries && headings.length > 0 && (
+        <PostTableOfContents headings={headings} />
+      )}
 
       {/* Related Articles Card */}
-      <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
+      <div className="rounded-lg border border-slate-100 bg-white p-5 space-y-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm sm:text-base">
             <Sparkles className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
@@ -71,35 +130,47 @@ export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProp
         </div>
 
         <div className="space-y-3.5">
-          {isLoadingRelated ? <div className="space-y-3" aria-label="Đang tải bài viết liên quan"><div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" /><div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" /></div> : relatedPosts.length ? relatedPosts.map((item) => (
-            <Link
-              key={item.id}
-              href={`/bai-viet/${item.contentType.toLowerCase()}/${item.slug}`}
-              className="group flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
-            >
-              {/* Thumbnail */}
-              <div className="relative h-16 w-16 sm:h-18 sm:w-18 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
-                <Image
-                  src={resolveMediaUrl(item.coverMediaId)}
-                  alt={item.title}
-                  fill
-                  sizes="80px"
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-
-              {/* Text */}
-              <div className="flex-1 min-w-0 space-y-1">
-                <h4 className="font-heading text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2 leading-snug">
-                  {item.title}
-                </h4>
-                <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
-                  <Clock className="h-3 w-3" />
-                  <span>5 phút đọc</span>
+          {isLoadingRelated ? (
+            <div className="space-y-3" aria-label="Đang tải bài viết liên quan">
+              <div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
+              <div className="h-16 animate-pulse rounded-xl bg-slate-100 dark:bg-slate-800" />
+            </div>
+          ) : relatedPosts.length ? (
+            relatedPosts.map((item) => (
+              <Link
+                key={item.id}
+                href={`/bai-viet/${item.contentType.toLowerCase()}/${item.slug}`}
+                className="group flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
+              >
+                {/* Thumbnail */}
+                <div className="relative h-16 w-16 sm:h-18 sm:w-18 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
+                  <Image
+                    src={resolveMediaUrl(item.coverMediaId)}
+                    alt={item.title}
+                    fill
+                    sizes="80px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
-              </div>
-            </Link>
-          )) : <p className="rounded-xl bg-slate-50 px-3 py-4 text-center text-xs leading-5 text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">Chưa có bài viết liên quan. Khám phá thêm các chủ đề mới nhất của BrewSeven.</p>}
+
+                {/* Text */}
+                <div className="flex-1 min-w-0 space-y-1">
+                  <h4 className="font-heading text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2 leading-snug">
+                    {item.title}
+                  </h4>
+                  <div className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+                    <Clock className="h-3 w-3" />
+                    <span>5 phút đọc</span>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p className="rounded-xl bg-slate-50 px-3 py-4 text-center text-xs leading-5 text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">
+              Chưa có bài viết liên quan. Khám phá thêm các chủ đề mới nhất của
+              BrewSeven.
+            </p>
+          )}
         </div>
 
         <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
@@ -115,7 +186,7 @@ export function PostDetailSidebar({ post, headings = [] }: PostDetailSidebarProp
 
       {/* 3. Related Tags */}
       {!isSeries && post.tags && post.tags.length > 0 && (
-        <div className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 space-y-3 shadow-xs">
+        <div className="rounded-lg border border-slate-100 bg-white p-5 space-y-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-sm">
             <Tag className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             <span>Thẻ chủ đề bài viết</span>

@@ -112,7 +112,8 @@ export interface TagEntity {
   id: string;
   name: string;
   slug: string;
-  usageCount: number;
+  usageCount?: number;
+  postCount?: number;
   createdAt: string;
 }
 
