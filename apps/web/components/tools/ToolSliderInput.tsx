@@ -3,7 +3,7 @@
 import React from 'react';
 
 interface ToolSliderInputProps {
-  label: string;
+  label: React.ReactNode;
   value: number;
   onChange: (value: number) => void;
   min: number;
@@ -45,8 +45,8 @@ export function ToolSliderInput({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold text-foreground">{label}</label>
-        {helperText && <span className="text-xs text-muted-foreground">{helperText}</span>}
+        <label className="text-[15px] font-bold text-foreground">{label}</label>
+        {helperText && <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{helperText}</span>}
       </div>
 
       <div className="flex items-center rounded-xl border border-border bg-background px-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
@@ -54,10 +54,10 @@ export function ToolSliderInput({
           type={formatAsCurrency ? 'text' : 'number'}
           value={formatDisplay(value)}
           onChange={handleInputChange}
-          className="h-11 min-w-0 flex-1 bg-transparent text-base font-bold text-foreground outline-none"
+          className="h-11 min-w-0 flex-1 bg-transparent text-lg font-extrabold text-foreground outline-none"
         />
         {suffix && (
-          <span className="shrink-0 pl-2 font-mono text-sm font-medium text-muted-foreground">
+          <span className="shrink-0 pl-2 font-mono text-sm font-bold text-slate-700 dark:text-slate-200">
             {suffix}
           </span>
         )}
@@ -73,7 +73,7 @@ export function ToolSliderInput({
           onChange={handleRangeChange}
           className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-muted accent-primary focus:outline-none"
         />
-        <div className="flex justify-between font-mono text-[11px] text-muted-foreground">
+        <div className="flex justify-between font-mono text-sm font-bold text-slate-700 dark:text-slate-200">
           <span>{formatDisplay(min)} {suffix}</span>
           <span>{formatDisplay(max)} {suffix}</span>
         </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { AppShell } from '@/components/layout/AppShell';
 import { LoanCalculatorTool } from '@/components/tools/LoanCalculatorTool';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
@@ -32,7 +33,7 @@ export default function LoanCalculatorPage() {
   ]);
 
   return (
-    <AppShell mainClassName="max-w-6xl">
+    <AppShell mainClassName="max-w-[1440px]">
       <JsonLd data={breadcrumbsSchema} />
 
       <div className="space-y-8">
@@ -51,19 +52,31 @@ export default function LoanCalculatorPage() {
         </div>
 
         {/* Page Header */}
-        <div className="border-b border-border pb-6">
-          <div className="flex items-center gap-2">
-            <span className="flex h-6 items-center rounded-full bg-blue-50 px-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-950/60 dark:text-blue-400">
-              <Building className="mr-1.5 h-3.5 w-3.5" />
-              Loan & Mortgage Calculator
-            </span>
+        <div className="grid items-center gap-4 border-b border-border pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(400px,0.82fr)] lg:gap-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 items-center rounded-full bg-blue-50 px-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-blue-700 dark:bg-blue-950/60 dark:text-blue-400">
+                <Building className="mr-1.5 h-3.5 w-3.5" />
+                Loan & Mortgage Calculator
+              </span>
+            </div>
+            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+              Bảng tính Lãi vay Mua nhà & Xe
+            </h1>
+            <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
+              Dự toán chính xác số tiền gốc và lãi ngân hàng hàng tháng, so sánh phương án trả góp và lập kế hoạch trả nợ trước hạn thông minh.
+            </p>
           </div>
-          <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
-            Bảng tính Lãi vay Mua nhà & Xe
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm sm:text-base leading-relaxed text-muted-foreground">
-            Dự toán chính xác số tiền gốc và lãi ngân hàng hàng tháng, so sánh phương án trả góp và lập kế hoạch trả nợ trước hạn thông minh.
-          </p>
+          <div className="relative mx-auto hidden h-52 w-full max-w-lg -translate-y-5 lg:block">
+            <Image
+              src="/images/loan-calculator-hero-clean.png"
+              alt="Minh hoạ vay mua nhà, xe và kế hoạch tài chính"
+              fill
+              priority
+              sizes="(min-width: 1280px) 420px, 360px"
+              className="object-contain object-right"
+            />
+          </div>
         </div>
 
         {/* The Interactive Tool */}
@@ -82,13 +95,13 @@ export default function LoanCalculatorPage() {
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div className="space-y-3">
-              <h3 className="text-sm font-bold text-foreground">
+              <h3 className="text-base font-extrabold text-foreground">
                 Quy tắc tỷ lệ nợ trên thu nhập (DTI - Debt-to-Income):
               </h3>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200 leading-relaxed">
                 Tổng số tiền trả nợ gốc và lãi vay hàng tháng <strong>không nên vượt quá 30% - 40%</strong> tổng thu nhập ròng của gia đình. Vượt quá ngưỡng này sẽ khiến bạn dễ rơi vào căng thẳng dòng tiền khi có biến cố bất ngờ.
               </p>
-              <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-xs text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-200 flex items-start gap-2">
+              <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-sm font-medium text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100 flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
                 <span>
                   <strong>Lưu ý lãi suất thả nổi:</strong> Các gói ưu đãi thường chỉ cố định trong 6 - 24 tháng đầu. Hãy dự phòng phương án khi lãi suất tăng thêm 2% - 3% trong các năm tiếp theo.
@@ -97,10 +110,10 @@ export default function LoanCalculatorPage() {
             </div>
 
             <div className="space-y-3">
-              <h3 className="text-sm font-bold text-foreground">
+              <h3 className="text-base font-extrabold text-foreground">
                 Dư nợ giảm dần vs Dư nợ ban đầu:
               </h3>
-              <ul className="space-y-2.5 text-xs sm:text-sm text-muted-foreground">
+              <ul className="space-y-2.5 text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
                   <span><strong>Dư nợ giảm dần (Chuẩn):</strong> Tiền lãi được tính trên số tiền gốc thực tế còn lại. Tiền lãi sẽ ít dần theo thời gian.</span>
@@ -131,7 +144,7 @@ export default function LoanCalculatorPage() {
                 <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                   Bảng tính lãi kép & Tự do tài chính
                 </h4>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                <p className="mt-1 text-sm font-semibold text-slate-700 line-clamp-2 dark:text-slate-200">
                   Mô phỏng sự tăng trưởng hàm mũ của dòng tiền tiết kiệm định kỳ hàng tháng.
                 </p>
               </div>
@@ -148,7 +161,7 @@ export default function LoanCalculatorPage() {
                 <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                   Mô hình định giá nhanh cổ phiếu
                 </h4>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                <p className="mt-1 text-sm font-semibold text-slate-700 line-clamp-2 dark:text-slate-200">
                   Ước tính giá trị hợp lý của doanh nghiệp theo mô hình P/E và chiết khấu an toàn.
                 </p>
               </div>

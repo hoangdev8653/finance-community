@@ -1,272 +1,53 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
-import {
-  calculatePeValue,
-  calculateGordonValue,
-  calculateMarginOfSafety,
-} from '@/lib/tools/financial-calculations';
+import React, { useMemo, useState } from 'react';
+import { BarChart3, Calculator, CircleHelp, RotateCcw, ShieldCheck, TrendingUp } from 'lucide-react';
+import { calculateGordonValue, calculateMarginOfSafety, calculatePeValue } from '@/lib/tools/financial-calculations';
 import { ToolSliderInput } from './ToolSliderInput';
-import { Badge } from '@/components/ui/Badge';
-import {
-  BarChart3,
-  ShieldCheck,
-  TrendingUp,
-  AlertCircle,
-  HelpCircle,
-  CheckCircle2,
-  DollarSign,
-} from 'lucide-react';
 
-const formatMoney = (val: number) =>
-  new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(Math.max(0, val));
+const formatMoney = (value: number) => new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(Math.max(0, value));
+const currency = (value: number) => `${formatMoney(value)} ₫`;
+
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <span className="inline-flex items-center gap-1 text-xs font-bold text-foreground">{children}<CircleHelp aria-hidden="true" className="h-3.5 w-3.5 text-slate-400" /></span>;
+}
 
 export function StockValuationTool() {
   const [valuationMode, setValuationMode] = useState<'PE' | 'GORDON'>('PE');
+  const [eps, setEps] = useState(6500);
+  const [peMultiple, setPeMultiple] = useState(15);
+  const [currentPrice, setCurrentPrice] = useState(85000);
+  const [marginPercent, setMarginPercent] = useState(20);
+  const [dividend, setDividend] = useState(4000);
+  const [growth, setGrowth] = useState(6);
+  const [requiredReturn, setRequiredReturn] = useState(13);
+  const fairValue = useMemo(() => valuationMode === 'PE' ? calculatePeValue(eps, peMultiple) : calculateGordonValue(dividend, growth, requiredReturn), [dividend, eps, growth, peMultiple, requiredReturn, valuationMode]);
+  const safeBuyPrice = useMemo(() => calculateMarginOfSafety(fairValue, marginPercent), [fairValue, marginPercent]);
+  const upside = fairValue > 0 ? ((fairValue - currentPrice) / currentPrice) * 100 : 0;
+  const remainingMargin = fairValue > 0 ? Math.max(0, ((fairValue - currentPrice) / fairValue) * 100) : 0;
+  const positionLabel = currentPrice <= fairValue ? 'Định giá hợp lý' : 'Giá cao hơn giá trị thực';
+  const currentPricePosition = fairValue > safeBuyPrice ? Math.min(100, Math.max(0, ((currentPrice - safeBuyPrice) / (fairValue - safeBuyPrice)) * 100)) : 50;
 
-  // P/E State
-  const [eps, setEps] = useState(6500); // 6,500đ (ví dụ FPT hoặc HPG)
-  const [peMultiple, setPeMultiple] = useState(15); // P/E 15 lần
-  const [currentPrice, setCurrentPrice] = useState(85000); // 85,000đ
-  const [marginPercent, setMarginPercent] = useState(20); // 20% biên an toàn
-
-  // Gordon State
-  const [dividend, setDividend] = useState(4000); // 4,000đ/cổ phiếu
-  const [growth, setGrowth] = useState(6); // 6% tăng trưởng
-  const [requiredReturn, setRequiredReturn] = useState(13); // 13% tỷ suất sinh lời đòi hỏi
-
-  // Calculations
-  const fairValuePe = useMemo(() => calculatePeValue(eps, peMultiple), [eps, peMultiple]);
-  const safeBuyPrice = useMemo(
-    () => calculateMarginOfSafety(fairValuePe, marginPercent),
-    [fairValuePe, marginPercent],
-  );
-
-  const gordonValue = useMemo(
-    () => calculateGordonValue(dividend, growth, requiredReturn),
-    [dividend, growth, requiredReturn],
-  );
-
-  // Status for P/E
-  const peValuationStatus = useMemo(() => {
-    if (fairValuePe <= 0) return { label: 'Chưa đủ dữ liệu', color: 'neutral', desc: '' };
-    if (currentPrice <= safeBuyPrice) {
-      return {
-        label: 'Rất hấp dẫn (Dưới biên an toàn)',
-        badgeVariant: 'success',
-        color: 'emerald',
-        desc: `Thị giá thấp hơn cả mức giá mua an toàn (${formatMoney(safeBuyPrice)}). Cơ hội tích sản giá hời.`,
-      };
-    }
-    if (currentPrice <= fairValuePe) {
-      return {
-        label: 'Định giá hợp lý',
-        badgeVariant: 'outline',
-        color: 'blue',
-        desc: `Thị giá nằm trong vùng giá trị thực (${formatMoney(fairValuePe)}), biên an toàn còn lại ${Math.round(((fairValuePe - currentPrice) / fairValuePe) * 100)}%.`,
-      };
-    }
-    return {
-      label: 'Định giá cao hơn giá trị thực',
-      badgeVariant: 'danger',
-      color: 'rose',
-      desc: `Thị giá cao hơn giá trị hợp lý ${Math.round(((currentPrice - fairValuePe) / fairValuePe) * 100)}%. Nên kiên nhẫn chờ điều chỉnh.`,
-    };
-  }, [currentPrice, fairValuePe, safeBuyPrice]);
+  const reset = () => { setEps(6500); setPeMultiple(15); setCurrentPrice(85000); setMarginPercent(20); setDividend(4000); setGrowth(6); setRequiredReturn(13); };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <BarChart3 className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-              Định giá cổ phiếu & Cổ tức
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Ước tính giá trị hợp lý của doanh nghiệp và tính toán biên an toàn (Margin of Safety).
-            </p>
-          </div>
+    <section aria-label="Công cụ định giá cổ phiếu" className="grid gap-4 lg:grid-cols-[1.38fr_1fr]">
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5">
+        <div className="flex flex-col gap-3 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3"><div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"><BarChart3 aria-hidden="true" className="h-5 w-5" /></div><div><h2 className="text-base font-extrabold text-foreground">Thông số định giá</h2><p className="text-[11px] text-muted-foreground">Nhập các giả định để ước tính giá trị hợp lý của cổ phiếu</p></div></div>
+          <div className="grid grid-cols-2 rounded-lg bg-slate-100 p-1 text-[11px] font-semibold dark:bg-muted"><button type="button" aria-pressed={valuationMode === 'PE'} onClick={() => setValuationMode('PE')} className={`min-h-8 rounded-md px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${valuationMode === 'PE' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>P/E & Biên an toàn</button><button type="button" aria-pressed={valuationMode === 'GORDON'} onClick={() => setValuationMode('GORDON')} className={`min-h-8 rounded-md px-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${valuationMode === 'GORDON' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}>Mô hình Gordon</button></div>
         </div>
-
-        {/* Mode Switcher Tabs */}
-        <div className="flex items-center gap-1 rounded-xl border border-border bg-muted/30 p-1">
-          <button
-            type="button"
-            onClick={() => setValuationMode('PE')}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-              valuationMode === 'PE'
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Định giá P/E & Biên an toàn
-          </button>
-          <button
-            type="button"
-            onClick={() => setValuationMode('GORDON')}
-            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
-              valuationMode === 'GORDON'
-                ? 'bg-background text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Mô hình Gordon (Cổ tức)
-          </button>
-        </div>
+        {valuationMode === 'PE' ? <div className="grid gap-x-5 gap-y-5 py-5 sm:grid-cols-2 xl:grid-cols-4"><ToolSliderInput label={<FieldLabel>EPS dự phóng</FieldLabel>} value={eps} onChange={setEps} min={500} max={50000} step={500} suffix="₫" formatAsCurrency /><ToolSliderInput label={<FieldLabel>P/E mục tiêu</FieldLabel>} value={peMultiple} onChange={setPeMultiple} min={3} max={40} step={0.5} suffix="lần" /><ToolSliderInput label={<FieldLabel>Thị giá hiện tại</FieldLabel>} value={currentPrice} onChange={setCurrentPrice} min={1000} max={300000} step={500} suffix="₫" formatAsCurrency /><ToolSliderInput label={<FieldLabel>Biên an toàn</FieldLabel>} value={marginPercent} onChange={setMarginPercent} min={5} max={50} step={5} suffix="%" /></div> : <div className="grid gap-x-5 gap-y-5 py-5 sm:grid-cols-3"><ToolSliderInput label={<FieldLabel>Cổ tức dự kiến (D₁)</FieldLabel>} value={dividend} onChange={setDividend} min={500} max={30000} step={500} suffix="₫" formatAsCurrency /><ToolSliderInput label={<FieldLabel>Tăng trưởng dài hạn</FieldLabel>} value={growth} onChange={setGrowth} min={1} max={20} step={0.5} suffix="%" /><ToolSliderInput label={<FieldLabel>Tỷ suất sinh lời (r)</FieldLabel>} value={requiredReturn} onChange={setRequiredReturn} min={Math.max(2, growth + 0.5)} max={30} step={0.5} suffix="%" /></div>}
+        <div className="flex items-center justify-between gap-4 border-t border-border pt-4"><button type="button" onClick={reset} className="inline-flex min-h-10 min-w-36 items-center justify-center gap-2 rounded-lg bg-slate-100 px-4 text-xs font-bold text-slate-600 transition-colors hover:bg-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary dark:bg-muted dark:text-muted-foreground sm:min-w-44"><RotateCcw aria-hidden="true" className="h-4 w-4" /> Đặt lại</button><button type="button" className="inline-flex min-h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:max-w-80"><Calculator aria-hidden="true" className="h-4 w-4" /> Tính định giá</button></div>
       </div>
-
-      {valuationMode === 'PE' ? (
-        <div className="space-y-6">
-          {/* Inputs */}
-          <div className="grid gap-6 rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6 md:grid-cols-2 lg:grid-cols-4">
-            <ToolSliderInput
-              label="EPS dự phóng"
-              value={eps}
-              onChange={setEps}
-              min={500}
-              max={50000}
-              step={500}
-              suffix="₫"
-              formatAsCurrency
-              helperText="Lợi nhuận sau thuế / 1 cổ phiếu"
-            />
-
-            <ToolSliderInput
-              label="P/E mục tiêu"
-              value={peMultiple}
-              onChange={setPeMultiple}
-              min={3}
-              max={40}
-              step={0.5}
-              suffix="lần"
-              helperText="P/E trung bình ngành / lịch sử"
-            />
-
-            <ToolSliderInput
-              label="Thị giá hiện tại"
-              value={currentPrice}
-              onChange={setCurrentPrice}
-              min={1000}
-              max={300000}
-              step={500}
-              suffix="₫"
-              formatAsCurrency
-              helperText="Giá khớp lệnh trên sàn"
-            />
-
-            <ToolSliderInput
-              label="Biên an toàn (Margin of Safety)"
-              value={marginPercent}
-              onChange={setMarginPercent}
-              min={5}
-              max={50}
-              step={5}
-              suffix="%"
-              helperText="Chiết khấu phòng ngừa rủi ro"
-            />
-          </div>
-
-          {/* Results Summary */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-              <span className="text-xs font-medium text-muted-foreground">Giá trị hợp lý (Fair Value)</span>
-              <p className="mt-2 text-2xl font-extrabold text-foreground sm:text-3xl">
-                {formatMoney(fairValuePe)}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">Bằng EPS ({formatMoney(eps)}) × P/E ({peMultiple})</p>
-            </div>
-
-            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 shadow-xs">
-              <span className="text-xs font-medium text-emerald-600">Giá mua an toàn (-{marginPercent}%)</span>
-              <p className="mt-2 text-2xl font-extrabold text-emerald-600 sm:text-3xl">
-                {formatMoney(safeBuyPrice)}
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">Điểm mua lý tưởng theo Benjamin Graham</p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-              <span className="text-xs font-medium text-muted-foreground">Đánh giá vị thế</span>
-              <div className="mt-2 flex items-center gap-2">
-                <span className="font-bold text-lg text-foreground">{peValuationStatus.label}</span>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
-                {peValuationStatus.desc}
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {/* Gordon Inputs */}
-          <div className="grid gap-6 rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6 md:grid-cols-3">
-            <ToolSliderInput
-              label="Cổ tức tiền mặt dự kiến (D₁)"
-              value={dividend}
-              onChange={setDividend}
-              min={500}
-              max={30000}
-              step={500}
-              suffix="₫"
-              formatAsCurrency
-              helperText="Cổ tức nhận trong 12 tháng tới"
-            />
-
-            <ToolSliderInput
-              label="Tăng trưởng cổ tức dài hạn (g)"
-              value={growth}
-              onChange={setGrowth}
-              min={1}
-              max={20}
-              step={0.5}
-              suffix="%"
-              helperText="Tốc độ tăng trưởng cổ tức hằng năm"
-            />
-
-            <ToolSliderInput
-              label="Tỷ suất sinh lời đòi hỏi (r)"
-              value={requiredReturn}
-              onChange={setRequiredReturn}
-              min={Math.max(2, growth + 0.5)}
-              max={30}
-              step={0.5}
-              suffix="%"
-              helperText="Phải lớn hơn tốc độ tăng trưởng (r > g)"
-            />
-          </div>
-
-          {/* Gordon Results */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-xs">
-              <span className="text-xs font-medium text-primary">Giá trị nội tại theo dòng cổ tức</span>
-              <p className="mt-2 text-3xl font-extrabold text-foreground sm:text-4xl">
-                {gordonValue > 0 ? formatMoney(gordonValue) : 'Không hợp lệ (r ≤ g)'}
-              </p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Công thức Gordon Growth: P₀ = D₁ × (1 + g) / (r - g)
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs">
-              <span className="text-xs font-medium text-muted-foreground">Nguyên tắc áp dụng</span>
-              <p className="mt-2 text-sm text-foreground/90 leading-relaxed">
-                Mô hình này đặc biệt phù hợp với các doanh nghiệp trả cổ tức tiền mặt đều đặn qua nhiều năm (như Điện, Nước, Dược phẩm, Tiêu dùng thiết yếu).
-              </p>
-              <div className="mt-3 flex items-center gap-2 text-xs text-amber-600">
-                <AlertCircle className="h-4 w-4 shrink-0" />
-                <span>Mô hình chỉ có giá trị khi Tỷ suất đòi hỏi (r) lớn hơn Tăng trưởng (g).</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <div className="rounded-2xl border border-border bg-card p-4 shadow-card sm:p-5"><div className="flex items-start justify-between gap-3"><div><h2 className="text-base font-extrabold text-foreground">Kết quả định giá</h2><p className="text-[11px] text-muted-foreground">Dựa trên các thông số bạn đã nhập</p></div><span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> {positionLabel}</span></div>
+        <div className="mt-3 grid grid-cols-2 gap-3"><ResultCard title="Giá trị hợp lý (Fair Value)" value={currency(fairValue)} description={valuationMode === 'PE' ? `Bằng EPS (${formatMoney(eps)} ₫) × P/E (${peMultiple})` : 'Theo mô hình chiết khấu cổ tức'} /><ResultCard green title={`Giá mua an toàn (-${marginPercent}%)`} value={currency(safeBuyPrice)} description="Điểm mua lý tưởng theo Benjamin Graham" /></div>
+        <div className="mt-3"><div className="grid grid-cols-3 text-center text-[13px] font-extrabold text-slate-800 dark:text-slate-100"><span className="text-emerald-700 dark:text-emerald-300">{currency(safeBuyPrice)}<small className="mt-1 block text-[12px] font-semibold text-slate-700 dark:text-slate-200">Giá mua an toàn</small></span><span className="text-foreground">{currency(currentPrice)}<small className="mt-1 block text-[12px] font-semibold text-slate-700 dark:text-slate-200">Thị giá hiện tại</small></span><span className="text-emerald-700 dark:text-emerald-300">{currency(fairValue)}<small className="mt-1 block text-[12px] font-semibold text-slate-700 dark:text-slate-200">Giá trị hợp lý</small></span></div><div className="relative mt-3 h-2 rounded-full bg-slate-200 dark:bg-muted"><div className="absolute inset-y-0 left-0 w-1/3 rounded-l-full bg-emerald-300" /><div className="absolute inset-y-0 left-1/3 w-1/3 bg-amber-200" /><span aria-label="Thị giá hiện tại" className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-amber-500 shadow-sm" style={{ left: `${33 + currentPricePosition / 3}%` }} /></div><div className="mt-2 grid grid-cols-3 text-center text-[12px] font-semibold text-slate-700 dark:text-slate-200"><span>Vùng mua an toàn</span><span className="text-amber-700 dark:text-amber-400">Vùng theo dõi</span><span>Vùng định giá cao</span></div></div>
+        <div className="mt-4 grid grid-cols-2 gap-3"><MetricCard icon={<TrendingUp aria-hidden="true" className="h-5 w-5" />} label="Upside tiềm năng" value={`${upside >= 0 ? '+' : ''}${upside.toFixed(1).replace('.', ',')}%`} description="So với thị giá hiện tại" /><MetricCard icon={<ShieldCheck aria-hidden="true" className="h-5 w-5" />} label="Biên an toàn còn lại" value={`${remainingMargin.toFixed(0)}%`} description="Thị giá đang thấp hơn giá trị thực" /></div>
+      </div>
+    </section>
   );
 }
+
+function ResultCard({ title, value, description, green = false }: { title: string; value: string; description: string; green?: boolean }) { return <div className={`rounded-xl border p-3 ${green ? 'border-emerald-200 bg-emerald-50/70 dark:border-emerald-900 dark:bg-emerald-950/25' : 'border-border bg-background'}`}><p className="text-[11px] font-bold leading-4 text-muted-foreground">{title}</p><p className={`mt-1 text-2xl font-extrabold tracking-tight ${green ? 'text-emerald-600' : 'text-foreground'}`}>{value}</p><p className="mt-0.5 text-[10px] leading-3 text-muted-foreground">{description}</p></div>; }
+function MetricCard({ icon, label, value, description }: { icon: React.ReactNode; label: string; value: string; description: string }) { return <div className="flex gap-2 rounded-xl border border-border bg-background p-3"><div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">{icon}</div><div><p className="text-[10px] font-semibold text-muted-foreground">{label}</p><p className="text-lg font-extrabold text-emerald-600">{value}</p><p className="text-[9px] leading-3 text-muted-foreground">{description}</p></div></div>; }

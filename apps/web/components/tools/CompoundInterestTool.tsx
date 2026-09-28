@@ -1,354 +1,89 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { calculateCompoundInterest, CompoundYear } from '@/lib/tools/financial-calculations';
-import { ToolSliderInput } from './ToolSliderInput';
 import { Button } from '@/components/ui/Button';
-import {
-  TrendingUp,
-  Coins,
-  PiggyBank,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
-  PieChart,
-  Calendar,
-} from 'lucide-react';
+import { BarChart3, CalendarDays, ChevronDown, ChevronUp, CircleDollarSign, Coins, Lightbulb, PiggyBank, RefreshCw, Sparkles, TrendingUp } from 'lucide-react';
 
-const formatMoney = (val: number) =>
-  new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    maximumFractionDigits: 0,
-  }).format(Math.max(0, val));
+const formatMoney = (value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Math.max(0, value));
+const compactMoney = (value: number) => new Intl.NumberFormat('vi-VN', { notation: 'compact', maximumFractionDigits: 1 }).format(Math.max(0, value));
+
+type PlanFieldProps = { label: string; helper: string; value: number; onChange: (value: number) => void; min: number; max: number; step: number; suffix: string; currency?: boolean };
+
+function PlanField({ label, helper, value, onChange, min, max, step, suffix, currency }: PlanFieldProps) {
+  const displayValue = currency ? new Intl.NumberFormat('vi-VN').format(value) : value;
+  return <label className="block">
+    <span className="flex items-baseline justify-between gap-3 text-sm font-bold text-slate-800 dark:text-slate-100">{label}<span className="hidden text-right text-xs font-semibold text-slate-600 dark:text-slate-400 sm:block">{helper}</span></span>
+    <div className="relative mt-2"><input inputMode="decimal" value={displayValue} onChange={(event) => { const next = Number(event.target.value.replace(/[^0-9.]/g, '')); if (Number.isFinite(next)) onChange(Math.min(max, Math.max(min, next))); }} className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 pr-16 text-base font-bold tabular-nums text-slate-900 outline-none transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-950 dark:text-white" /><span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[13px] font-bold text-slate-700 dark:text-slate-200">{suffix}</span></div>
+    <input type="range" min={min} max={max} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} className="mt-3 h-1.5 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-emerald-600" />
+    <span className="mt-1 flex justify-between font-mono text-[13px] font-semibold text-slate-700 dark:text-slate-200"><span>{currency ? `${compactMoney(min)} ₫` : min}</span><span>{currency ? `${compactMoney(max)} ₫` : max}</span></span>
+  </label>;
+}
+
+function MetricCard({ icon: Icon, label, value, detail, profit = false }: { icon: React.ElementType; label: string; value: string; detail: string; profit?: boolean }) {
+  return <div className={`rounded-2xl border p-4 sm:p-5 ${profit ? 'border-emerald-200 bg-emerald-50/70 dark:border-emerald-900/70 dark:bg-emerald-950/20' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'}`}>
+    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${profit ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}><Icon className="h-5 w-5" aria-hidden="true" /></div>
+    <p className="mt-3 text-xs font-semibold text-slate-500">{label}</p><p className={`mt-1 text-xl font-extrabold tracking-tight tabular-nums sm:text-2xl ${profit ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-950 dark:text-white'}`}>{value}</p><p className="mt-1 text-xs font-medium text-slate-500">{detail}</p>
+  </div>;
+}
 
 export function CompoundInterestTool() {
-  const [initial, setInitial] = useState(100000000); // 100 triệu
-  const [monthly, setMonthly] = useState(5000000); // 5 triệu
-  const [rate, setRate] = useState(10); // 10%
-  const [years, setYears] = useState(10); // 10 năm
+  const [initial, setInitial] = useState(100000000);
+  const [monthly, setMonthly] = useState(5000000);
+  const [rate, setRate] = useState(10);
+  const [years, setYears] = useState(10);
+  const [activePlan, setActivePlan] = useState('Tự nhập');
   const [showAllYears, setShowAllYears] = useState(false);
   const [hoveredYear, setHoveredYear] = useState<CompoundYear | null>(null);
-
-  const result = useMemo(
-    () => calculateCompoundInterest(initial, monthly, rate, years),
-    [initial, monthly, rate, years],
-  );
-
-  const { finalBalance, totalContributed, totalInterest, yearly } = result;
+  const { finalBalance, totalContributed, totalInterest, yearly } = useMemo(() => calculateCompoundInterest(initial, monthly, rate, years), [initial, monthly, rate, years]);
   const roi = totalContributed > 0 ? (totalInterest / totalContributed) * 100 : 0;
-  const maxBalance = Math.max(...yearly.map((y) => y.balance), 1);
-
-  const applyPreset = (pInitial: number, pMonthly: number, pRate: number, pYears: number) => {
-    setInitial(pInitial);
-    setMonthly(pMonthly);
-    setRate(pRate);
-    setYears(pYears);
-  };
-
+  const maxBalance = Math.max(...yearly.map((year) => year.balance), 1);
+  const interestShare = finalBalance > 0 ? Math.round((totalInterest / finalBalance) * 100) : 0;
+  const contributionShare = 100 - interestShare;
   const displayedYears = showAllYears ? yearly : yearly.slice(0, 5);
+  const applyPreset = (nextInitial: number, nextMonthly: number, nextRate: number, nextYears: number, plan: string) => { setInitial(nextInitial); setMonthly(nextMonthly); setRate(nextRate); setYears(nextYears); setActivePlan(plan); };
+  const resetPlan = () => applyPreset(100000000, 5000000, 10, 10, 'Tự nhập');
+  const plans = [['Tự nhập', resetPlan], ['Mua nhà', () => applyPreset(200000000, 15000000, 8, 5, 'Mua nhà')], ['Hưu trí', () => applyPreset(50000000, 5000000, 10, 20, 'Hưu trí')], ['Quỹ học vấn', () => applyPreset(20000000, 3000000, 9, 15, 'Quỹ học vấn')]] as const;
 
-  return (
-    <div className="space-y-8">
-      {/* Header & Presets */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
-            <TrendingUp className="h-5 w-5" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-foreground sm:text-2xl">
-              Lãi kép & Kế hoạch tích lũy
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Sức mạnh của kỳ quan thứ 8: Ước tính sự bùng nổ tài sản theo thời gian.
-            </p>
-          </div>
+  return <div className="compound-interest-tool space-y-5 sm:space-y-6">
+    <div className="grid items-stretch gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)]">
+      <section className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400"><Sparkles className="h-5 w-5" /></div><div><h2 className="text-lg font-extrabold text-slate-950 dark:text-white">Thiết lập kế hoạch</h2><p className="mt-0.5 text-sm font-medium leading-5 text-slate-600 dark:text-slate-400">Điều chỉnh giả định để khám phá tốc độ tăng trưởng tài sản.</p></div></div>
+        <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-4">{plans.map(([label, action]) => <button key={label} type="button" onClick={action} aria-pressed={activePlan === label} className={`rounded-xl px-2 py-2 text-sm font-bold transition ${activePlan === label ? 'bg-emerald-600 text-white shadow-sm hover:bg-emerald-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'}`}>{label}</button>)}</div>
+        <div className="mt-6 grid gap-x-5 gap-y-5 sm:grid-cols-2">
+          <PlanField label="Vốn ban đầu" helper="Số tiền đang có" value={initial} onChange={setInitial} min={0} max={2000000000} step={5000000} suffix="₫" currency />
+          <PlanField label="Góp thêm mỗi tháng" helper="Đầu tư đều đặn" value={monthly} onChange={setMonthly} min={0} max={50000000} step={500000} suffix="₫" currency />
+          <PlanField label="Lãi suất kỳ vọng" helper="Lợi suất năm" value={rate} onChange={setRate} min={1} max={30} step={0.5} suffix="% / năm" />
+          <PlanField label="Thời gian tích lũy" helper="Kiên nhẫn tạo khác biệt" value={years} onChange={setYears} min={1} max={40} step={1} suffix="năm" />
         </div>
+        <details className="mt-6 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-950"><summary className="cursor-pointer font-bold text-slate-700 dark:text-slate-200">Tần suất ghép lãi: Hàng tháng</summary><p className="mt-2 text-xs font-medium leading-5 text-slate-500">Mô hình giả định lợi nhuận được tái đầu tư đều theo tháng.</p></details>
+        <div className="mt-auto pt-4"><Button variant="outline" size="md" onClick={resetPlan} className="h-10 w-full gap-2 rounded-xl border-slate-200 bg-white font-semibold text-slate-600 shadow-sm transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 hover:shadow-md focus-visible:ring-emerald-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-300"><RefreshCw className="h-4 w-4" aria-hidden="true" />Đặt lại giả định</Button></div>
+      </section>
 
-        {/* Quick presets */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold text-muted-foreground">Gợi ý nhanh:</span>
-          <button
-            type="button"
-            onClick={() => applyPreset(50000000, 5000000, 10, 20)}
-            className="rounded-lg border border-border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted transition"
-          >
-            Hưu trí 20 năm
-          </button>
-          <button
-            type="button"
-            onClick={() => applyPreset(200000000, 15000000, 8, 5)}
-            className="rounded-lg border border-border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted transition"
-          >
-            Mua nhà 5 năm
-          </button>
-          <button
-            type="button"
-            onClick={() => applyPreset(20000000, 3000000, 9, 15)}
-            className="rounded-lg border border-border bg-muted/40 px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted transition"
-          >
-            Quỹ học vấn 15 năm
-          </button>
-        </div>
-      </div>
-
-      {/* Input Sliders Grid */}
-      <div className="grid gap-6 rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6 md:grid-cols-2">
-        <ToolSliderInput
-          label="Vốn ban đầu"
-          value={initial}
-          onChange={setInitial}
-          min={0}
-          max={2000000000} // 2 tỷ
-          step={5000000}
-          suffix="₫"
-          formatAsCurrency
-          helperText="Số tiền có sẵn hiện tại"
-        />
-
-        <ToolSliderInput
-          label="Tích lũy đều mỗi tháng"
-          value={monthly}
-          onChange={setMonthly}
-          min={0}
-          max={50000000} // 50 triệu
-          step={500000}
-          suffix="₫"
-          formatAsCurrency
-          helperText="Số tiền trích ra đầu tư hằng tháng"
-        />
-
-        <ToolSliderInput
-          label="Lãi suất kỳ vọng hàng năm"
-          value={rate}
-          onChange={setRate}
-          min={1}
-          max={30}
-          step={0.5}
-          suffix="%"
-          helperText="Ví dụ: Tiết kiệm 5-6%, Cổ phiếu 10-15%"
-        />
-
-        <ToolSliderInput
-          label="Thời gian tích lũy"
-          value={years}
-          onChange={setYears}
-          min={1}
-          max={40}
-          step={1}
-          suffix="năm"
-          helperText="Đầu tư càng lâu, lãi kép càng mạnh"
-        />
-      </div>
-
-      {/* KPI Highlight Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-xs">
-          <div className="flex items-center justify-between text-xs font-medium text-primary">
-            <span>Tổng tài sản dự kiến</span>
-            <Coins className="h-4 w-4" />
-          </div>
-          <p className="mt-2 text-2xl font-extrabold text-foreground sm:text-3xl">
-            {formatMoney(finalBalance)}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">Sau {years} năm tích lũy liên tục</p>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Tổng vốn tự có đã góp</span>
-            <PiggyBank className="h-4 w-4" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
-            {formatMoney(totalContributed)}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {Math.round((totalContributed / (finalBalance || 1)) * 100)}% tổng tài sản
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 shadow-xs">
-          <div className="flex items-center justify-between text-xs font-medium text-emerald-600">
-            <span>Tiền lãi sinh sôi</span>
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-emerald-600 sm:text-3xl">
-            +{formatMoney(totalInterest)}
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {Math.round((totalInterest / (finalBalance || 1)) * 100)}% tổng tài sản
-          </p>
-        </div>
-
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
-          <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>Tỷ suất sinh lời (ROI)</span>
-            <TrendingUp className="h-4 w-4" />
-          </div>
-          <p className="mt-2 text-2xl font-bold text-foreground sm:text-3xl">
-            +{Math.round(roi)}%
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">Lợi nhuận trên tổng vốn nộp</p>
-        </div>
-      </div>
-
-      {/* Visual Chart Section */}
-      <div className="rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
-          <div>
-            <h3 className="text-base font-bold text-foreground">
-              Biểu đồ tăng trưởng tài sản theo năm
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              Rê chuột vào từng cột để xem chi tiết Vốn gốc & Tiền lãi tích lũy.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 text-xs font-medium">
-            <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-xs bg-muted-foreground/40" />
-              <span>Tiền vốn đã nộp</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-3 w-3 rounded-xs bg-primary" />
-              <span>Tiền lãi sinh sôi</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Hover info tooltip bar */}
-        <div className="mt-4 min-h-[32px] rounded-lg bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground flex items-center justify-between">
-          {hoveredYear ? (
-            <>
-              <span className="font-semibold text-foreground">
-                Năm thứ {hoveredYear.year}:
-              </span>
-              <span>Vốn nộp: <strong className="text-foreground">{formatMoney(hoveredYear.contributed)}</strong></span>
-              <span>Tiền lãi: <strong className="text-emerald-600">{formatMoney(hoveredYear.interest)}</strong></span>
-              <span>Tổng: <strong className="text-primary">{formatMoney(hoveredYear.balance)}</strong></span>
-            </>
-          ) : (
-            <span>Di chuột vào thanh biểu đồ bên dưới để xem từng mốc thời gian</span>
-          )}
-        </div>
-
-        {/* Stacked Bars */}
-        <div className="mt-4 flex h-64 items-end gap-1.5 pt-6 pb-2 overflow-x-auto">
-          {yearly.map((y) => {
-            const heightPercent = Math.max(6, (y.balance / maxBalance) * 100);
-            const contributedPercent = (y.contributed / y.balance) * 100;
-            const isHovered = hoveredYear?.year === y.year;
-
-            return (
-              <div
-                key={y.year}
-                onMouseEnter={() => setHoveredYear(y)}
-                onMouseLeave={() => setHoveredYear(null)}
-                className="group relative flex flex-1 flex-col justify-end h-full cursor-pointer min-w-[14px]"
-              >
-                <div
-                  className={`w-full rounded-t-md overflow-hidden transition-all flex flex-col justify-end ${
-                    isHovered ? 'ring-2 ring-primary' : 'opacity-90 hover:opacity-100'
-                  }`}
-                  style={{ height: `${heightPercent}%` }}
-                >
-                  {/* Top: Interest portion */}
-                  <div
-                    className="w-full bg-primary transition-colors"
-                    style={{ height: `${100 - contributedPercent}%` }}
-                  />
-                  {/* Bottom: Contributed portion */}
-                  <div
-                    className="w-full bg-muted-foreground/35 transition-colors"
-                    style={{ height: `${contributedPercent}%` }}
-                  />
-                </div>
-
-                <span className="mt-2 block text-center font-mono text-[10px] text-muted-foreground group-hover:font-bold group-hover:text-foreground">
-                  {y.year}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Yearly Breakdown Table */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
-        <div className="flex items-center justify-between border-b border-border bg-muted/20 px-5 py-3.5">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-bold text-foreground">Bảng phân bổ dòng tiền từng năm</h3>
-          </div>
-          <span className="text-xs text-muted-foreground">{years} năm tích lũy</span>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-border bg-muted/40 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3 sm:px-6">Năm</th>
-                <th className="px-4 py-3 sm:px-6">Vốn góp lũy kế</th>
-                <th className="px-4 py-3 sm:px-6">Tiền lãi trong năm</th>
-                <th className="px-4 py-3 sm:px-6">Tổng lãi lũy kế</th>
-                <th className="px-4 py-3 text-right sm:px-6">Tổng tài sản</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border font-mono text-xs">
-              {displayedYears.map((item, idx) => {
-                const prevYear = idx > 0 ? displayedYears[idx - 1] : null;
-                const yearlyInterest = prevYear
-                  ? Math.max(0, item.interest - prevYear.interest)
-                  : item.interest;
-
-                return (
-                  <tr key={item.year} className="transition-colors hover:bg-muted/30">
-                    <td className="whitespace-nowrap px-4 py-3 font-sans font-semibold text-foreground sm:px-6">
-                      Năm {item.year}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-muted-foreground sm:px-6">
-                      {formatMoney(item.contributed)}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 font-medium text-emerald-600 sm:px-6">
-                      +{formatMoney(yearlyInterest)}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-emerald-600 sm:px-6">
-                      {formatMoney(item.interest)}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-3 text-right font-bold text-foreground sm:px-6">
-                      {formatMoney(item.balance)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        {yearly.length > 5 && (
-          <div className="border-t border-border bg-muted/10 p-3 text-center">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowAllYears(!showAllYears)}
-              className="gap-2 text-xs font-semibold"
-            >
-              {showAllYears ? (
-                <>
-                  <ChevronUp className="h-4 w-4" />
-                  Thu gọn danh sách
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="h-4 w-4" />
-                  Xem toàn bộ {years} năm ({years - 5} năm còn lại)
-                </>
-              )}
-            </Button>
-          </div>
-        )}
-      </div>
+      <section className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div className="flex items-start justify-between gap-3"><div><p className="flex items-center gap-2 text-sm font-bold text-slate-700 dark:text-slate-200"><TrendingUp className="h-4 w-4 text-emerald-600" />Tài sản dự kiến sau {years} năm</p><p className="mt-2 text-3xl font-extrabold tracking-tight tabular-nums text-emerald-600 sm:text-4xl lg:text-5xl">{formatMoney(finalBalance)}</p><p className="mt-2 text-sm font-medium text-slate-500">Bạn đã góp <strong className="text-slate-800 dark:text-slate-100">{formatMoney(totalContributed)}</strong> · Lãi sinh sôi <strong className="text-emerald-600">{formatMoney(totalInterest)}</strong></p></div><div className="hidden rounded-xl bg-emerald-50 px-3 py-2 text-right dark:bg-emerald-950/40 sm:block"><span className="block text-[11px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">ROI dự kiến</span><span className="text-lg font-extrabold tabular-nums text-emerald-600">+{Math.round(roi)}%</span></div></div>
+        <div className="mt-6 h-56 border-b border-l border-slate-200 px-2 pt-3 dark:border-slate-700 sm:h-64"><div className="flex h-full items-end gap-1.5 sm:gap-2">{yearly.map((year) => { const height = Math.max(5, (year.balance / maxBalance) * 100); const contributionHeight = year.balance > 0 ? (year.contributed / year.balance) * 100 : 0; const active = hoveredYear?.year === year.year; return <button key={year.year} type="button" onMouseEnter={() => setHoveredYear(year)} onFocus={() => setHoveredYear(year)} onMouseLeave={() => setHoveredYear(null)} onBlur={() => setHoveredYear(null)} className="group flex h-full min-w-0 flex-1 flex-col justify-end focus:outline-none" aria-label={`Năm ${year.year}: ${formatMoney(year.balance)}`}><span className={`relative block w-full overflow-hidden rounded-t-md transition ${active ? 'ring-2 ring-emerald-500 ring-offset-2' : 'group-hover:opacity-90'}`} style={{ height: `${height}%` }}><span className="absolute inset-x-0 bottom-0 bg-slate-300 dark:bg-slate-600" style={{ height: `${contributionHeight}%` }} /><span className="absolute inset-x-0 top-0 bg-emerald-500" style={{ height: `${100 - contributionHeight}%` }} /></span><span className="mt-2 text-center font-mono text-xs font-medium text-slate-600 dark:text-slate-400">{year.year}</span></button>; })}</div></div>
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm"><div className="flex items-center gap-4 font-semibold text-slate-600 dark:text-slate-300"><span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-slate-300 dark:bg-slate-600" />Vốn góp lũy kế</span><span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-sm bg-emerald-500" />Tiền lãi lũy kế</span></div>{hoveredYear ? <span className="font-semibold text-slate-700 dark:text-slate-200">Năm {hoveredYear.year}: {formatMoney(hoveredYear.balance)}</span> : <span className="font-medium text-slate-600 dark:text-slate-400">Chọn một cột để xem chi tiết</span>}</div>
+        <div className="mt-5 flex gap-3 rounded-xl bg-emerald-50 p-3 text-xs leading-5 text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-100"><Lightbulb className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /><span>Đường tăng trưởng sẽ dốc hơn ở các năm cuối: đó là lúc sức mạnh lãi kép phát huy rõ nhất.</span></div>
+      </section>
     </div>
-  );
+
+    <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><MetricCard icon={CircleDollarSign} label="Tổng tài sản" value={formatMoney(finalBalance)} detail={`Sau ${years} năm`} /><MetricCard icon={PiggyBank} label="Tổng vốn đã góp" value={formatMoney(totalContributed)} detail={`${formatMoney(initial)} ban đầu + góp hàng tháng`} /><MetricCard icon={Coins} label="Lãi sinh sôi" value={`+${formatMoney(totalInterest)}`} detail={`Chiếm ${interestShare}% tổng tài sản`} profit /><MetricCard icon={TrendingUp} label="Tỷ suất sinh lời" value={`+${Math.round(roi)}%`} detail="So với tổng vốn đã góp" profit /></section>
+    <section className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-5 dark:border-emerald-900/70 dark:bg-emerald-950/20"><div className="flex gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600"><Lightbulb className="h-6 w-6" /></div><div><h3 className="font-bold text-slate-900 dark:text-white">Sức mạnh của thời gian</h3><p className="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">Nếu bắt đầu muộn 5 năm với cùng giả định, tài sản cuối kỳ sẽ giảm đáng kể — thời gian là tài sản không thể mua lại.</p></div></div></section>
+    <div className="grid gap-5 lg:grid-cols-[1.2fr_0.8fr]">
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-3"><div className="flex items-center gap-2"><BarChart3 className="h-5 w-5 text-emerald-600" /><h3 className="font-bold text-slate-950 dark:text-white">Vốn góp và lãi theo thời gian</h3></div><div className="flex items-center gap-4 text-sm font-semibold text-slate-600 dark:text-slate-300"><span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-full bg-slate-300" />Vốn góp</span><span className="inline-flex items-center gap-1.5"><i className="h-3 w-3 rounded-full bg-emerald-600" />Tiền lãi</span></div></div>
+        <div className="mt-5 grid grid-cols-[42px_1fr] gap-2"><div className="flex h-48 flex-col justify-between pb-7 text-right text-sm font-semibold text-slate-600 dark:text-slate-400"><span>{compactMoney(maxBalance)}</span><span>{compactMoney(maxBalance / 2)}</span><span>0</span></div><div><div className="relative h-48 border-b border-l border-slate-200 bg-[linear-gradient(to_bottom,transparent_33%,rgb(226_232_240/.8)_33.5%,transparent_34%,transparent_66%,rgb(226_232_240/.8)_66.5%,transparent_67%)] dark:border-slate-700 dark:bg-[linear-gradient(to_bottom,transparent_33%,rgb(51_65_85/.8)_33.5%,transparent_34%,transparent_66%,rgb(51_65_85/.8)_66.5%,transparent_67%)]"><div className="absolute inset-x-3 bottom-0 top-3 flex items-end gap-2">{yearly.map((year) => { const height = Math.max(5, (year.balance / maxBalance) * 100); const contributed = year.balance > 0 ? (year.contributed / year.balance) * 100 : 0; return <div key={year.year} className="flex h-full min-w-0 flex-1 items-end"><div className="w-full overflow-hidden rounded-t-md transition hover:opacity-85" style={{ height: `${height}%` }}><div className="bg-emerald-600" style={{ height: `${100 - contributed}%` }} /><div className="bg-slate-300 dark:bg-slate-600" style={{ height: `${contributed}%` }} /></div></div>; })}</div></div><div className="mt-2 flex px-3">{yearly.map((year) => <span key={year.year} className="flex-1 text-center font-mono text-sm font-medium text-slate-600 dark:text-slate-400">{year.year}</span>)}</div></div></div>
+        <p className="mt-3 text-center text-sm font-semibold text-slate-600 dark:text-slate-400">Năm</p>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div className="flex items-center gap-2"><CircleDollarSign className="h-5 w-5 text-emerald-600" /><h3 className="font-bold text-slate-950 dark:text-white">Cơ cấu tài sản sau {years} năm</h3></div>
+        <div className="mt-5 flex flex-col items-center gap-5 sm:flex-row sm:items-start"><div className="relative h-36 w-36 shrink-0 rounded-full" style={{ background: `conic-gradient(#059669 0 ${interestShare}%, #cbd5e1 ${interestShare}% 100%)` }}><div className="absolute inset-5 flex flex-col items-center justify-center rounded-full bg-white text-center dark:bg-slate-900"><strong className="text-lg text-slate-950 dark:text-white">{compactMoney(finalBalance)}</strong><span className="text-xs font-semibold text-slate-600 dark:text-slate-400">tổng tài sản</span></div></div><div className="w-full space-y-3 text-sm"><p className="flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-slate-300" /><span className="font-semibold text-slate-600 dark:text-slate-300">Vốn góp</span><strong className="ml-auto tabular-nums text-slate-900 dark:text-white">{formatMoney(totalContributed)} ({contributionShare}%)</strong></p><p className="flex items-center gap-2"><i className="h-3 w-3 rounded-full bg-emerald-600" /><span className="font-semibold text-slate-600 dark:text-slate-300">Tiền lãi</span><strong className="ml-auto tabular-nums text-emerald-600">{formatMoney(totalInterest)} ({interestShare}%)</strong></p><div className="rounded-xl bg-emerald-50 p-3 text-xs font-medium leading-5 text-emerald-950 dark:bg-emerald-950/30 dark:text-emerald-100"><strong className="block text-emerald-700 dark:text-emerald-300">3 điểm đáng chú ý</strong><ol className="mt-1.5 space-y-1"><li><b>1.</b> Thời gian càng dài, phần lãi càng tăng.</li><li><b>2.</b> Góp đều giúp tối ưu hiệu quả lãi kép.</li><li><b>3.</b> Tái đầu tư giúp tài sản sinh sôi bền vững.</li></ol></div></div></div>
+      </section>
+    </div>
+    <section className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"><div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800"><h3 className="flex items-center gap-2 font-bold text-slate-950 dark:text-white"><CalendarDays className="h-5 w-5 text-emerald-600" />Bảng phân bổ dòng tiền ({Math.min(years, 5)} năm đầu)</h3><span className="text-sm font-semibold text-slate-600 dark:text-slate-400">Đơn vị: đồng</span></div><div className="overflow-x-auto"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-slate-50 text-sm font-bold text-slate-600 dark:bg-slate-950 dark:text-slate-300"><tr><th className="px-4 py-3">Năm</th><th className="px-4 py-3">Vốn góp lũy kế</th><th className="px-4 py-3">Lãi trong năm</th><th className="px-4 py-3">Tổng lãi lũy kế</th><th className="px-4 py-3 text-right">Tổng tài sản</th></tr></thead><tbody className="divide-y divide-slate-100 text-sm font-medium tabular-nums dark:divide-slate-800">{displayedYears.map((item, index) => { const previous = index > 0 ? displayedYears[index - 1] : undefined; const interestInYear = item.interest - (previous?.interest ?? 0); return <tr key={item.year} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40"><td className="px-4 py-3 font-bold text-slate-900 dark:text-white">Năm {item.year}</td><td className="px-4 py-3 text-slate-600 dark:text-slate-400">{formatMoney(item.contributed)}</td><td className="px-4 py-3 font-semibold text-emerald-600">+{formatMoney(interestInYear)}</td><td className="px-4 py-3 text-emerald-600">{formatMoney(item.interest)}</td><td className="px-4 py-3 text-right font-bold text-slate-900 dark:text-white">{formatMoney(item.balance)}</td></tr>; })}</tbody></table></div>{yearly.length > 5 && <div className="border-t border-slate-200 p-3 text-center dark:border-slate-800"><Button variant="ghost" size="sm" onClick={() => setShowAllYears((current) => !current)} className="gap-2 text-sm font-semibold">{showAllYears ? <><ChevronUp className="h-4 w-4" />Thu gọn danh sách</> : <><ChevronDown className="h-4 w-4" />Xem đủ {years} năm</>}</Button></div>}</div>
+      <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"><div className="flex items-center gap-2"><Lightbulb className="h-5 w-5 text-emerald-600" /><h3 className="font-bold text-slate-950 dark:text-white">Hiểu đúng về lãi kép</h3></div><div className="mt-4 grid gap-5 sm:grid-cols-[1.1fr_0.9fr] lg:grid-cols-1 xl:grid-cols-[1.1fr_0.9fr]"><div><h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">Công thức tính (chuẩn quốc tế)</h4><div className="mt-2 rounded-xl border border-slate-200 bg-slate-50 p-3 font-mono text-sm font-medium leading-6 text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">A = P(1 + r/n)^(nt) + PMT ×<br />[((1 + r/n)^(nt) − 1) / (r/n)]</div><dl className="mt-3 space-y-1 text-sm font-medium leading-6 text-slate-600 dark:text-slate-400"><div><dt className="inline font-bold text-slate-800 dark:text-slate-200">A:</dt> Tổng tiền nhận được trong tương lai.</div><div><dt className="inline font-bold text-slate-800 dark:text-slate-200">P:</dt> Vốn gốc ban đầu.</div><div><dt className="inline font-bold text-slate-800 dark:text-slate-200">PMT:</dt> Số tiền góp định kỳ mỗi tháng.</div><div><dt className="inline font-bold text-slate-800 dark:text-slate-200">r:</dt> Lãi suất danh nghĩa năm.</div></dl></div><div className="border-l border-slate-200 pl-4 dark:border-slate-700"><h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">3 nguyên lý quan trọng</h4><ol className="mt-3 space-y-3"><li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-extrabold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">1</span><span className="text-sm font-medium leading-5 text-slate-600 dark:text-slate-400"><b className="block text-slate-800 dark:text-slate-100">Thời gian</b>Bắt đầu càng sớm, tăng trưởng càng mạnh.</span></li><li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-extrabold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">2</span><span className="text-sm font-medium leading-5 text-slate-600 dark:text-slate-400"><b className="block text-slate-800 dark:text-slate-100">Tính kỷ luật</b>Duy trì góp đều để tối ưu hiệu quả.</span></li><li className="flex gap-2"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-extrabold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">3</span><span className="text-sm font-medium leading-5 text-slate-600 dark:text-slate-400"><b className="block text-slate-800 dark:text-slate-100">Tái đầu tư</b>Không rút lãi để tài sản tiếp tục sinh sôi.</span></li></ol></div></div></aside>
+    </section>
+  </div>;
 }

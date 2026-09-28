@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { AppShell } from '@/components/layout/AppShell';
 import { CompoundInterestTool } from '@/components/tools/CompoundInterestTool';
 import { buildPageMetadata } from '@/lib/seo/metadata-helpers';
@@ -10,13 +11,11 @@ import { Button } from '@/components/ui/Button';
 import {
   TrendingUp,
   ArrowLeft,
-  Sparkles,
   Building,
   BarChart3,
   Lightbulb,
   CheckCircle2,
 } from 'lucide-react';
-import { BRAND } from '@/lib/constants/brand';
 
 export const metadata: Metadata = buildPageMetadata({
   title: 'Bảng Tính Lãi Kép & Kế Hoạch Tự Do Tài Chính (FIRE)',
@@ -33,7 +32,7 @@ export default function CompoundInterestPage() {
   ]);
 
   return (
-    <AppShell mainClassName="max-w-6xl">
+    <AppShell>
       <JsonLd data={breadcrumbsSchema} />
 
       <div className="space-y-8">
@@ -52,26 +51,38 @@ export default function CompoundInterestPage() {
         </div>
 
         {/* Page Header */}
-        <div className="border-b border-border pb-6">
-          <div className="flex items-center gap-2">
-            <span className="flex h-6 items-center rounded-full bg-emerald-50 px-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
-              <TrendingUp className="mr-1.5 h-3.5 w-3.5" />
-              Compound Interest Calculator
-            </span>
+        <div className="grid items-center gap-4 border-b border-border pb-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.7fr)] lg:gap-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 items-center rounded-full bg-emerald-50 px-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400">
+                <TrendingUp className="mr-1.5 h-3.5 w-3.5" />
+                Compound Interest Calculator
+              </span>
+            </div>
+            <h1 className="mt-2 text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+              Bảng tính Lãi kép & Tự do tài chính
+            </h1>
+            <p className="mt-2 max-w-3xl text-sm font-medium leading-relaxed text-muted-foreground sm:text-base">
+              Khám phá kỳ quan thứ 8 của thế giới. Mô phỏng chính xác sự tăng trưởng của dòng tiền tích lũy định kỳ và tiền lãi sinh sôi qua từng năm.
+            </p>
           </div>
-          <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
-            Bảng tính Lãi kép & Tự do tài chính
-          </h1>
-          <p className="mt-2 max-w-3xl text-sm sm:text-base leading-relaxed text-muted-foreground">
-            Khám phá kỳ quan thứ 8 của thế giới. Mô phỏng chính xác sự tăng trưởng của dòng tiền tích lũy định kỳ và tiền lãi sinh sôi qua từng năm.
-          </p>
+          <div className="relative mx-auto hidden h-44 w-full max-w-md -translate-y-4 lg:block">
+            <Image
+              src="/images/compound-interest-hero-transparent.png"
+              alt="Minh hoạ tăng trưởng tài sản theo thời gian"
+              fill
+              priority
+              sizes="(min-width: 1280px) 420px, 360px"
+              className="object-contain object-right"
+            />
+          </div>
         </div>
 
         {/* The Interactive Tool */}
         <CompoundInterestTool />
 
         {/* Educational Knowledge Section */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
+        <section className="hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
           <div className="flex items-center gap-2.5">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400">
               <Lightbulb className="h-5 w-5" />
@@ -137,7 +148,7 @@ export default function CompoundInterestPage() {
                 <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                   Bảng tính lãi vay mua nhà / xe
                 </h4>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                <p className="mt-1 text-sm font-semibold text-slate-700 line-clamp-2 dark:text-slate-200">
                   Lập lịch trả nợ gốc và lãi theo dư nợ giảm dần, tính toán chi phí vay thực tế.
                 </p>
               </div>
@@ -154,7 +165,7 @@ export default function CompoundInterestPage() {
                 <h4 className="font-heading text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                   Mô hình định giá nhanh cổ phiếu
                 </h4>
-                <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                <p className="mt-1 text-sm font-semibold text-slate-700 line-clamp-2 dark:text-slate-200">
                   Ước tính giá trị hợp lý của doanh nghiệp theo mô hình P/E và chiết khấu an toàn.
                 </p>
               </div>
