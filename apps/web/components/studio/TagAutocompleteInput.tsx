@@ -70,9 +70,9 @@ export function TagAutocompleteInput({
 
   return (
     <div ref={containerRef} className="space-y-2.5 relative">
-      <label className="text-xs font-mono font-semibold text-foreground flex items-center justify-between">
+      <label className="text-sm font-sans font-semibold text-foreground flex flex-wrap items-center justify-between gap-1">
         <span>Thẻ chủ đề ({selectedTags.length}/{maxTags})</span>
-        <span className="text-xs text-muted-foreground">Nhấn Enter hoặc phẩy để thêm</span>
+        <span className="text-sm font-normal text-muted-foreground">Nhấn Enter hoặc phẩy để thêm</span>
       </label>
 
       {/* Selected Tags Chips & Input Box */}
@@ -80,7 +80,7 @@ export function TagAutocompleteInput({
         {selectedTags.map((tag) => (
           <span
             key={tag}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 text-xs font-mono font-semibold"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary/10 text-primary border border-primary/20 text-sm font-sans font-semibold"
           >
             <Hash className="h-3 w-3" />
             <span>{tag}</span>

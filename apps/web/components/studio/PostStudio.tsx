@@ -23,22 +23,25 @@ import { usePostDraft, PostDraft } from '@/lib/posts/use-post-draft';
 interface PostStudioProps {
   initialPost?: PostEntity;
   defaultContentType?: 'SERIES' | 'COMMUNITY';
+  allowLearningAuthoring?: boolean;
 }
 
 interface ImagePlanItem { key: string; type: 'cover' | 'content'; sectionTitle?: string | null; placement: string; aspectRatio: string; prompt: string; reason: string; }
 interface ImagePlan { recommendedImageCount: number; reason: string; items: ImagePlanItem[]; }
 
-export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostStudioProps) {
+export function PostStudio({ initialPost, defaultContentType = 'SERIES', allowLearningAuthoring = true }: PostStudioProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const canManageLearning = allowLearningAuthoring && (user?.roles?.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role)) ?? false);
   const categoryMap = useCategoryMap();
 
   const isEditing = Boolean(initialPost);
+  const effectiveContentType = allowLearningAuthoring ? contentType : 'COMMUNITY';
 
   // Form State
   const [title, setTitle] = useState(initialPost?.title || '');
   const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY'>(
-    initialPost?.contentType || defaultContentType
+    initialPost?.contentType || (canManageLearning ? defaultContentType : 'COMMUNITY')
   );
   const [categoryId, setCategoryId] = useState<string | undefined>(
     initialPost?.categoryId || undefined
@@ -73,16 +76,16 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const [researchedSources, setResearchedSources] = useState<Array<{ title: string; url: string }>>([]);
 
   const draftValue = useMemo<PostDraft>(() => ({
-    title, contentType, categoryId, domainId, seriesId, lessonOrder, tags,
+    title, contentType: !isEditing && !canManageLearning ? 'COMMUNITY' : contentType, categoryId, domainId, seriesId, lessonOrder, tags,
     coverMediaId, body, metaTitle, metaDescription,
-  }), [title, contentType, categoryId, domainId, seriesId, lessonOrder, tags, coverMediaId, body, metaTitle, metaDescription]);
+  }), [title, contentType, isEditing, canManageLearning, categoryId, domainId, seriesId, lessonOrder, tags, coverMediaId, body, metaTitle, metaDescription]);
   const draftKey = `finance-community:post-draft:${user?.id || 'anonymous'}:${initialPost?.id || 'new'}`;
   const { restoredDraft, status: draftStatus, clearDraft } = usePostDraft(draftKey, draftValue, !isEditing);
 
   React.useEffect(() => {
     if (!restoredDraft) return;
     setTitle(restoredDraft.title);
-    setContentType(restoredDraft.contentType);
+    setContentType(isEditing || canManageLearning ? restoredDraft.contentType : 'COMMUNITY');
     setCategoryId(restoredDraft.categoryId);
     setDomainId(restoredDraft.domainId);
     setSeriesId(restoredDraft.seriesId);
@@ -92,9 +95,10 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
     setBody(restoredDraft.body);
     setMetaTitle(restoredDraft.metaTitle);
     setMetaDescription(restoredDraft.metaDescription);
-  }, [restoredDraft]);
+  }, [restoredDraft, isEditing, canManageLearning]);
 
   const generateDraft = async () => {
+    if (!canManageLearning) return;
     if (!title.trim() || !domainId || !categoryId) {
       setError('Vui lòng nhập tiêu đề, lĩnh vực và chủ đề trước khi tạo bản nháp.');
       return;
@@ -202,7 +206,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
       } else {
         const created = await createMutation.mutateAsync({
           title: title.trim(),
-          contentType,
+          contentType: canManageLearning ? contentType : 'COMMUNITY',
           body: finalBody,
           categoryId: categoryId || undefined,
           domainId: domainId || undefined,
@@ -213,7 +217,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           metaDescription: metaDescription.trim() || undefined,
         });
 
-        if (seriesId) await learningCourseService.addLesson(seriesId, created.id, lessonOrder);
+        if (canManageLearning && seriesId) await learningCourseService.addLesson(seriesId, created.id, lessonOrder);
 
         if (status === 'PUBLISHED') {
           router.push(
@@ -236,10 +240,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
   const categoryName = categoryId ? categoryMap[categoryId]?.name : undefined;
 
   return (
-    <div className="learning-editor mx-auto w-full max-w-none px-0 py-4 space-y-6">
+    <div className="learning-editor mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8 py-6 space-y-6">
       {/* Studio Top Action Bar */}
       <StudioHeader
         isEditing={isEditing}
+        isCommunityOnly={!allowLearningAuthoring}
         isPreview={isPreview}
         isSavingDraft={isSavingDraft}
         isPublishing={isPublishing}
@@ -293,7 +298,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
       {isPreview ? (
         <PostPreview
           title={title}
-          contentType={contentType}
+          contentType={effectiveContentType}
           categoryName={categoryName}
           tags={tags}
           body={body}
@@ -302,7 +307,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
       ) : (
         <PostEditor
           title={title}
-          contentType={contentType}
+          contentType={effectiveContentType}
           categoryId={categoryId}
           domainId={domainId}
           seriesId={seriesId}
@@ -312,7 +317,8 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           body={body}
           metaTitle={metaTitle}
           metaDescription={metaDescription}
-          isAdmin={user?.roles?.includes('ADMIN')}
+          isAdmin={canManageLearning}
+          communityOnly={!allowLearningAuthoring}
           onTitleChange={setTitle}
           onContentTypeChange={setContentType}
           onCategoryChange={setCategoryId}
@@ -325,7 +331,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES' }: PostS
           imagePlan={imagePlan}
           onBodyChange={setBody}
           onPendingImagesChange={setPendingContentImages}
-          onGenerateDraft={generateDraft}
+          onGenerateDraft={canManageLearning ? generateDraft : undefined}
           isGeneratingDraft={isGeneratingDraft}
           onMetaTitleChange={setMetaTitle}
           onMetaDescriptionChange={setMetaDescription}

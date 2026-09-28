@@ -19,7 +19,7 @@ export function SeoMetadataDrawer({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="rounded-lg border border-border bg-surface/40 overflow-hidden">
+    <div className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-950">
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
@@ -55,7 +55,7 @@ export function SeoMetadataDrawer({
               onChange={(e) => onMetaTitleChange(e.target.value)}
               maxLength={70}
               placeholder="Nhập tiêu đề hiển thị trên kết quả tìm kiếm Google..."
-              className="w-full h-8 rounded-md border border-input bg-background px-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary"
+              className="h-10 w-full rounded-sm border border-slate-300 bg-slate-50 px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
             />
           </div>
 
@@ -79,7 +79,7 @@ export function SeoMetadataDrawer({
               maxLength={160}
               rows={2}
               placeholder="Nhập mô tả ngắn hiển thị trong kết quả tìm kiếm..."
-              className="w-full rounded-md border border-input bg-background p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-primary resize-y"
+              className="w-full resize-y rounded-sm border border-slate-300 bg-slate-50 p-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
             />
           </div>
         </div>
