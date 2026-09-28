@@ -17,8 +17,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      const redirectUrl = `/login?redirect=${encodeURIComponent(pathname || '/')}`;
-      router.push(redirectUrl);
+      const redirectUrl = `/dang-nhap?redirect=${encodeURIComponent(pathname || '/')}`;
+      router.replace(redirectUrl);
     }
   }, [isLoading, isAuthenticated, router, pathname]);
 

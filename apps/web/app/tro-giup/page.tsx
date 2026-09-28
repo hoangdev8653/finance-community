@@ -155,7 +155,7 @@ export default function HelpCenterPage() {
   }, [searchQuery, activeCategory]);
 
   return (
-    <AppShell mainClassName="max-w-5xl">
+    <AppShell mainClassName="w-full max-w-none">
       <div className="space-y-8">
         <PageHeader
           icon={HelpCircle}
@@ -197,7 +197,7 @@ export default function HelpCenterPage() {
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  'inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition-all',
+                  'inline-flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all',
                   isSelected
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'bg-card text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800 border border-border'
@@ -218,34 +218,44 @@ export default function HelpCenterPage() {
               return (
                 <div
                   key={item.id}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-white transition-all dark:border-slate-800 dark:bg-slate-900"
+                  className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900"
                 >
                   <button
                     type="button"
                     onClick={() => toggleItem(item.id)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-slate-50/70 sm:p-5 dark:hover:bg-slate-800/50"
+                    aria-controls={`faq-answer-${item.id}`}
+                    className="flex min-h-[72px] w-full items-center justify-between gap-4 p-4 text-left transition-colors hover:bg-slate-50/70 sm:min-h-20 sm:p-5 dark:hover:bg-slate-800/50"
                   >
-                    <span className="font-heading text-sm sm:text-base font-semibold text-slate-950 dark:text-slate-100">
+                    <span className="font-heading text-base sm:text-lg font-semibold text-slate-950 dark:text-slate-100">
                       {item.question}
                     </span>
                     <span
                       className={cn(
-                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition-transform duration-200 dark:bg-slate-800 dark:text-slate-400',
+                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition-[transform,background-color,color] duration-300 ease-out motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-200',
                         isOpen && 'rotate-180 bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
                       )}
                     >
-                      <ChevronDown className="h-4 w-4" />
+                      <ChevronDown className="h-5 w-5" strokeWidth={2.5} />
                     </span>
                   </button>
 
-                  {isOpen && (
-                    <div className="border-t border-slate-100 px-4 pb-5 pt-3.5 sm:px-5 dark:border-slate-800">
-                      <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                        {item.answer}
-                      </p>
+                  <div
+                    id={`faq-answer-${item.id}`}
+                    aria-hidden={!isOpen}
+                    className={cn(
+                      'grid transition-[grid-template-rows,opacity] duration-300 ease-in-out motion-reduce:transition-none',
+                      isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                    )}
+                  >
+                    <div className="min-h-0 overflow-hidden">
+                      <div className={cn('border-t px-4 pb-5 pt-4 sm:px-5', isOpen ? 'border-slate-100 dark:border-slate-800' : 'border-transparent')}>
+                        <p className="text-base leading-7 text-slate-700 dark:text-slate-200">
+                          {item.answer}
+                        </p>
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               );
             })

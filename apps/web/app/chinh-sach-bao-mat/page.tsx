@@ -35,7 +35,7 @@ const sections = [
 
 export default function PrivacyPage() {
   return (
-    <AppShell mainClassName="max-w-4xl">
+    <AppShell mainClassName="w-full max-w-none">
       <div className="space-y-6">
         <PageHeader
           icon={Shield}

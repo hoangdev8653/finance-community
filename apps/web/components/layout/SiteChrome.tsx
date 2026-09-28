@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { Header } from '@/components/navigation/Header';
-import { Footer } from '@/components/navigation/Footer';
+import { Footer } from '../navigation/Footer';
 import { MobileNavigation } from '@/components/navigation/MobileNavigation';
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {

@@ -90,17 +90,17 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
     filters.order !== 'DESC';
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 space-y-4 shadow-xs">
+    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       {/* 1. Primary Keyword Search Input */}
-      <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+      <form onSubmit={handleSearchSubmit} className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
-            placeholder="Tìm kiếm theo từ khóa, tiêu đề, mã chứng khoán (VD: HPG, FPT, Vĩ mô, Lãi suất...)"
-            className="w-full rounded-xl border border-input bg-background pl-10 pr-9 py-2.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-primary/40 transition-all"
+            placeholder="Tìm bài viết, chủ đề hoặc mã chứng khoán (VD: FPT, lãi suất...)"
+            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
           />
           {localQuery && (
             <button
@@ -126,10 +126,10 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
       </form>
 
       {/* 2. Filter Toolbar Header */}
-      <div className="flex items-center justify-between border-t border-border pt-3">
-        <div className="flex items-center gap-2 text-xs font-heading font-bold text-foreground">
-          <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
-          <span>Bộ Lọc Chuyên Sâu</span>
+      <div className="flex items-center justify-between border-t border-slate-200 pt-4 dark:border-slate-800">
+        <div className="flex items-center gap-2 text-sm font-bold text-slate-900 dark:text-white">
+          <SlidersHorizontal className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+          <span>Bộ lọc</span>
         </div>
 
         {hasActiveFilters && (
@@ -146,17 +146,17 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
       </div>
 
       {/* 3. Filter Controls Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-xs">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {/* Content Type Scoping */}
         <div className="space-y-1">
-          <label htmlFor="filter-content-type" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">
+          <label htmlFor="filter-content-type" className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Định dạng
           </label>
           <select
             id="filter-content-type"
             value={filters.contentType || 'ALL'}
             onChange={(e) => handleContentTypeChange(e.target.value as any)}
-            className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="ALL">Tất cả định dạng</option>
             <option value="SERIES">Chuyên đề học tập</option>
@@ -166,19 +166,19 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
 
         {/* Category Filter */}
         <div className="space-y-1">
-          <label htmlFor="filter-category" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">
+          <label htmlFor="filter-category" className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Chuyên mục
           </label>
           <select
             id="filter-category"
             value={filters.categoryId || ''}
             onChange={(e) => handleCategoryChange(e.target.value)}
-            className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">Tất cả chuyên mục</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
-                {cat.name} ({cat.scope})
+                {cat.name} · {cat.scope === 'SERIES' ? 'Khóa học' : 'Cộng đồng'}
               </option>
             ))}
           </select>
@@ -186,14 +186,14 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
 
         {/* Tag Filter */}
         <div className="space-y-1">
-          <label htmlFor="filter-tag" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">
+          <label htmlFor="filter-tag" className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Thẻ chủ đề
           </label>
           <select
             id="filter-tag"
             value={filters.tagId || ''}
             onChange={(e) => handleTagChange(e.target.value)}
-            className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="">Tất cả chủ đề</option>
             {tags.map((tag) => (
@@ -206,14 +206,14 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
 
         {/* Sort By Field */}
         <div className="space-y-1">
-          <label htmlFor="filter-sort-by" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">
+          <label htmlFor="filter-sort-by" className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Sắp xếp theo
           </label>
           <select
             id="filter-sort-by"
             value={filters.sortBy || 'publishedAt'}
             onChange={(e) => handleSortChange(e.target.value as any)}
-            className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="publishedAt">Ngày đăng bài</option>
             <option value="createdAt">Ngày khởi tạo</option>
@@ -222,14 +222,14 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
 
         {/* Sort Order Direction */}
         <div className="space-y-1">
-          <label htmlFor="filter-order" className="text-[11px] text-muted-foreground uppercase font-semibold font-mono">
+          <label htmlFor="filter-order" className="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">
             Thứ tự thời gian
           </label>
           <select
             id="filter-order"
             value={filters.order || 'DESC'}
             onChange={(e) => handleOrderChange(e.target.value as any)}
-            className="w-full rounded-lg border border-input bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
+            className="h-10 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 text-sm text-slate-800 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
           >
             <option value="DESC">Mới nhất trước</option>
             <option value="ASC">Cũ nhất trước</option>

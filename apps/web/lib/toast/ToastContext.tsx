@@ -95,10 +95,27 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return <ToastContext.Provider value={value}>{children}</ToastContext.Provider>;
 }
 
-export function useToast() {
+const fallbackToastFn: ToastFn = Object.assign(
+  (_options: ToastOptions | string) => {},
+  {
+    success: (_msg: string, _dur?: number) => {},
+    error: (_msg: string, _dur?: number) => {},
+    info: (_msg: string, _dur?: number) => {},
+    warning: (_msg: string, _dur?: number) => {},
+  }
+);
+
+const fallbackValue: ToastContextValue = {
+  toasts: [],
+  addToast: () => {},
+  removeToast: () => {},
+  toast: fallbackToastFn,
+};
+
+export function useToast(): ToastContextValue {
   const context = useContext(ToastContext);
   if (!context) {
-    throw new Error('useToast must be used within a ToastProvider');
+    return fallbackValue;
   }
   return context;
 }

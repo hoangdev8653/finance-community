@@ -59,8 +59,8 @@ const CORE_VALUES = [
 
 export default function AboutPage() {
   return (
-    <AppShell mainClassName="max-w-5xl">
-      <div className="space-y-10">
+    <AppShell mainClassName="w-full max-w-none">
+      <div className="w-full space-y-10">
         <PageHeader
           icon={Coffee}
           label="Về chúng tôi"
@@ -203,7 +203,7 @@ export default function AboutPage() {
                   <span>Khám phá khóa học</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="border-white/40 text-white hover:bg-white/10">
+              <Button asChild variant="outline" size="lg" className="border-white bg-white/15 text-white shadow-sm hover:border-white hover:bg-white/25 focus-visible:ring-white">
                 <Link href="/bai-viet/cong-dong" className="inline-flex items-center gap-2">
                   <span>Cộng đồng</span>
                   <ArrowRight className="h-4 w-4" />

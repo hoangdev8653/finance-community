@@ -78,7 +78,7 @@ export function LoginForm() {
         </h1>
         <p className="text-sm text-muted-foreground">
           Chưa có tài khoản?{' '}
-          <Link href={`/register${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`} className="font-medium text-primary hover:underline">
+          <Link href={`/dang-ky${redirectParam ? `?redirect=${encodeURIComponent(redirectParam)}` : ''}`} className="font-medium text-primary hover:underline">
             Đăng ký ngay
           </Link>
         </p>

@@ -35,7 +35,7 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <AppShell mainClassName="max-w-4xl">
+    <AppShell mainClassName="w-full max-w-none">
       <div className="space-y-6">
         <PageHeader
           icon={FileText}

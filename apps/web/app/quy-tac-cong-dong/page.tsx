@@ -85,7 +85,7 @@ const rules = [
 
 export default function CommunityGuidelinesPage() {
   return (
-    <AppShell mainClassName="max-w-4xl">
+    <AppShell mainClassName="w-full max-w-none">
       <div className="space-y-8">
         <PageHeader
           icon={ShieldCheck}

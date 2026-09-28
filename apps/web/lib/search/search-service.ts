@@ -14,7 +14,10 @@ export const searchService = {
         limit,
       },
     });
-    return response.data;
+    return response.data.map((tag) => ({
+      ...tag,
+      usageCount: tag.usageCount ?? tag.postCount ?? 0,
+    }));
   },
 
   /**

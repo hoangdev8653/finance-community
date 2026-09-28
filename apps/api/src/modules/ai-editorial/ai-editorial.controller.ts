@@ -15,6 +15,7 @@ export class AiEditorialController {
   @Throttle({ default: { limit: 5, ttl: 3600000 } })
   @ApiBearerAuth('JWT-auth')
   @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('learning:manage')
   createDraft(
     @Body() body: { title: string; domain: string; category: string; series?: string; lessonOrder?: number; sources?: string },
   ) {

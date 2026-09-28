@@ -22,7 +22,7 @@ export function AdminGuard({ children }: AdminGuardProps) {
     isAuthenticated &&
       user &&
       user.roles &&
-      user.roles.some((role) => ['ADMIN', 'SUPER_ADMIN'].includes(role))
+      user.roles.some((role) => ['ADMIN', 'SUPER_ADMIN', 'MODERATOR'].includes(role))
   );
 
   if (!isAdmin) {

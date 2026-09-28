@@ -79,8 +79,8 @@
   }
 
   :root {
-    /* Exact sampled canvas color from home.png: #F9FAFC. */
-    --background: 220 33.333% 98.235%;
+    /* A cool off-white canvas lets white cards read as elevated surfaces. */
+    --background: 216 24% 97%;
     --foreground: 222.2 84% 4.9%;
 
     --surface: 0 0% 100%;
@@ -203,6 +203,79 @@
 .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
 .shadow-elevated { box-shadow: var(--shadow-elevated); }
 .shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* The valuation workspace is data-dense; keep supporting copy comfortably
+   readable instead of using dashboard-sized 9–11px labels. */
+.stock-valuation-page .text-\[11px\] {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.stock-valuation-page .text-\[10px\],
+.stock-valuation-page .text-\[9px\] {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  font-weight: 500;
+}
+
+.stock-valuation-page {
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+}
+
+.stock-valuation-page .text-muted-foreground {
+  color: hsl(215 32% 22%);
+  font-weight: 500;
+}
+
+.dark .stock-valuation-page .text-muted-foreground {
+  color: hsl(217 19% 72%);
+}
+
+/* Formula notation needs a stronger weight and contrast than supporting copy. */
+.compound-interest-tool [class*="font-mono"][class*="leading-6"][class*="text-slate-700"] {
+  color: rgb(15 23 42);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.75rem;
+}
+
+.dark .compound-interest-tool [class*="font-mono"][class*="leading-6"][class*="text-slate-700"] {
+  color: rgb(241 245 249);
+}
+
+/* Use one dark emerald throughout the compound-interest visual language. */
+.compound-interest-tool .bg-emerald-500 {
+  background-color: rgb(5 150 105);
+}
+
+.compound-interest-tool .ring-emerald-500 {
+  --tw-ring-color: rgb(5 150 105);
+}
+
+/* Make the compound-interest guidance copy readable on pale green surfaces. */
+.compound-interest-tool .bg-emerald-50.text-xs {
+  color: rgb(6 78 59);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.compound-interest-tool .bg-emerald-50.text-xs > svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.compound-interest-tool .bg-emerald-50\/50 .text-sm.leading-6.text-slate-600 {
+  color: rgb(30 64 104);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.dark .compound-interest-tool .bg-emerald-50.text-xs,
+.dark .compound-interest-tool .bg-emerald-50\/50 .text-sm.leading-6.text-slate-600 {
+  color: rgb(209 250 229);
+}
 
 /* Animation Keyframes & Classes */
 @keyframes fade-in {
@@ -440,5 +513,31 @@ select[aria-label="Lọc theo trạng thái"] option[value="DEACTIVATED"] { colo
 .admin-posts-surface tbody {
   color: #243b5a;
   font-weight: 500;
+}
+
+/* Universal Clickable Elements Cursor Pointer */
+button,
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="combobox"],
+[type="button"],
+[type="submit"],
+[type="reset"],
+a,
+summary,
+select,
+label[for],
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"],
+[disabled] {
+  cursor: not-allowed;
 }
 
