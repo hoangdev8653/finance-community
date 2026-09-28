@@ -1,89 +1,70 @@
-"use client";
-import Link from "next/link";
-import { BookOpen, Layers3 } from "lucide-react";
-import { BRAND } from "@/lib/constants/brand";
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowUpRight, BookOpen } from 'lucide-react';
+import { BRAND } from '@/lib/constants/brand';
+
 const columns = [
-  [
-    "Khóa học",
-    [
-      ["Tất cả khóa học", "/khoa-hoc"],
-      ["Khóa học nổi bật", "/khoa-hoc"],
-      ["Học miễn phí", "/khoa-hoc"],
-      ["Lộ trình học tập", "/lo-trinh-hoc"],
+  {
+    title: 'Học tập',
+    links: [
+      ['Tất cả khóa học', '/khoa-hoc'],
+      ['Lộ trình học', '/lo-trinh-hoc'],
+      ['Bài học', '/bai-viet/khoa-hoc'],
+      ['Công cụ tài chính', '/cong-cu'],
     ],
-  ],
-  [
-    "Cộng đồng",
-    [
-      ["Bài viết", "/bai-viet"],
-      ["Thảo luận", "/bai-viet"],
-      ["Hỏi đáp", "/bai-viet"],
-      ["Quy tắc cộng đồng", "/quy-tac-cong-dong"],
+  },
+  {
+    title: 'Cộng đồng',
+    links: [
+      ['Bài viết cộng đồng', '/bai-viet/cong-dong'],
+      ['Khám phá bài viết', '/bai-viet'],
+      ['Quy tắc cộng đồng', '/quy-tac-cong-dong'],
     ],
-  ],
-  [
-    "Về chúng tôi",
-    [
-      ["Giới thiệu", "/gioi-thieu"],
-      ["Sứ mệnh", "/gioi-thieu"],
-      ["Liên hệ", "/lien-he"],
-      ["Đóng góp nội dung", "/lien-he"],
+  },
+  {
+    title: 'BrewSeven',
+    links: [
+      ['Khám phá BrewSeven', '/kham-pha'],
+      ['Giới thiệu', '/gioi-thieu'],
+      ['Liên hệ', '/lien-he'],
+      ['Trung tâm hỗ trợ', '/tro-giup'],
     ],
-  ],
-  [
-    "Hỗ trợ",
-    [
-      ["Trung tâm hỗ trợ", "/tro-giup"],
-      ["Hướng dẫn sử dụng", "/tro-giup"],
-      ["Điều khoản sử dụng", "/dieu-khoan"],
-      ["Chính sách bảo mật", "/chinh-sach-bao-mat"],
+  },
+  {
+    title: 'Chính sách',
+    links: [
+      ['Điều khoản sử dụng', '/dieu-khoan'],
+      ['Chính sách bảo mật', '/chinh-sach-bao-mat'],
     ],
-  ],
+  },
 ] as const;
+
 export function Footer() {
   return (
-    <footer className="mt-14 border-t border-slate-100 bg-white text-slate-600">
+    <footer className="mt-12 border-t border-emerald-100 bg-[#f8fbfa] text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
       <div className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 lg:px-10 lg:py-12">
-        <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.6fr_repeat(4,1fr)] lg:gap-8">
+        <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.7fr_repeat(4,1fr)] lg:gap-8">
           <div>
-            <Link href="/" className="inline-flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-                <Layers3 className="h-5 w-5" />
-              </span>
-              <span className="text-[17px] font-extrabold tracking-tight text-slate-900">
-                {BRAND.name}
-              </span>
+            <Link href="/" className="inline-flex items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600" aria-label={`${BRAND.name} — Trang chủ`}>
+              <Image src="/images/logo.png" alt={BRAND.name} width={1953} height={805} className="h-10 w-[150px] object-contain object-left" />
             </Link>
-            <p className="mt-3 max-w-[230px] text-[13px] font-medium leading-5 text-slate-500">
+            <p className="mt-3 max-w-[270px] text-sm font-medium leading-6 text-slate-600 dark:text-slate-300">
               {BRAND.slogan}
             </p>
-            <div className="mt-4 flex gap-3.5">
-              {[["f", "Facebook"], ["▶", "YouTube"], ["♪", "TikTok"], ["in", "LinkedIn"]].map(([symbol, label]) => {
-                return (
-                  <a
-                    key={label as string}
-                    href="#"
-                    aria-label={label as string}
-                    className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-slate-500 text-[11px] font-extrabold text-white transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-emerald-600"
-                  >
-                    {symbol}
-                  </a>
-                );
-              })}
-            </div>
+            <Link href="/gioi-thieu" className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 transition-colors hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300">
+              Tìm hiểu về BrewSeven <ArrowUpRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-          {columns.map(([title, links]) => (
-            <nav key={title}>
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-900">
-                {title}
-              </p>
-              <ul className="mt-3.5 space-y-2.5">
-                {links.map(([label, href]) => (
+
+          {columns.map((column) => (
+            <nav key={column.title} aria-label={column.title}>
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                {column.title}
+              </h2>
+              <ul className="mt-4 space-y-3.5">
+                {column.links.map(([label, href]) => (
                   <li key={label}>
-                    <Link
-                      href={href}
-                      className="cursor-pointer text-[13px] font-medium text-slate-500 transition-colors hover:text-emerald-600"
-                    >
+                    <Link href={href} className="text-sm font-semibold text-slate-600 transition-colors hover:text-emerald-700 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:text-slate-300 dark:hover:text-emerald-300">
                       {label}
                     </Link>
                   </li>
@@ -93,15 +74,11 @@ export function Footer() {
           ))}
         </div>
       </div>
-      <div className="border-t border-slate-100">
-        <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-5 py-4 text-[13px] text-slate-500 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-          <span>
-            © {new Date().getFullYear()} {BRAND.name}. All rights reserved.
-          </span>
-          <span className="inline-flex items-center gap-1">
-            Made with <BookOpen className="h-3.5 w-3.5 text-emerald-600" /> for
-            your lifelong growth
-          </span>
+
+      <div className="border-t border-emerald-100 bg-[#f3f8f6] dark:border-slate-800 dark:bg-slate-900/70">
+        <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-5 py-4 text-sm font-medium text-slate-600 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10 dark:text-slate-300">
+          <span>© {new Date().getFullYear()} {BRAND.name}. Bảo lưu mọi quyền.</span>
+          <span className="inline-flex items-center gap-1">Phát triển cùng <BookOpen aria-hidden="true" className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> mỗi ngày</span>
         </div>
       </div>
     </footer>

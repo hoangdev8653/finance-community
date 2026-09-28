@@ -60,7 +60,7 @@ export function HeroSection() {
             </Link>
 
             <Link
-              href="/register"
+              href="/dang-ky"
               className="inline-flex items-center justify-center rounded-xl border border-slate-600/80 bg-slate-800/60 hover:bg-slate-700/80 px-6 py-2.5 text-sm sm:text-base font-semibold text-white transition-all duration-200 backdrop-blur-xs cursor-pointer whitespace-nowrap"
             >
               {t('home.joinCommunity')}

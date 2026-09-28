@@ -1,175 +1,99 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Search, Hash, Tag, Flame, RefreshCw } from 'lucide-react';
+import { Flame, Hash, Search, Tag, X } from 'lucide-react';
 import { useTags } from '@/lib/posts/use-posts-feed';
-import { TagEntity } from '@/types/content';
 import { TagCard } from './TagCard';
 import { TagsSkeleton } from './TagsSkeleton';
-import { Button } from '@/components/ui/Button';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 
 export function TagsDirectoryView() {
   const [searchQuery, setSearchQuery] = useState('');
-
   const { data: tags = [], isLoading, isError, error, refetch } = useTags('', 100);
 
-  // Filter tags based on client search query
   const filteredTags = useMemo(() => {
-    if (!searchQuery.trim()) return tags;
-    const query = searchQuery.toLowerCase().trim();
-    return tags.filter(
-      (t) => t.name.toLowerCase().includes(query) || t.slug.toLowerCase().includes(query)
-    );
+    const query = searchQuery.trim().toLocaleLowerCase('vi-VN');
+    return [...tags]
+      .filter((tag) => !query || tag.name.toLocaleLowerCase('vi-VN').includes(query) || tag.slug.toLocaleLowerCase().includes(query))
+      .sort((a, b) => a.name.localeCompare(b.name, 'vi', { sensitivity: 'base' }));
   }, [tags, searchQuery]);
 
-  // Derive top 10 popular market tags by usageCount
-  const popularTags = useMemo(() => {
-    return [...tags]
-      .filter((t) => t.usageCount > 0)
-      .sort((a, b) => b.usageCount - a.usageCount)
-      .slice(0, 10);
-  }, [tags]);
-
-  // Group filtered tags alphabetically
-  const groupedTags = useMemo(() => {
-    const groups: Record<string, TagEntity[]> = {};
-
-    const sorted = [...filteredTags].sort((a, b) =>
-      a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
-    );
-
-    for (const tag of sorted) {
-      const firstChar = tag.name.charAt(0).toUpperCase();
-      const key = /[A-Z]/.test(firstChar) ? firstChar : '#';
-      if (!groups[key]) {
-        groups[key] = [];
-      }
-      groups[key].push(tag);
-    }
-
-    return groups;
-  }, [filteredTags]);
-
-  const groupKeys = Object.keys(groupedTags).sort((a, b) => {
-    if (a === '#') return 1;
-    if (b === '#') return -1;
-    return a.localeCompare(b);
-  });
+  const popularTags = useMemo(
+    () => [...tags]
+      .filter((tag) => typeof tag.usageCount === 'number' && tag.usageCount > 0)
+      .sort((a, b) => (b.usageCount ?? 0) - (a.usageCount ?? 0))
+      .slice(0, 6),
+    [tags]
+  );
 
   return (
-    <div className="space-y-10">
-      {/* Header & Search Bar */}
-      <div className="space-y-4">
-        <div className="flex flex-col gap-2">
-          <div className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950 border border-emerald-300 dark:border-emerald-800 px-3 py-1 rounded-md font-mono">
-            <Tag className="h-3.5 w-3.5" />
-            <span>Hệ thống Chủ đề Thị trường</span>
+    <div className="w-full space-y-8 pt-2 sm:pt-3">
+      <header className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50 to-teal-100 p-6 sm:p-9 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/40 dark:to-teal-950/50">
+        <div className="pointer-events-none absolute -right-14 -top-20 h-64 w-64 rounded-full bg-emerald-300/40 blur-3xl dark:bg-emerald-600/15" />
+        <div className="relative max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+            <Tag className="h-3.5 w-3.5" aria-hidden="true" /> Thư viện chủ đề
           </div>
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-950 dark:text-slate-100">
-            Chủ đề & Từ khóa Tài chính Thịnh hành
+          <h1 className="mt-4 font-heading text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
+            Khám phá theo chủ đề
           </h1>
-          <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 max-w-3xl leading-relaxed font-normal">
-            Khám phá các phân lớp tài sản, mã cổ phiếu doanh nghiệp, và xu hướng kinh tế vĩ mô được quan tâm nhiều nhất trong các bài phân tích.
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base dark:text-slate-300">
+            Tìm nhanh các chủ đề, lĩnh vực và mã cổ phiếu đang được nhắc đến trong bài học và cộng đồng.
           </p>
+          <label className="relative mt-6 block max-w-2xl">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Tìm chủ đề hoặc mã cổ phiếu (VD: FPT, sức khỏe...)"
+              aria-label="Tìm chủ đề"
+              data-testid="tags-search-input"
+              className="h-12 w-full rounded-2xl border border-slate-200 bg-white/95 pl-12 pr-12 text-sm font-medium text-slate-900 shadow-lg shadow-emerald-950/5 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
+            />
+            {searchQuery && <button type="button" onClick={() => setSearchQuery('')} aria-label="Xóa nội dung tìm kiếm" className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"><X className="h-4 w-4" /></button>}
+          </label>
+          {!isLoading && !isError && <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">{searchQuery.trim() ? `${filteredTags.length} kết quả phù hợp` : `${tags.length} chủ đề đang có`}</p>}
         </div>
+      </header>
 
-        {/* Live Filter Input */}
-        <div className="relative max-w-lg">
-          <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm kiếm chủ đề theo từ khóa hoặc mã cổ phiếu (FPT, HPG, Fed...)..."
-            aria-label="Lọc chủ đề"
-            data-testid="tags-search-input"
-            className="h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 pl-10 pr-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-500 focus:border-emerald-500 focus:outline-hidden focus:ring-1 focus:ring-emerald-500 shadow-2xs transition-colors"
-          />
-        </div>
-      </div>
-
-      {/* Loading State */}
       {isLoading && <TagsSkeleton data-testid="tags-loading-skeleton" />}
 
-      {/* Error State */}
-      {isError && (
-        <ErrorState
-          title="Không thể nạp danh sách chủ đề"
-          message={error instanceof Error ? error.message : 'Đã có lỗi xảy ra trong quá trình nạp dữ liệu.'}
-          onRetry={() => refetch()}
-        />
-      )}
+      {isError && <ErrorState title="Không thể tải danh sách chủ đề" message={error instanceof Error ? error.message : 'Đã có lỗi khi tải dữ liệu. Vui lòng thử lại.'} onRetry={() => refetch()} />}
 
-      {/* Content State */}
       {!isLoading && !isError && (
         <>
-          {/* Popular Market Tags Section (only when no search filter active) */}
           {!searchQuery.trim() && popularTags.length > 0 && (
-            <section className="space-y-3" aria-labelledby="popular-tags-heading">
+            <section aria-labelledby="popular-tags-heading" className="space-y-3">
               <div className="flex items-center gap-2">
-                <Flame className="h-4.5 w-4.5 text-amber-600 dark:text-amber-400" />
-                <h2 id="popular-tags-heading" className="text-sm font-bold uppercase tracking-wider text-slate-950 dark:text-slate-100 font-heading">
-                  Chủ đề Nổi bật & Phổ biến
-                </h2>
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"><Flame className="h-4 w-4" /></span>
+                <div><h2 id="popular-tags-heading" className="font-heading text-base font-bold text-slate-950 dark:text-white">Chủ đề phổ biến</h2><p className="text-xs text-slate-500 dark:text-slate-400">Được quan tâm nhiều trong cộng đồng</p></div>
               </div>
-              <div className="flex flex-wrap gap-2.5">
+              <div className="flex flex-wrap gap-2">
                 {popularTags.map((tag) => (
-                  <Link
-                    key={tag.id}
-                    href={`/tags/${encodeURIComponent(tag.slug)}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-slate-900 dark:text-slate-100 transition-all hover:border-emerald-500 hover:bg-emerald-50/60 dark:hover:bg-slate-700 hover:text-emerald-950 dark:hover:text-emerald-300 shadow-2xs"
-                  >
-                    <Hash className="h-3.5 w-3.5 text-slate-500" />
-                    <span>{tag.name}</span>
-                    <span className="ml-1 rounded-full bg-slate-100 dark:bg-slate-700 px-2 py-0.5 font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-                      {tag.usageCount}
-                    </span>
+                  <Link key={tag.id} href={`/the/${encodeURIComponent(tag.slug)}`} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-400 hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:text-emerald-300">
+                    <Hash className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />{tag.name}
                   </Link>
                 ))}
               </div>
             </section>
           )}
 
-          {/* Empty Search Results */}
-          {filteredTags.length === 0 ? (
-            <EmptyState
-              title={searchQuery.trim() ? `Không có chủ đề phù hợp với "${searchQuery}"` : 'Chưa có chủ đề'}
-              description={
-                searchQuery.trim()
-                  ? 'Hãy thử từ khóa khác hoặc xóa nội dung tìm kiếm.'
-                  : 'Hiện chưa có chủ đề nào trong hệ thống.'
-              }
-              actionLabel={searchQuery.trim() ? 'Xóa bộ lọc' : undefined}
-              onAction={searchQuery.trim() ? () => setSearchQuery('') : undefined}
-            />
-          ) : (
-            /* Grouped Alphabetical Grid */
-            <div className="space-y-8">
-              {groupKeys.map((letter) => (
-                <section key={letter} aria-labelledby={`tag-group-${letter}`} className="space-y-3">
-                  <div className="flex items-center gap-2 border-b border-border/60 pb-1.5">
-                    <h2
-                      id={`tag-group-${letter}`}
-                      className="font-mono text-base font-bold text-primary"
-                    >
-                      {letter}
-                    </h2>
-                    <span className="text-xs text-muted-foreground">
-                      ({groupedTags[letter].length} chủ đề)
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {groupedTags[letter].map((tag) => (
-                      <TagCard key={tag.id} tag={tag} />
-                    ))}
-                  </div>
-                </section>
-              ))}
+          <section aria-labelledby="all-tags-heading" className="space-y-4">
+            <div className="flex items-end justify-between gap-4 border-b border-slate-200 pb-3 dark:border-slate-800">
+              <div><p className="text-xs font-bold uppercase tracking-[0.15em] text-emerald-700 dark:text-emerald-400">Thư viện</p><h2 id="all-tags-heading" className="mt-1 font-heading text-xl font-bold text-slate-950 dark:text-white">{searchQuery.trim() ? 'Kết quả tìm chủ đề' : 'Tất cả chủ đề'}</h2></div>
+              <span className="shrink-0 text-sm font-medium text-slate-500 dark:text-slate-400">{filteredTags.length} chủ đề</span>
             </div>
-          )}
+            {filteredTags.length === 0 ? (
+              <EmptyState title={searchQuery.trim() ? `Không có chủ đề phù hợp với “${searchQuery}”` : 'Chưa có chủ đề'} description={searchQuery.trim() ? 'Thử từ khóa khác hoặc xóa nội dung tìm kiếm.' : 'Hiện chưa có chủ đề nào trong hệ thống.'} actionLabel={searchQuery.trim() ? 'Xóa bộ lọc' : undefined} onAction={searchQuery.trim() ? () => setSearchQuery('') : undefined} />
+            ) : (
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {filteredTags.map((tag) => <TagCard key={tag.id} tag={tag} />)}
+              </div>
+            )}
+          </section>
         </>
       )}
     </div>

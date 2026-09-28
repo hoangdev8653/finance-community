@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   Folder,
   ChevronDown,
+  Calculator,
   Building2,
   Globe,
   Coins,
@@ -36,16 +37,22 @@ import { postsService } from '@/lib/posts/posts-service';
 import { useQuery } from '@tanstack/react-query';
 import { MarketTickerBar } from '@/components/market/MarketTickerBar';
 import { BRAND } from '@/lib/constants/brand';
+import { useCommandPaletteSearch } from '@/lib/search/use-search';
 
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
   const [headerSearch, setHeaderSearch] = useState('');
+  const [isHeaderSearchOpen, setIsHeaderSearchOpen] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const headerSearchRef = useRef<HTMLFormElement>(null);
+  const { data: headerSearchResults = [], isLoading: isHeaderSearchLoading } = useCommandPaletteSearch(headerSearch);
   const { theme, setTheme, resolvedTheme } = useTheme();
   const { isAuthenticated, isLoading } = useAuth();
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
   const { data: domains = [] } = useQuery({
     queryKey: ['domains'],
     queryFn: () => postsService.getDomains(),
@@ -57,6 +64,31 @@ export function Header() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutsideSearch = (event: MouseEvent) => {
+      if (headerSearchRef.current && !headerSearchRef.current.contains(event.target as Node)) setIsHeaderSearchOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutsideSearch);
+    return () => document.removeEventListener('mousedown', handleClickOutsideSearch);
+  }, []);
+
+  const submitHeaderSearch = (query = headerSearch) => {
+    const trimmed = query.trim();
+    setIsHeaderSearchOpen(false);
+    router.push(trimmed ? `/tim-kiem?q=${encodeURIComponent(trimmed)}` : '/tim-kiem');
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -121,6 +153,21 @@ export function Header() {
             <Home className="hidden" aria-hidden="true" />
             <span>{t('navigation.home')}</span>
             {pathname === '/' && (
+              <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
+            )}
+          </Link>
+
+          <Link
+            href="/kham-pha"
+            className={cn(
+              'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
+              pathname === '/kham-pha'
+                ? 'text-teal-800 dark:text-teal-400'
+                : 'text-slate-800 dark:text-slate-200 hover:text-teal-700 dark:hover:text-white'
+            )}
+          >
+            <span>Khám phá</span>
+            {pathname === '/kham-pha' && (
               <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-600 dark:bg-teal-500" />
             )}
           </Link>
@@ -241,45 +288,57 @@ export function Header() {
           </div>
 
           {/* Không gian làm việc */}
-          <Link
-            href="/cong-cu"
-            className={cn(
-                'relative flex items-center gap-2 py-2 text-sm font-bold transition-all duration-150 whitespace-nowrap group',
-              pathname.startsWith('/cong-cu')
-                ? 'text-teal-700 dark:text-teal-400 font-bold'
-                : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
+          <div className="relative" onMouseEnter={() => setIsToolsOpen(true)} onMouseLeave={() => setIsToolsOpen(false)}>
+            <button type="button" aria-haspopup="menu" aria-expanded={isToolsOpen} onClick={() => setIsToolsOpen((open) => !open)} className={cn('relative flex items-center gap-1.5 py-2 text-sm font-bold transition-colors whitespace-nowrap group', pathname.startsWith('/cong-cu') || isToolsOpen ? 'text-teal-700 dark:text-teal-400' : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white')}>
+              <span>Công cụ</span><ChevronDown className={cn('h-4 w-4 transition-transform', isToolsOpen && 'rotate-180')} />
+              {pathname.startsWith('/cong-cu') && <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-500" />}
+            </button>
+            {isToolsOpen && (
+              <div role="menu" aria-label="Công cụ tài chính" className="absolute left-1/2 top-full z-50 w-80 -translate-x-1/2 pt-3">
+                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                  <Link role="menuitem" href="/cong-cu/lai-kep" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><TrendingUp className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Lãi kép & tích lũy</span><span className="block text-xs text-slate-500">Ước tính tăng trưởng khoản đầu tư.</span></span></Link>
+                  <Link role="menuitem" href="/cong-cu/tinh-khoan-vay" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><Calculator className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Tính khoản vay</span><span className="block text-xs text-slate-500">Tính lịch trả nợ và tiền lãi.</span></span></Link>
+                  <Link role="menuitem" href="/cong-cu/dinh-gia-co-phieu" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><BarChart3 className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Định giá cổ phiếu</span><span className="block text-xs text-slate-500">Ước tính giá trị hợp lý và biên an toàn.</span></span></Link>
+                </div>
+              </div>
             )}
-          >
-            <Folder className="hidden" aria-hidden="true" />
-            <span>Công cụ</span>
-            {pathname.startsWith('/cong-cu') && (
-              <span className="absolute -bottom-2.5 left-0 right-0 h-0.5 bg-teal-500" />
-            )}
-          </Link>
+          </div>
         </nav>
 
         {/* 3. Right: Action Controls */}
         <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           {/* Quick Search Bar (Desktop / Tablet) */}
           <form
+            ref={headerSearchRef}
             onSubmit={(e) => {
               e.preventDefault();
-              if (headerSearch.trim()) {
-                router.push(`/tim-kiem?q=${encodeURIComponent(headerSearch.trim())}`);
-              } else {
-                router.push('/tim-kiem');
-              }
+              submitHeaderSearch();
             }}
             className="hidden md:flex items-center relative"
           >
             <Search className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-muted-foreground" />
             <input
+              ref={searchInputRef}
               type="text"
               value={headerSearch}
-              onChange={(e) => setHeaderSearch(e.target.value)}
-              placeholder="Tìm kiếm bài học, khóa học, chủ đề..."
-              className="h-10 w-[240px] rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-xs text-foreground placeholder:font-medium placeholder:text-muted-foreground transition-colors focus:outline-hidden focus:ring-1 focus:ring-primary"
+              onFocus={() => setIsHeaderSearchOpen(Boolean(headerSearch.trim()))}
+              onChange={(event) => { setHeaderSearch(event.target.value); setIsHeaderSearchOpen(true); }}
+              onKeyDown={(event) => { if (event.key === 'Escape') setIsHeaderSearchOpen(false); }}
+              aria-label="Tìm kiếm"
+              aria-expanded={isHeaderSearchOpen}
+              aria-controls="header-search-suggestions"
+              placeholder="Tìm kiếm..."
+              className="h-10 w-56 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-xs text-foreground placeholder:font-medium placeholder:text-muted-foreground transition-colors focus:outline-hidden focus:ring-1 focus:ring-primary"
             />
+            {isHeaderSearchOpen && (
+              <div id="header-search-suggestions" role="listbox" aria-label="Gợi ý tìm kiếm" className="absolute right-0 top-[calc(100%+0.65rem)] z-[60] w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div className="flex items-center justify-between px-3 py-2"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{headerSearch.trim() ? 'Gợi ý' : 'Tìm kiếm nhanh'}</span>{isHeaderSearchLoading && <span className="h-3 w-3 animate-spin rounded-full border-2 border-teal-500 border-t-transparent" />}</div>
+                {headerSearch.trim() && headerSearchResults.map((item) => <button key={`${item.type}-${item.id}`} type="button" role="option" onClick={() => submitHeaderSearch(item.title.replace(/^#/, ''))} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left hover:bg-teal-50 dark:hover:bg-teal-950/40"><Search className="h-4 w-4 shrink-0 text-teal-600" /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{item.title}</span><span className="block truncate text-xs text-slate-500">{item.description}</span></span><ArrowRight className="h-4 w-4 shrink-0 text-slate-400" /></button>)}
+                {headerSearch.trim() && !isHeaderSearchLoading && headerSearchResults.length === 0 && <p className="px-3 py-3 text-xs text-slate-500">Chưa có gợi ý. Nhấn Enter để tìm tất cả.</p>}
+                {!headerSearch.trim() && <p className="px-3 pb-2 text-xs text-slate-500">Nhập từ khóa để tìm bài viết, chủ đề và danh mục.</p>}
+                {headerSearch.trim() && <button type="submit" className="mt-1 flex w-full items-center gap-2 border-t border-slate-100 px-3 py-3 text-left text-xs font-semibold text-teal-700 dark:border-slate-800 dark:text-teal-300">Tìm tất cả kết quả cho “{headerSearch.trim()}” <ArrowRight className="h-3.5 w-3.5" /></button>}
+              </div>
+            )}
           </form>
 
           {/* Mobile Search Icon Button */}

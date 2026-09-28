@@ -3,20 +3,22 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BookOpen, Compass, Home, User, LucideIcon } from 'lucide-react';
+import { BookOpen, Compass, Home, PenLine, User, LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useTranslation, TranslationKey } from '@/lib/i18n/useTranslation';
 
 interface MobileNavItemConfig {
-  labelKey: TranslationKey;
+  labelKey?: TranslationKey;
+  label?: string;
   href: string;
   icon: LucideIcon;
 }
 
 const mobileNavConfig: MobileNavItemConfig[] = [
   { labelKey: 'navigation.home', href: '/', icon: Home },
-  { labelKey: 'navigation.explore', href: '/bai-viet', icon: Compass },
+  { labelKey: 'navigation.explore', href: '/kham-pha', icon: Compass },
   { labelKey: 'navigation.series', href: '/khoa-hoc', icon: BookOpen },
+  { label: 'Viết bài', href: '/bai-viet/tao-moi', icon: PenLine },
   { labelKey: 'navigation.account', href: '/dang-nhap', icon: User },
 ];
 
@@ -29,14 +31,14 @@ export function MobileNavigation() {
       aria-label="Mobile Bottom Navigation"
       className="fixed bottom-0 left-0 right-0 z-40 block lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md pb-[env(safe-area-inset-bottom,0px)]"
     >
-      <div className="grid grid-cols-4 h-16 w-full max-w-md mx-auto items-center px-1">
+      <div className="grid grid-cols-5 h-16 w-full max-w-md mx-auto items-center px-1">
         {mobileNavConfig.map((item) => {
           const Icon = item.icon;
           const isActive =
             pathname === item.href ||
             (item.href !== '/' && pathname.startsWith(item.href)) ||
             (item.href === '/khoa-hoc' && pathname.startsWith('/chuoi-bai'));
-          const label = item.href === '/khoa-hoc' || item.href === '/chuoi-bai' ? 'Khóa học' : t(item.labelKey);
+          const label = item.label ?? (item.href === '/khoa-hoc' || item.href === '/chuoi-bai' ? 'Khóa học' : item.labelKey ? t(item.labelKey) : '');
           return (
             <Link
               key={item.href}
