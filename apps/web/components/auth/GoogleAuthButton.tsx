@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Script from 'next/script';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { Button } from '@/components/ui/Button';
@@ -12,13 +12,44 @@ interface GoogleAuthButtonProps {
 
 export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) {
   const { loginWithGoogle, isLoading } = useAuth();
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [isRendered, setIsRendered] = useState(false);
+  const [scaleX, setScaleX] = useState<number>(1);
 
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-  // Initialize and mount Google Sign-in iframe overlay on load
-  React.useEffect(() => {
+  // Responsive scaling to match form button width perfectly
+  useEffect(() => {
+    const updateScale = () => {
+      const parentWidth = wrapperRef.current?.clientWidth;
+      if (parentWidth && parentWidth > 400) {
+        setScaleX(parentWidth / 400);
+      } else {
+        setScaleX(1);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+
+    let observer: ResizeObserver | null = null;
+    if (wrapperRef.current && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(updateScale);
+      observer.observe(wrapperRef.current);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updateScale);
+      if (observer) observer.disconnect();
+    };
+  }, [isRendered]);
+
+  // Initialize and mount Google Sign-in button on load
+  useEffect(() => {
     if (!googleClientId || typeof window === 'undefined') return;
+
+    let isMounted = true;
 
     const setupGoogle = () => {
       const google = (window as any).google;
@@ -29,8 +60,8 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
           (window as any).__googleAuthInitialized = true;
           google.accounts.id.initialize({
             client_id: googleClientId,
-            use_fedcm_for_prompt: false,
             auto_select: false,
+            cancel_on_tap_outside: true,
             callback: async (response: { credential?: string }) => {
               try {
                 if (response?.credential) {
@@ -52,8 +83,12 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
           text: 'continue_with',
           shape: 'rectangular',
           logo_alignment: 'left',
-          width: 380,
+          width: 400,
         });
+
+        if (isMounted) {
+          setIsRendered(true);
+        }
       } catch {
         // Fallback to custom button
       }
@@ -69,51 +104,57 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
           clearInterval(interval);
         }
       }, 300);
-      return () => clearInterval(interval);
+      return () => {
+        isMounted = false;
+        clearInterval(interval);
+      };
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [googleClientId, loginWithGoogle, onSuccess, onError]);
 
-  const handleCustomClick = async () => {
+  const handleFallbackClick = async () => {
     try {
-      const google = typeof window !== 'undefined' ? (window as any).google : null;
-      if (googleClientId && google?.accounts?.id) {
-        google.accounts.id.prompt((notification: any) => {
-          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-            // One Tap prompt dismissed
-          }
-        });
+      // In development or when Google script fails/blocked, provide resilient fallback
+      if (process.env.NODE_ENV !== 'production') {
+        const mockIdToken = 'mock_google_id_token_google_user';
+        await loginWithGoogle(mockIdToken);
+        if (onSuccess) onSuccess();
         return;
       }
-
-      // Development fallback mock token
-      const mockIdToken = 'mock_google_id_token_google_user';
-      await loginWithGoogle(mockIdToken);
-      if (onSuccess) onSuccess();
+      if (onError) onError('Không thể kết nối đến máy chủ Google. Vui lòng tắt chặn quảng cáo và thử lại.');
     } catch (err: any) {
       if (onError) onError(err.message || 'Đăng nhập Google thất bại.');
     }
   };
 
   return (
-    <div className="w-full relative flex justify-center items-center min-h-[44px]">
+    <div ref={wrapperRef} className="w-full relative flex justify-center items-center min-h-[44px] overflow-hidden rounded-md">
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
       />
-      {/* Official Google GIS Button Container */}
+
+      {/* Official Google GIS Button: Scaled to match 100% full-width of sign-in button */}
       <div
         ref={containerRef}
         id="google-signin-container"
-        className="hidden"
+        className={`w-full flex justify-center items-center ${isRendered ? 'flex' : 'hidden'}`}
+        style={{
+          transform: scaleX > 1 ? `scaleX(${scaleX})` : undefined,
+          transformOrigin: 'center center',
+        }}
       />
 
-      {/* Fallback button shown if Google script hasn't rendered yet or in mock dev mode */}
-      <div className="w-full absolute inset-0 -z-0 flex items-center justify-center pointer-events-none">
+      {/* Visual Custom Button: Shown while Google GIS script is loading or in test/fallback mode */}
+      {!isRendered && (
         <Button
           type="button"
           variant="outline"
-          className="h-12 w-full justify-center gap-3 border border-input bg-white font-medium text-foreground shadow-xs hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer pointer-events-auto"
-          onClick={handleCustomClick}
+          className="h-11 w-full justify-center gap-3 border-input bg-white font-medium text-foreground hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800 cursor-pointer pointer-events-auto shadow-2xs"
+          onClick={handleFallbackClick}
           disabled={isLoading}
           aria-label="Đăng nhập bằng Google"
         >
@@ -135,9 +176,9 @@ export function GoogleAuthButton({ onSuccess, onError }: GoogleAuthButtonProps) 
               fill="#EA4335"
             />
           </svg>
-          <span>Tiếp tục với Google</span>
+          <span>Tiếp tục sử dụng dịch vụ bằng Google</span>
         </Button>
-      </div>
+      )}
     </div>
   );
 }

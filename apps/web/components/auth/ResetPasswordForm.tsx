@@ -66,7 +66,7 @@ export function ResetPasswordForm() {
   if (!token && !isSuccess) {
     return (
       <div className="mx-auto w-full max-w-md space-y-5 text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-[10px] bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400">
           <AlertTriangle className="h-7 w-7" aria-hidden="true" />
         </div>
         <div className="space-y-2">
@@ -122,7 +122,7 @@ export function ResetPasswordForm() {
   return (
     <div className="mx-auto w-full max-w-md space-y-5">
       <div className="space-y-2 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
           <LockKeyhole className="h-6 w-6" aria-hidden="true" />
         </div>
         <h1 className="font-heading text-2xl sm:text-[28px] font-bold leading-9 tracking-tight text-foreground">

@@ -61,9 +61,9 @@ export function UserMenu({
         align="end"
         sideOffset={10}
         collisionPadding={16}
-        className="w-80 rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 font-sans shadow-[0_20px_50px_rgba(15,23,42,0.18),0_4px_16px_rgba(15,23,42,0.08)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.6)] z-50"
+        className="w-80 rounded-[10px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 font-sans shadow-[0_20px_50px_rgba(15,23,42,0.18),0_4px_16px_rgba(15,23,42,0.08)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.6)] z-50"
       >
-        <DropdownMenuLabel className="rounded-xl bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 p-3 font-normal">
+        <DropdownMenuLabel className="rounded-[10px] bg-slate-50/90 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-800 p-3 font-normal">
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
               <Avatar src={user.avatarUrl} fallback={user.displayName || user.username} size="md" className="ring-2 ring-primary/20" />
@@ -97,7 +97,7 @@ export function UserMenu({
           <DropdownMenuItem asChild>
             <Link
               href={`/ho-so/${encodeURIComponent(user.username)}`}
-              className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
+              className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 mr-2.5 transition-transform group-hover:scale-105">
                 <UserCircle className="h-4 w-4" />
@@ -109,7 +109,7 @@ export function UserMenu({
           <DropdownMenuItem asChild>
             <Link
               href="/bang-dieu-khien"
-              className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
+              className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400 mr-2.5 transition-transform group-hover:scale-105">
                 <LayoutDashboard className="h-4 w-4" />
@@ -121,7 +121,7 @@ export function UserMenu({
           <DropdownMenuItem asChild>
             <Link
               href="/bai-viet/tao-moi"
-              className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
+              className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-violet-500/10 text-violet-600 dark:bg-violet-500/20 dark:text-violet-400 mr-2.5 transition-transform group-hover:scale-105">
                 <PenSquare className="h-4 w-4" />
@@ -133,7 +133,7 @@ export function UserMenu({
           <DropdownMenuItem asChild>
             <Link
               href="/cai-dat"
-              className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
+              className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
             >
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400 mr-2.5 transition-transform group-hover:scale-105">
                 <Settings className="h-4 w-4" />
@@ -155,7 +155,7 @@ export function UserMenu({
               <DropdownMenuItem asChild>
                 <Link
                   href={isAdmin ? '/quan-tri' : '/quan-tri/kiem-duyet'}
-                  className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
+                  className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/90 dark:hover:bg-slate-800/90 transition-all cursor-pointer"
                 >
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400 mr-2.5 transition-transform group-hover:scale-105">
                     <Shield className="h-4 w-4" />
@@ -171,7 +171,7 @@ export function UserMenu({
 
         <DropdownMenuItem
           onClick={logout}
-          className="group flex min-h-10 items-center rounded-xl px-2.5 py-2 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50/90 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
+          className="group flex min-h-10 items-center rounded-[8px] px-2.5 py-2 text-sm font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50/90 dark:hover:bg-rose-950/30 transition-all cursor-pointer"
         >
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-rose-500/10 text-rose-600 dark:bg-rose-500/20 dark:text-rose-400 mr-2.5 transition-transform group-hover:scale-105">
             <LogOut className="h-4 w-4" />

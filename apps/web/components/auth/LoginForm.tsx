@@ -22,11 +22,10 @@ export function LoginForm() {
   const redirectParam = searchParams.get('redirect');
   const targetRedirect = sanitizeRedirectUrl(redirectParam, '/');
 
-  const { login, loginWithFacebook } = useAuth();
+  const { login } = useAuth();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isFacebookLoading, setIsFacebookLoading] = useState(false);
 
   const {
     register,
@@ -155,10 +154,6 @@ export function LoginForm() {
       </div>
 
       <GoogleAuthButton onSuccess={handleGoogleSuccess} onError={setErrorMessage} />
-      <Button type="button" variant="outline" disabled={isFacebookLoading} isLoading={isFacebookLoading} onClick={async () => { setIsFacebookLoading(true); try { if (!loginWithFacebook) throw new Error('Đăng nhập Facebook chưa được cấu hình.'); await loginWithFacebook('mock_facebook_token_facebook_user'); handleGoogleSuccess(); } catch (err: any) { setErrorMessage(err.message || 'Đăng nhập Facebook thất bại.'); } finally { setIsFacebookLoading(false); } }} className="h-11 w-full justify-center gap-3 border-input bg-white font-medium hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800">
-        <svg className="h-4 w-4 fill-[#1877F2]" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.09 4.39 23.08 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.03 1.79-4.7 4.54-4.7 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.08 24 18.09 24 12.07Z" /></svg>
-        Tiếp tục với Facebook
-      </Button>
       <div className="flex items-center justify-center gap-2 pt-1 text-sm text-muted-foreground">
         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><ShieldCheck className="h-4 w-4" aria-hidden="true" /></span>
         <span>Thông tin của bạn được bảo mật tuyệt đối<br />bởi {BRAND.name}.</span>

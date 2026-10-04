@@ -73,7 +73,7 @@ export function ForgotPasswordForm() {
   return (
     <div className="mx-auto w-full max-w-md space-y-5">
       <div className="space-y-2 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
           <KeyRound className="h-6 w-6" aria-hidden="true" />
         </div>
         <h1 className="font-heading text-2xl sm:text-[28px] font-bold leading-9 tracking-tight text-foreground">
@@ -93,7 +93,7 @@ export function ForgotPasswordForm() {
       )}
 
       {isSent ? (
-        <div className="space-y-5 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-6 text-center dark:border-emerald-950 dark:bg-emerald-950/20">
+        <div className="space-y-5 rounded-[10px] border border-emerald-100 bg-emerald-50/50 p-6 text-center dark:border-emerald-950 dark:bg-emerald-950/20">
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-300">
             <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
           </div>

@@ -33,7 +33,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <br />và phát triển tài chính.
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-muted-foreground">Đăng nhập để truy cập khóa học, theo dõi tiến độ và tham gia cộng đồng cùng chúng tôi.</p>
-            <div className="mt-4 w-full max-w-[540px] space-y-1 rounded-xl bg-transparent p-4">
+            <div className="mt-4 w-full max-w-[540px] space-y-1 rounded-[10px] bg-transparent p-4">
               {benefits.map(({ icon: Icon, title, description, className }) => (
                 <div key={title} className="flex items-center gap-4 rounded-lg px-1 py-1.5">
                   <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${className}`}><Icon className="h-5 w-5" aria-hidden="true" /></span>
@@ -45,7 +45,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <Image src="/images/login-finance-illustration.png" alt="" width={1536} height={1024} priority aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 z-0 w-[min(100%,760px)] max-w-none object-contain object-left-bottom [mask-image:linear-gradient(to_right,transparent_0%,black_14%,black_86%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_14%,black_86%,transparent_100%)]" />
         </section>
         <section className="order-1 flex min-h-screen flex-col items-center justify-center px-5 py-10 sm:px-10 lg:order-2 lg:px-14 xl:px-20">
-          <div className="w-full max-w-[540px] rounded-[24px] border border-white/70 bg-white/95 p-6 shadow-[0_10px_28px_rgba(15,23,42,0.08)] sm:p-11">{children}</div>
+          <div className="w-full max-w-[540px] rounded-[10px] border border-white/70 bg-white/95 p-6 shadow-[0_10px_28px_rgba(15,23,42,0.08)] sm:p-11">{children}</div>
           <p className="mt-8 max-w-md text-center text-xs leading-5 text-muted-foreground">Bằng cách đăng nhập, bạn đồng ý với <Link href="/terms" className="font-medium text-primary hover:underline">Điều khoản sử dụng</Link> và <Link href="/privacy" className="font-medium text-primary hover:underline">Chính sách bảo mật</Link></p>
         </section>
       </div>
