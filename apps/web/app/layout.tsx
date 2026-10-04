@@ -6,7 +6,7 @@ import { SiteChrome } from '@/components/layout/SiteChrome';
 
 const inter = Inter({
   subsets: ['latin', 'vietnamese'],
-  variable: '--font-sans',
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -44,6 +44,15 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     creator: siteConfig.twitterHandle,
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico?v=2', sizes: 'any' },
+      { url: '/icon.png?v=2', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-icon.png?v=2', type: 'image/png' },
+    ],
   },
   robots: {
     index: true,
