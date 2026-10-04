@@ -165,7 +165,7 @@ export default function HelpCenterPage() {
         />
 
         {/* Search Hero Box */}
-        <div className="relative rounded-2xl border border-slate-200 bg-gradient-to-br from-emerald-50/70 via-white to-white p-6 shadow-xs dark:border-slate-800 dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900 sm:p-8">
+        <div className="relative rounded-[10px] border border-slate-200 bg-gradient-to-br from-emerald-50/70 via-white to-white p-6 shadow-xs dark:border-slate-800 dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900 sm:p-8">
           <div className="mx-auto max-w-2xl space-y-4 text-center">
             <h2 className="font-heading text-lg sm:text-xl font-bold text-foreground">
               Bạn đang cần tìm thông tin gì?
@@ -176,7 +176,7 @@ export default function HelpCenterPage() {
                 placeholder="Nhập từ khóa cần tìm (vd: đổi mật khẩu, tiến độ học, đăng bài, lãi kép...)"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-12 w-full rounded-xl border-slate-300/80 bg-white pl-11 pr-4 text-sm shadow-xs dark:border-slate-700 dark:bg-slate-950"
+                className="h-12 w-full rounded-[10px] border-slate-300/80 bg-white pl-11 pr-4 text-sm shadow-xs dark:border-slate-700 dark:bg-slate-950"
               />
               <Search
                 className="pointer-events-none absolute left-3.5 top-3.5 h-5 w-5 text-muted-foreground"
@@ -197,7 +197,7 @@ export default function HelpCenterPage() {
                 type="button"
                 onClick={() => setActiveCategory(cat.id)}
                 className={cn(
-                  'inline-flex min-h-10 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all',
+                  'inline-flex min-h-10 items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-bold transition-all',
                   isSelected
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'bg-card text-muted-foreground hover:bg-slate-100 hover:text-foreground dark:hover:bg-slate-800 border border-border'
@@ -218,7 +218,7 @@ export default function HelpCenterPage() {
               return (
                 <div
                   key={item.id}
-                  className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900"
+                  className="overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm transition-colors duration-300 dark:border-slate-800 dark:bg-slate-900"
                 >
                   <button
                     type="button"
@@ -232,7 +232,7 @@ export default function HelpCenterPage() {
                     </span>
                     <span
                       className={cn(
-                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition-[transform,background-color,color] duration-300 ease-out motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-200',
+                        'flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-slate-100 text-slate-700 transition-[transform,background-color,color] duration-300 ease-out motion-reduce:transition-none dark:bg-slate-800 dark:text-slate-200',
                         isOpen && 'rotate-180 bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
                       )}
                     >
@@ -260,7 +260,7 @@ export default function HelpCenterPage() {
               );
             })
           ) : (
-            <div className="rounded-2xl border border-dashed border-border p-10 text-center">
+            <div className="rounded-[10px] border border-dashed border-border p-10 text-center">
               <HelpCircle className="mx-auto h-10 w-10 text-muted-foreground" />
               <p className="mt-3 text-sm font-semibold text-foreground">
                 Không tìm thấy kết quả phù hợp cho &quot;{searchQuery}&quot;
@@ -273,7 +273,7 @@ export default function HelpCenterPage() {
         </div>
 
         {/* Contact Support Callout */}
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-6 dark:border-emerald-950 dark:bg-emerald-950/20 sm:p-8">
+        <div className="rounded-[10px] border border-emerald-100 bg-emerald-50/60 p-6 dark:border-emerald-950 dark:bg-emerald-950/20 sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1.5">
               <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">

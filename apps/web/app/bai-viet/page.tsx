@@ -22,10 +22,10 @@ export default function PostsHubPage() {
   const contentTypeParam = activeTab === 'ALL' ? undefined : activeTab;
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-background">
+    <main className="community-area min-h-screen bg-slate-50 dark:bg-background">
       <div className="mx-auto max-w-[1180px] px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
         {/* Editorial Header */}
-        <header className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xs">
+        <header className="rounded-[10px] border border-border bg-card p-6 sm:p-8 shadow-xs">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-2xl space-y-3">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
@@ -43,14 +43,14 @@ export default function PostsHubPage() {
             <div className="flex items-center gap-3">
               <Link
                 href="/khoa-hoc"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground transition hover:bg-muted"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[10px] border border-border bg-background px-4 text-sm font-semibold text-foreground transition hover:bg-muted"
               >
                 <BookOpen className="h-4 w-4 text-primary" />
                 <span>Xem khóa học</span>
               </Link>
               <Link
                 href="/bai-viet/tao-moi"
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-[8px] bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-primary/90"
               >
                 <PenLine className="h-4 w-4" />
                 <span>Viết bài mới</span>
@@ -63,7 +63,7 @@ export default function PostsHubPage() {
             <button
               type="button"
               onClick={() => setActiveTab('ALL')}
-              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-bold transition-all ${
                 activeTab === 'ALL'
                   ? 'bg-foreground text-background shadow-xs'
                   : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -76,7 +76,7 @@ export default function PostsHubPage() {
             <button
               type="button"
               onClick={() => setActiveTab('SERIES')}
-              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-bold transition-all ${
                 activeTab === 'SERIES'
                   ? 'bg-indigo-600 text-white shadow-xs'
                   : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-300 dark:hover:bg-indigo-950/80'
@@ -89,7 +89,7 @@ export default function PostsHubPage() {
             <button
               type="button"
               onClick={() => setActiveTab('COMMUNITY')}
-              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-all ${
+              className={`inline-flex items-center gap-2 rounded-[8px] px-4 py-2 text-sm font-bold transition-all ${
                 activeTab === 'COMMUNITY'
                   ? 'bg-emerald-600 text-white shadow-xs'
                   : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-300 dark:hover:bg-emerald-950/80'
@@ -127,7 +127,7 @@ export default function PostsHubPage() {
           {/* Right Sidebar */}
           <aside className="space-y-6">
             {/* Series Explainer Box */}
-            <div className="rounded-2xl border border-indigo-200/70 bg-gradient-to-br from-indigo-50/70 to-card p-5 dark:border-indigo-900/60 dark:from-indigo-950/20">
+            <div className="rounded-[10px] border border-indigo-200/70 bg-gradient-to-br from-indigo-50/70 to-card p-5 dark:border-indigo-900/60 dark:from-indigo-950/20">
               <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-400">
                 <BookOpen className="h-5 w-5" />
                 <h3 className="font-heading font-bold text-sm">Học theo khóa học</h3>
@@ -144,7 +144,7 @@ export default function PostsHubPage() {
             </div>
 
             {/* Community Explainer Box */}
-            <div className="rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-card p-5 dark:border-emerald-900/60 dark:from-emerald-950/20">
+            <div className="rounded-[10px] border border-emerald-200/70 bg-gradient-to-br from-emerald-50/70 to-card p-5 dark:border-emerald-900/60 dark:from-emerald-950/20">
               <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                 <MessageSquare className="h-5 w-5" />
                 <h3 className="font-heading font-bold text-sm">Thảo luận Cộng đồng</h3>
@@ -161,7 +161,7 @@ export default function PostsHubPage() {
             </div>
 
             {/* Guidelines Card */}
-            <div className="rounded-2xl border border-border bg-card p-5">
+            <div className="rounded-[10px] border border-border bg-card p-5">
               <div className="flex items-center gap-2 text-foreground">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <h3 className="font-heading font-bold text-sm">Tiêu chuẩn nội dung</h3>

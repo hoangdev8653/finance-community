@@ -29,8 +29,8 @@ export function TagsDirectoryView() {
   );
 
   return (
-    <div className="w-full space-y-8 pt-2 sm:pt-3">
-      <header className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-white via-emerald-50 to-teal-100 p-6 sm:p-9 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/40 dark:to-teal-950/50">
+    <div className="categories-area w-full space-y-8 pt-2 sm:pt-3">
+      <header className="relative overflow-hidden rounded-[10px] border border-emerald-200 bg-gradient-to-br from-white via-emerald-50 to-teal-100 p-6 sm:p-9 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/40 dark:to-teal-950/50">
         <div className="pointer-events-none absolute -right-14 -top-20 h-64 w-64 rounded-full bg-emerald-300/40 blur-3xl dark:bg-emerald-600/15" />
         <div className="relative max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100/80 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.14em] text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
@@ -51,7 +51,7 @@ export function TagsDirectoryView() {
               placeholder="Tìm chủ đề hoặc mã cổ phiếu (VD: FPT, sức khỏe...)"
               aria-label="Tìm chủ đề"
               data-testid="tags-search-input"
-              className="h-12 w-full rounded-2xl border border-slate-200 bg-white/95 pl-12 pr-12 text-sm font-medium text-slate-900 shadow-lg shadow-emerald-950/5 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
+              className="h-12 w-full rounded-[10px] border border-slate-200 bg-white/95 pl-12 pr-12 text-sm font-medium text-slate-900 shadow-lg shadow-emerald-950/5 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/15 dark:border-slate-700 dark:bg-slate-900/90 dark:text-white"
             />
             {searchQuery && <button type="button" onClick={() => setSearchQuery('')} aria-label="Xóa nội dung tìm kiếm" className="absolute right-3 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-white"><X className="h-4 w-4" /></button>}
           </label>
@@ -68,7 +68,7 @@ export function TagsDirectoryView() {
           {!searchQuery.trim() && popularTags.length > 0 && (
             <section aria-labelledby="popular-tags-heading" className="space-y-3">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"><Flame className="h-4 w-4" /></span>
+                <span className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300"><Flame className="h-4 w-4" /></span>
                 <div><h2 id="popular-tags-heading" className="font-heading text-base font-bold text-slate-950 dark:text-white">Chủ đề phổ biến</h2><p className="text-xs text-slate-500 dark:text-slate-400">Được quan tâm nhiều trong cộng đồng</p></div>
               </div>
               <div className="flex flex-wrap gap-2">

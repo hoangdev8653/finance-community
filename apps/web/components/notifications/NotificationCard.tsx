@@ -139,7 +139,7 @@ export function NotificationCard({
     const compactContent = (
       <div
         onClick={handleClick}
-        className={`group relative flex items-start gap-3 rounded-xl p-3 transition-all duration-150 cursor-pointer ${
+        className={`group relative flex items-start gap-3 rounded-[10px] p-3 transition-all duration-150 cursor-pointer ${
           notification.isRead
             ? 'bg-transparent text-foreground/80 hover:bg-muted/70'
             : 'bg-primary/[0.04] dark:bg-primary/[0.08] text-foreground hover:bg-primary/[0.08] dark:hover:bg-primary/[0.14]'
@@ -195,7 +195,7 @@ export function NotificationCard({
 
     if (href) {
       return (
-        <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
+        <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-[10px]">
           {compactContent}
         </Link>
       );
@@ -207,14 +207,14 @@ export function NotificationCard({
   const cardContent = (
     <div
       onClick={handleClick}
-      className={`group relative flex items-start gap-3.5 rounded-xl border p-4 transition-all duration-150 cursor-pointer ${
+      className={`group relative flex items-start gap-3.5 rounded-[10px] border p-4 transition-all duration-150 cursor-pointer ${
         notification.isRead
           ? 'border-border bg-card text-foreground/85 hover:border-border/80 hover:bg-muted/30'
           : 'border-primary/30 bg-primary/5 text-foreground shadow-xs hover:border-primary/50 hover:bg-primary/10'
       }`}
     >
       {/* Type Icon */}
-      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${meta.bg} mt-0.5`}>
+      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] ${meta.bg} mt-0.5`}>
         {meta.icon}
       </div>
 
@@ -263,7 +263,7 @@ export function NotificationCard({
 
   if (href) {
     return (
-      <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl">
+      <Link href={href} className="block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-[10px]">
         {cardContent}
       </Link>
     );

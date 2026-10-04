@@ -59,7 +59,7 @@ export function Sidebar({ className }: { className?: string }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
+                    'flex items-center gap-3.5 rounded-[8px] px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
                     isActive
                       ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
@@ -97,7 +97,7 @@ export function Sidebar({ className }: { className?: string }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'flex items-center gap-3.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
+                    'flex items-center gap-3.5 rounded-[8px] px-3.5 py-2.5 text-sm font-semibold transition-all duration-150',
                     isActive
                       ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs'
                       : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'

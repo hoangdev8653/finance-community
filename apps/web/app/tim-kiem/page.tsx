@@ -46,10 +46,10 @@ function SearchPageContent() {
 
   return (
     <div className="mx-auto w-full max-w-[1440px] space-y-6 px-3.5 py-8 sm:px-6 sm:py-10 lg:px-8">
-      <header className="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/70 to-teal-100/70 p-6 sm:p-8 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/30 dark:to-teal-950/40">
+      <header className="relative overflow-hidden rounded-[10px] border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/70 to-teal-100/70 p-6 sm:p-8 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/30 dark:to-teal-950/40">
         <div className="pointer-events-none absolute -right-12 -top-20 h-56 w-56 rounded-full bg-emerald-200/40 blur-3xl dark:bg-emerald-700/15" />
         <div className="relative flex items-start gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-white shadow-lg shadow-emerald-900/15 dark:bg-emerald-500 dark:text-slate-950">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] bg-emerald-700 text-white shadow-lg shadow-emerald-900/15 dark:bg-emerald-500 dark:text-slate-950">
             <Compass className="h-6 w-6" aria-hidden="true" />
           </span>
           <div>

@@ -81,7 +81,7 @@ export default function ExplorePage() {
   return (
     <AppShell mainClassName="w-full max-w-none">
       <div className="w-full space-y-10">
-        <section className="relative overflow-hidden rounded-3xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-100 p-6 shadow-sm sm:p-10 dark:border-emerald-900/60 dark:from-emerald-950/50 dark:via-slate-900 dark:to-teal-950/40">
+        <section className="relative overflow-hidden rounded-[10px] border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-teal-100 p-6 shadow-sm sm:p-10 dark:border-emerald-900/60 dark:from-emerald-950/50 dark:via-slate-900 dark:to-teal-950/40">
           <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl" />
           <div className="relative max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-800 dark:border-emerald-800 dark:bg-slate-900/80 dark:text-emerald-300">
@@ -94,10 +94,10 @@ export default function ExplorePage() {
               Từ khóa học và bài viết đến công cụ tài chính, mọi khu vực chính đều được tập hợp tại đây.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/tim-kiem" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 font-semibold text-white shadow-sm transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400">
+              <Link href="/tim-kiem" className="inline-flex min-h-11 items-center gap-2 rounded-[8px] bg-emerald-700 px-4 font-semibold text-white shadow-sm transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400">
                 <Search className="h-4 w-4" aria-hidden="true" /> Tìm kiếm nội dung <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-              <Link href="/khoa-hoc" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white/80 px-4 font-semibold text-slate-800 transition hover:border-emerald-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100 dark:hover:border-emerald-700">
+              <Link href="/khoa-hoc" className="inline-flex min-h-11 items-center gap-2 rounded-[8px] border border-slate-200 bg-white/80 px-4 font-semibold text-slate-800 transition hover:border-emerald-300 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100 dark:hover:border-emerald-700">
                 <BookOpen className="h-4 w-4 text-emerald-700 dark:text-emerald-400" aria-hidden="true" /> Xem khóa học
               </Link>
             </div>
@@ -122,8 +122,8 @@ export default function ExplorePage() {
                 {section.links.map((item) => {
                   const ItemIcon = item.icon;
                   return (
-                    <Link key={item.href} href={item.href} className="group flex min-h-28 items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-800">
-                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:group-hover:bg-emerald-950"><ItemIcon className="h-5 w-5" aria-hidden="true" /></span>
+                    <Link key={item.href} href={item.href} className="group flex min-h-28 items-center gap-4 rounded-[10px] border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-800">
+                      <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-700 transition group-hover:bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300 dark:group-hover:bg-emerald-950"><ItemIcon className="h-5 w-5" aria-hidden="true" /></span>
                       <span className="min-w-0 flex-1">
                         <span className="block font-heading text-base font-bold text-slate-950 group-hover:text-emerald-800 dark:text-slate-100 dark:group-hover:text-emerald-300">{item.title}</span>
                         <span className="mt-1 block text-sm leading-5 text-slate-600 dark:text-slate-400">{item.description}</span>

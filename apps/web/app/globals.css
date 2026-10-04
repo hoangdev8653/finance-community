@@ -34,40 +34,43 @@
   --color-destructive: hsl(var(--destructive));
   --color-info: hsl(var(--info));
 
-  --font-heading: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-sans: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.25rem;
+      --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 10px;
+  --radius-2xl: 10px;
+  --radius-3xl: 12px;
 }
 
 @layer base {
   /* Admin uses the unified typography rhythm with enhanced legibility */
   .admin-light-mode {
-    font-family: var(--font-sans);
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
     font-size: 0.9375rem;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --background: 220 33.333% 98.235%;
+    --background: 216 24% 97%;
     --foreground: 222.2 84% 4.9%;
     --surface: 0 0% 100%;
     --surface-elevated: 0 0% 100%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --muted: 210 25% 92%;
-    --muted-foreground: 215.4 25% 27%;
+    --muted-foreground: 215.4 25% 35%;
     --border: 214.3 20% 82%;
     --input: 214.3 20% 82%;
-    --ring: 160 84% 30%;
-    --primary: 160 84% 30%;
+    --ring: 168 80% 28%;
+    --primary: 168 80% 28%;
     --primary-foreground: 0 0% 100%;
-    --accent: 160 84% 30%;
+    --accent: 168 80% 28%;
     --accent-foreground: 0 0% 100%;
     --secondary: 215 25% 35%;
     --secondary-foreground: 0 0% 100%;
@@ -174,7 +177,7 @@
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
-    font-family: var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
     font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -182,12 +185,12 @@
   }
 
   h1, h2, h3, h4, h5, h6, .font-heading {
-    font-family: var(--font-heading), system-ui, sans-serif;
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
     letter-spacing: -0.015em;
   }
 
   .font-mono {
-    font-family: var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
     font-variant-numeric: tabular-nums;
   }
 
@@ -203,6 +206,126 @@
 .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
 .shadow-elevated { box-shadow: var(--shadow-elevated); }
 .shadow-glow { box-shadow: var(--shadow-glow); }
+
+/* Shared page rhythm for Learning, Community, Categories, and System surfaces. */
+.learning-area,
+.community-area,
+.categories-area,
+.system-area {
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.learning-area,
+.community-area,
+.categories-area {
+  background-color: hsl(var(--background));
+}
+
+.learning-area,
+.community-area,
+.categories-area,
+.system-area {
+  --foreground: 222.2 84% 4.9%;
+  --muted-foreground: 215.4 25% 35%;
+  --border: 214.3 20% 82%;
+}
+
+.dark .learning-area,
+.dark .community-area,
+.dark .categories-area,
+.dark .system-area {
+  --foreground: 210 40% 98%;
+  --muted-foreground: 217 19% 65%;
+  --border: 218 28% 21%;
+}
+
+.system-area {
+  background-color: hsl(var(--background));
+}
+
+.learning-area h1,
+.learning-area h2,
+.community-area h1,
+.community-area h2,
+.categories-area h1,
+.categories-area h2,
+.system-area h1,
+.system-area h2 {
+  color: hsl(var(--foreground));
+}
+
+.learning-area :where(.text-xs),
+.community-area :where(.text-xs),
+.categories-area :where(.text-xs),
+.system-area :where(.text-xs) {
+  font-size: 0.8125rem !important;
+  line-height: 1.4;
+}
+
+.learning-area :where([class*="text-[10px]"], [class*="text-[11px]"]),
+.community-area :where([class*="text-[10px]"], [class*="text-[11px]"]),
+.categories-area :where([class*="text-[10px]"], [class*="text-[11px]"]),
+.system-area :where([class*="text-[10px]"], [class*="text-[11px]"]) {
+  font-size: 0.75rem !important;
+  line-height: 1.35;
+}
+
+/* These areas share the reference page's clean white cards on a cool gray canvas. */
+.learning-area :where(article, [role="tabpanel"] > div, .surface-card),
+.community-area :where(article),
+.categories-area :where(article),
+.system-area :where(article) {
+  border-color: hsl(214 20% 88%);
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+}
+
+.learning-area :where(section > div.rounded-xl, section > div.rounded-2xl),
+.community-area :where(section.rounded-lg, section.rounded-xl, section.rounded-2xl, div.overflow-hidden.rounded-lg),
+.categories-area :where(section > div.rounded-xl, section > div.rounded-2xl),
+.system-area :where(section > div.rounded-xl, section > div.rounded-2xl) {
+  border-color: hsl(214 20% 88%);
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px -1px rgba(15, 23, 42, 0.08);
+}
+
+.learning-area :where(button, input, select),
+.community-area :where(button, input, select),
+.categories-area :where(button, input, select),
+.system-area :where(button, input, select) {
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+}
+
+.learning-area :where(.font-mono),
+.community-area :where(.font-mono),
+.categories-area :where(.font-mono),
+.system-area :where(.font-mono) {
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .learning-area :where(article, [role="tabpanel"] > div, .surface-card),
+.dark .community-area :where(article),
+.dark .categories-area :where(article),
+.dark .system-area :where(article) {
+  border-color: hsl(218 28% 21%);
+  background-color: hsl(221 39% 11%);
+  box-shadow: var(--shadow-card);
+}
+
+.dark .learning-area :where(section > div.rounded-xl, section > div.rounded-2xl),
+.dark .community-area :where(section.rounded-lg, section.rounded-xl, section.rounded-2xl, div.overflow-hidden.rounded-lg),
+.dark .categories-area :where(section > div.rounded-xl, section > div.rounded-2xl),
+.dark .system-area :where(section > div.rounded-xl, section > div.rounded-2xl) {
+  border-color: hsl(218 28% 21%);
+  background-color: hsl(221 39% 11%);
+  box-shadow: var(--shadow-card);
+}
 
 /* The valuation workspace is data-dense; keep supporting copy comfortably
    readable instead of using dashboard-sized 9–11px labels. */

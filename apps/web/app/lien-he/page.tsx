@@ -60,8 +60,8 @@ export default function ContactPage() {
           {contactItems.map((item) => {
             const Icon = item.icon;
             return (
-              <article key={item.title} className="group flex min-h-[220px] flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-800">
-                <span className="mb-5 flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+              <article key={item.title} className="group flex min-h-[220px] flex-col rounded-[10px] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-emerald-800">
+                <span className="mb-5 flex h-11 w-11 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </span>
                 <h2 className="font-heading text-base font-bold text-slate-950 dark:text-slate-100">{item.title}</h2>
@@ -75,9 +75,9 @@ export default function ContactPage() {
         </section>
 
         <div className="grid gap-5 xl:grid-cols-[1.35fr_1fr]">
-          <section className="rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 sm:p-7 dark:border-emerald-900/60 dark:from-emerald-950/40 dark:to-slate-900">
+          <section className="rounded-[10px] border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white p-6 sm:p-7 dark:border-emerald-900/60 dark:from-emerald-950/40 dark:to-slate-900">
             <div className="flex items-start gap-4">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-white dark:bg-emerald-500 dark:text-slate-950"><MessageSquareText className="h-5 w-5" /></span>
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-emerald-700 text-white dark:bg-emerald-500 dark:text-slate-950"><MessageSquareText className="h-5 w-5" /></span>
               <div>
                 <h2 className="font-heading text-lg font-bold text-slate-950 dark:text-white">Bạn chưa biết nên gửi email nào?</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">Hãy chọn đầu mối phù hợp ở trên để phản hồi được chuyển đến nhóm phụ trách. BrewSeven ưu tiên các vấn đề về độ chính xác dữ liệu, quyền tác giả, nội dung nhạy cảm và trải nghiệm sử dụng.</p>
@@ -86,8 +86,8 @@ export default function ContactPage() {
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"><Users className="h-5 w-5" /></span><div><h2 className="font-heading text-base font-bold text-slate-950 dark:text-white">Lan tỏa BrewSeven</h2><p className="text-xs text-slate-500 dark:text-slate-400">Chia sẻ trang liên hệ với cộng đồng</p></div></div>
+          <section className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex items-center gap-3"><span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200"><Users className="h-5 w-5" /></span><div><h2 className="font-heading text-base font-bold text-slate-950 dark:text-white">Lan tỏa BrewSeven</h2><p className="text-xs text-slate-500 dark:text-slate-400">Chia sẻ trang liên hệ với cộng đồng</p></div></div>
             <div className="mt-5 flex flex-wrap gap-2">
               <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 px-3 text-sm font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-blue-950/30"><Share2 className="h-4 w-4" aria-hidden="true" /> Facebook</a>
               <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noreferrer" className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 px-3 text-sm font-semibold text-slate-700 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-600 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-sky-950/30"><Share2 className="h-4 w-4" aria-hidden="true" /> LinkedIn</a>

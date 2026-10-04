@@ -76,7 +76,7 @@ export function ProfileHeader({
 
   return (
     <>
-      <header className="w-full overflow-hidden rounded-2xl border border-border/80 bg-card text-card-foreground shadow-sm transition-all duration-200">
+      <header className="w-full overflow-hidden rounded-[10px] border border-border/80 bg-card text-card-foreground shadow-sm transition-all duration-200">
         {/* 1. Visual Cover Banner */}
         <div className="relative h-36 w-full sm:h-48 md:h-52 bg-gradient-to-r from-emerald-800 via-teal-700 to-slate-900">
           {/* Subtle grid pattern overlay */}
@@ -116,7 +116,7 @@ export function ProfileHeader({
                     variant="outline"
                     size="sm"
                     onClick={() => setIsEditModalOpen(true)}
-                    className="h-10 gap-2 rounded-xl border-border px-4 text-sm font-semibold transition-all hover:border-primary/50 hover:bg-muted/60"
+                    className="h-10 gap-2 rounded-[8px] border-border px-4 text-sm font-semibold transition-all hover:border-primary/50 hover:bg-muted/60"
                   >
                     <Edit3 className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <span>Chỉnh sửa hồ sơ</span>
@@ -125,7 +125,7 @@ export function ProfileHeader({
                   <Link href="/bai-viet/tao-moi">
                     <Button
                       size="sm"
-                      className="h-10 gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
+                      className="h-10 gap-2 rounded-[8px] bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all hover:bg-primary/90"
                     >
                       <PenSquare className="h-4 w-4" aria-hidden="true" />
                       <span>Viết bài mới</span>
@@ -136,7 +136,7 @@ export function ProfileHeader({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-10 gap-2 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+                      className="h-10 gap-2 rounded-[8px] px-3 text-sm font-semibold text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                       title="Bàn làm việc tác giả"
                     >
                       <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
@@ -150,7 +150,7 @@ export function ProfileHeader({
                     variant="outline"
                     size="sm"
                     onClick={handleShare}
-                    className="h-10 gap-2 rounded-xl border-border px-4 text-sm font-semibold transition-all hover:bg-muted/60"
+                    className="h-10 gap-2 rounded-[8px] border-border px-4 text-sm font-semibold transition-all hover:bg-muted/60"
                   >
                     {copied ? (
                       <Check className="h-4 w-4 text-emerald-600" aria-hidden="true" />
@@ -164,7 +164,7 @@ export function ProfileHeader({
                     targetType="USER"
                     targetId={profile.userId}
                     targetTitle={`@${profile.username}`}
-                    className="h-10 rounded-xl border border-border p-2.5 text-muted-foreground transition-all hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
+                    className="h-10 rounded-[8px] border border-border p-2.5 text-muted-foreground transition-all hover:border-destructive/40 hover:bg-destructive/10 hover:text-destructive"
                   />
                 </>
               )}
@@ -212,7 +212,7 @@ export function ProfileHeader({
             <div className="flex flex-wrap items-center gap-6 sm:gap-8">
               {/* Bài viết */}
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-primary/10 text-primary">
                   <FileText className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -225,7 +225,7 @@ export function ProfileHeader({
 
               {/* Điểm uy tín */}
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400">
                   <Award className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <div>
@@ -238,7 +238,7 @@ export function ProfileHeader({
 
               {/* Thành viên từ */}
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+                <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-muted text-muted-foreground">
                   <Calendar className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <div>

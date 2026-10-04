@@ -44,7 +44,7 @@ export function MobileNavigation() {
               key={item.href}
               href={item.href}
               className={cn(
-                'relative flex flex-col items-center justify-center gap-1 py-1.5 px-0.5 w-full min-h-[44px] rounded-xl transition-all duration-150 select-none',
+                'relative flex flex-col items-center justify-center gap-1 py-1.5 px-0.5 w-full min-h-[44px] rounded-[8px] transition-all duration-150 select-none',
                 isActive
                   ? 'text-teal-700 dark:text-teal-400 font-bold'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'

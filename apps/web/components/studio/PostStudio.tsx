@@ -36,13 +36,11 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES', allowLe
   const categoryMap = useCategoryMap();
 
   const isEditing = Boolean(initialPost);
-  const effectiveContentType = allowLearningAuthoring ? contentType : 'COMMUNITY';
-
-  // Form State
-  const [title, setTitle] = useState(initialPost?.title || '');
   const [contentType, setContentType] = useState<'SERIES' | 'COMMUNITY'>(
     initialPost?.contentType || (canManageLearning ? defaultContentType : 'COMMUNITY')
   );
+  const effectiveContentType = allowLearningAuthoring ? contentType : 'COMMUNITY';
+  const [title, setTitle] = useState(initialPost?.title || '');
   const [categoryId, setCategoryId] = useState<string | undefined>(
     initialPost?.categoryId || undefined
   );
@@ -267,7 +265,7 @@ export function PostStudio({ initialPost, defaultContentType = 'SERIES', allowLe
       )}
       {/* Researched Sources Feedback */}
       {researchedSources.length > 0 && (
-        <div className="rounded-xl border border-teal-200 bg-teal-50/70 dark:border-teal-900/60 dark:bg-teal-950/20 p-4 text-xs space-y-2 animate-in fade-in">
+        <div className="rounded-[10px] border border-teal-200 bg-teal-50/70 dark:border-teal-900/60 dark:bg-teal-950/20 p-4 text-xs space-y-2 animate-in fade-in">
           <div className="flex items-center gap-2 font-semibold text-teal-900 dark:text-teal-200">
             <Globe className="h-4 w-4 text-teal-600 dark:text-teal-400" />
             <span>AI đã tự động tìm kiếm và đối chiếu {researchedSources.length} nguồn uy tín trên Google:</span>

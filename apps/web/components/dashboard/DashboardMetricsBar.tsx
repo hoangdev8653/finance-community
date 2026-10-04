@@ -39,13 +39,13 @@ export function DashboardMetricsBar({ metrics, isLoading }: DashboardMetricsBarP
         return (
           <div
             key={card.label}
-            className="rounded-2xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-5 shadow-xs transition-shadow hover:shadow-md flex flex-col justify-between"
+            className="rounded-[10px] border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 p-3.5 sm:p-5 shadow-xs transition-shadow hover:shadow-md flex flex-col justify-between"
           >
             <div className="flex items-center justify-between gap-1.5">
               <span className="text-xs sm:text-sm font-heading font-bold text-slate-800 dark:text-slate-300 line-clamp-1">
                 {card.label}
               </span>
-              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
+              <div className="flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-[10px] bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0">
                 <Icon className={`h-4 w-4 sm:h-5 sm:w-5 ${card.color}`} aria-hidden="true" />
               </div>
             </div>

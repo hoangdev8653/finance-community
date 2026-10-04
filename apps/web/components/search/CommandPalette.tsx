@@ -65,7 +65,7 @@ export function CommandPalette({ isOpen, onClose }: CommandPaletteProps) {
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-xl rounded-xl border border-border bg-background shadow-2xl overflow-hidden animate-in zoom-in-95"
+        className="relative w-full max-w-xl rounded-[10px] border border-border bg-background shadow-2xl overflow-hidden animate-in zoom-in-95"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Input Bar */}

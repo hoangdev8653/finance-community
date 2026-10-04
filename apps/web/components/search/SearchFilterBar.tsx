@@ -90,7 +90,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
     filters.order !== 'DESC';
 
   return (
-    <div className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
+    <div className="space-y-4 rounded-[10px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
       {/* 1. Primary Keyword Search Input */}
       <form onSubmit={handleSearchSubmit} className="flex flex-col items-stretch gap-2.5 sm:flex-row sm:items-center">
         <div className="relative flex-1">
@@ -100,7 +100,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
             value={localQuery}
             onChange={(e) => setLocalQuery(e.target.value)}
             placeholder="Tìm bài viết, chủ đề hoặc mã chứng khoán (VD: FPT, lãi suất...)"
-            className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
+            className="h-11 w-full rounded-[8px] border border-slate-200 bg-slate-50 pl-10 pr-9 text-sm text-slate-900 placeholder:text-slate-400 transition-colors focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
           />
           {localQuery && (
             <button
@@ -118,7 +118,7 @@ export function SearchFilterBar({ filters, onChange }: SearchFilterBarProps) {
           type="submit"
           variant="primary"
           size="md"
-          className="shrink-0 gap-1.5 px-5 font-sans text-xs font-semibold rounded-xl cursor-pointer"
+          className="shrink-0 gap-1.5 px-5 font-sans text-xs font-semibold rounded-[10px] cursor-pointer"
         >
           <Search className="h-3.5 w-3.5" />
           <span>Tìm kiếm</span>

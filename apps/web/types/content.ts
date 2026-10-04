@@ -156,6 +156,8 @@ export interface DomainEntity {
   sortOrder: number;
   isActive: boolean;
   isPromoted: boolean;
+  categoryCount?: number;
+  courseCount?: number;
   createdAt: string;
   updatedAt: string;
 }

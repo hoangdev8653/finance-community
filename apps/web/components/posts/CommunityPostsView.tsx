@@ -198,7 +198,7 @@ export function CommunityPostsView() {
   const [search, setSearch] = useState("");
   const [visiblePostCount, setVisiblePostCount] = useState(5);
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-background">
+    <main className="community-area min-h-screen bg-slate-50 dark:bg-background">
       <div className="mx-auto w-full max-w-[1440px] px-3.5 pb-8 pt-0 sm:px-6 lg:px-8">
         <header className="relative left-1/2 isolate w-screen -translate-x-1/2 overflow-hidden border-y border-emerald-100 shadow-sm">
           <img

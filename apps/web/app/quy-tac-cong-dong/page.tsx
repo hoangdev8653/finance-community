@@ -95,9 +95,9 @@ export default function CommunityGuidelinesPage() {
         />
 
         {/* Intro Highlight Banner */}
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50/50 p-6 dark:border-emerald-950 dark:bg-emerald-950/20 sm:p-7">
+        <div className="rounded-[10px] border border-emerald-100 bg-emerald-50/50 p-6 dark:border-emerald-950 dark:bg-emerald-950/20 sm:p-7">
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300">
               <CheckCircle2 className="h-5 w-5" />
             </div>
             <div className="space-y-1.5">
@@ -118,14 +118,14 @@ export default function CommunityGuidelinesPage() {
             return (
               <div
                 key={rule.number}
-                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-7"
+                className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-7"
               >
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                   <div className="flex items-center gap-3 sm:flex-col sm:items-center sm:gap-2 shrink-0">
                     <span className="font-mono text-xs font-bold text-emerald-700 dark:text-emerald-400">
                       {rule.number}
                     </span>
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                       <Icon className="h-5 w-5" />
                     </div>
                   </div>
@@ -159,7 +159,7 @@ export default function CommunityGuidelinesPage() {
         </div>
 
         {/* Reporting Action Box */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-6 dark:border-slate-800 dark:bg-slate-900/50 sm:p-7">
+        <div className="rounded-[10px] border border-slate-200 bg-slate-50/80 p-6 dark:border-slate-800 dark:bg-slate-900/50 sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-1">
               <h3 className="font-heading text-base font-bold text-foreground">

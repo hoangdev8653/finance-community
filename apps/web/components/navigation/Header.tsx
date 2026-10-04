@@ -242,7 +242,7 @@ export function Header() {
             {/* Dropdown Popover Menu */}
             {isCategoryOpen && (
               <div className="absolute left-1/2 -translate-x-1/2 top-full pt-3 w-[520px] max-w-[calc(100vw-2rem)] z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                <div className="rounded-xl border border-slate-200 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-xl p-3.5 shadow-2xl space-y-1">
+                <div className="rounded-[10px] border border-slate-200 dark:border-[#253044] bg-white/95 dark:bg-[#111827]/95 backdrop-blur-xl p-3.5 shadow-2xl space-y-1">
                   <div className="px-3 py-1.5 flex items-center justify-between border-b border-slate-100 dark:border-[#253044]/80 mb-2">
                     <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                       Chuyên mục & Phạm vi phân tích
@@ -295,7 +295,7 @@ export function Header() {
             </button>
             {isToolsOpen && (
               <div role="menu" aria-label="Công cụ tài chính" className="absolute left-1/2 top-full z-50 w-80 -translate-x-1/2 pt-3">
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div className="overflow-hidden rounded-[10px] border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
                   <Link role="menuitem" href="/cong-cu/lai-kep" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><TrendingUp className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Lãi kép & tích lũy</span><span className="block text-xs text-slate-500">Ước tính tăng trưởng khoản đầu tư.</span></span></Link>
                   <Link role="menuitem" href="/cong-cu/tinh-khoan-vay" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><Calculator className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Tính khoản vay</span><span className="block text-xs text-slate-500">Tính lịch trả nợ và tiền lãi.</span></span></Link>
                   <Link role="menuitem" href="/cong-cu/dinh-gia-co-phieu" onClick={() => setIsToolsOpen(false)} className="flex items-center gap-3 rounded-lg p-3 hover:bg-teal-50 dark:hover:bg-teal-950/40"><BarChart3 className="h-4 w-4 text-teal-600" /><span><span className="block text-sm font-semibold">Định giá cổ phiếu</span><span className="block text-xs text-slate-500">Ước tính giá trị hợp lý và biên an toàn.</span></span></Link>
@@ -331,7 +331,7 @@ export function Header() {
               className="h-10 w-56 rounded-lg border border-slate-200 bg-white pl-8 pr-3 text-xs text-foreground placeholder:font-medium placeholder:text-muted-foreground transition-colors focus:outline-hidden focus:ring-1 focus:ring-primary"
             />
             {isHeaderSearchOpen && (
-              <div id="header-search-suggestions" role="listbox" aria-label="Gợi ý tìm kiếm" className="absolute right-0 top-[calc(100%+0.65rem)] z-[60] w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
+              <div id="header-search-suggestions" role="listbox" aria-label="Gợi ý tìm kiếm" className="absolute right-0 top-[calc(100%+0.65rem)] z-[60] w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-[10px] border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-700 dark:bg-slate-900">
                 <div className="flex items-center justify-between px-3 py-2"><span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">{headerSearch.trim() ? 'Gợi ý' : 'Tìm kiếm nhanh'}</span>{isHeaderSearchLoading && <span className="h-3 w-3 animate-spin rounded-full border-2 border-teal-500 border-t-transparent" />}</div>
                 {headerSearch.trim() && headerSearchResults.map((item) => <button key={`${item.type}-${item.id}`} type="button" role="option" onClick={() => submitHeaderSearch(item.title.replace(/^#/, ''))} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left hover:bg-teal-50 dark:hover:bg-teal-950/40"><Search className="h-4 w-4 shrink-0 text-teal-600" /><span className="min-w-0 flex-1"><span className="block truncate text-sm font-semibold">{item.title}</span><span className="block truncate text-xs text-slate-500">{item.description}</span></span><ArrowRight className="h-4 w-4 shrink-0 text-slate-400" /></button>)}
                 {headerSearch.trim() && !isHeaderSearchLoading && headerSearchResults.length === 0 && <p className="px-3 py-3 text-xs text-slate-500">Chưa có gợi ý. Nhấn Enter để tìm tất cả.</p>}

@@ -110,7 +110,7 @@ export function DashboardPostsList({
 
       {/* Reusable Standardized Pagination */}
       {totalPages > 1 && (
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="rounded-[10px] border border-border bg-card overflow-hidden">
           <Pagination
             meta={{
               page,

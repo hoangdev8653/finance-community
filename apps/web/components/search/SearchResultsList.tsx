@@ -40,7 +40,7 @@ export function SearchResultsList({ filters, onPageChange, emptyTitle, emptyDesc
     return (
       <div
         role="alert"
-        className="rounded-xl border border-danger/20 bg-danger/5 p-8 text-center space-y-3"
+        className="rounded-[10px] border border-danger/20 bg-danger/5 p-8 text-center space-y-3"
       >
         <p className="text-sm font-semibold text-foreground">
           Không thể tải kết quả lúc này. Vui lòng thử lại.
@@ -54,8 +54,8 @@ export function SearchResultsList({ filters, onPageChange, emptyTitle, emptyDesc
 
   if (posts.length === 0) {
     return (
-      <div data-testid="search-results-empty" className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-10 text-center dark:border-slate-700 dark:bg-slate-900">
-        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"><SearchX className="h-6 w-6" /></span>
+      <div data-testid="search-results-empty" className="flex min-h-64 flex-col items-center justify-center rounded-[10px] border border-dashed border-slate-300 bg-white px-6 py-10 text-center dark:border-slate-700 dark:bg-slate-900">
+        <span className="flex h-12 w-12 items-center justify-center rounded-[10px] bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300"><SearchX className="h-6 w-6" /></span>
         <div className="mt-4 space-y-1.5">
           <h3 className="font-heading text-base font-bold text-slate-900 dark:text-white">
             {emptyTitle || 'Không tìm thấy bài viết phù hợp'}
@@ -64,7 +64,7 @@ export function SearchResultsList({ filters, onPageChange, emptyTitle, emptyDesc
             {emptyDescription || 'Hãy thử từ khóa khác hoặc điều chỉnh bộ lọc để khám phá thêm nội dung.'}
           </p>
         </div>
-        {emptyAction && <Link href={emptyAction.href} className="mt-5 inline-flex min-h-10 items-center rounded-xl bg-emerald-700 px-4 text-sm font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950">{emptyAction.label}</Link>}
+        {emptyAction && <Link href={emptyAction.href} className="mt-5 inline-flex min-h-10 items-center rounded-[8px] bg-emerald-700 px-4 text-sm font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950">{emptyAction.label}</Link>}
       </div>
     );
   }

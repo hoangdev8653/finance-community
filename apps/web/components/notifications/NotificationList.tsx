@@ -37,7 +37,7 @@ export function NotificationList({
     if (compact) {
       return (
         <div className="flex flex-col items-center justify-center py-10 px-4 text-center select-none">
-          <div className="relative mb-3.5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-b from-primary/15 via-emerald-500/10 to-transparent text-primary shadow-xs ring-1 ring-primary/20">
+          <div className="relative mb-3.5 flex h-14 w-14 items-center justify-center rounded-[10px] bg-gradient-to-b from-primary/15 via-emerald-500/10 to-transparent text-primary shadow-xs ring-1 ring-primary/20">
             <Bell className="h-6 w-6 text-primary" aria-hidden="true" />
             <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-background border border-border shadow-xs text-[10px]">
               ✨

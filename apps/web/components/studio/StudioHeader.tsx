@@ -33,7 +33,7 @@ export function StudioHeader({
       <div className="flex items-center gap-3.5">
         <Link
           href="/"
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-slate-300 dark:border-slate-700 bg-card text-slate-700 dark:text-slate-300 shadow-2xs transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-slate-300 dark:border-slate-700 bg-card text-slate-700 dark:text-slate-300 shadow-2xs transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           aria-label="Quay lại trang chủ"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -59,7 +59,7 @@ export function StudioHeader({
           variant="outline"
           size="sm"
           onClick={onTogglePreview}
-          className="h-10 gap-2 rounded-xl border-slate-300 dark:border-slate-700 px-4 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted"
+          className="h-10 gap-2 rounded-[8px] border-slate-300 dark:border-slate-700 px-4 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted"
         >
           {isPreview ? (
             <>
@@ -82,7 +82,7 @@ export function StudioHeader({
           onClick={onSaveDraft}
           isLoading={isSavingDraft}
           disabled={isPending}
-          className="h-10 gap-2 rounded-xl border-slate-300 dark:border-slate-700 px-4 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted"
+          className="h-10 gap-2 rounded-[8px] border-slate-300 dark:border-slate-700 px-4 text-sm font-bold text-slate-700 dark:text-slate-200 transition-all hover:bg-muted"
         >
           <Save className="h-4 w-4 text-muted-foreground" />
           <span>Lưu nháp</span>
@@ -96,7 +96,7 @@ export function StudioHeader({
           onClick={onPublish}
           isLoading={isPublishing}
           disabled={isPending}
-          className="h-10 gap-2 rounded-xl bg-primary hover:bg-primary/90 px-5 text-sm font-bold text-primary-foreground shadow-sm transition-all"
+          className="h-10 gap-2 rounded-[8px] bg-primary hover:bg-primary/90 px-5 text-sm font-bold text-primary-foreground shadow-sm transition-all"
         >
           <Send className="h-4 w-4" />
           <span>{isEditing ? 'Cập nhật' : 'Gửi xuất bản'}</span>

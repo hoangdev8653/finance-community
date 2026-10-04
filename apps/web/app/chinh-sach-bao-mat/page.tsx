@@ -44,7 +44,7 @@ export default function PrivacyPage() {
           subtitle={`Cách ${BRAND.name} xử lý dữ liệu cá nhân và bảo vệ quyền riêng tư của người dùng.`}
         />
 
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div className="rounded-[10px] border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-6">
           <div className="space-y-6">
             {sections.map((section) => (
               <section key={section.title} className="space-y-2">

@@ -69,7 +69,7 @@ export default function AboutPage() {
         />
 
         {/* Hero Narrative Section */}
-        <section className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-emerald-50/80 via-white to-white p-6 shadow-xs dark:border-slate-800 dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900 sm:p-10">
+        <section className="relative overflow-hidden rounded-[10px] border border-slate-200 bg-gradient-to-br from-emerald-50/80 via-white to-white p-6 shadow-xs dark:border-slate-800 dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900 sm:p-10">
           <div className="max-w-3xl space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/80 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700 shadow-2xs dark:border-emerald-800 dark:bg-slate-900 dark:text-emerald-400">
               <Sparkles className="h-3.5 w-3.5" />
@@ -89,8 +89,8 @@ export default function AboutPage() {
 
         {/* Mission & Vision Grid */}
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+          <div className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
               <Target className="h-6 w-6" />
             </div>
             <h3 className="font-heading text-xl font-bold text-foreground">
@@ -101,8 +101,8 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400">
+          <div className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-[10px] bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400">
               <Compass className="h-6 w-6" />
             </div>
             <h3 className="font-heading text-xl font-bold text-foreground">
@@ -132,7 +132,7 @@ export default function AboutPage() {
             {SEVEN_PILLARS.map((pillar) => (
               <div
                 key={pillar.step}
-                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+                className="group relative overflow-hidden rounded-[10px] border border-slate-200 bg-white p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
               >
                 <div className="flex items-center justify-between">
                   <span className={`inline-flex h-8 w-8 items-center justify-center rounded-lg font-mono text-xs font-extrabold ${pillar.color}`}>
@@ -167,9 +167,9 @@ export default function AboutPage() {
               return (
                 <div
                   key={val.title}
-                  className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-7"
+                  className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-7"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400">
                     <Icon className="h-5 w-5" />
                   </div>
                   <h4 className="mt-4 font-heading text-base font-bold text-foreground">
@@ -185,7 +185,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Explore */}
-        <section className="rounded-3xl border border-emerald-100 bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white shadow-lg sm:p-10">
+        <section className="rounded-[10px] border border-emerald-100 bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white shadow-lg sm:p-10">
           <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-2">
               <h3 className="font-heading text-2xl font-extrabold sm:text-3xl">

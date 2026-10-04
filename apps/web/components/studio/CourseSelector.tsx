@@ -26,7 +26,7 @@ export function CourseSelector({
   const filtered = domainId ? data.filter((series) => series.domainId === domainId) : [];
 
   return (
-    <div className="space-y-4 rounded-xl border border-emerald-500/20 bg-emerald-50/50 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/20">
+    <div className="space-y-4 rounded-[10px] border border-emerald-500/20 bg-emerald-50/50 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/20">
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold uppercase tracking-wide text-emerald-800 dark:text-emerald-400">
           Cấu hình Lộ trình & Bài học
@@ -42,7 +42,7 @@ export function CourseSelector({
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           disabled={!domainId || isLoading}
-          className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 text-sm font-medium text-slate-900 dark:text-slate-100 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+          className="w-full h-11 rounded-[8px] border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 text-sm font-medium text-slate-900 dark:text-slate-100 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
         >
           <option value="">
             {!domainId ? 'Chọn lĩnh vực trước...' : 'Chọn khóa học...'}
@@ -70,7 +70,7 @@ export function CourseSelector({
           min={1}
           value={lessonOrder}
           onChange={(e) => onOrderChange(Math.max(1, Number(e.target.value) || 1))}
-          className="w-full h-11 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 text-sm font-medium text-slate-900 dark:text-slate-100 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full h-11 rounded-[8px] border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 text-sm font-medium text-slate-900 dark:text-slate-100 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
     </div>

@@ -19,7 +19,7 @@ export default function PostDetailError({
   return (
     <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-16">
       <div className="flex flex-col items-center justify-center text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-danger/10 text-danger mb-4">
+        <div className="flex h-12 w-12 items-center justify-center rounded-[10px] bg-danger/10 text-danger mb-4">
           <AlertTriangle className="h-6 w-6" />
         </div>
         <h2 className="font-heading text-xl font-bold text-foreground mb-2">

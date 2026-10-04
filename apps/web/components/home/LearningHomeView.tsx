@@ -317,7 +317,7 @@ export function LearningHomeView() {
   };
 
   return (
-    <main id="main-content" className="bg-background">
+    <main id="main-content" className="learning-area bg-background">
       <div className="mx-auto w-full max-w-[1440px] px-5 py-10 sm:px-8 lg:px-10 xl:py-12">
         <section className="grid items-center gap-10 lg:grid-cols-[1.03fr_1fr] lg:gap-12">
           <div className="max-w-[610px]">
@@ -364,7 +364,7 @@ export function LearningHomeView() {
                     className="flex items-center gap-2.5"
                   >
                     <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-card shadow-xs ${color as string}`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-[10px] border border-border/60 bg-card shadow-xs ${color as string}`}
                     >
                       <I className="h-5 w-5" />
                     </span>
@@ -381,7 +381,7 @@ export function LearningHomeView() {
               })}
             </div>
           </div>
-          <div className="relative min-h-[340px] rounded-2xl border border-emerald-100/80 bg-gradient-to-br from-emerald-50 via-[#f4fbf7] to-emerald-100/80 sm:min-h-[370px] lg:min-h-[385px] dark:border-slate-800 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-800/80">
+          <div className="relative min-h-[340px] rounded-[10px] border border-emerald-100/80 bg-gradient-to-br from-emerald-50 via-[#f4fbf7] to-emerald-100/80 sm:min-h-[370px] lg:min-h-[385px] dark:border-slate-800 dark:from-emerald-950/40 dark:via-slate-900 dark:to-slate-800/80">
             <Image
               src="/images/home-hero-books.png"
               alt=""
@@ -400,7 +400,7 @@ export function LearningHomeView() {
               sizes="(min-width: 1024px) 125px, 0px"
               className="pointer-events-none absolute bottom-[-2%] right-[-7%] z-20 hidden h-auto w-[18%] max-w-[124px] select-none lg:block"
             />
-            <div className="absolute left-[5%] top-[6%] z-10 flex h-[84%] w-[56%] max-w-[360px] flex-col rounded-xl border border-border/60 bg-card p-4 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-card-foreground">
+            <div className="absolute left-[5%] top-[6%] z-10 flex h-[84%] w-[56%] max-w-[360px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-card-foreground">
               <div className="flex justify-between text-xs font-semibold text-muted-foreground">
                 <span>Tiến độ học tập</span>
                 <span>Tuần này⌄</span>
@@ -455,7 +455,7 @@ export function LearningHomeView() {
                 <span>CN</span>
               </div>
             </div>
-            <div className="absolute left-[65%] top-[15%] z-10 flex aspect-[1.38/1] w-[28%] max-w-[178px] flex-col rounded-xl border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
+            <div className="absolute left-[65%] top-[15%] z-10 flex aspect-[1.38/1] w-[28%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
               <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
                 <Flame
                   className="h-3.5 w-3.5 text-orange-500"
@@ -472,7 +472,7 @@ export function LearningHomeView() {
               </p>
               <small className="font-medium text-muted-foreground">Tuyệt vời!</small>
             </div>
-            <div className="absolute bottom-[11%] left-[65%] z-10 flex aspect-[1.38/1] w-[25%] max-w-[178px] flex-col rounded-xl border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
+            <div className="absolute bottom-[11%] left-[65%] z-10 flex aspect-[1.38/1] w-[25%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
               <p className="text-xs font-semibold text-muted-foreground">Hoàn thành</p>
               <p className="mt-2 text-3xl font-extrabold leading-none text-foreground">
                 24
@@ -496,10 +496,10 @@ export function LearningHomeView() {
                 <Link
                   key={cat.id || cat.slug}
                   href={cat.href}
-                  className="flex min-h-[104px] cursor-pointer flex-col items-center justify-center rounded-xl border border-border bg-card px-2 text-center shadow-[0_2px_10px_rgba(15,23,42,0.025)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-sm active:translate-y-0 dark:hover:border-emerald-800/60"
+                  className="flex min-h-[104px] cursor-pointer flex-col items-center justify-center rounded-[10px] border border-border bg-card px-2 text-center shadow-[0_2px_10px_rgba(15,23,42,0.025)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-sm active:translate-y-0 dark:hover:border-emerald-800/60"
                 >
                   <span
-                    className={`mb-2 flex h-10 w-10 items-center justify-center rounded-2xl ${cat.tone}`}
+                    className={`mb-2 flex h-10 w-10 items-center justify-center rounded-[10px] ${cat.tone}`}
                   >
                     <Icon className="h-6 w-6" />
                   </span>
@@ -522,7 +522,7 @@ export function LearningHomeView() {
               <Link
                 key={item.id || item.slug}
                 href={item.href}
-                className="group cursor-pointer overflow-hidden rounded-xl border border-border bg-card shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md active:translate-y-0 dark:hover:border-emerald-800/60"
+                className="group cursor-pointer overflow-hidden rounded-[10px] border border-border bg-card shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md active:translate-y-0 dark:hover:border-emerald-800/60"
               >
                 <div
                   className={`relative h-32 bg-gradient-to-br ${item.tint}`}
@@ -617,7 +617,7 @@ export function LearningHomeView() {
               return (
                 <div key={title as string} className="flex gap-3">
                   <span
-                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${tone as string}`}
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${tone as string}`}
                   >
                     <I className="h-6 w-6" />
                   </span>
@@ -634,7 +634,7 @@ export function LearningHomeView() {
             })}
           </div>
         </section>
-        <section className="mt-14 rounded-xl border border-emerald-200/60 bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/60 p-6 sm:flex sm:items-center sm:gap-8 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-card dark:to-emerald-950/30">
+        <section className="mt-14 rounded-[10px] border border-emerald-200/60 bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/60 p-6 sm:flex sm:items-center sm:gap-8 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-card dark:to-emerald-950/30">
           <div className="flex-1">
             <h2 className="text-base font-bold text-foreground">
               Nhận bản tin kiến thức hàng tuần
@@ -696,7 +696,7 @@ function HomeList({
   const comments = [32, 45, 28];
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4 shadow-[0_4px_16px_rgba(15,23,42,0.04)] text-card-foreground">
+    <div className="rounded-[10px] border border-border bg-card p-4 shadow-[0_4px_16px_rgba(15,23,42,0.04)] text-card-foreground">
       <Heading title={title} href={href} label="Xem tất cả" />
       <div>
         {items.map((item, index) => {

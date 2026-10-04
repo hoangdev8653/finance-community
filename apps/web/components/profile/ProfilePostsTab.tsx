@@ -99,7 +99,7 @@ export function ProfilePostsTab({ userId }: ProfilePostsTabProps) {
             size="sm"
             onClick={() => setPage((prev) => prev + 1)}
             disabled={isFetching}
-            className="h-10 gap-2 rounded-xl border-border px-5 text-sm font-semibold transition-all hover:bg-muted"
+            className="h-10 gap-2 rounded-[8px] border-border px-5 text-sm font-semibold transition-all hover:bg-muted"
           >
             {isFetching && <Loader2 className="h-4 w-4 animate-spin text-primary" />}
             <span>Tải thêm bài viết</span>

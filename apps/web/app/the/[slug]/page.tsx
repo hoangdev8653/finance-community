@@ -33,10 +33,10 @@ export default function TagExplorePage({ params }: TagPageProps) {
   if (isError || !tag) {
     return (
       <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col items-center justify-center px-4 py-16 text-center">
-        <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"><Tag className="h-6 w-6" /></span>
+        <span className="flex h-14 w-14 items-center justify-center rounded-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"><Tag className="h-6 w-6" /></span>
         <h1 className="mt-5 font-heading text-2xl font-bold text-slate-950 dark:text-white">Không tìm thấy chủ đề</h1>
         <p className="mt-2 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">Chủ đề này có thể đã được đổi tên hoặc không còn tồn tại.</p>
-        <Link href="/the" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950"><ArrowLeft className="h-4 w-4" /> Xem tất cả chủ đề</Link>
+        <Link href="/the" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-[8px] bg-emerald-700 px-4 text-sm font-semibold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950"><ArrowLeft className="h-4 w-4" /> Xem tất cả chủ đề</Link>
       </div>
     );
   }
@@ -47,11 +47,11 @@ export default function TagExplorePage({ params }: TagPageProps) {
         <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Quay lại tìm kiếm
       </Link>
 
-      <header className="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/70 to-teal-100/70 p-6 shadow-sm sm:p-8 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/30 dark:to-teal-950/40">
+      <header className="relative overflow-hidden rounded-[10px] border border-emerald-100 bg-gradient-to-br from-white via-emerald-50/70 to-teal-100/70 p-6 shadow-sm sm:p-8 dark:border-emerald-900/60 dark:from-slate-900 dark:via-emerald-950/30 dark:to-teal-950/40">
         <div className="pointer-events-none absolute -right-12 -top-16 h-56 w-56 rounded-full bg-emerald-200/40 blur-3xl dark:bg-emerald-700/15" />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-start gap-4">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-700 text-white shadow-lg shadow-emerald-900/15 dark:bg-emerald-500 dark:text-slate-950">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[10px] bg-emerald-700 text-white shadow-lg shadow-emerald-900/15 dark:bg-emerald-500 dark:text-slate-950">
               <Tag className="h-6 w-6" aria-hidden="true" />
             </span>
             <div className="min-w-0">
@@ -60,8 +60,8 @@ export default function TagExplorePage({ params }: TagPageProps) {
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base dark:text-slate-300">Tìm các bài học và chia sẻ cộng đồng được gắn với chủ đề này.</p>
             </div>
           </div>
-          <div className="flex w-fit shrink-0 items-center gap-3 rounded-2xl border border-white/80 bg-white/80 px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
-            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"><Sparkles className="h-5 w-5" /></span>
+          <div className="flex w-fit shrink-0 items-center gap-3 rounded-[10px] border border-white/80 bg-white/80 px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900/70">
+            <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300"><Sparkles className="h-5 w-5" /></span>
             <span><span className="block text-xl font-extrabold leading-6 text-slate-900 dark:text-white">{tag?.usageCount ?? '—'}</span><span className="text-xs font-medium text-slate-500 dark:text-slate-400">bài viết</span></span>
           </div>
         </div>
@@ -73,7 +73,7 @@ export default function TagExplorePage({ params }: TagPageProps) {
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-400">Nội dung theo chủ đề</p>
             <h2 id="tag-results-title" className="mt-1 font-heading text-xl font-bold text-slate-950 dark:text-white">Bài viết gắn với #{tag ? tag.name : decodedSlug}</h2>
           </div>
-          <div className="flex w-fit flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-900" role="group" aria-label="Lọc loại nội dung">
+          <div className="flex w-fit flex-wrap gap-1 rounded-[10px] border border-slate-200 bg-white p-1 dark:border-slate-700 dark:bg-slate-900" role="group" aria-label="Lọc loại nội dung">
             {([
               { value: 'ALL', label: 'Tất cả', icon: Sparkles },
               { value: 'SERIES', label: 'Khóa học', icon: BookOpen },

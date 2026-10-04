@@ -46,7 +46,7 @@ export function ToastContainer() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-start justify-between gap-3 p-4 rounded-xl border ${getToastClasses(
+          className={`pointer-events-auto flex items-start justify-between gap-3 p-4 rounded-[10px] border ${getToastClasses(
             t.type
           )} bg-surface/95 shadow-xl text-xs font-sans text-foreground backdrop-blur-md animate-in slide-in-from-right-4 fade-in duration-300`}
         >

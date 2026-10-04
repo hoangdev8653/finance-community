@@ -97,8 +97,46 @@ export const postsService = {
     return response.data;
   },
 
-  async getDomains(): Promise<DomainEntity[]> {
-    const response = await apiClient.get<DomainEntity[]>('/domains');
+  async getDomains(params?: { includeInactive?: boolean; search?: string }): Promise<DomainEntity[]> {
+    const response = await apiClient.get<DomainEntity[]>('/domains', { params });
+    return response.data;
+  },
+
+  async createDomain(data: {
+    name: string;
+    code: string;
+    slug: string;
+    nameVi?: string;
+    nameEn?: string;
+    description?: string;
+    sortOrder?: number;
+    isActive?: boolean;
+    isPromoted?: boolean;
+  }): Promise<DomainEntity> {
+    const response = await apiClient.post<DomainEntity>('/domains', data);
+    return response.data;
+  },
+
+  async updateDomain(
+    id: string,
+    data: Partial<{
+      name: string;
+      code: string;
+      slug: string;
+      nameVi?: string;
+      nameEn?: string;
+      description?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+      isPromoted?: boolean;
+    }>
+  ): Promise<DomainEntity> {
+    const response = await apiClient.patch<DomainEntity>(`/domains/${encodeURIComponent(id)}`, data);
+    return response.data;
+  },
+
+  async deleteDomain(id: string): Promise<DomainEntity> {
+    const response = await apiClient.delete<DomainEntity>(`/domains/${encodeURIComponent(id)}`);
     return response.data;
   },
 

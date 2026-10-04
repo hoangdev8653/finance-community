@@ -128,12 +128,12 @@ export function NotificationBell({
           id="notification-popover"
           role="dialog"
           aria-label="Thông báo"
-          className="absolute right-0 mt-2.5 w-[360px] sm:w-[410px] rounded-2xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_4px_16px_rgba(15,23,42,0.08)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.6)] z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
+          className="absolute right-0 mt-2.5 w-[360px] sm:w-[410px] rounded-[10px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-[0_20px_50px_rgba(15,23,42,0.18),0_4px_16px_rgba(15,23,42,0.08)] dark:shadow-[0_24px_60px_rgba(0,0,0,0.6)] z-50 animate-in fade-in zoom-in-95 duration-150 overflow-hidden"
         >
           {/* Popover Header */}
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 px-4 py-3.5 bg-slate-50/90 dark:bg-slate-900">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-primary/10 text-primary">
                 <Bell className="h-4 w-4" />
               </div>
               <div className="flex items-center gap-2">
@@ -164,7 +164,7 @@ export function NotificationBell({
 
           {/* Quick Sub-tabs */}
           <div className="px-3.5 pt-3 pb-2 bg-white dark:bg-slate-900">
-            <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+            <div className="grid grid-cols-2 p-1 rounded-[10px] bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
               <button
                 type="button"
                 onClick={() => setFilter('all')}
@@ -216,7 +216,7 @@ export function NotificationBell({
             <Link
               href="/thong-bao"
               onClick={() => setIsOpen(false)}
-              className="group inline-flex w-full items-center justify-center gap-1.5 rounded-xl py-2 px-3 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-all hover:bg-slate-100/90 dark:hover:bg-slate-800 cursor-pointer"
+              className="group inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] py-2 px-3 text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-all hover:bg-slate-100/90 dark:hover:bg-slate-800 cursor-pointer"
             >
               <span>Xem tất cả trong Trung tâm thông báo</span>
               <ArrowRight className="h-3.5 w-3.5 transition-transform duration-150 group-hover:translate-x-0.5" />

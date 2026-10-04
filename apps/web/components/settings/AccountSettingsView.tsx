@@ -126,7 +126,7 @@ export function AccountSettingsView() {
   };
 
   return (
-    <div className="w-full space-y-6 sm:space-y-8">
+    <div className="system-area w-full space-y-6 sm:space-y-8">
       {saveSuccess && (
         <Alert variant="success" title="Cập nhật thành công">
           {saveSuccess}
@@ -153,13 +153,13 @@ export function AccountSettingsView() {
         {/* Settings Navigation Tabs */}
         <nav
           aria-label="Danh mục cài đặt"
-          className="flex min-w-0 items-center gap-1.5 overflow-x-auto rounded-2xl border border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-900 p-1.5 shadow-2xs"
+          className="flex min-w-0 items-center gap-1.5 overflow-x-auto rounded-[10px] border border-slate-300 dark:border-slate-700 bg-slate-100/80 dark:bg-slate-900 p-1.5 shadow-2xs"
         >
           <button
             type="button"
             onClick={() => setActiveTab('profile')}
             className={cn(
-              'flex h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-all duration-150',
+              'flex h-10 shrink-0 items-center gap-2 rounded-[10px] px-4 text-sm font-bold transition-all duration-150',
               activeTab === 'profile'
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800'
@@ -173,7 +173,7 @@ export function AccountSettingsView() {
             type="button"
             onClick={() => setActiveTab('security')}
             className={cn(
-              'flex h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-all duration-150',
+              'flex h-10 shrink-0 items-center gap-2 rounded-[10px] px-4 text-sm font-bold transition-all duration-150',
               activeTab === 'security'
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800'
@@ -187,7 +187,7 @@ export function AccountSettingsView() {
             type="button"
             onClick={() => setActiveTab('notifications')}
             className={cn(
-              'flex h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-all duration-150',
+              'flex h-10 shrink-0 items-center gap-2 rounded-[10px] px-4 text-sm font-bold transition-all duration-150',
               activeTab === 'notifications'
                 ? 'bg-primary text-primary-foreground shadow-sm'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white hover:bg-white dark:hover:bg-slate-800'
@@ -203,7 +203,7 @@ export function AccountSettingsView() {
         {/* Tab 1: Profile Tab */}
         {activeTab === 'profile' && (
           <form onSubmit={handleSaveProfile} className="space-y-6">
-            <div className="space-y-6 rounded-2xl border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
+            <div className="space-y-6 rounded-[10px] border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
               <div className="border-b border-border/80 pb-4">
                 <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                   Thông tin hiển thị công khai
@@ -214,7 +214,7 @@ export function AccountSettingsView() {
               </div>
 
               {/* Avatar Section */}
-              <div className="flex items-center gap-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-100/80 p-4 sm:p-5 dark:bg-slate-900/80">
+              <div className="flex items-center gap-4 rounded-[10px] border border-slate-200 dark:border-slate-800 bg-slate-100/80 p-4 sm:p-5 dark:bg-slate-900/80">
                 <Avatar
                   src={avatarUrl || user?.avatarUrl}
                   fallback={displayName || user?.username || 'U'}
@@ -242,7 +242,7 @@ export function AccountSettingsView() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Ví dụ: Hoàng Minh"
-                    className="h-11 rounded-xl text-sm font-semibold text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
+                    className="h-11 rounded-[8px] text-sm font-semibold text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
                     maxLength={100}
                   />
                 </div>
@@ -255,7 +255,7 @@ export function AccountSettingsView() {
                     id="username"
                     value={`@${user?.username || ''}`}
                     readOnly
-                    className="flex h-11 w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 px-3.5 py-2 font-mono text-sm font-bold text-slate-900 dark:text-slate-100 shadow-2xs cursor-default select-all"
+                    className="flex h-11 w-full rounded-[8px] border border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 px-3.5 py-2 font-mono text-sm font-bold text-slate-900 dark:text-slate-100 shadow-2xs cursor-default select-all"
                   />
                   <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Tên người dùng định danh cố định không thể chỉnh sửa.
@@ -273,9 +273,9 @@ export function AccountSettingsView() {
                     id="email"
                     value={user?.email || ''}
                     readOnly
-                    className="flex h-11 flex-1 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 px-3.5 py-2 font-mono text-sm font-bold text-slate-900 dark:text-slate-100 shadow-2xs cursor-default select-all"
+                    className="flex h-11 flex-1 rounded-[8px] border border-slate-300 dark:border-slate-700 bg-slate-100/90 dark:bg-slate-800/90 px-3.5 py-2 font-mono text-sm font-bold text-slate-900 dark:text-slate-100 shadow-2xs cursor-default select-all"
                   />
-                  <span className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-emerald-300 dark:border-emerald-800 bg-emerald-100 dark:bg-emerald-950/80 px-4 py-2.5 text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                  <span className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-[10px] border border-emerald-300 dark:border-emerald-800 bg-emerald-100 dark:bg-emerald-950/80 px-4 py-2.5 text-xs font-bold text-emerald-800 dark:text-emerald-300">
                     <CheckCircle2 className="h-4 w-4" />
                     <span>Đã xác thực</span>
                   </span>
@@ -299,7 +299,7 @@ export function AccountSettingsView() {
                   placeholder="Chia sẻ đôi nét về kinh nghiệm đầu tư, lĩnh vực quan tâm hoặc chuyên môn nghiên cứu của bạn..."
                   rows={4}
                   maxLength={500}
-                  className="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="w-full rounded-[10px] border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 text-sm font-medium text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-2xs transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
 
@@ -308,7 +308,7 @@ export function AccountSettingsView() {
                 <Button
                   type="submit"
                   isLoading={isSaving}
-                  className="h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
+                  className="h-11 px-6 rounded-[8px] bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
                 >
                   Lưu thay đổi hồ sơ
                 </Button>
@@ -321,7 +321,7 @@ export function AccountSettingsView() {
         {activeTab === 'security' && (
           <div className="space-y-6">
             <form onSubmit={handleUpdatePassword}>
-              <div className="space-y-6 rounded-2xl border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
+              <div className="space-y-6 rounded-[10px] border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
                 <div className="border-b border-border/80 pb-4">
                   <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                     Đổi mật khẩu tài khoản
@@ -343,7 +343,7 @@ export function AccountSettingsView() {
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
                         placeholder="Nhập mật khẩu hiện tại"
-                        className="h-11 rounded-xl pr-10 text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
+                        className="h-11 rounded-[8px] pr-10 text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
                         required
                       />
                       <button
@@ -367,7 +367,7 @@ export function AccountSettingsView() {
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
                       placeholder="Tối thiểu 6 ký tự"
-                      className="h-11 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
+                      className="h-11 rounded-[8px] text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
                       required
                     />
                   </div>
@@ -382,7 +382,7 @@ export function AccountSettingsView() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       placeholder="Nhập lại mật khẩu mới"
-                      className="h-11 rounded-xl text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
+                      className="h-11 rounded-[8px] text-sm font-medium text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700"
                       required
                     />
                   </div>
@@ -391,7 +391,7 @@ export function AccountSettingsView() {
                     <Button
                       type="submit"
                       isLoading={isSaving}
-                      className="h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
+                      className="h-11 px-6 rounded-[8px] bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
                     >
                       Cập nhật mật khẩu mới
                     </Button>
@@ -401,12 +401,12 @@ export function AccountSettingsView() {
             </form>
 
             {/* Account Role & Status */}
-            <div className="space-y-5 rounded-2xl border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
+            <div className="space-y-5 rounded-[10px] border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
               <h3 className="font-heading text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                 Thông tin phiên & Quyền hạn
               </h3>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900 p-4">
+                <div className="rounded-[10px] border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900 p-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
                     Trạng thái tài khoản
                   </span>
@@ -416,7 +416,7 @@ export function AccountSettingsView() {
                   </span>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900 p-4">
+                <div className="rounded-[10px] border border-slate-200 dark:border-slate-700 bg-slate-50/80 dark:bg-slate-900 p-4">
                   <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
                     Cấp bậc / Vai trò
                   </span>
@@ -432,7 +432,7 @@ export function AccountSettingsView() {
         {/* Tab 3: Notifications Tab */}
         {activeTab === 'notifications' && (
           <form onSubmit={handleSaveNotifications}>
-            <div className="space-y-6 rounded-2xl border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
+            <div className="space-y-6 rounded-[10px] border border-slate-300 dark:border-slate-800 bg-card p-6 sm:p-8 shadow-sm">
               <div className="border-b border-border/80 pb-4">
                 <h2 className="font-heading text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
                   Tùy chọn nhận thông báo
@@ -483,7 +483,7 @@ export function AccountSettingsView() {
               <div className="pt-2 flex justify-end">
                 <Button
                   type="submit"
-                  className="h-11 px-6 rounded-xl bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
+                  className="h-11 px-6 rounded-[8px] bg-primary hover:bg-primary/90 text-sm font-bold text-primary-foreground shadow-sm transition-all"
                 >
                   Lưu tùy chọn thông báo
                 </Button>

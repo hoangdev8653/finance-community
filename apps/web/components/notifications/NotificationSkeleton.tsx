@@ -8,7 +8,7 @@ export function NotificationSkeleton({ compact = false }: { compact?: boolean })
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="flex items-start gap-3 p-3 rounded-xl bg-muted/30"
+            className="flex items-start gap-3 p-3 rounded-[10px] bg-muted/30"
           >
             <Skeleton className="h-8 w-8 rounded-lg shrink-0 mt-0.5" />
             <div className="space-y-1.5 flex-1 min-w-0">

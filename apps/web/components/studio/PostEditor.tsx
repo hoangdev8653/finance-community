@@ -126,7 +126,7 @@ export function PostEditor(props: PostEditorProps) {
       {/* ========================================================================= */}
       <div className="min-w-0 self-start lg:col-span-8 space-y-6">
         {/* 1. Tiêu đề bài viết */}
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-3">
+        <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
             <label
               htmlFor="post-title-input"
@@ -166,7 +166,7 @@ export function PostEditor(props: PostEditorProps) {
                 type="button"
                 onClick={props.onGenerateDraft}
                 disabled={isGeneratingDraft}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 text-xs font-bold text-primary transition-all hover:bg-primary/20 hover:border-primary disabled:opacity-60 shadow-2xs self-start sm:self-auto"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-[10px] border border-primary/40 bg-primary/10 px-4 text-xs font-bold text-primary transition-all hover:bg-primary/20 hover:border-primary disabled:opacity-60 shadow-2xs self-start sm:self-auto"
               >
                 <Sparkles className="h-4 w-4" aria-hidden="true" />
                 <span>{isGeneratingDraft ? 'Đang tạo bản nháp AI...' : 'AI tạo bản nháp'}</span>
@@ -195,7 +195,7 @@ export function PostEditor(props: PostEditorProps) {
       {/* ========================================================================= */}
       <div className="min-w-0 self-start lg:col-span-4 space-y-6">
         {/* Card 1: Cấu hình phân loại */}
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-5">
+        <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-5">
           <div className="border-b border-border/80 pb-3">
             <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100">
               Cài đặt phân loại
@@ -276,7 +276,7 @@ export function PostEditor(props: PostEditorProps) {
 
         {/* Card 2: Ảnh bìa đại diện */}
         {props.onCoverMediaChange && (
-          <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-4">
+          <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-4">
             <div className="border-b border-border/80 pb-3">
               <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100">
                 Ảnh bìa bài viết
@@ -297,7 +297,7 @@ export function PostEditor(props: PostEditorProps) {
               <button
                 type="button"
                 onClick={() => setShowAiPrompts((prev) => !prev)}
-                className="flex w-full items-center justify-between rounded-xl border border-primary/25 bg-primary/5 px-3.5 py-2.5 text-xs font-bold text-primary hover:bg-primary/10 transition-all"
+                className="flex w-full items-center justify-between rounded-[10px] border border-primary/25 bg-primary/5 px-3.5 py-2.5 text-xs font-bold text-primary hover:bg-primary/10 transition-all"
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
@@ -311,7 +311,7 @@ export function PostEditor(props: PostEditorProps) {
               </button>
 
               {showAiPrompts && (
-                <div className="mt-3 space-y-3 rounded-xl border border-border bg-slate-50 dark:bg-slate-900/60 p-3.5 animate-in fade-in duration-150">
+                <div className="mt-3 space-y-3 rounded-[10px] border border-border bg-slate-50 dark:bg-slate-900/60 p-3.5 animate-in fade-in duration-150">
                   <p className="text-[11px] font-medium text-slate-600 dark:text-slate-300">
                     Sao chép prompt được tối ưu sẵn để tạo ảnh trên Midjourney, DALL-E hoặc ChatGPT:
                   </p>
