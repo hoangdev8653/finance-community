@@ -690,12 +690,7 @@ export function AdminPostsTable() {
       {/* 1. Page Header & Actions */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-            <span>Trang chủ</span>
-            <span className="text-muted-foreground/60">›</span>
-            <span className="text-foreground">Bài viết cộng đồng</span>
-          </nav>
-          <h1 className="mt-2 font-heading text-2xl font-bold tracking-tight text-foreground">
+          <h1 className="font-heading text-2xl font-bold tracking-tight text-foreground">
             Quản lý bài viết cộng đồng
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
@@ -730,10 +725,10 @@ export function AdminPostsTable() {
           return (
             <div
               key={stat.label}
-              className="flex items-center gap-3.5 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
+              className="flex items-center gap-3.5 rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
             >
               <div
-                className={`grid h-12 w-12 shrink-0 place-items-center rounded-xl ${stat.iconWrap}`}
+                className={`grid h-12 w-12 shrink-0 place-items-center rounded-[10px] ${stat.iconWrap}`}
               >
                 <Icon className="h-6 w-6" />
               </div>
@@ -751,7 +746,7 @@ export function AdminPostsTable() {
       {/* 3. Main Content Container: Tabs + Filter + Table + Detail Panel */}
       <div className="bg-transparent">
         <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_370px]">
-          <div className="min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+          <div className="min-w-0 overflow-hidden rounded-[10px] border border-slate-100 bg-white shadow-sm">
         {/* Status Navigation Tabs */}
         <div className="flex overflow-x-auto border-b border-border px-4 scrollbar-none">
           {statusTabs.map((tab) => {
@@ -817,7 +812,7 @@ export function AdminPostsTable() {
                   <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="max-h-80 min-w-[220px] overflow-y-auto rounded-xl border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
+              <DropdownMenuContent align="start" className="max-h-80 min-w-[220px] overflow-y-auto rounded-[10px] border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
                 {[
                   ['ALL', 'Tất cả danh mục'],
                   ['Tài chính cá nhân', 'Tài chính cá nhân'],
@@ -848,7 +843,7 @@ export function AdminPostsTable() {
                   <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[190px] rounded-xl border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
+              <DropdownMenuContent align="start" className="min-w-[190px] rounded-[10px] border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
                 {Object.entries({ ALL: 'Tất cả trạng thái', PUBLISHED: 'Đã xuất bản', DRAFT: 'Chờ duyệt', HIDDEN: 'Bị ẩn', REJECTED: 'Bị từ chối' }).map(([value, label]) => (
                   <DropdownMenuItem key={value} onSelect={() => { setStatusFilter(value); setPage(1); }} className={`min-h-9 rounded-lg px-3 text-sm font-medium ${statusFilter === value ? 'bg-emerald-50 text-emerald-700 focus:bg-emerald-50 focus:text-emerald-700' : ''}`}>
                     {label}
@@ -865,7 +860,7 @@ export function AdminPostsTable() {
                   <ChevronDown className="h-4 w-4 shrink-0" aria-hidden="true" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="min-w-[140px] rounded-xl border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
+              <DropdownMenuContent align="start" className="min-w-[140px] rounded-[10px] border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
                 {[['latest', 'Mới nhất'], ['oldest', 'Cũ nhất']].map(([value, label]) => (
                   <DropdownMenuItem key={value} onSelect={() => setSortBy(value)} className={`min-h-9 rounded-lg px-3 text-sm font-medium ${sortBy === value ? 'bg-emerald-50 text-emerald-700 focus:bg-emerald-50 focus:text-emerald-700' : ''}`}>
                     {label}
@@ -1101,7 +1096,7 @@ export function AdminPostsTable() {
 
                             {/* Popover Dropdown */}
                             {openMenuId === post.id && (
-                              <div className="absolute right-0 top-10 z-30 w-44 rounded-xl border border-border bg-card p-1 shadow-lg">
+                              <div className="absolute right-0 top-10 z-30 w-44 rounded-[10px] border border-border bg-card p-1 shadow-lg">
                                 <button
                                   type="button"
                                   onClick={() => open(post, 'view')}
@@ -1155,7 +1150,7 @@ export function AdminPostsTable() {
 
           {/* Right Detail Panel ("Chi tiết bài viết") */}
           {preview ? (
-            <aside className="self-start space-y-3.5 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+            <aside className="self-start space-y-3.5 rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm">
               {/* Drawer Header */}
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-base font-bold text-foreground">
@@ -1172,7 +1167,7 @@ export function AdminPostsTable() {
               </div>
 
               {/* Cover Image */}
-              <div className="overflow-hidden rounded-xl border border-border">
+              <div className="overflow-hidden rounded-[10px] border border-border">
                 <img
                   src={resolveMediaUrl(preview.coverMedia?.secureUrl, fallbackCover)}
                   alt={preview.title}
@@ -1229,7 +1224,7 @@ export function AdminPostsTable() {
               <div>{renderStatusBadge(preview)}</div>
 
               {/* Interaction Metrics Bar (4 counters) */}
-              <div className="flex items-center justify-between rounded-xl bg-muted/40 p-3 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between rounded-[10px] bg-muted/40 p-3 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5 text-rose-500">
                   <Heart className="h-4 w-4 fill-rose-500/20" />
                   <span className="font-medium tabular-nums">{previewStats?.likes ?? 128}</span>
@@ -1337,7 +1332,7 @@ export function AdminPostsTable() {
               </div>
             </aside>
           ) : (
-            <aside className="hidden min-h-[420px] flex-col items-center justify-center rounded-2xl border border-slate-100 bg-white p-6 text-center shadow-sm xl:flex">
+            <aside className="hidden min-h-[420px] flex-col items-center justify-center rounded-[10px] border border-slate-100 bg-white p-6 text-center shadow-sm xl:flex">
               <div className="grid h-12 w-12 place-items-center rounded-full bg-muted/60 text-muted-foreground">
                 <Search className="h-6 w-6" />
               </div>
@@ -1350,7 +1345,7 @@ export function AdminPostsTable() {
         </div>
 
         {/* 5. Bottom Pagination Bar */}
-        <div className="mt-4 flex flex-col items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-white px-4 py-3 text-xs shadow-sm sm:flex-row">
+        <div className="mt-4 flex flex-col items-center justify-between gap-3 rounded-[10px] border border-slate-100 bg-white px-4 py-3 text-xs shadow-sm sm:flex-row">
           {/* Left record count */}
           <div className="text-muted-foreground">
             Hiển thị{' '}
@@ -1442,7 +1437,7 @@ export function AdminPostsTable() {
           role="dialog"
           aria-modal="true"
         >
-          <div className="w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+          <div className="w-full max-w-3xl overflow-hidden rounded-[10px] border border-border bg-card shadow-2xl">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-border p-5">
               <h2 className="font-heading text-lg font-bold text-foreground">
@@ -1475,7 +1470,7 @@ export function AdminPostsTable() {
                     fallbackCover
                   )}
                   alt=""
-                  className="max-h-80 w-full rounded-xl border border-border bg-muted object-contain"
+                  className="max-h-80 w-full rounded-[8px] border border-border bg-muted object-contain"
                 />
                 <h3 className="text-xl font-bold text-foreground">{selected.title}</h3>
                 <div className="flex flex-wrap gap-2 text-xs font-mono text-muted-foreground">
@@ -1494,7 +1489,7 @@ export function AdminPostsTable() {
             {/* Edit Mode */}
             {mode === 'edit' && (
               <form onSubmit={update} className="max-h-[80vh] space-y-4 overflow-y-auto p-6">
-                <div className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+                <div className="rounded-[10px] border border-slate-100 bg-slate-50 p-3">
                   <p className="mb-2 text-xs font-semibold text-foreground">Ảnh đại diện</p>
                   <img
                     src={resolveMediaUrl(selected.coverMedia?.secureUrl || selected.coverMedia?.id, fallbackCover)}

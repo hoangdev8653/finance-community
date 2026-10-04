@@ -19,12 +19,12 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="admin-light-mode min-h-screen bg-[#F8FAFC] dark:bg-slate-950">
+    <div className="admin-light-mode system-area min-h-screen bg-[#F7F8FA] dark:bg-slate-950">
       <AdminGuard>
         <AdminNav />
         <div className="lg:pl-64">
           <AdminHeader />
-          <main className="min-w-0 px-4 py-5 sm:px-6 lg:px-6 lg:py-5">
+          <main className="system-area min-w-0 px-4 py-5 sm:px-6 lg:px-6 lg:py-5">
             {children}
           </main>
         </div>

@@ -9,13 +9,13 @@ export function AdminModerationHub() {
   const [activeTab, setActiveTab] = useState<'posts' | 'reports'>('posts');
 
   return (
-    <div className="space-y-6">
+    <div className="community-area space-y-6">
       {/* Tab Switcher */}
       <div className="flex items-center gap-2 border-b border-border pb-3">
         <button
           type="button"
           onClick={() => setActiveTab('posts')}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 ${
+          className={`flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition-all duration-150 ${
             activeTab === 'posts'
               ? 'bg-primary text-primary-foreground shadow-sm'
               : 'text-muted-foreground hover:bg-muted hover:text-foreground'
@@ -27,7 +27,7 @@ export function AdminModerationHub() {
         <button
           type="button"
           onClick={() => setActiveTab('reports')}
-          className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-150 ${
+          className={`flex items-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition-all duration-150 ${
             activeTab === 'reports'
               ? 'bg-primary text-primary-foreground shadow-sm'
               : 'text-muted-foreground hover:bg-muted hover:text-foreground'

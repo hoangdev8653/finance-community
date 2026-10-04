@@ -39,7 +39,7 @@ export function BanPostDialog({
       aria-modal="true"
       aria-labelledby="ban-dialog-title"
     >
-      <div className="w-full max-w-lg rounded-xl border border-border bg-surface shadow-2xl p-6 space-y-6">
+      <div className="w-full max-w-lg rounded-[10px] border border-border bg-surface shadow-2xl p-6 space-y-6">
         <div className="flex items-center justify-between border-b border-border pb-4">
           <div className="flex items-center gap-3 text-danger">
             <div className="p-2 rounded-lg bg-danger/10">

@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { BRAND } from '@/lib/constants/brand';
 import {
   BookOpen,
+  Compass,
   CheckSquare,
   Crown,
   FileText,
@@ -11,13 +14,25 @@ import {
   Layers,
   Map,
   MessageCircle,
-  MessagesSquare,
   Settings,
   Tags,
   Users,
+  type LucideIcon,
 } from 'lucide-react';
 
-const navGroups = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  exact?: boolean;
+}
+
+interface NavGroup {
+  label?: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
   {
     items: [
       { href: '/quan-tri', label: 'Tổng quan', icon: Home, exact: true },
@@ -28,13 +43,13 @@ const navGroups = [
     label: 'HỌC TẬP',
     items: [
       { href: '/quan-tri/hoc-tap', label: 'Bài học', icon: BookOpen, exact: true },
-      { href: '/quan-tri/hoc-tap/lo-trinh', label: 'Khóa học & lộ trình', icon: Map },
+      { href: '/quan-tri/hoc-tap/lo-trinh', label: 'Khóa học & Lộ trình', icon: Map },
     ],
   },
   {
     label: 'CỘNG ĐỒNG',
     items: [
-      { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: MessagesSquare },
+      { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: FileText },
       { href: '/quan-tri/binh-luan', label: 'Bình luận', icon: MessageCircle },
       { href: '/quan-tri/kiem-duyet', label: 'Kiểm duyệt', icon: CheckSquare },
     ],
@@ -42,6 +57,7 @@ const navGroups = [
   {
     label: 'PHÂN LOẠI',
     items: [
+      { href: '/quan-tri/linh-vuc', label: 'Lĩnh vực', icon: Compass },
       { href: '/quan-tri/danh-muc', label: 'Danh mục', icon: Layers },
       { href: '/quan-tri/the', label: 'Thẻ', icon: Tags },
     ],
@@ -68,25 +84,27 @@ export function AdminNav() {
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col justify-between border-r border-border bg-card px-4 py-6 lg:flex text-card-foreground">
       <div className="space-y-6">
-        {/* Brand Logo & Slogan */}
-        <div className="flex items-center gap-3 px-2">
-          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-md shadow-emerald-500/20">
-            {/* Geometric Book Icon in Logo */}
-            <svg viewBox="0 0 24 24" fill="none" className="h-6 w-6 text-white" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z" />
-              <path d="M6 6h10" />
-              <path d="M6 10h10" />
-              <path d="M12 2v20" stroke="#f97316" strokeWidth="2.5" />
-            </svg>
-          </div>
-          <div className="min-w-0">
-            <h1 className="truncate font-heading text-base font-bold tracking-tight text-foreground">
-              Finance Community
-            </h1>
-            <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+        {/* Brand Logo & Slogan (Centered) */}
+        <div className="flex flex-col items-center justify-center text-center px-1">
+          <Link
+            href="/"
+            title={`${BRAND.name} — Quay lại trang chủ`}
+            className="flex flex-col items-center group transition-opacity hover:opacity-90"
+          >
+            <div className="relative flex h-12 w-[180px] items-center justify-center overflow-hidden">
+              <Image
+                src="/images/logo.png"
+                alt={BRAND.name}
+                width={1953}
+                height={805}
+                className="h-full w-full object-contain object-center transition-transform group-hover:scale-[1.02]"
+                priority
+              />
+            </div>
+            <p className="mt-1 text-[11px] font-semibold tracking-wide text-emerald-600 dark:text-emerald-400">
               Học • Chia sẻ • Phát triển
             </p>
-          </div>
+          </Link>
         </div>
 
         {/* Navigation List */}
@@ -106,7 +124,7 @@ export function AdminNav() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`group flex h-10 items-center gap-3 rounded-xl px-3.5 text-sm font-medium transition-all duration-200 ${
+                    className={`group flex h-10 items-center gap-3 rounded-[8px] px-3.5 text-sm font-medium transition-all duration-200 ${
                       active
                         ? 'bg-[#00B074] text-white shadow-sm shadow-emerald-600/30'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
@@ -117,7 +135,7 @@ export function AdminNav() {
                         active ? 'text-white' : 'text-slate-500 dark:text-slate-400'
                       }`}
                       strokeWidth={active ? 2.2 : 1.9}
-                      aria-hidden="true"
+                      aria-hidden={true}
                     />
                     <span className="truncate">{item.label}</span>
                   </Link>
@@ -130,11 +148,11 @@ export function AdminNav() {
 
       <div className="mt-auto pb-1 pt-5">
         <div className="flex items-center justify-center gap-2">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+          <div className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-amber-100 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
             <Crown className="h-4 w-4 fill-amber-500 text-amber-500" />
           </div>
           <div>
-            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">Admin Panel</h3>
+            <h3 className="text-xs font-bold text-slate-800 dark:text-slate-200">{BRAND.name} Admin</h3>
             <p className="text-[10px] text-slate-500 dark:text-slate-400">Quản trị hệ thống</p>
           </div>
         </div>

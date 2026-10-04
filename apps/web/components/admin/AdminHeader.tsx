@@ -23,7 +23,7 @@ export function AdminHeader() {
         <button
           type="button"
           aria-label="Mở điều hướng quản trị"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 dark:text-slate-300 dark:hover:bg-slate-800"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-[8px] text-slate-600 transition-colors hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 dark:text-slate-300 dark:hover:bg-slate-800"
         >
           <Menu className="h-5 w-5" aria-hidden="true" />
         </button>
@@ -36,7 +36,7 @@ export function AdminHeader() {
           <input
             type="search"
             placeholder="Tìm kiếm người dùng, khóa học, bài viết..."
-            className="h-11 w-full rounded-2xl border border-slate-200/80 bg-slate-50/50 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-emerald-500 dark:focus:bg-slate-900"
+            className="h-11 w-full rounded-[8px] border border-slate-200/80 bg-slate-50/50 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-emerald-500 dark:focus:bg-slate-900"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ export function AdminHeader() {
         <button
           type="button"
           aria-label="5 thông báo mới"
-          className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+          className="relative inline-flex h-10 w-10 items-center justify-center rounded-[8px] text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/35 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
         >
           <Bell className="h-5 w-5" aria-hidden="true" />
           <span className="absolute -top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white shadow-sm ring-2 ring-white dark:ring-slate-900">
@@ -61,7 +61,7 @@ export function AdminHeader() {
         </IconButton>
 
         {/* Admin Profile Dropdown Trigger */}
-        <div className="flex cursor-pointer items-center gap-3 rounded-xl p-1 pl-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
+        <div className="flex cursor-pointer items-center gap-3 rounded-[8px] p-1 pl-2 transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/60">
           <div className="relative h-10 w-10 overflow-hidden rounded-full ring-2 ring-emerald-500/30">
             {user?.avatarUrl ? (
               <img src={user.avatarUrl} alt="Admin" className="h-full w-full object-cover" />

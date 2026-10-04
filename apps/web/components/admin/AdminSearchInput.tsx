@@ -161,7 +161,7 @@ export function AdminSearchInput({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         aria-label={props['aria-label'] || placeholder}
-        className={`h-10 w-full rounded-lg border border-border bg-background pl-10 pr-10 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-10 text-[13px] text-slate-700 placeholder:text-slate-400 transition-colors focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/10 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
         {...props}
       />
 

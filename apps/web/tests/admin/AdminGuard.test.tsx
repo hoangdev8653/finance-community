@@ -43,7 +43,7 @@ describe('AdminGuard Component', () => {
     vi.mocked(authContext.useAuth).mockReturnValue({
       isAuthenticated: true,
       isLoading: false,
-      user: { id: 'u-2', roles: ['MODERATOR'] },
+      user: { id: 'u-2', roles: ['MEMBER'] },
     } as any);
 
     render(

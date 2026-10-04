@@ -34,7 +34,7 @@ export function AdminUserGrowthChart({
   return (
     <section
       aria-labelledby="user-analytics-heading"
-      className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 sm:p-6 shadow-xs"
+      className="flex flex-col justify-between rounded-[10px] border border-border bg-surface p-5 sm:p-6 shadow-xs"
     >
       {/* Header */}
       <div>
@@ -67,7 +67,7 @@ export function AdminUserGrowthChart({
 
         {/* Highlight Stats Row */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background/50 p-3">
+          <div className="rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-base text-foreground font-semibold">
               <UserPlus className="h-3.5 w-3.5 text-sky-400" />
               <span>Đăng ký 7 ngày</span>
@@ -80,7 +80,7 @@ export function AdminUserGrowthChart({
             </span>
           </div>
 
-          <div className="rounded-xl border border-border bg-background/50 p-3">
+          <div className="rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <UserCheck className="h-3.5 w-3.5 text-emerald-400" />
               <span>Tỷ lệ hoạt động</span>
@@ -93,7 +93,7 @@ export function AdminUserGrowthChart({
             </span>
           </div>
 
-          <div className="col-span-2 sm:col-span-1 rounded-xl border border-border bg-background/50 p-3">
+          <div className="col-span-2 sm:col-span-1 rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <ShieldAlert className="h-3.5 w-3.5 text-rose-400" />
               <span>Tạm khóa</span>
@@ -108,7 +108,7 @@ export function AdminUserGrowthChart({
         </div>
 
         {/* 7-Day Real Column/Bar Chart */}
-        <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
+        <div className="mt-5 rounded-[10px] border border-border bg-background/60 p-4">
           <div className="flex items-center justify-between pb-3 border-b border-border text-sm text-muted-foreground">
             <span className="font-semibold text-foreground">Đăng ký hằng ngày</span>
             <span className="font-mono text-xs">Dữ liệu theo thời gian thực</span>

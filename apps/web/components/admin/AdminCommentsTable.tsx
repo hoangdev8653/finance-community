@@ -110,7 +110,7 @@ export function AdminCommentsTable() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="community-area space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 border-b border-border pb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -151,7 +151,7 @@ export function AdminCommentsTable() {
       </div>
 
       {/* Summary & Search Toolbar */}
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -175,7 +175,7 @@ export function AdminCommentsTable() {
       </div>
 
       {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+      <div className="overflow-hidden rounded-[10px] border border-border bg-card shadow-sm">
         {isLoading ? (
           <div className="p-12 text-center text-sm text-muted-foreground">
             Đang tải danh sách bình luận...
@@ -322,7 +322,7 @@ export function AdminCommentsTable() {
       {/* View Full Comment Modal */}
       {viewingComment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="w-full max-w-lg rounded-[10px] border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
@@ -397,7 +397,7 @@ export function AdminCommentsTable() {
       {/* Action Confirmation Modal */}
       {actionComment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95">
+          <div className="w-full max-w-md rounded-[10px] border border-border bg-card p-6 shadow-2xl animate-in fade-in zoom-in-95">
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
               <AlertCircle className="h-5 w-5" />
             </div>

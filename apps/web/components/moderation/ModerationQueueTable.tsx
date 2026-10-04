@@ -150,7 +150,7 @@ export function ModerationQueueTable() {
       </div>
 
       {/* Summary & Search Toolbar */}
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -198,7 +198,7 @@ export function ModerationQueueTable() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="h-16 rounded-xl border border-border bg-surface/50 animate-pulse"
+              className="h-16 rounded-[10px] border border-border bg-surface/50 animate-pulse"
             />
           ))}
         </div>
@@ -208,7 +208,7 @@ export function ModerationQueueTable() {
       {isError && (
         <div
           role="alert"
-          className="flex flex-col items-center justify-center p-8 rounded-xl border border-danger/20 bg-danger/5 text-center space-y-3"
+          className="flex flex-col items-center justify-center p-8 rounded-[10px] border border-danger/20 bg-danger/5 text-center space-y-3"
         >
           <AlertCircle className="h-8 w-8 text-danger" aria-hidden="true" />
           <p className="text-sm font-medium text-foreground">
@@ -222,7 +222,7 @@ export function ModerationQueueTable() {
 
       {/* Empty State */}
       {!isLoading && !isError && filteredReports.length === 0 && (
-        <div className="flex flex-col items-center justify-center p-12 rounded-xl border border-dashed border-border bg-surface text-center space-y-3">
+        <div className="flex flex-col items-center justify-center p-12 rounded-[10px] border border-dashed border-border bg-surface text-center space-y-3">
           <CheckCircle2 className="h-10 w-10 text-success/70" aria-hidden="true" />
           <div className="space-y-1">
             <h3 className="font-heading text-base font-bold text-foreground">
@@ -239,7 +239,7 @@ export function ModerationQueueTable() {
 
       {/* Table Container */}
       {!isLoading && !isError && filteredReports.length > 0 && (
-        <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-2xs">
+        <div className="rounded-[10px] border border-border bg-surface overflow-hidden shadow-2xs">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs font-sans">

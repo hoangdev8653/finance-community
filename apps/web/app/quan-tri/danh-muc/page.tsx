@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { CategoryManagementView } from '@/components/admin/CategoryManagementView';
 
 export default function AdminCategoriesPage() {
-  redirect('/admin/learning/categories');
+  return <CategoryManagementView />;
 }

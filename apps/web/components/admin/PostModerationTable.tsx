@@ -158,7 +158,7 @@ export function PostModerationTable() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -182,7 +182,7 @@ export function PostModerationTable() {
       </div>
 
       {/* Table Container */}
-      <div className="rounded-xl border border-border bg-surface overflow-hidden shadow-2xs">
+      <div className="rounded-[10px] border border-border bg-surface overflow-hidden shadow-2xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-sans">
             <colgroup><col className="w-[38%]" /><col className="w-[16%]" /><col className="w-[12%]" /><col className="w-[12%]" /><col className="w-[10%]" /><col className="w-[12%]" /></colgroup>
@@ -354,7 +354,7 @@ export function PostModerationTable() {
 
       {selectedPost && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="post-preview-title" onMouseDown={(event) => { if (event.target === event.currentTarget) setSelectedPost(null); }}>
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-[10px] border border-border bg-surface shadow-2xl">
             <div className="flex items-start justify-between gap-4 border-b border-border p-5 sm:p-6"><div className="min-w-0"><p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-primary">Post preview · {selectedPost.contentType}</p><h2 id="post-preview-title" className="text-xl font-bold text-foreground sm:text-2xl">{selectedPost.title}</h2><p className="mt-2 text-xs text-muted-foreground">{selectedPost.author?.username || selectedPost.authorId} · {selectedPost.publishedAt || selectedPost.createdAt ? new Date(selectedPost.publishedAt || selectedPost.createdAt).toLocaleString('vi-VN') : '—'}</p></div><button type="button" onClick={() => setSelectedPost(null)} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label="Đóng xem trước bài viết"><X className="h-5 w-5" /></button></div>
             <div className="overflow-y-auto p-5 sm:p-8"><PostContentRenderer body={(selectedPost as ModerationPostItem & { body?: string | null }).body ?? null} /></div>
             <div className="flex items-center justify-end gap-2 border-t border-border bg-background/40 p-4"><Button variant="outline" onClick={() => setSelectedPost(null)}>Đóng</Button>{selectedPost.moderationStatus !== 'APPROVED' && <Button variant="primary" onClick={() => { void handleApprove(selectedPost); setSelectedPost(null); }} disabled={approveMutation.isPending} isLoading={approveMutation.isPending}><ShieldCheck className="h-4 w-4" />Duyệt</Button>}{selectedPost.moderationStatus !== 'BANNED' && <Button variant="destructive" onClick={() => { setPostToBan(selectedPost); setSelectedPost(null); }} disabled={banMutation.isPending}><ShieldBan className="h-4 w-4" />Cấm</Button>}</div>

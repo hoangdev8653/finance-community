@@ -60,7 +60,7 @@ export function AdminContentTrendChart({
   return (
     <section
       aria-labelledby="content-analytics-heading"
-      className="flex flex-col justify-between rounded-2xl border border-border bg-surface p-5 sm:p-6 shadow-xs"
+      className="flex flex-col justify-between rounded-[10px] border border-border bg-surface p-5 sm:p-6 shadow-xs"
     >
       {/* Header */}
       <div>
@@ -93,7 +93,7 @@ export function AdminContentTrendChart({
 
         {/* Highlight Stats Row */}
         <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          <div className="rounded-xl border border-border bg-background/50 p-3">
+          <div className="rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-base text-foreground font-semibold">
               <PenTool className="h-3.5 w-3.5 text-emerald-400" />
             <span>Đã xuất bản 7 ngày</span>
@@ -106,7 +106,7 @@ export function AdminContentTrendChart({
             </span>
           </div>
 
-          <div className="rounded-xl border border-border bg-background/50 p-3">
+          <div className="rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <FileCheck2 className="h-3.5 w-3.5 text-amber-400" />
               <span>Hàng chờ duyệt</span>
@@ -119,7 +119,7 @@ export function AdminContentTrendChart({
             </span>
           </div>
 
-          <div className="col-span-2 sm:col-span-1 rounded-xl border border-border bg-background/50 p-3">
+          <div className="col-span-2 sm:col-span-1 rounded-[10px] border border-border bg-background/50 p-3">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
               <Layers className="h-3.5 w-3.5 text-teal-400" />
               <span>Luồng bản nháp</span>
@@ -134,7 +134,7 @@ export function AdminContentTrendChart({
         </div>
 
         {/* 7-Day Real SVG Area Chart */}
-        <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
+        <div className="mt-5 rounded-[10px] border border-border bg-background/60 p-4">
           <div className="flex items-center justify-between pb-3 border-b border-border text-sm text-muted-foreground">
             <span className="font-semibold text-foreground">Xu hướng sản xuất nội dung</span>
             <span className="font-mono text-xs">Dữ liệu theo thời gian thực</span>

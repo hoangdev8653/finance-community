@@ -270,7 +270,7 @@ export default function AdminOverviewPage() {
         {/* Date Selector */}
         <button
           type="button"
-          className="inline-flex h-11 items-center gap-2.5 rounded-2xl border border-slate-200/90 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+          className="inline-flex h-11 items-center gap-2.5 rounded-[10px] border border-slate-200/90 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <Calendar className="h-4 w-4 text-slate-400" aria-hidden="true" />
           <span>Hôm nay, 06 Tháng 9, 2025</span>
@@ -285,10 +285,10 @@ export default function AdminOverviewPage() {
           return (
             <div
               key={stat.label}
-              className="relative flex min-h-[128px] items-center overflow-hidden rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800/80 dark:bg-slate-900"
+              className="relative flex min-h-[128px] items-center overflow-hidden rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm transition-all hover:shadow-md dark:border-slate-800/80 dark:bg-slate-900"
             >
               <div className="flex items-center gap-4">
-                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${stat.iconBg}`}>
+                <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-[10px] ${stat.iconBg}`}>
                   <Icon className="h-7 w-7" strokeWidth={2.1} aria-hidden="true" />
                 </div>
                 <div className="min-w-0">
@@ -328,12 +328,12 @@ export default function AdminOverviewPage() {
           {/* Charts Row: Platform Traffic & User Composition */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Box 1: Lượt truy cập nền tảng */}
-            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Lượt truy cập nền tảng
                 </h2>
-                <div className="relative inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                <div className="relative inline-flex items-center gap-1.5 rounded-[10px] border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                   <span>{trafficPeriod}</span>
                   <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
                 </div>
@@ -429,7 +429,7 @@ export default function AdminOverviewPage() {
                 </svg>
 
                 {/* Floating Tooltip matching dashboard.png */}
-                <div className="absolute right-12 top-6 z-10 rounded-xl border border-slate-100 bg-white/95 px-3 py-2 shadow-lg shadow-slate-200/50 backdrop-blur dark:border-slate-700 dark:bg-slate-800/95 dark:shadow-none">
+                <div className="absolute right-12 top-6 z-10 rounded-[10px] border border-slate-100 bg-white/95 px-3 py-2 shadow-lg shadow-slate-200/50 backdrop-blur dark:border-slate-700 dark:bg-slate-800/95 dark:shadow-none">
                   <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">05/09/2025</p>
                   <p className="mt-0.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-white">
                     <span className="h-2 w-2 rounded-full bg-[#00B074]" />
@@ -452,12 +452,12 @@ export default function AdminOverviewPage() {
             </div>
 
             {/* Box 2: Cơ cấu người dùng */}
-            <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Cơ cấu người dùng
                 </h2>
-                <div className="relative inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                <div className="relative inline-flex items-center gap-1.5 rounded-[10px] border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                   <span>{userSegment}</span>
                   <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
                 </div>
@@ -577,7 +577,7 @@ export default function AdminOverviewPage() {
           {/* Tables Row: Latest Courses & New Users */}
           <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
             {/* Box 3: Khóa học mới nhất */}
-            <div className="self-start overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="self-start overflow-hidden rounded-[10px] border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between p-5 pb-3">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Khóa học mới nhất
@@ -675,7 +675,7 @@ export default function AdminOverviewPage() {
             </div>
 
             {/* Box 4: Người dùng mới nhất */}
-            <div className="h-auto self-start overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+            <div className="h-auto self-start overflow-hidden rounded-[10px] border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between p-5 pb-3">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Người dùng mới nhất
@@ -770,9 +770,9 @@ export default function AdminOverviewPage() {
         {/* ── RIGHT COLUMN: Growth Banner, Quick Actions, Recent Activity (Col Span 4) ── */}
         <div className="space-y-6 xl:col-span-4">
           {/* Card 1: Nền tảng đang phát triển tốt! Banner */}
-          <div className="relative overflow-hidden rounded-2xl border border-emerald-100/90 bg-gradient-to-br from-emerald-50/90 via-emerald-50/50 to-teal-50/30 p-5 shadow-sm dark:border-emerald-900/40 dark:from-emerald-950/40 dark:to-slate-900">
+          <div className="relative overflow-hidden rounded-[10px] border border-emerald-100/90 bg-gradient-to-br from-emerald-50/90 via-emerald-50/50 to-teal-50/30 p-5 shadow-sm dark:border-emerald-900/40 dark:from-emerald-950/40 dark:to-slate-900">
             <div className="flex items-start gap-3.5">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#00B074] text-white shadow-md shadow-emerald-600/20">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-[#00B074] text-white shadow-md shadow-emerald-600/20">
                 <TrendingUp className="h-6 w-6" strokeWidth={2.3} />
               </div>
               <div className="min-w-0">
@@ -787,7 +787,7 @@ export default function AdminOverviewPage() {
           </div>
 
           {/* Card 2: Thao tác nhanh (Quick Actions) */}
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+          <div className="rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
             <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
               Thao tác nhanh
             </h2>
@@ -796,7 +796,7 @@ export default function AdminOverviewPage() {
               {/* Button 1: Tạo khóa học mới */}
               <Link
                 href="/quan-tri/hoc-tap"
-                className="group flex h-12 w-full items-center gap-3 rounded-xl border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="group flex h-12 w-full items-center gap-3 rounded-[10px] border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   <Plus className="h-4 w-4" strokeWidth={2.5} />
@@ -807,7 +807,7 @@ export default function AdminOverviewPage() {
               {/* Button 2: Duyệt bài viết (with Badge count from reviewQueue or 12) */}
               <Link
                 href="/quan-tri/kiem-duyet"
-                className="group flex h-12 w-full items-center justify-between rounded-xl border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="group flex h-12 w-full items-center justify-between rounded-[10px] border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <div className="flex items-center gap-3">
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
@@ -823,7 +823,7 @@ export default function AdminOverviewPage() {
               {/* Button 3: Quản lý người dùng */}
               <Link
                 href="/quan-tri/nguoi-dung"
-                className="group flex h-12 w-full items-center gap-3 rounded-xl border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="group flex h-12 w-full items-center gap-3 rounded-[10px] border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   <User className="h-4 w-4" strokeWidth={2.2} />
@@ -834,7 +834,7 @@ export default function AdminOverviewPage() {
               {/* Button 4: Xem báo cáo chi tiết */}
               <Link
                 href="/quan-tri/nhat-ky-he-thong"
-                className="group flex h-12 w-full items-center gap-3 rounded-xl border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
+                className="group flex h-12 w-full items-center gap-3 rounded-[10px] border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   <BarChart2 className="h-4 w-4" strokeWidth={2.2} />
@@ -845,7 +845,7 @@ export default function AdminOverviewPage() {
           </div>
 
           {/* Card 3: Hoạt động gần đây (Recent Activities from Audit Logs or fallback) */}
-          <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
+          <div className="rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
             <div className="flex items-center justify-between pb-2">
               <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                 Hoạt động gần đây

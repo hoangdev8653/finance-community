@@ -18,9 +18,63 @@ describe('SystemSettingsView Component', () => {
       mutateAsync: mockUpdateSetting,
       isPending: false,
     } as any);
+
+    vi.mocked(adminHooks.useAdminFeatureFlags).mockReturnValue({
+      data: [
+        {
+          id: 'flag-1',
+          key: 'stock_valuation_tool',
+          isEnabled: true,
+          description: 'Công cụ định giá cổ phiếu',
+          updatedAt: '2026-08-16T00:00:00Z',
+        },
+      ],
+      isLoading: false,
+      refetch: vi.fn(),
+    } as any);
+
+    vi.mocked(adminHooks.useToggleFeatureFlag).mockReturnValue({
+      mutateAsync: vi.fn(),
+      isPending: false,
+    } as any);
   });
 
-  it('renders settings list, validates JSON, and updates setting', async () => {
+  it('renders settings tabs and allows updating general configuration', async () => {
+    vi.mocked(adminHooks.useSystemSettings).mockReturnValue({
+      data: [],
+      isLoading: false,
+      isError: false,
+      refetch: vi.fn(),
+    } as any);
+
+    render(
+      <ToastProvider>
+        <SystemSettingsView />
+      </ToastProvider>
+    );
+
+    expect(screen.getByText('Cài đặt hệ thống')).toBeDefined();
+    expect(screen.getByText('Chung & Thương hiệu')).toBeDefined();
+    expect(screen.getByText('Kiểm duyệt & Chống Spam')).toBeDefined();
+    expect(screen.getByText('Học tập & Dữ liệu')).toBeDefined();
+
+    // Click "Lưu thay đổi"
+    const saveBtn = screen.getByRole('button', { name: /Lưu thay đổi/i });
+    fireEvent.click(saveBtn);
+
+    await waitFor(() => {
+      expect(mockUpdateSetting).toHaveBeenCalledWith({
+        key: 'general_config',
+        dto: expect.objectContaining({
+          value: expect.objectContaining({
+            platformName: 'BrewSeven',
+          }),
+        }),
+      });
+    });
+  });
+
+  it('navigates to advanced JSON tab, validates JSON, and updates raw setting', async () => {
     const mockSettings = [
       {
         id: '1',
@@ -44,6 +98,10 @@ describe('SystemSettingsView Component', () => {
       </ToastProvider>
     );
 
+    // Switch to Advanced JSON tab
+    const advancedTabBtn = screen.getByRole('button', { name: /Cấu hình nâng cao/i });
+    fireEvent.click(advancedTabBtn);
+
     expect(screen.getByText('rate_limits')).toBeDefined();
     expect(screen.getByText('Global API rate limits')).toBeDefined();
 
@@ -55,8 +113,8 @@ describe('SystemSettingsView Component', () => {
 
     // Enter Invalid JSON
     fireEvent.change(jsonTextarea, { target: { value: '{ invalid_json ' } });
-    const saveBtn = screen.getByRole('button', { name: /Save Configuration/i });
-    fireEvent.click(saveBtn);
+    const saveConfigBtn = screen.getByRole('button', { name: /Save Configuration/i });
+    fireEvent.click(saveConfigBtn);
 
     expect(screen.getByText(/Định dạng JSON không hợp lệ/i)).toBeDefined();
     expect(mockUpdateSetting).not.toHaveBeenCalled();
@@ -70,7 +128,7 @@ describe('SystemSettingsView Component', () => {
       value: { max_requests_per_minute: 240 },
     });
 
-    fireEvent.click(saveBtn);
+    fireEvent.click(saveConfigBtn);
 
     await waitFor(() => {
       expect(mockUpdateSetting).toHaveBeenCalledWith({

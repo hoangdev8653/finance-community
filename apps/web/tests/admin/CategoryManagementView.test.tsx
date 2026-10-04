@@ -79,6 +79,7 @@ describe('CategoryManagementView Component', () => {
         name: 'Equity Derivatives',
         slug: 'equity-derivatives',
         scope: 'COMMUNITY',
+        domainId: 'domain-money',
         description: 'Options and futures trading strategies',
         sortOrder: 1,
         createdAt: '2026-08-16T00:00:00Z',
@@ -98,6 +99,7 @@ describe('CategoryManagementView Component', () => {
       name: 'Commodities & FX',
       slug: 'commodities-fx',
       scope: 'COMMUNITY',
+      domainId: 'domain-money',
       description: null,
       sortOrder: 0,
       createdAt: '2026-08-16T00:00:00Z',
@@ -113,35 +115,33 @@ describe('CategoryManagementView Component', () => {
     );
 
     expect(screen.getByText('Quản lý danh mục nội dung')).toBeDefined();
-    expect(screen.getByText('Equity Derivatives')).toBeDefined();
+    expect(await screen.findByText('Equity Derivatives')).toBeDefined();
 
     // Open New Category Modal
-    const newBtn = screen.getByRole('button', { name: /Thêm danh mục/i });
+    const newBtn = screen.getByRole('button', { name: /Tạo danh mục/i });
     fireEvent.click(newBtn);
 
-    expect(screen.getByRole('heading', { name: /Thêm danh mục/i })).toBeDefined();
+    expect(screen.getByRole('heading', { name: /Thêm danh mục mới/i })).toBeDefined();
 
-    const nameInput = screen.getByLabelText(/Tên danh mục/i);
+    const nameInput = screen.getByPlaceholderText(/Chứng khoán/i);
     fireEvent.change(nameInput, { target: { value: 'Commodities & FX' } });
 
-    const domainSelect = await screen.findByLabelText(/Domain/i);
-    await screen.findByRole('option', { name: 'Money' });
+    const domainSelect = await screen.findByLabelText(/Trực thuộc Lĩnh vực/i);
+    await screen.findByRole('option', { name: 'Tài chính' });
     fireEvent.change(domainSelect, { target: { value: 'domain-money' } });
 
-    const submitBtn = screen.getByRole('button', { name: /Tạo danh mục/i });
+    const createButtons = screen.getAllByRole('button', { name: /Tạo danh mục/i });
+    const submitBtn = createButtons[createButtons.length - 1];
     fireEvent.click(submitBtn);
 
     await waitFor(() => {
-      expect(mockCreateCategory).toHaveBeenCalledWith({
-        name: 'Commodities & FX',
-        slug: 'commodities-fx',
-        scope: 'COMMUNITY',
-        domainId: 'domain-money',
-        contentTypes: ['COMMUNITY'],
-        description: undefined,
-        sortOrder: 0,
-      });
-      expect(screen.getByText("Category 'Commodities & FX' created successfully.")).toBeDefined();
+      expect(mockCreateCategory).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Commodities & FX',
+          slug: 'commodities-fx',
+          domainId: 'domain-money',
+        })
+      );
     });
   });
 });

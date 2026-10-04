@@ -96,10 +96,9 @@ describe('AdminPostsTable Component', () => {
   it('renders post title, author, and action buttons', () => {
     render(<AdminPostsTable />);
 
-    expect(screen.getByText('Phân tích cổ phiếu FPT quý 3')).toBeDefined();
-    expect(screen.getByText('hoang_analyst')).toBeDefined();
-    expect(screen.getByText('Cảnh báo lừa đảo đầu tư Forex')).toBeDefined();
-    expect(screen.getByText('mod_security')).toBeDefined();
+    expect(screen.getAllByText('Quản lý tài chính cá nhân cho người mới bắt đầu')[0]).toBeDefined();
+    expect(screen.getAllByText('Nguyễn Văn A')[0]).toBeDefined();
+    expect(screen.getByText('Có nên đầu tư vào bất động sản lúc này?')).toBeDefined();
   });
 
   it('opens view modal when View button is clicked', () => {
@@ -109,7 +108,7 @@ describe('AdminPostsTable Component', () => {
     fireEvent.click(viewButtons[0]);
 
     expect(screen.getByText('Xem chi tiết bài viết')).toBeDefined();
-    expect(screen.getByText('Nội dung chi tiết về định giá FPT...')).toBeDefined();
+    expect(screen.getByText(/Quy tắc 50\/30\/20 trong việc phân bổ dòng tiền hàng tháng/i)).toBeDefined();
   });
 
   it('distinguishes moderation hide from soft delete', () => {

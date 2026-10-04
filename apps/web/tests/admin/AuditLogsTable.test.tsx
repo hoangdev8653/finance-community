@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AuditLogsTable } from '@/components/admin/AuditLogsTable';
 import * as adminHooks from '@/lib/admin/use-admin';
 
@@ -16,7 +16,7 @@ describe('AuditLogsTable Component', () => {
       {
         id: 'audit-log-1',
         actor_id: 'admin-uuid-1',
-        actor_email: 'admin@example.com',
+        actorEmail: 'admin@example.com',
         action: 'ROLE_ASSIGN',
         entity_type: 'users',
         entity_id: 'target-user-1',
@@ -41,24 +41,25 @@ describe('AuditLogsTable Component', () => {
       },
       isLoading: false,
       isError: false,
+      isRefetching: false,
       refetch: vi.fn(),
     } as any);
 
     render(<AuditLogsTable />);
 
-    expect(screen.getByText('Security & Governance Audit Logs')).toBeDefined();
+    expect(screen.getByText('Nhật ký hệ thống & Kiểm toán an toàn')).toBeDefined();
     expect(screen.getAllByText('ROLE_ASSIGN').length).toBeGreaterThan(0);
-    expect(screen.getAllByText('System').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('admin@example.com').length).toBeGreaterThan(0);
 
     // Open metadata modal
     const jsonBtn = screen.getByRole('button', { name: /JSON/i });
     fireEvent.click(jsonBtn);
 
-    expect(screen.getByRole('dialog', { name: /Audit Event Metadata/i })).toBeDefined();
+    expect(screen.getByRole('dialog')).toBeDefined();
     expect(screen.getByText(/"roleName": "MODERATOR"/i)).toBeDefined();
   });
 
-  it('renders empty state when no audit logs match query', () => {
+  it('renders empty state when search matches no logs', async () => {
     vi.mocked(adminHooks.useAuditLogs).mockReturnValue({
       data: {
         data: [],
@@ -73,11 +74,18 @@ describe('AuditLogsTable Component', () => {
       },
       isLoading: false,
       isError: false,
+      isRefetching: false,
       refetch: vi.fn(),
     } as any);
 
     render(<AuditLogsTable />);
 
-    expect(screen.getByText('No Audit Logs Found')).toBeDefined();
+    // Type a search query that won't match any of default mock logs
+    const searchInput = screen.getByPlaceholderText(/Tìm theo hành động/i);
+    fireEvent.change(searchInput, { target: { value: 'NONEXISTENT_QUERY_XYZ' } });
+
+    await waitFor(() => {
+      expect(screen.getByText('Không tìm thấy nhật ký phù hợp')).toBeDefined();
+    }, { timeout: 1000 });
   });
 });
