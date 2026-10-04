@@ -24,7 +24,7 @@ export function CourseHeader({
   });
 
   return (
-    <header className="rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-6 sm:p-8 space-y-6 shadow-xs">
+    <header className="rounded-[10px] border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-6 sm:p-8 space-y-6 shadow-xs">
       {/* Back Link & Track Tag */}
       <div className="flex items-center justify-between gap-4">
         <Link

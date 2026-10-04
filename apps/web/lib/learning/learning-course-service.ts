@@ -3,7 +3,7 @@ import type { LearningPathDetail, LearningPathProgress, LearningCourse } from '@
 export const learningCourseService = {
   async list(): Promise<LearningCourse[]> { return (await apiClient.get<LearningCourse[]>('/khoa-hoc/learning')).data; },
   async listPaths(): Promise<LearningCourse[]> { return (await apiClient.get<LearningCourse[]>('/khoa-hoc/learning/paths')).data; },
-  async createPath(payload: { title: string; slug: string; description?: string; domainId: string; categoryId: string; estimatedDurationMinutes?: number; learningOutcomes?: string[]; heroMediaId?: string; heroAltText?: string; outcomesMediaId?: string; outcomesAltText?: string; ctaMediaId?: string; ctaAltText?: string }): Promise<LearningCourse> { return (await apiClient.post<LearningCourse>('/khoa-hoc/learning', payload)).data; },
+  async createPath(payload: { title: string; slug?: string; description?: string; domainId: string; categoryId: string; estimatedDurationMinutes?: number; learningOutcomes?: string[]; heroMediaId?: string; heroAltText?: string; outcomesMediaId?: string; outcomesAltText?: string; ctaMediaId?: string; ctaAltText?: string }): Promise<LearningCourse> { return (await apiClient.post<LearningCourse>('/khoa-hoc/learning', payload)).data; },
   async addLesson(seriesId: string, postId: string, lessonOrder: number) { return (await apiClient.post(`/khoa-hoc/learning/${seriesId}/lessons`, { postId, lessonOrder })).data; },
   async getPath(slug: string): Promise<LearningPathDetail> { return (await apiClient.get<LearningPathDetail>(`/khoa-hoc/learning/paths/${encodeURIComponent(slug)}`)).data; },
   async getAdminPath(id: string): Promise<LearningPathDetail> { return (await apiClient.get<LearningPathDetail>(`/khoa-hoc/learning/${encodeURIComponent(id)}`)).data; },

@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { learningCourseService } from "@/lib/learning/learning-course-service";
 import {
   ArrowRight,
   BarChart3,
@@ -170,9 +171,46 @@ export default function CoursesPage() {
   const [topic, setTopic] = useState<Topic>("Tất cả");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"popular" | "lessons">("popular");
+  const [dbCourses, setDbCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    learningCourseService.listPaths().then((paths) => {
+      if (!active || !paths || paths.length === 0) return;
+      const accents = [
+        "from-emerald-950 via-emerald-700 to-lime-300",
+        "from-slate-950 via-cyan-900 to-cyan-400",
+        "from-blue-950 via-blue-700 to-sky-300",
+        "from-teal-950 via-teal-700 to-emerald-300",
+      ];
+      const mapped: Course[] = paths.map((path, idx) => {
+        return {
+          slug: path.slug,
+          title: path.title,
+          description: path.description || '',
+          topic: 'Tài chính',
+          level: 'Cơ bản',
+          lessons: 0,
+          duration: 'Giáo trình đọc',
+          students: '1.2k',
+          accent: accents[idx % accents.length],
+          featured: true,
+        };
+      });
+      setDbCourses(mapped);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  const allCourses = useMemo(() => {
+    if (dbCourses.length === 0) return courses;
+    const otherTopicCourses = courses.filter((c) => c.topic !== 'Tài chính' && c.topic !== 'Đầu tư');
+    return [...dbCourses, ...otherTopicCourses];
+  }, [dbCourses]);
+
   const filtered = useMemo(
     () =>
-      courses
+      allCourses
         .filter(
           (c) =>
             (topic === "Tất cả" || c.topic === topic) &&
@@ -185,10 +223,10 @@ export default function CoursesPage() {
             ? Number.parseFloat(b.students) - Number.parseFloat(a.students)
             : b.lessons - a.lessons,
         ),
-    [topic, query, sort],
+    [allCourses, topic, query, sort],
   );
   return (
-    <main className="min-h-screen bg-slate-50 pb-16 dark:bg-background">
+    <main className="learning-area min-h-screen bg-slate-50 pb-16 dark:bg-background">
       <section className="relative isolate min-h-[490px] overflow-hidden border-b border-emerald-100 dark:border-emerald-950/60 sm:min-h-[430px]">
         <Image
           src="/images/courses-hero-banner.png"
@@ -199,7 +237,7 @@ export default function CoursesPage() {
           className="-z-20 object-cover object-[66%_center] sm:object-center"
         />
         <div className="relative mx-auto flex min-h-[490px] w-full max-w-[1440px] items-center px-3.5 py-12 sm:min-h-[430px] sm:px-6 sm:py-14 lg:px-8 lg:py-20">
-          <div className="max-w-2xl rounded-3xl bg-white/85 p-5 shadow-xl shadow-slate-950/5 backdrop-blur-sm dark:bg-slate-950/80 sm:rounded-none sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-none">
+          <div className="max-w-2xl rounded-[10px] bg-white/85 p-5 shadow-xl shadow-slate-950/5 backdrop-blur-sm dark:bg-slate-950/80 sm:rounded-none sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-none">
             <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/85 px-3 py-1.5 text-xs font-bold tracking-wide text-emerald-800 shadow-sm backdrop-blur-sm dark:border-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
               <Sparkles className="h-3.5 w-3.5" /> KHÓA HỌC BREWSEVEN
             </p>
@@ -261,7 +299,7 @@ export default function CoursesPage() {
                 role="tab"
                 aria-selected={topic === name}
                 onClick={() => setTopic(name)}
-                className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${topic === name ? "bg-emerald-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"}`}
+                className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-[8px] px-4 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 ${topic === name ? "bg-emerald-800 text-white shadow-sm" : "border border-slate-200 bg-white text-slate-600 hover:border-emerald-300 hover:text-emerald-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"}`}
               >
                 <Icon className="h-4 w-4" />
                 {name}
@@ -320,7 +358,7 @@ export default function CoursesPage() {
                 onChange={(e) =>
                   setSort(e.target.value as "popular" | "lessons")
                 }
-                className="ml-2 h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                className="ml-2 h-11 rounded-[8px] border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none focus:ring-2 focus:ring-emerald-600 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
               >
                 <option value="popular">Phổ biến nhất</option>
                 <option value="lessons">Nhiều bài học</option>
@@ -333,7 +371,7 @@ export default function CoursesPage() {
             ))}
           </div>
           {filtered.length === 0 && (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
+            <div className="rounded-[10px] border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
               <Search className="mx-auto h-7 w-7 text-slate-400" />
               <h3 className="mt-4 font-bold text-slate-900 dark:text-white">
                 Chưa tìm thấy khóa học phù hợp
@@ -344,7 +382,7 @@ export default function CoursesPage() {
                   setTopic("Tất cả");
                   setQuery("");
                 }}
-                className="mt-4 min-h-11 rounded-xl bg-emerald-800 px-4 text-sm font-bold text-white hover:bg-emerald-700"
+                className="mt-4 min-h-11 rounded-[8px] bg-emerald-800 px-4 text-sm font-bold text-white hover:bg-emerald-700"
               >
                 Xóa bộ lọc
               </button>
@@ -360,7 +398,7 @@ function CourseCard({ course }: { course: Course }) {
   return (
     <Link
       href={`/khoa-hoc/${course.slug}`}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-900"
+      className="group flex h-full flex-col overflow-hidden rounded-[10px] border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-slate-800 dark:bg-slate-900"
     >
       <div
         className={`relative min-h-36 overflow-hidden bg-gradient-to-br p-5 text-white ${course.accent}`}
@@ -394,13 +432,13 @@ function CourseCard({ course }: { course: Course }) {
         </p>
         <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4 text-sm dark:border-slate-800">
           <span className="inline-flex items-center gap-3 text-slate-500 dark:text-slate-400">
-            <span className="inline-flex items-center gap-1">
-              <BookOpen className="h-4 w-4" />
-              {course.lessons} bài
+            <span className="inline-flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+              {course.lessons > 0 ? `${course.lessons} bài` : 'Lộ trình bài đọc'}
             </span>
-            <span className="inline-flex items-center gap-1">
-              <Clock3 className="h-4 w-4" />
-              {course.duration}
+            <span className="inline-flex items-center gap-1.5">
+              <Sparkles className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
+              {course.duration || 'Giáo trình đọc'}
             </span>
           </span>
           <ArrowRight className="h-4 w-4 text-emerald-700 transition-transform group-hover:translate-x-1 dark:text-emerald-400" />

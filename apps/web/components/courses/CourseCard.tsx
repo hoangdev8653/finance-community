@@ -15,7 +15,7 @@ export function CourseCard({ series }: CourseCardProps) {
     series.publishedArticleCount === 1 ? '1 Bài học' : `${series.publishedArticleCount} Bài học`;
 
   return (
-    <article className="group flex flex-col justify-between rounded-2xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs hover:border-emerald-500/60 hover:shadow-md transition-all duration-200">
+    <article className="group flex flex-col justify-between rounded-[10px] border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 p-5 sm:p-6 shadow-xs hover:border-emerald-500/60 hover:shadow-md transition-all duration-200">
       <div className="space-y-4">
         {/* Top Meta Bar */}
         <div className="flex items-center justify-between gap-2">

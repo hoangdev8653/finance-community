@@ -29,7 +29,7 @@ export function CourseLessonItem({
 
   return (
     <article
-      className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 shadow-xs hover:border-emerald-500/60 hover:shadow-md transition-all duration-200"
+      className="group flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-[10px] border border-slate-200/90 dark:border-slate-800/90 bg-white dark:bg-slate-900 shadow-xs hover:border-emerald-500/60 hover:shadow-md transition-all duration-200"
       aria-label={`Chương ${sequenceNumber}: ${chapter.title}`}
     >
       {/* Number Index & Title */}

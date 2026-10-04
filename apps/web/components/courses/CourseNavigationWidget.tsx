@@ -53,7 +53,7 @@ export function CourseNavigationWidget({ postId, currentTitle }: CourseNavigatio
   const nextAvailableIndex = navData.tableOfContents.findIndex((item) => !completedPostIds.has(item.id));
 
   return (
-    <section aria-label="Lộ trình khóa học" className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <section aria-label="Lộ trình khóa học" className="overflow-hidden rounded-[10px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
       <header className="border-b border-slate-100 pb-4 dark:border-slate-800">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-heading text-lg font-bold text-slate-950 dark:text-white">Lộ trình khóa học</h2>
@@ -68,7 +68,7 @@ export function CourseNavigationWidget({ postId, currentTitle }: CourseNavigatio
           return <li key={item.id} className="relative pl-11 last:pb-0">
             <span aria-hidden className="absolute left-[15px] top-8 h-[calc(100%+8px)] w-px bg-emerald-200 last:hidden dark:bg-emerald-900" />
             <LessonNumber index={item.index} completed={completed} current={item.isCurrent} locked={locked} />
-            <Link href={href(item.slug)} aria-current={item.isCurrent ? 'page' : undefined} className={`block rounded-xl px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 ${item.isCurrent ? 'bg-emerald-50 font-bold text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200' : locked ? 'pointer-events-none text-slate-400 dark:text-slate-500' : 'font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-emerald-300'}`}>
+            <Link href={href(item.slug)} aria-current={item.isCurrent ? 'page' : undefined} className={`block rounded-[10px] px-3 py-3 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 ${item.isCurrent ? 'bg-emerald-50 font-bold text-emerald-900 dark:bg-emerald-950/30 dark:text-emerald-200' : locked ? 'pointer-events-none text-slate-400 dark:text-slate-500' : 'font-medium text-slate-700 hover:bg-slate-50 hover:text-emerald-700 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-emerald-300'}`}>
               <span className="line-clamp-2 leading-5">{item.title}</span>
             </Link>
           </li>;
@@ -86,7 +86,7 @@ function LessonNumber({ index, completed, current, locked }: { index: number; co
 
 function LessonTimelineFallback({ currentTitle, isLoading }: { currentTitle: string; isLoading: boolean }) {
   const lessons = ['Tổng quan và mục tiêu bài học', 'Hiểu những khái niệm nền tảng', currentTitle, 'Thực hành và tổng kết'];
-  return <section aria-label="Lộ trình khóa học" className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+  return <section aria-label="Lộ trình khóa học" className="rounded-[10px] border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
     <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800"><h2 className="font-heading text-lg font-bold text-slate-950 dark:text-white">Lộ trình khóa học</h2><span className="text-xs font-bold text-emerald-700">3 / 8 bài</span></div>
     <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-slate-100"><div className="h-full w-[38%] rounded-full bg-emerald-600" /></div>
     <ol className="mt-5 space-y-1">
@@ -98,7 +98,7 @@ function LessonTimelineFallback({ currentTitle, isLoading }: { currentTitle: str
         return <li key={`${lesson}-${lessonIndex}`} className="relative pl-11">
           <span aria-hidden className="absolute left-[15px] top-8 h-[calc(100%+8px)] w-px bg-emerald-200 last:hidden" />
           <LessonNumber index={lessonIndex} completed={completed} current={current} locked={locked} />
-          <div className={`rounded-xl px-3 py-3 text-sm leading-5 ${current ? 'bg-emerald-50 font-bold text-emerald-900' : locked ? 'text-slate-400' : 'font-medium text-slate-700'}`}>{lesson}</div>
+          <div className={`rounded-[10px] px-3 py-3 text-sm leading-5 ${current ? 'bg-emerald-50 font-bold text-emerald-900' : locked ? 'text-slate-400' : 'font-medium text-slate-700'}`}>{lesson}</div>
         </li>;
       })}
     </ol>

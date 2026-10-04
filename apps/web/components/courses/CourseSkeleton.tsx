@@ -12,7 +12,7 @@ export function CourseSkeleton({ variant = 'grid' }: CourseSkeletonProps) {
     return (
       <div className="space-y-8 animate-pulse">
         {/* Header Skeleton */}
-        <div className="space-y-4 rounded-xl border border-border bg-surface p-6 sm:p-8">
+        <div className="space-y-4 rounded-[10px] border border-border bg-surface p-6 sm:p-8">
           <Skeleton className="h-4 w-24" />
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-4 w-full" />
@@ -51,7 +51,7 @@ export function CourseSkeleton({ variant = 'grid' }: CourseSkeletonProps) {
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div
           key={i}
-          className="rounded-xl border border-border bg-surface p-6 space-y-4 flex flex-col justify-between"
+          className="rounded-[10px] border border-border bg-surface p-6 space-y-4 flex flex-col justify-between"
         >
           <div className="space-y-2.5">
             <div className="flex items-center justify-between">
