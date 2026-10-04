@@ -12,7 +12,7 @@ import { RequirePermission } from '../../auth/decorators/require-permission.deco
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 
 @ApiTags('Series')
-@Controller('series')
+@Controller(['series', 'khoa-hoc'])
 export class SeriesController {
   constructor(private readonly seriesService: SeriesService, private readonly learningSeriesService: LearningSeriesService) {}
 

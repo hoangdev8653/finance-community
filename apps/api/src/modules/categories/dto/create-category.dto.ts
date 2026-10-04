@@ -6,13 +6,13 @@ export class CreateCategoryDto {
   @MaxLength(100)
   name!: string;
 
+    @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(120)
   @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
     message: 'Slug must be in kebab-case format (e.g. market-news)',
   })
-  slug!: string;
+  slug?: string;
 
   @IsString()
   @IsIn(['SERIES', 'COMMUNITY'])

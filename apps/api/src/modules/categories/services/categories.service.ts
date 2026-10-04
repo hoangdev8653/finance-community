@@ -3,6 +3,7 @@ import { CategoriesRepository, CategoryEntity } from '../../../database/reposito
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { AuditLogService } from '../../audit/services/audit-log.service';
+import { SlugifyUtil } from '../../../common/utils/slugify.util';
 
 @Injectable()
 export class CategoriesService {
@@ -39,12 +40,23 @@ export class CategoriesService {
   }
 
   async createCategory(adminId: string, dto: CreateCategoryDto, tx?: any): Promise<CategoryEntity> {
-    const existing = await this.categoriesRepo.findByScopeAndSlug(dto.scope, dto.slug);
+    let effectiveSlug: string;
+    if (dto.slug && dto.slug.trim()) {
+      effectiveSlug = dto.slug.trim().toLowerCase();
+    } else {
+      const baseSlug = SlugifyUtil.slugify(dto.name, 120);
+      effectiveSlug = (baseSlug === 'post' ? 'chuyen-muc' : baseSlug).toLowerCase();
+      let counter = 1;
+      while (await this.categoriesRepo.findByScopeAndSlug(dto.scope, effectiveSlug)) {
+        effectiveSlug = `${baseSlug.slice(0, 110)}-${counter++}`;
+      }
+    }
+    const existing = await this.categoriesRepo.findByScopeAndSlug(dto.scope, effectiveSlug);
     if (existing) {
       throw new ConflictException({
         statusCode: 409,
         error: 'Conflict',
-        message: `Category with slug '${dto.slug}' already exists in scope '${dto.scope}'.`,
+        message: `Category with slug '${effectiveSlug}' already exists in scope '${dto.scope}'.`,
         code: 'CATEGORY_SLUG_EXISTS',
       });
     }
@@ -70,7 +82,7 @@ export class CategoriesService {
 
     const record = await this.categoriesRepo.createTx(tx, {
       name: dto.name,
-      slug: dto.slug,
+      slug: effectiveSlug,
       scope: dto.scope,
       domainId: effectiveDomainId,
       parentId: dto.parentId || null,
@@ -119,7 +131,27 @@ export class CategoriesService {
       }
     }
 
+    let nextSlug: string | undefined = undefined;
+    if (dto.slug && dto.slug.trim()) {
+      nextSlug = dto.slug.trim().toLowerCase();
+    } else if (dto.name && dto.name.trim() !== category.name) {
+      nextSlug = SlugifyUtil.slugify(dto.name, 120);
+    }
+
+    if (nextSlug && nextSlug !== category.slug) {
+      const existing = await this.categoriesRepo.findByScopeAndSlug(category.scope, nextSlug);
+      if (existing && existing.id !== id) {
+        throw new ConflictException({
+          statusCode: 409,
+          error: 'Conflict',
+          message: `Category with slug '${nextSlug}' already exists in scope '${category.scope}'.`,
+          code: 'CATEGORY_SLUG_EXISTS',
+        });
+      }
+    }
+
     const updated = await this.categoriesRepo.updateTx(tx, id, {
+      ...(nextSlug ? { slug: nextSlug } : {}),
       name: dto.name,
       description: dto.description,
       domainId: effectiveDomainId,
@@ -154,7 +186,7 @@ export class CategoriesService {
     return updated;
   }
 
-  async deleteCategory(adminId: string, id: string, tx?: any): Promise<{ id: string; deleted: true }> {
+  async deleteCategory(adminId: string, id: string, tx?: any): Promise<{ id: string; deleted: boolean }> {
     const category = await this.getCategoryById(id);
     const deleted = await this.categoriesRepo.deleteTx(tx, id);
     if (!deleted) throw new NotFoundException(`Category with ID '${id}' not found.`);

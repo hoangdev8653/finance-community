@@ -2,6 +2,7 @@ import { ConflictException, ForbiddenException, Injectable, NotFoundException } 
 import { LearningSeriesRepository } from '../../../database/repositories/learning-series.repository';
 import { AddSeriesLessonDto, CreateLearningSeriesDto, UpdateLearningSeriesDto, UpdateSeriesLessonDto, UpdateSeriesLessonOrderDto } from '../dto/create-learning-series.dto';
 import { MediaService } from '../../media/services/media.service';
+import { SlugifyUtil } from '../../../common/utils/slugify.util';
 
 @Injectable()
 export class LearningSeriesService {
@@ -22,7 +23,21 @@ export class LearningSeriesService {
   }
   async create(userId: string, dto: CreateLearningSeriesDto) {
     await this.validateSeriesMedia(userId, dto);
-    try { return await this.repo.create({ ...dto, createdBy: userId }); }
+    let finalSlug = dto.slug?.trim() ? dto.slug.trim().toLowerCase() : '';
+    if (!finalSlug) {
+      const baseSlug = SlugifyUtil.slugify(dto.title, 300);
+      finalSlug = baseSlug === 'post' ? 'khoa-hoc' : baseSlug;
+      let counter = 1;
+      while (await this.repo.findBySlug(finalSlug)) {
+        finalSlug = `${baseSlug.slice(0, 310)}-${counter++}`;
+      }
+    } else {
+      const existing = await this.repo.findBySlug(finalSlug);
+      if (existing) {
+        throw new ConflictException('Slug Series đã tồn tại.');
+      }
+    }
+    try { return await this.repo.create({ ...dto, slug: finalSlug, createdBy: userId }); }
     catch { throw new ConflictException('Slug Series đã tồn tại.'); }
   }
   async get(id: string) {
@@ -58,10 +73,29 @@ export class LearningSeriesService {
   }
   async update(id: string, dto: UpdateLearningSeriesDto) {
     const existing = await this.repo.findById(id);
-    if (existing) await this.validateSeriesMedia(existing.createdBy, dto);
-    if (!(await this.repo.findById(id))) throw new NotFoundException('Không tìm thấy Series.');
-    try { return await this.repo.update(id, { ...dto, status: dto.isPublished === undefined ? undefined : dto.isPublished ? 'PUBLISHED' : 'DRAFT' }); }
-    catch { throw new ConflictException('Slug Series đã tồn tại.'); }
+    if (!existing) throw new NotFoundException('Không tìm thấy Series.');
+    await this.validateSeriesMedia(existing.createdBy, dto);
+
+    let finalSlug: string | undefined = undefined;
+    if (dto.slug !== undefined && dto.slug.trim()) {
+      finalSlug = dto.slug.trim().toLowerCase();
+      if (finalSlug !== existing.slug) {
+        const conflict = await this.repo.findBySlug(finalSlug);
+        if (conflict && conflict.id !== id) {
+          throw new ConflictException('Slug Series đã tồn tại.');
+        }
+      }
+    }
+
+    try {
+      return await this.repo.update(id, {
+        ...dto,
+        ...(finalSlug ? { slug: finalSlug } : {}),
+        status: dto.isPublished === undefined ? undefined : dto.isPublished ? 'PUBLISHED' : 'DRAFT',
+      });
+    } catch {
+      throw new ConflictException('Slug Series đã tồn tại.');
+    }
   }
   async remove(id: string) {
     if (!(await this.repo.findById(id))) throw new NotFoundException('Không tìm thấy Series.');

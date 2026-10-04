@@ -2,7 +2,7 @@ import { IsArray, IsBoolean, IsInt, IsOptional, IsString, IsUUID, MaxLength, Min
 
 export class CreateLearningSeriesDto {
   @IsString() @MaxLength(300) title!: string;
-  @IsString() @MaxLength(320) slug!: string;
+  @IsOptional() @IsString() @MaxLength(320) slug?: string;
   @IsOptional() @IsString() description?: string;
   @IsOptional() @IsInt() @Min(1) estimatedDurationMinutes?: number;
   @IsOptional() @IsArray() @IsString({ each: true }) @MaxLength(250, { each: true }) learningOutcomes?: string[];
