@@ -75,7 +75,7 @@ export function LoanCalculatorTool() {
       {/* Header & Presets */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-primary/10 text-primary">
             <Building className="h-5 w-5" />
           </div>
           <div>
@@ -116,7 +116,7 @@ export function LoanCalculatorTool() {
       </div>
 
       {/* Repayment Method Switcher */}
-      <div className="rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <div className="rounded-[10px] border border-border bg-card p-4 sm:p-5">
         <label className="mb-3 block text-sm font-bold uppercase tracking-wider text-muted-foreground">
           Phương thức tính lãi
         </label>
@@ -124,7 +124,7 @@ export function LoanCalculatorTool() {
           <button
             type="button"
             onClick={() => setMethod('REDUCING_BALANCE')}
-            className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${
+            className={`flex items-start gap-3 rounded-[10px] border p-4 text-left transition ${
               method === 'REDUCING_BALANCE'
                 ? 'border-primary bg-primary/5 text-foreground ring-1 ring-primary'
                 : 'border-border bg-muted/20 text-muted-foreground hover:bg-muted/40'
@@ -152,7 +152,7 @@ export function LoanCalculatorTool() {
           <button
             type="button"
             onClick={() => setMethod('FIXED_PAYMENT')}
-            className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${
+            className={`flex items-start gap-3 rounded-[10px] border p-4 text-left transition ${
               method === 'FIXED_PAYMENT'
                 ? 'border-primary bg-primary/5 text-foreground ring-1 ring-primary'
                 : 'border-border bg-muted/20 text-muted-foreground hover:bg-muted/40'
@@ -180,7 +180,7 @@ export function LoanCalculatorTool() {
       </div>
 
       {/* Inputs Grid */}
-      <div className="grid gap-6 rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6 md:grid-cols-3">
+      <div className="grid gap-6 rounded-[10px] border border-border bg-card p-5 shadow-xs sm:p-6 md:grid-cols-3">
         <ToolSliderInput
           label="Số tiền cần vay"
           value={principal}
@@ -218,7 +218,7 @@ export function LoanCalculatorTool() {
 
       {/* KPI Highlight Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 shadow-xs">
+        <div className="rounded-[10px] border border-primary/20 bg-primary/5 p-5 shadow-xs">
           <div className="flex items-center justify-between text-sm font-semibold text-primary">
             <span>{method === 'REDUCING_BALANCE' ? 'Trả tháng đầu tiên' : 'Trả cố định mỗi tháng'}</span>
             <Percent className="h-4 w-4" />
@@ -233,7 +233,7 @@ export function LoanCalculatorTool() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="rounded-[10px] border border-border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between text-sm font-semibold text-muted-foreground">
             <span>Tổng số tiền gốc</span>
             <Building className="h-4 w-4" />
@@ -244,7 +244,7 @@ export function LoanCalculatorTool() {
           <p className="mt-1 text-sm font-medium text-muted-foreground">Số tiền thực vay</p>
         </div>
 
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5 shadow-xs">
+        <div className="rounded-[10px] border border-amber-500/20 bg-amber-500/5 p-5 shadow-xs">
           <div className="flex items-center justify-between text-sm font-semibold text-amber-600">
             <span>Tổng tiền lãi phải trả</span>
             <AlertCircle className="h-4 w-4" />
@@ -257,7 +257,7 @@ export function LoanCalculatorTool() {
           </p>
         </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-xs">
+        <div className="rounded-[10px] border border-border bg-card p-5 shadow-xs">
           <div className="flex items-center justify-between text-sm font-semibold text-muted-foreground">
             <span>Tổng chi phí vay</span>
             <Calendar className="h-4 w-4" />
@@ -270,7 +270,7 @@ export function LoanCalculatorTool() {
       </div>
 
       {/* Visual Chart of Principal vs Interest by Payment Period */}
-      <div className="rounded-2xl border border-border bg-card p-5 shadow-xs sm:p-6">
+      <div className="rounded-[10px] border border-border bg-card p-5 shadow-xs sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-border pb-4">
           <div>
             <h3 className="text-base font-bold text-foreground">
@@ -312,7 +312,7 @@ export function LoanCalculatorTool() {
       </div>
 
       {/* Schedule Table */}
-      <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xs">
+      <div className="overflow-hidden rounded-[10px] border border-border bg-card shadow-xs">
         <div className="flex items-center justify-between border-b border-border bg-muted/20 px-5 py-3.5">
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />

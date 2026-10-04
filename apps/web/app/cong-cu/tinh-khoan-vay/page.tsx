@@ -83,9 +83,9 @@ export default function LoanCalculatorPage() {
         <LoanCalculatorTool />
 
         {/* Educational Knowledge Section */}
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
+        <section className="rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+            <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
               <Lightbulb className="h-5 w-5" />
             </div>
             <h2 className="font-heading text-lg font-bold text-foreground">
@@ -101,7 +101,7 @@ export default function LoanCalculatorPage() {
               <p className="text-sm sm:text-base font-medium text-slate-700 dark:text-slate-200 leading-relaxed">
                 Tổng số tiền trả nợ gốc và lãi vay hàng tháng <strong>không nên vượt quá 30% - 40%</strong> tổng thu nhập ròng của gia đình. Vượt quá ngưỡng này sẽ khiến bạn dễ rơi vào căng thẳng dòng tiền khi có biến cố bất ngờ.
               </p>
-              <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-sm font-medium text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100 flex items-start gap-2">
+              <div className="rounded-[10px] border border-amber-200 bg-amber-50/60 p-3.5 text-sm font-medium text-amber-900 dark:border-amber-900 dark:bg-amber-950/30 dark:text-amber-100 flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
                 <span>
                   <strong>Lưu ý lãi suất thả nổi:</strong> Các gói ưu đãi thường chỉ cố định trong 6 - 24 tháng đầu. Hãy dự phòng phương án khi lãi suất tăng thêm 2% - 3% trong các năm tiếp theo.
@@ -135,9 +135,9 @@ export default function LoanCalculatorPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Link
               href="/cong-cu/lai-kep"
-              className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="group flex items-start gap-4 rounded-[10px] border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
                 <TrendingUp className="h-5 w-5" />
               </div>
               <div>
@@ -152,9 +152,9 @@ export default function LoanCalculatorPage() {
 
             <Link
               href="/cong-cu/dinh-gia-co-phieu"
-              className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="group flex items-start gap-4 rounded-[10px] border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
                 <BarChart3 className="h-5 w-5" />
               </div>
               <div>

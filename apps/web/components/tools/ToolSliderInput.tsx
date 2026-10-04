@@ -49,7 +49,7 @@ export function ToolSliderInput({
         {helperText && <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{helperText}</span>}
       </div>
 
-      <div className="flex items-center rounded-xl border border-border bg-background px-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+      <div className="flex items-center rounded-[10px] border border-border bg-background px-3 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
         <input
           type={formatAsCurrency ? 'text' : 'number'}
           value={formatDisplay(value)}

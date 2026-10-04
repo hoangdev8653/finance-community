@@ -82,9 +82,9 @@ export default function CompoundInterestPage() {
         <CompoundInterestTool />
 
         {/* Educational Knowledge Section */}
-        <section className="hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
+        <section className="hidden rounded-[10px] border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:p-8 space-y-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400">
+            <div className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400">
               <Lightbulb className="h-5 w-5" />
             </div>
             <h2 className="font-heading text-lg font-bold text-foreground">
@@ -97,7 +97,7 @@ export default function CompoundInterestPage() {
               <h3 className="text-sm font-bold text-foreground">
                 Công thức toán tài chính chuẩn quốc tế:
               </h3>
-              <div className="rounded-xl bg-slate-50 p-4 font-mono text-xs sm:text-sm text-slate-800 dark:bg-slate-950 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800">
+              <div className="rounded-[10px] bg-slate-50 p-4 font-mono text-xs sm:text-sm text-slate-800 dark:bg-slate-950 dark:text-slate-200 border border-slate-200/80 dark:border-slate-800">
                 A = P(1 + r/n)^(nt) + PMT × [((1 + r/n)^(nt) - 1) / (r/n)]
               </div>
               <ul className="space-y-1.5 text-xs text-muted-foreground">
@@ -139,9 +139,9 @@ export default function CompoundInterestPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Link
               href="/cong-cu/tinh-khoan-vay"
-              className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="group flex items-start gap-4 rounded-[10px] border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                 <Building className="h-5 w-5" />
               </div>
               <div>
@@ -156,9 +156,9 @@ export default function CompoundInterestPage() {
 
             <Link
               href="/cong-cu/dinh-gia-co-phieu"
-              className="group flex items-start gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
+              className="group flex items-start gap-4 rounded-[10px] border border-slate-200 bg-white p-5 transition-all hover:border-emerald-500 hover:shadow-md dark:border-slate-800 dark:bg-slate-900"
             >
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-purple-50 text-purple-600 dark:bg-purple-950 dark:text-purple-400">
                 <BarChart3 className="h-5 w-5" />
               </div>
               <div>
