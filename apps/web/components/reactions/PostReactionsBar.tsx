@@ -58,7 +58,7 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
   return (
     <section
       aria-label="Post engagement"
-      className="my-6 flex flex-col gap-3 rounded-2xl border border-slate-200/80 bg-white p-3.5 shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:flex-row sm:items-center sm:justify-between sm:p-4"
+      className="my-6 flex flex-col gap-3 rounded-xl border border-border/80 bg-card p-3.5 shadow-2xs sm:flex-row sm:items-center sm:justify-between sm:p-4"
     >
       {/* Reactions & Comment Jump */}
       <div className="flex flex-wrap items-center gap-2">
@@ -75,7 +75,7 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
           type="button"
           onClick={handleScrollToComments}
           aria-label="Jump to discussion comments"
-          className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-slate-50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:hover:bg-slate-800"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border/80 bg-card px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           <MessageSquare className="h-4 w-4" aria-hidden="true" />
           <span>{commentCount !== undefined ? `${commentCount} thảo luận` : 'Thảo luận'}</span>
@@ -90,7 +90,7 @@ export function PostReactionsBar({ postId, commentCount }: PostReactionsBarProps
           type="button"
           onClick={handleShare}
           aria-label="Share this analysis link"
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-xl border border-border px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-slate-50 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:hover:bg-slate-800"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-border/80 bg-card px-3.5 py-2 text-sm font-semibold text-muted-foreground transition-all duration-150 hover:bg-muted hover:text-foreground active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
           {copied ? (
             <>

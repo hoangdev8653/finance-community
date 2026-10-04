@@ -34,14 +34,14 @@ function PostCardComponent({ post, categoryName }: PostCardProps) {
         href={postHref}
         tabIndex={-1}
         aria-hidden="true"
-        className="relative shrink-0 w-full sm:w-56 md:w-64 lg:w-72 h-44 sm:h-36 md:h-40 lg:h-44 rounded-xl overflow-hidden bg-muted/40 border border-border shadow-xs group-hover:opacity-95 transition-opacity"
+        className="relative shrink-0 w-full sm:w-56 md:w-64 lg:w-72 h-44 sm:h-36 md:h-40 lg:h-44 rounded-[10px] overflow-hidden bg-muted/40 border border-border shadow-xs group-hover:opacity-95 transition-opacity"
       >
         <Image
           src={coverUrl}
           alt={post.title}
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 260px, 300px"
-          className="object-cover group-hover:scale-105 transition-transform duration-500 rounded-xl"
+          className="object-cover group-hover:scale-105 transition-transform duration-500 rounded-[10px]"
         />
       </Link>
 

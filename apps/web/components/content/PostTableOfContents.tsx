@@ -98,7 +98,7 @@ export function PostTableOfContents({ headings, isMobile = false, className = ''
   // Mobile Accordion View
   if (isMobile) {
     return (
-      <div className="rounded-2xl border border-border bg-card p-4 shadow-xs">
+      <div className="rounded-[10px] border border-border bg-card p-4 shadow-xs">
         <button
           type="button"
           onClick={() => setIsCollapsed(!isCollapsed)}
@@ -155,7 +155,7 @@ export function PostTableOfContents({ headings, isMobile = false, className = ''
   return (
     <nav
       aria-label="Mục lục bài viết"
-      className={`flex flex-col space-y-4 rounded-2xl border border-slate-200 bg-white p-5 font-sans shadow-xs dark:border-slate-800 dark:bg-slate-900 ${className}`}
+      className={`flex flex-col space-y-4 rounded-[10px] border border-slate-200 bg-white p-5 font-sans shadow-xs dark:border-slate-800 dark:bg-slate-900 ${className}`}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
@@ -206,7 +206,7 @@ export function PostTableOfContents({ headings, isMobile = false, className = ''
                     href={`#${heading.id}`}
                     onClick={(e) => handleHeadingClick(heading.id, e)}
                     aria-current={isActive ? 'location' : undefined}
-                    className={`flex items-center justify-between rounded-xl px-2.5 py-2 text-sm leading-snug transition-all ${
+                    className={`flex items-center justify-between rounded-[8px] px-2.5 py-2 text-sm leading-snug transition-all ${
                       heading.level === 3
                         ? 'pl-4 text-muted-foreground'
                         : 'font-medium text-foreground/90'

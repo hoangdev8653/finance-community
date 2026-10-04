@@ -40,7 +40,7 @@ describe('CommentComposer Component', () => {
 
     expect(screen.getByText(/Đăng nhập để tham gia thảo luận/i)).toBeDefined();
     const loginLink = screen.getByRole('link', { name: /Đăng nhập để bình luận/i });
-    expect(loginLink.getAttribute('href')).toContain('/login?redirect=');
+    expect(loginLink.getAttribute('href')).toMatch(/\/(dang-nhap|login)\?redirect=/);
   });
 
   it('renders form and handles successful submission when authenticated', async () => {
@@ -63,11 +63,11 @@ describe('CommentComposer Component', () => {
     const onSubmitMock = vi.fn().mockResolvedValue(undefined);
     renderWithToast(<CommentComposer onSubmit={onSubmitMock} />);
 
-    expect(screen.getByText(/Commenting as/i)).toBeDefined();
+    expect(screen.getByText(/(Bình luận với tư cách|Commenting as)/i)).toBeDefined();
     expect(screen.getByText(/@analyst/i)).toBeDefined();
 
-    const textarea = screen.getByLabelText(/Write a comment/i);
-    const submitBtn = screen.getByRole('button', { name: /Post Comment/i });
+    const textarea = screen.getByLabelText(/(Viết bình luận|Write a comment)/i);
+    const submitBtn = screen.getByRole('button', { name: /(Gửi bình luận|Post Comment)/i });
 
     // Try empty submit
     expect(submitBtn).toBeDisabled();

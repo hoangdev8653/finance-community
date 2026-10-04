@@ -11,7 +11,7 @@ export function HeroSection() {
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-6 sm:p-8 text-white shadow-xl border border-slate-700/50"
+      className="relative overflow-hidden rounded-[10px] p-6 sm:p-8 text-white shadow-xl border border-slate-700/50"
       style={{
         background: 'linear-gradient(135deg, #0F172A 0%, #1E293B 45%, #0D332D 80%, #064E3B 100%)',
       }}
@@ -53,7 +53,7 @@ export function HeroSection() {
           <div className="flex items-center gap-3 flex-wrap">
             <Link
               href="/posts"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 px-6 py-2.5 text-sm sm:text-base font-bold text-slate-950 transition-all duration-200 shadow-md shadow-emerald-950/30 hover:shadow-emerald-500/20 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 rounded-[10px] bg-emerald-500 hover:bg-emerald-400 px-6 py-2.5 text-sm sm:text-base font-bold text-slate-950 transition-all duration-200 shadow-md shadow-emerald-950/30 hover:shadow-emerald-500/20 hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
             >
               <span>{t('home.exploreResearch')}</span>
               <ArrowRight className="h-4 w-4" />
@@ -61,14 +61,14 @@ export function HeroSection() {
 
             <Link
               href="/dang-ky"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-600/80 bg-slate-800/60 hover:bg-slate-700/80 px-6 py-2.5 text-sm sm:text-base font-semibold text-white transition-all duration-200 backdrop-blur-xs cursor-pointer whitespace-nowrap"
+              className="inline-flex items-center justify-center rounded-[10px] border border-slate-600/80 bg-slate-800/60 hover:bg-slate-700/80 px-6 py-2.5 text-sm sm:text-base font-semibold text-white transition-all duration-200 backdrop-blur-xs cursor-pointer whitespace-nowrap"
             >
               {t('home.joinCommunity')}
             </Link>
           </div>
 
           {/* Right Live Metrics Badge */}
-          <div className="inline-flex items-center gap-3 sm:gap-4 rounded-xl border border-slate-700/80 bg-slate-900/80 px-4 py-2 text-xs sm:text-sm font-medium text-slate-200 backdrop-blur-md shadow-inner flex-wrap">
+          <div className="inline-flex items-center gap-3 sm:gap-4 rounded-[10px] border border-slate-700/80 bg-slate-900/80 px-4 py-2 text-xs sm:text-sm font-medium text-slate-200 backdrop-blur-md shadow-inner flex-wrap">
             <div className="flex items-center gap-1.5">
               <BookOpen className="h-3.5 w-3.5 text-emerald-400" />
               <span>{t('home.statsArticles')}</span>

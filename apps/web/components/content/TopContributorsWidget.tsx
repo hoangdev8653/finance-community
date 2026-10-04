@@ -43,7 +43,7 @@ const TOP_CONTRIBUTORS = [
 export function TopContributorsWidget() {
   const { t } = useTranslation();
   return (
-    <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3.5 shadow-xs">
+    <div className="rounded-[10px] border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3.5 shadow-xs">
       <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100">
         {t('editorial.activeVoices')}
       </h3>
@@ -53,7 +53,7 @@ export function TopContributorsWidget() {
           return (
             <div
               key={contributor.id}
-              className="flex items-center justify-between gap-2.5 p-2 -mx-2 rounded-xl hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
+              className="flex items-center justify-between gap-2.5 p-2 -mx-2 rounded-[10px] hover:bg-slate-100/80 dark:hover:bg-slate-800/60 transition-colors"
             >
               <Link
                 href={`/profile/${contributor.username}`}

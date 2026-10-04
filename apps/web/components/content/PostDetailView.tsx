@@ -18,9 +18,9 @@ import { ReadingProgressBar } from "./ReadingProgressBar";
 import { PostReactionsBar } from "@/components/reactions/PostReactionsBar";
 import { PostAppealBanner } from "./PostAppealBanner";
 import { PostDetailSidebar } from "./PostDetailSidebar";
+import { PostStickyReactions } from "./PostStickyReactions";
 import { LearningActions } from "@/components/learning/LearningActions";
 import { LearningQuiz } from "@/components/learning/LearningQuiz";
-import { Bookmark, Heart, MessageCircle, Share2 } from "lucide-react";
 
 interface PostDetailViewProps {
   initialPost: PostDetailResponse;
@@ -49,7 +49,7 @@ export function PostDetailView({ initialPost, series }: PostDetailViewProps) {
 
       <main
         id="main-content"
-        className="min-h-screen bg-slate-50 py-8 dark:bg-background sm:py-10"
+        className="min-h-screen bg-slate-50/70 py-8 dark:bg-background sm:py-10"
       >
         <div className="mx-auto w-full max-w-[1440px] px-3.5 sm:px-6 lg:px-8">
           {/* Appeal Banner for author if post is banned/hidden */}
@@ -77,7 +77,7 @@ export function PostDetailView({ initialPost, series }: PostDetailViewProps) {
             />
           </div>
 
-          {/* Lesson reader for a course; community posts keep the broader editorial layout. */}
+          {/* Main Layout Grid */}
           <div
             className={
               isSeries
@@ -85,35 +85,16 @@ export function PostDetailView({ initialPost, series }: PostDetailViewProps) {
                 : "grid grid-cols-1 gap-8 lg:grid-cols-[56px_minmax(0,1fr)_300px] lg:gap-6"
             }
           >
-            {isCommunity && (
-              <aside className="hidden lg:block">
-                <div className="sticky top-28 flex flex-col items-center overflow-hidden rounded-lg border border-slate-100 bg-white py-2 shadow-sm">
-                  <button className="flex w-full flex-col items-center gap-1 px-2 py-3 text-xs font-semibold text-emerald-700 hover:bg-emerald-50">
-                    <Heart className="h-5 w-5 fill-emerald-100" />
-                    125
-                  </button>
-                  <button className="flex w-full flex-col items-center gap-1 px-2 py-3 text-xs font-semibold text-slate-500 hover:bg-slate-50">
-                    <MessageCircle className="h-5 w-5" />
-                    24
-                  </button>
-                  <button className="flex w-full flex-col items-center gap-1 px-2 py-3 text-xs font-semibold text-slate-500 hover:bg-slate-50">
-                    <Bookmark className="h-5 w-5" />
-                    Lưu
-                  </button>
-                  <button className="flex w-full flex-col items-center gap-1 px-2 py-3 text-xs font-semibold text-slate-500 hover:bg-slate-50">
-                    <Share2 className="h-5 w-5" />
-                    Chia sẻ
-                  </button>
-                </div>
-              </aside>
-            )}
+            {/* Synchronized Sticky Sidebar Actions */}
+            {isCommunity && <PostStickyReactions postId={post.id} commentCount={post.commentCount} />}
+
             {/* Main Article Column */}
-            <article className={`min-w-0 space-y-6 ${isSeries ? "" : ""}`}>
+            <article className="min-w-0 space-y-6">
               <div
                 className={
                   isSeries
                     ? "pt-2 sm:pt-4"
-                    : "rounded-lg border border-slate-100 bg-white p-6 shadow-sm sm:p-8"
+                    : "rounded-xl border border-border/80 bg-card p-6 shadow-2xs sm:p-8 text-card-foreground"
                 }
               >
                 <PostHeader post={post} categoryName={categoryName} />
@@ -131,7 +112,7 @@ export function PostDetailView({ initialPost, series }: PostDetailViewProps) {
                 className={
                   isSeries
                     ? "pb-2 sm:pb-4"
-                    : "rounded-lg border border-slate-100 bg-white p-6 shadow-sm sm:p-8"
+                    : "rounded-xl border border-border/80 bg-card p-6 shadow-2xs sm:p-8 text-card-foreground text-[16px] sm:text-[17px] leading-relaxed"
                 }
               >
                 <PostContentRenderer body={post.body} />
@@ -147,7 +128,7 @@ export function PostDetailView({ initialPost, series }: PostDetailViewProps) {
               <div className="lg:hidden">
                 <PostTagsList tags={post.tags} />
               </div>
-              <PostReactionsBar postId={post.id} />
+              <PostReactionsBar postId={post.id} commentCount={post.commentCount} />
               {!isSeries && <CommentsSection postId={post.id} />}
             </article>
 

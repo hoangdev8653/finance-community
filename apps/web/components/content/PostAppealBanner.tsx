@@ -42,7 +42,7 @@ export function PostAppealBanner({ post }: PostAppealBannerProps) {
 
   return (
     <div
-      className="mb-8 rounded-xl border border-danger/40 bg-danger/5 dark:bg-danger/10 p-5 space-y-4 animate-in fade-in"
+      className="mb-8 rounded-[10px] border border-danger/40 bg-danger/5 dark:bg-danger/10 p-5 space-y-4 animate-in fade-in"
       role="alert"
     >
       <div className="flex items-start gap-3.5">

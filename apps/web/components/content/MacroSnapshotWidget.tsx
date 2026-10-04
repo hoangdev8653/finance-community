@@ -51,7 +51,7 @@ export function MacroSnapshotWidget() {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
+    <div className="rounded-[10px] border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4 shadow-xs">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-heading font-bold text-base">
           <Activity className="h-4.5 w-4.5 text-emerald-600 dark:text-emerald-400" />

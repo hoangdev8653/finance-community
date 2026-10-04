@@ -78,18 +78,22 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
       {/* State Transitions: Loading, Error, Empty, List */}
       {isLoading ? (
         <CommentSkeleton />
-      ) : isError && !isDemoPost && isAuthenticated ? (
+      ) : isError && !isDemoPost ? (
         <ErrorState
           title="Không thể tải thảo luận"
           message="Không thể tải bình luận cho bài viết này."
           onRetry={() => refetch()}
         />
-      ) : (threadedComments.length === 0 || isDemoPost) && isAuthenticated ? (
-        <EmptyState
-          icon={MessageSquare}
-          title="Chưa có bình luận"
-          description="Hãy là người đầu tiên chia sẻ góc nhìn hoặc đặt câu hỏi về bài viết này."
-        />
+      ) : (threadedComments.length === 0 || isDemoPost) ? (
+        <div className="rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-800 bg-card p-8 text-center flex flex-col items-center justify-center min-h-[180px] shadow-2xs">
+          <div className="h-12 w-12 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3 ring-4 ring-emerald-100/50 dark:ring-emerald-900/30">
+            <MessageSquare className="h-6 w-6" />
+          </div>
+          <h4 className="text-sm sm:text-base font-bold text-foreground">Chưa có bình luận nào</h4>
+          <p className="mt-1 text-xs text-muted-foreground max-w-sm">
+            Hãy là người đầu tiên chia sẻ góc nhìn hoặc đặt câu hỏi về bài viết này.
+          </p>
+        </div>
       ) : (
         <div className="space-y-6 pt-2">
           <CommentList

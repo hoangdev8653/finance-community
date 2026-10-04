@@ -36,7 +36,7 @@ export function TrendingTagsWidget() {
   });
 
   return (
-    <div className="rounded-xl border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3 shadow-xs">
+    <div className="rounded-[10px] border border-slate-200/90 dark:border-[#253044] bg-white dark:bg-[#111827] p-4 sm:p-5 space-y-3 shadow-xs">
       <h3 className="font-heading font-bold text-sm sm:text-base text-slate-900 dark:text-slate-100">
         {t('editorial.hotTopics')}
       </h3>

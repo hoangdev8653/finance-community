@@ -7,7 +7,6 @@ import { useAuth } from '@/lib/auth/AuthContext';
 import { useUploadMedia } from '@/lib/media/use-media';
 import { useToast } from '@/lib/toast/ToastContext';
 import { useRateLimitTimer } from '@/lib/utils/use-rate-limit-timer';
-import { Button } from '@/components/ui/Button';
 import { MessageSquare, LogIn, ImagePlus, X, Loader2, Clock } from 'lucide-react';
 
 interface CommentComposerProps {
@@ -30,22 +29,22 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
 
   if (!isAuthenticated) {
     return (
-      <div className="rounded-2xl border border-slate-200/80 bg-white px-5 py-5 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900 sm:px-6">
-        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
+      <div className="rounded-xl border border-border/80 bg-card p-6 text-center shadow-xs">
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
           <MessageSquare className="h-5 w-5" aria-hidden="true" />
         </div>
         <p className="mt-3 font-heading text-base font-bold text-foreground">
           Đăng nhập để tham gia thảo luận
         </p>
-        <p className="mx-auto mt-1 max-w-md text-sm leading-6 text-muted-foreground">
+        <p className="mx-auto mt-1 max-w-md text-xs sm:text-sm leading-6 text-muted-foreground">
           Chia sẻ góc nhìn, đặt câu hỏi và trao đổi một cách tôn trọng với cộng đồng.
         </p>
         <div className="mt-4">
           <Link
             href={`/dang-nhap?redirect=${encodeURIComponent(pathname || '/')}`}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2"
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-700 px-5 text-sm font-bold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 shadow-xs cursor-pointer"
           >
-            <LogIn className="h-3.5 w-3.5" aria-hidden="true" />
+            <LogIn className="h-4 w-4" aria-hidden="true" />
             Đăng nhập để bình luận
           </Link>
         </div>
@@ -114,11 +113,13 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
-        <span>
-          Commenting as <strong className="text-foreground font-medium">@{authorHandle}</strong>
+      <div className="flex items-center text-xs sm:text-sm text-foreground/85 font-sans pb-1">
+        <span className="flex items-center gap-1.5">
+          <span className="font-medium">Bình luận với tư cách</span>
+          <span className="font-mono font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/80 dark:border-emerald-800/80">
+            @{authorHandle}
+          </span>
         </span>
-        <span>{body.length} / 2000</span>
       </div>
 
       <div className="relative">
@@ -126,11 +127,11 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
           value={body}
           onChange={(e) => setBody(e.target.value)}
           maxLength={2000}
-          rows={3}
+          rows={5}
           disabled={isLoading || isUploading || isRateLimited}
-          aria-label="Write a comment"
+          aria-label="Viết bình luận"
           placeholder="Chia sẻ góc nhìn phân tích, số liệu định giá, hoặc đính kèm ảnh biểu đồ..."
-          className="w-full resize-y rounded-2xl border border-input bg-background p-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full min-h-[140px] sm:min-h-[160px] resize-y rounded-xl border border-input bg-card p-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors shadow-2xs"
         />
 
         {/* Attached image preview */}
@@ -164,7 +165,7 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
         )}
       </div>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between pt-1">
         <div>
           <input
             ref={fileInputRef}
@@ -176,27 +177,32 @@ export function CommentComposer({ onSubmit, isLoading = false }: CommentComposer
           />
           <label
             htmlFor="comment-image-upload"
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border border-border text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-muted cursor-pointer transition-colors ${
+            title="Đính kèm ảnh biểu đồ hoặc bảng tính phân tích (PNG, JPG, WebP tối đa 5MB)"
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border/80 bg-card text-xs font-medium text-muted-foreground hover:text-emerald-700 dark:hover:text-emerald-400 hover:border-emerald-300 dark:hover:border-emerald-800 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/30 cursor-pointer transition-all duration-150 active:scale-95 shadow-2xs ${
               isUploading || isRateLimited ? 'opacity-50 pointer-events-none' : ''
             }`}
           >
             {isUploading ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <ImagePlus className="h-3.5 w-3.5 text-primary" />
+              <ImagePlus className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
             )}
             <span>{isUploading ? 'Đang tải ảnh...' : 'Đính kèm Biểu đồ'}</span>
           </label>
         </div>
 
-        <Button
+        <button
           type="submit"
-          size="sm"
           disabled={isLoading || isUploading || isRateLimited || !body.trim()}
-          isLoading={isLoading}
+          className={`inline-flex items-center justify-center gap-2 h-10 px-5 text-xs sm:text-sm font-semibold rounded-lg transition-all ${
+            !body.trim()
+              ? 'bg-slate-100 text-slate-500 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 cursor-not-allowed shadow-none'
+              : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs cursor-pointer active:scale-[0.98]'
+          }`}
         >
-          {isRateLimited ? `Chờ ${secondsRemaining}s...` : 'Post Comment'}
-        </Button>
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+          <span>{isRateLimited ? `Chờ ${secondsRemaining}s...` : 'Gửi bình luận'}</span>
+        </button>
       </div>
     </form>
   );

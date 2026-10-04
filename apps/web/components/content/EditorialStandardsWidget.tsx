@@ -8,7 +8,7 @@ export function EditorialStandardsWidget() {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 sm:p-5 space-y-2">
+    <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 p-4 sm:p-5 space-y-2">
       <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
         {t('home.editorialStandards')}
       </h3>

@@ -45,7 +45,7 @@ export function BookmarkButton({
         aria-label={isBookmarked ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}
         title={isBookmarked ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}
         className={cn(
-          'relative inline-flex items-center justify-center rounded-xl border border-border p-2 transition-all duration-200 cursor-pointer',
+          'relative inline-flex items-center justify-center rounded-[10px] border border-border p-2 transition-all duration-200 cursor-pointer',
           isBookmarked
             ? 'bg-primary/10 border-primary/30 text-primary hover:bg-primary/20'
             : 'bg-surface hover:bg-muted text-muted-foreground hover:text-foreground',
@@ -108,7 +108,7 @@ export function BookmarkButton({
       disabled={isLoading}
       aria-label={isBookmarked ? 'Bỏ lưu bài viết' : 'Lưu bài viết'}
       className={cn(
-        'inline-flex items-center justify-center rounded-xl font-medium transition-all duration-200 cursor-pointer border shadow-xs',
+        'inline-flex items-center justify-center rounded-[10px] font-medium transition-all duration-200 cursor-pointer border shadow-xs',
         sizeClasses,
         isBookmarked
           ? 'bg-primary/10 border-primary/30 text-primary hover:bg-primary/15 font-semibold'

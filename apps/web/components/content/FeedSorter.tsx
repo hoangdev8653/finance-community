@@ -19,7 +19,7 @@ export function FeedSorter({ currentSort, onSortChange }: FeedSorterProps) {
     <button
       type="button"
       onClick={toggleSort}
-      className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white transition-all shadow-2xs cursor-pointer"
+      className="inline-flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-[8px] border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:text-slate-950 dark:hover:text-white transition-all shadow-2xs cursor-pointer"
       aria-label="Toggle sort order"
     >
       <span>Sort</span>

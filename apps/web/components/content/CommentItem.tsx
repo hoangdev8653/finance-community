@@ -90,7 +90,7 @@ export function CommentItem({
       className={`space-y-3 ${
         isNested
           ? 'pl-2.5 sm:pl-5 border-l-2 border-border/60 my-3 sm:my-4'
-          : 'rounded-xl border border-border bg-surface p-4 sm:p-5 shadow-xs my-4'
+          : 'rounded-[10px] border border-border bg-surface p-4 sm:p-5 shadow-xs my-4'
       }`}
     >
       {/* Comment Header */}
