@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { learningCourseService } from "@/lib/learning/learning-course-service";
+import { courseService } from "@/lib/courses/course-service";
 import {
   ArrowRight,
   BarChart3,
@@ -175,37 +176,79 @@ export default function CoursesPage() {
 
   useEffect(() => {
     let active = true;
-    learningCourseService.listPaths().then((paths) => {
-      if (!active || !paths || paths.length === 0) return;
+    Promise.all([
+      courseService.getAllCourses({ limit: 50 }).catch(() => null),
+      learningCourseService.listPaths().catch(() => null),
+    ]).then(([seriesRes, paths]) => {
+      if (!active) return;
+      const combined: Course[] = [];
       const accents = [
         "from-emerald-950 via-emerald-700 to-lime-300",
         "from-slate-950 via-cyan-900 to-cyan-400",
+        "from-violet-950 via-violet-700 to-fuchsia-300",
         "from-blue-950 via-blue-700 to-sky-300",
         "from-teal-950 via-teal-700 to-emerald-300",
+        "from-rose-950 via-rose-700 to-orange-300",
+        "from-amber-950 via-amber-700 to-yellow-300",
       ];
-      const mapped: Course[] = paths.map((path, idx) => {
-        return {
-          slug: path.slug,
-          title: path.title,
-          description: path.description || '',
-          topic: 'Tài chính',
-          level: 'Cơ bản',
-          lessons: 0,
-          duration: 'Giáo trình đọc',
-          students: '1.2k',
-          accent: accents[idx % accents.length],
-          featured: true,
-        };
-      });
-      setDbCourses(mapped);
+
+      // Add database series
+      if (seriesRes?.data && seriesRes.data.length > 0) {
+        seriesRes.data.forEach((s, idx) => {
+          let mappedTopic: Exclude<Topic, "Tất cả"> = "Tài chính";
+          const norm = (s.name + " " + s.slug).toLowerCase();
+          if (norm.includes("chứng khoán") || norm.includes("đầu tư") || norm.includes("kinh tế")) mappedTopic = "Đầu tư";
+          else if (norm.includes("sức khỏe") || norm.includes("thói quen")) mappedTopic = "Sức khỏe";
+          else if (norm.includes("công nghệ") || norm.includes("trí tuệ") || norm.includes("số")) mappedTopic = "Công nghệ";
+          else if (norm.includes("kỹ năng sống") || norm.includes("phương pháp") || norm.includes("phát triển")) mappedTopic = "Kỹ năng sống";
+          else if (norm.includes("nghề nghiệp") || norm.includes("sự nghiệp") || norm.includes("giao tiếp")) mappedTopic = "Sự nghiệp";
+
+          const articleCount = s.publishedArticleCount || 0;
+          combined.push({
+            slug: s.slug,
+            title: s.name,
+            description: s.description || "Khóa học nền tảng với lộ trình bài bản và thực tế.",
+            topic: mappedTopic,
+            level: (articleCount > 5 ? "Trung cấp" : "Cơ bản"),
+            lessons: articleCount > 0 ? articleCount : (norm.includes("tài chính") ? 12 : 8),
+            duration: articleCount > 0 ? `${articleCount * 20} phút` : "2 giờ",
+            students: "1.2k",
+            accent: accents[idx % accents.length],
+            featured: s.slug === "tai-chinh-ca-nhan" || s.slug === "chung-khoan" || s.slug === "dau-tu",
+          });
+        });
+      }
+
+      // Add database learning paths (if not already included)
+      if (paths && paths.length > 0) {
+        paths.forEach((p, idx) => {
+          if (!combined.some((c) => c.slug === p.slug)) {
+            combined.push({
+              slug: p.slug,
+              title: p.title,
+              description: p.description || "",
+              topic: "Tài chính",
+              level: "Cơ bản",
+              lessons: 10,
+              duration: "2 giờ 30 phút",
+              students: "1.2k",
+              accent: accents[(combined.length + idx) % accents.length],
+              featured: combined.length < 3,
+            });
+          }
+        });
+      }
+
+      if (combined.length > 0) {
+        setDbCourses(combined);
+      }
     }).catch(() => {});
     return () => { active = false; };
   }, []);
 
   const allCourses = useMemo(() => {
     if (dbCourses.length === 0) return courses;
-    const otherTopicCourses = courses.filter((c) => c.topic !== 'Tài chính' && c.topic !== 'Đầu tư');
-    return [...dbCourses, ...otherTopicCourses];
+    return dbCourses;
   }, [dbCourses]);
 
   const filtered = useMemo(
@@ -325,8 +368,9 @@ export default function CoursesPage() {
             </span>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
-            {courses
+            {allCourses
               .filter((c) => c.featured)
+              .slice(0, 3)
               .map((c) => (
                 <CourseCard key={c.slug} course={c} />
               ))}

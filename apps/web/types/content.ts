@@ -27,6 +27,8 @@ export interface PostEntity {
   metaDescription: string | null;
   topics?: PostTopicItem[];
   viewCount: number;
+  commentCount?: number;
+  reactionCount?: number;
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;

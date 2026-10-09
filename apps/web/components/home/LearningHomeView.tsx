@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -10,179 +10,105 @@ import {
   BarChart3,
   BookOpen,
   BriefcaseBusiness,
+  Calculator,
+  ChevronRight,
   CircleDollarSign,
-  Clock3,
-  FileSpreadsheet,
+  Compass,
   Flame,
+  GraduationCap,
+  Heart,
   HeartPulse,
   Landmark,
   Lightbulb,
   Medal,
   MessageCircle,
+  MessageSquare,
   Search,
   ShieldCheck,
+  Sparkles,
   Star,
   ThumbsUp,
+  TrendingUp,
+  UserPlus,
   UsersRound,
 } from "lucide-react";
 import { BRAND } from "@/lib/constants/brand";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { postsService } from "@/lib/posts/posts-service";
 import { courseService } from "@/lib/courses/course-service";
 
-const DEFAULT_CATEGORIES = [
-  [
-    "Quản lý tài chính\ncá nhân",
-    CircleDollarSign,
-    "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
-    "tai-chinh-ca-nhan",
-  ],
-  [
-    "Đầu tư\nchứng khoán",
-    BarChart3,
-    "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400",
-    "chung-khoan",
-  ],
-  [
-    "Đầu tư\ncrypto",
-    CircleDollarSign,
-    "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
-    "crypto",
-  ],
-  [
-    "Kinh doanh\n& Khởi nghiệp",
-    BriefcaseBusiness,
-    "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400",
-    "kinh-doanh",
-  ],
-  [
-    "Kỹ năng\nmềm",
-    Lightbulb,
-    "bg-amber-50 text-amber-500 dark:bg-amber-950/60 dark:text-amber-400",
-    "ky-nang-mem",
-  ],
-  [
-    "Công cụ tài chính\n& Excel",
-    FileSpreadsheet,
-    "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
-    "cong-cu-tai-chinh",
-  ],
-  [
-    "Pháp lý\n& Thuế",
-    Landmark,
-    "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
-    "phap-ly-thue",
-  ],
-  [
-    "Công nghệ\n& AI",
-    Lightbulb,
-    "bg-orange-50 text-orange-500 dark:bg-orange-950/60 dark:text-orange-400",
-    "cong-nghe-ai",
-  ],
-  [
-    "Sức khỏe\n& Cuộc sống",
-    HeartPulse,
-    "bg-red-50 text-red-500 dark:bg-red-950/60 dark:text-red-400",
-    "suc-khoe",
-  ],
-] as const;
-
-const DEFAULT_SERIES = [
-  [
-    "Quản lý tài chính cá nhân\ncho người mới bắt đầu",
-    "12 bài học",
-    "Hoàng Huy",
-    "from-emerald-100 via-lime-50 to-white dark:from-emerald-900/60 dark:via-slate-800 dark:to-slate-900",
-    "quan-ly-tai-chinh-ca-nhan",
-  ],
-  [
-    "Đầu tư chứng khoán\nthực chiến A-Z",
-    "18 bài học",
-    "Trần Minh",
-    "from-slate-950 via-teal-900 to-slate-800",
-    "dau-tu-chung-khoan-a-z",
-  ],
-  [
-    "Crypto từ cơ bản\nđến nâng cao",
-    "15 bài học",
-    "Phạm Linh",
-    "from-amber-900 via-amber-700 to-slate-900",
-    "crypto-co-ban-den-nang-cao",
-  ],
-  [
-    "Khởi nghiệp tinh gọn\nvới nguồn lực nhỏ",
-    "10 bài học",
-    "Lê Anh",
-    "from-orange-50 via-rose-50 to-white dark:from-orange-950/60 dark:via-slate-800 dark:to-slate-900",
-    "khoi-nghiep-tinh-gon",
-  ],
-  [
-    "Excel tài chính\nứng dụng thực tế",
-    "14 bài học",
-    "Hoàng Huy",
-    "from-cyan-100 via-slate-100 to-white dark:from-cyan-950/60 dark:via-slate-800 dark:to-slate-900",
-    "excel-tai-chinh",
-  ],
-] as const;
-
-const DEFAULT_COMMUNITY_ITEMS = [
-  {
-    title: "Kinh nghiệm xây dựng quỹ khẩn cấp 6 tháng thu nhập",
-    author: "Nguyễn Văn A",
-    views: 1240,
-    comments: 32,
-    likes: 128,
-  },
-  {
-    title: "Có nên đầu tư vào bất động sản lúc này?",
-    author: "Trần Thị B",
-    views: 980,
-    comments: 45,
-    likes: 96,
-  },
-  {
-    title: "Kinh nghiệm học phân tích kỹ thuật hiệu quả",
-    author: "Lê Minh C",
-    views: 850,
-    comments: 28,
-    likes: 78,
-  },
+const SERIES_TINTS = [
+  "from-emerald-950 via-emerald-800 to-teal-900",
+  "from-slate-950 via-cyan-950 to-slate-900",
+  "from-violet-950 via-purple-900 to-slate-950",
+  "from-amber-950 via-orange-900 to-slate-950",
+  "from-teal-950 via-emerald-900 to-slate-950",
 ];
 
-const TINTS = [
-  "from-emerald-100 via-lime-50 to-white dark:from-emerald-900/60 dark:via-slate-800 dark:to-slate-900",
-  "from-slate-950 via-teal-900 to-slate-800",
-  "from-amber-900 via-amber-700 to-slate-900",
-  "from-orange-50 via-rose-50 to-white dark:from-orange-950/60 dark:via-slate-800 dark:to-slate-900",
-  "from-cyan-100 via-slate-100 to-white dark:from-cyan-950/60 dark:via-slate-800 dark:to-slate-900",
-];
+function getCategoryBadgeClass(category: string): string {
+  const normalized = category.toLocaleLowerCase("vi-VN");
+  if (normalized.includes("tài chính") || normalized.includes("đầu tư") || normalized.includes("chứng khoán")) {
+    return "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300";
+  }
+  if (normalized.includes("kinh doanh") || normalized.includes("quản lý") || normalized.includes("chi tiêu")) {
+    return "border-blue-200 bg-blue-50 text-blue-800 dark:border-blue-800 dark:bg-blue-950/60 dark:text-blue-300";
+  }
+  return "border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-800 dark:bg-violet-950/60 dark:text-violet-300";
+}
 
-function getCategoryIconAndTone(nameOrSlug: string): { icon: typeof CircleDollarSign; tone: string } {
-  const normalized = (nameOrSlug || "").toLowerCase();
-  if (normalized.includes("chứng khoán") || normalized.includes("chung-khoan") || normalized.includes("stock")) {
-    return { icon: BarChart3, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400" };
+function getDomainIconAndTone(codeOrSlugOrName: string): {
+  icon: typeof CircleDollarSign;
+  tone: string;
+  badge: string;
+} {
+  const norm = (codeOrSlugOrName || "").toLowerCase();
+  if (norm.includes("money") || norm.includes("tai-chinh") || norm.includes("tài chính") || norm.includes("đầu tư")) {
+    return {
+      icon: CircleDollarSign,
+      tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
+      badge: "Quản lý & Đầu tư",
+    };
   }
-  if (normalized.includes("crypto") || normalized.includes("tiền điện tử") || normalized.includes("coin")) {
-    return { icon: CircleDollarSign, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" };
+  if (norm.includes("business") || norm.includes("kinh doanh") || norm.includes("khởi nghiệp")) {
+    return {
+      icon: BriefcaseBusiness,
+      tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400",
+      badge: "Khởi nghiệp & Quản trị",
+    };
   }
-  if (normalized.includes("kinh doanh") || normalized.includes("khởi nghiệp") || normalized.includes("business")) {
-    return { icon: BriefcaseBusiness, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400" };
+  if (norm.includes("tech") || norm.includes("công nghệ") || norm.includes("ai") || norm.includes("trí tuệ")) {
+    return {
+      icon: Sparkles,
+      tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400",
+      badge: "AI & Kỹ năng số",
+    };
   }
-  if (normalized.includes("kỹ năng") || normalized.includes("ky-nang") || normalized.includes("skill")) {
-    return { icon: Lightbulb, tone: "bg-amber-50 text-amber-500 dark:bg-amber-950/60 dark:text-amber-400" };
+  if (norm.includes("career") || norm.includes("nghề nghiệp") || norm.includes("học tập") || norm.includes("kỹ năng")) {
+    return {
+      icon: GraduationCap,
+      tone: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400",
+      badge: "Phương pháp & Kỹ năng",
+    };
   }
-  if (normalized.includes("công cụ") || normalized.includes("excel") || normalized.includes("tool")) {
-    return { icon: FileSpreadsheet, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400" };
+  if (norm.includes("life") || norm.includes("đời sống") || norm.includes("sức khỏe") || norm.includes("doi-song")) {
+    return {
+      icon: HeartPulse,
+      tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400",
+      badge: "Thói quen & Thể chất",
+    };
   }
-  if (normalized.includes("pháp lý") || normalized.includes("thuế") || normalized.includes("tax")) {
-    return { icon: Landmark, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400" };
+  if (norm.includes("sport") || norm.includes("thể thao")) {
+    return {
+      icon: Medal,
+      tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400",
+      badge: "Rèn luyện & Thể lực",
+    };
   }
-  if (normalized.includes("công nghệ") || normalized.includes("ai") || normalized.includes("tech")) {
-    return { icon: Lightbulb, tone: "bg-orange-50 text-orange-500 dark:bg-orange-950/60 dark:text-orange-400" };
-  }
-  if (normalized.includes("sức khỏe") || normalized.includes("đời sống") || normalized.includes("health")) {
-    return { icon: HeartPulse, tone: "bg-red-50 text-red-500 dark:bg-red-950/60 dark:text-red-400" };
-  }
-  return { icon: CircleDollarSign, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400" };
+  return {
+    icon: Compass,
+    tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400",
+    badge: "Kiến thức chuyên sâu",
+  };
 }
 
 
@@ -197,15 +123,15 @@ function Heading({
 }) {
   return (
     <div className="mb-4 flex items-center justify-between">
-      <h2 className="text-lg font-bold tracking-tight text-foreground">
+      <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
         {title}
       </h2>
       <Link
         href={href}
-        className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-muted-foreground transition-colors duration-200 hover:text-emerald-600 dark:hover:text-emerald-400"
+        className="group/hlink inline-flex cursor-pointer items-center gap-1.5 text-xs sm:text-sm font-bold text-slate-700 transition-colors duration-200 hover:text-emerald-700 dark:text-slate-200 dark:hover:text-emerald-400"
       >
-        {label}
-        <ArrowRight className="h-3.5 w-3.5" />
+        <span>{label}</span>
+        <ArrowRight className="h-4 w-4 stroke-[2.25] text-slate-600 transition-transform duration-200 group-hover/hlink:translate-x-0.5 group-hover/hlink:text-emerald-700 dark:text-slate-300 dark:group-hover/hlink:text-emerald-400" />
       </Link>
     </div>
   );
@@ -213,9 +139,17 @@ function Heading({
 
 export function LearningHomeView() {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const [query, setQuery] = useState("");
 
-  // 1. Fetch categories from backend API
+  // 1. Fetch domains directly from database API (/domains)
+  const { data: remoteDomains } = useQuery({
+    queryKey: ["home", "domains"],
+    queryFn: () => postsService.getDomains({ includeInactive: false }),
+    staleTime: 60 * 1000,
+  });
+
+  // Keep categories query for fallback / tests
   const { data: remoteCategories } = useQuery({
     queryKey: ["home", "categories"],
     queryFn: () => postsService.getCategories(),
@@ -236,54 +170,82 @@ export function LearningHomeView() {
     staleTime: 60 * 1000,
   });
 
-  // Resolve display categories with graceful fallback
-  const displayCategories = useMemo(() => {
+  const { data: latestLessons } = useQuery({
+    queryKey: ["home", "latest-lessons"],
+    queryFn: () => postsService.getFeed({ contentType: "SERIES", limit: 4, sortBy: "publishedAt", order: "DESC" }),
+    staleTime: 60 * 1000,
+  });
+
+  // Resolve display domains from database with graceful fallback
+  const displayDomains = useMemo(() => {
+    const activeDomains = remoteDomains?.filter((d) => d.code !== "GENERAL") || [];
+    if (activeDomains.length > 0) {
+      return activeDomains.slice(0, 6).map((d) => {
+        const { icon: Icon, tone } = getDomainIconAndTone(d.code || d.slug || d.name);
+        const courseCount = d.courseCount ?? 0;
+        return {
+          id: d.id,
+          label: d.nameVi || d.name,
+          slug: d.slug,
+          href: `/${d.slug}`,
+          Icon,
+          tone,
+          subtitle: `${courseCount} khóa học`,
+        };
+      });
+    }
+
+    // Fallback if test or legacy setup passes remoteCategories
     if (remoteCategories && remoteCategories.length > 0) {
-      return remoteCategories.slice(0, 9).map((cat) => {
-        const { icon: Icon, tone } = getCategoryIconAndTone(cat.name || cat.slug);
+      return remoteCategories.slice(0, 6).map((cat) => {
+        const { icon: Icon, tone } = getDomainIconAndTone(cat.name || cat.slug);
         return {
           id: cat.id,
           label: cat.name,
           slug: cat.slug,
-          href: '/bai-viet/cong-dong',
+          href: `/${cat.slug}`,
           Icon,
           tone,
+          subtitle: `${cat.courseCount ?? 0} khóa học`,
         };
       });
     }
-    return DEFAULT_CATEGORIES.map(([label, Icon, tone, slug]) => ({
-      id: slug,
-      label,
-      slug,
-      href: '/bai-viet/cong-dong',
-      Icon,
-      tone,
-    }));
-  }, [remoteCategories]);
+
+    // Default core domains matching the database
+    return [
+      { id: "MONEY", label: "Tài chính", slug: "tai-chinh", href: "/tai-chinh", Icon: CircleDollarSign, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", subtitle: "4 khóa học" },
+      { id: "BUSINESS", label: "Kinh doanh", slug: "business", href: "/business", Icon: BriefcaseBusiness, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400", subtitle: "0 khóa học" },
+      { id: "TECH", label: "Công nghệ", slug: "technology", href: "/technology", Icon: Sparkles, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", subtitle: "0 khóa học" },
+      { id: "CAREER", label: "Nghề nghiệp và Học tập", slug: "career", href: "/career", Icon: GraduationCap, tone: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", subtitle: "0 khóa học" },
+      { id: "LIFE", label: "Đời sống và Sức khỏe", slug: "doi-song-suc-khoe", href: "/doi-song-suc-khoe", Icon: HeartPulse, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400", subtitle: "0 khóa học" },
+      { id: "SPORTS", label: "Thể thao", slug: "sports", href: "/sports", Icon: Medal, tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400", subtitle: "0 khóa học" },
+    ];
+  }, [remoteDomains, remoteCategories]);
 
   // Resolve display series with graceful fallback
   const displaySeries = useMemo(() => {
-    if (remoteSeries?.data && remoteSeries.data.length > 0) {
-      return remoteSeries.data.slice(0, 5).map((item, index) => ({
-        id: item.id,
-        title: item.name,
-        slug: item.slug,
-        href: `/khoa-hoc/${item.slug}`,
-        lessons: `${item.publishedArticleCount ?? 0} bài học`,
-        author: "Chuyên gia",
-        tint: TINTS[index % TINTS.length],
-      }));
-    }
-    return DEFAULT_SERIES.map(([title, lessons, author, tint, slug]) => ({
-      id: slug,
-      title,
-      slug,
-      href: `/khoa-hoc/${slug}`,
-      lessons,
-      author,
-      tint,
+    return (remoteSeries?.data ?? []).slice(0, 5).map((item, index) => ({
+      id: item.id,
+      title: item.name,
+      slug: item.slug,
+      href: `/khoa-hoc/${item.slug}`,
+      lessons: `${item.publishedArticleCount ?? 0} bài học`,
+      tint: SERIES_TINTS[index % SERIES_TINTS.length],
     }));
   }, [remoteSeries]);
+
+  const publishedLessonCount = (remoteSeries?.data ?? []).reduce(
+    (total, series) => total + (series.publishedArticleCount ?? 0),
+    0,
+  );
+
+  const latestLessonItems = (latestLessons?.data ?? []).map((post) => ({
+    id: post.id,
+    title: post.title,
+    href: `/bai-viet/khoa-hoc/${post.slug}`,
+    category: post.topics?.[0]?.name || "Bài học",
+    time: post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("vi-VN") : "Vừa cập nhật",
+  }));
 
   // Resolve community posts with graceful fallback
   const displayCommunityPosts = useMemo(() => {
@@ -292,19 +254,15 @@ export function LearningHomeView() {
         id: post.id,
         title: post.title,
         href: `/bai-viet/cong-dong/${post.slug}`,
-        author: post.author?.displayName || post.author?.username || "Thành viên",
+        author: post.author?.displayName || post.author?.username || "Thành viên cộng đồng",
+        category: (post.topics && post.topics[0]?.name) || "Thảo luận",
         views: post.viewCount || 0,
+        likes: post.reactionCount ?? 0,
+        comments: post.commentCount ?? 0,
+        time: post.publishedAt ? new Date(post.publishedAt).toLocaleDateString("vi-VN") : "",
       }));
     }
-    return DEFAULT_COMMUNITY_ITEMS.map((item) => ({
-      id: item.title,
-      title: item.title,
-      href: "/bai-viet/cong-dong",
-      author: item.author,
-      views: item.views,
-      comments: item.comments,
-      likes: item.likes,
-    }));
+    return [];
   }, [remotePosts]);
 
   const search = (event: FormEvent) => {
@@ -326,7 +284,7 @@ export function LearningHomeView() {
               <br />
               thực tiễn, phát triển mỗi ngày
             </h1>
-            <p className="mt-5 max-w-[540px] text-base font-medium leading-7 text-muted-foreground">
+            <p className="mt-5 max-w-[540px] text-base font-normal leading-7 text-slate-800 dark:text-slate-200">
               Khám phá các khóa học chất lượng, bài học thực tế và cộng đồng hỗ
               trợ bạn trên hành trình tự do tài chính.
             </p>
@@ -350,29 +308,29 @@ export function LearningHomeView() {
                 <Search className="h-5 w-5" strokeWidth={2.5} />
               </button>
             </form>
-            <div className="mt-8 grid max-w-[560px] grid-cols-2 gap-5 sm:grid-cols-4">
+            <div className="mt-8 grid max-w-[560px] grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 sm:gap-x-3">
               {[
-                [BookOpen, "1,248", "Bài học", "text-emerald-600 dark:text-emerald-400"],
-                [BriefcaseBusiness, "156", "Khóa học", "text-blue-600 dark:text-blue-400"],
-                [UsersRound, "12,589", "Thành viên", "text-violet-600 dark:text-violet-400"],
-                [Star, "4.9/5", "Đánh giá", "text-amber-500 dark:text-amber-400"],
-              ].map(([Icon, value, label, color]) => {
+                [BookOpen, String(publishedLessonCount), "Bài học", "text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 border-emerald-200"],
+                [Compass, "6", "Lĩnh vực", "text-blue-700 dark:text-blue-400 bg-blue-100/80 border-blue-200"],
+                [Calculator, "3", "Công cụ", "text-violet-700 dark:text-violet-400 bg-violet-100/80 border-violet-200"],
+                [ShieldCheck, "100%", "Kiểm chứng", "text-amber-700 dark:text-amber-400 bg-amber-100/80 border-amber-200"],
+              ].map(([Icon, value, label, tone]) => {
                 const I = Icon as typeof BookOpen;
                 return (
                   <div
                     key={label as string}
-                    className="flex items-center gap-2.5"
+                    className="flex min-w-0 items-center gap-2"
                   >
                     <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-[10px] border border-border/60 bg-card shadow-xs ${color as string}`}
+                      className={`flex h-10 w-10 items-center justify-center rounded-[10px] border shadow-[0_2px_8px_rgba(15,23,42,0.04)] dark:border-slate-800 dark:bg-slate-900 ${tone as string}`}
                     >
-                      <I className="h-5 w-5" />
+                      <I className="h-5 w-5 shrink-0 stroke-[2.2]" />
                     </span>
-                    <span>
-                      <strong className="block text-sm font-bold text-foreground">
+                    <span className="min-w-0">
+                      <strong className="block text-sm font-bold text-slate-900 dark:text-white">
                         {value as string}
                       </strong>
-                      <small className="block text-xs font-medium text-muted-foreground">
+                      <small className="block whitespace-nowrap text-xs font-semibold text-slate-700 dark:text-slate-300">
                         {label as string}
                       </small>
                     </span>
@@ -401,27 +359,27 @@ export function LearningHomeView() {
               className="pointer-events-none absolute bottom-[-2%] right-[-7%] z-20 hidden h-auto w-[18%] max-w-[124px] select-none lg:block"
             />
             <div className="absolute left-[5%] top-[6%] z-10 flex h-[84%] w-[56%] max-w-[360px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_24px_rgba(15,23,42,0.10)] text-card-foreground">
-              <div className="flex justify-between text-xs font-semibold text-muted-foreground">
+              <div className="flex justify-between text-xs font-bold text-slate-700 dark:text-slate-300">
                 <span>Tiến độ học tập</span>
-                <span>Tuần này⌄</span>
+                <span>Tuần này ▾</span>
               </div>
-              <div className="mt-3">
+              <div className="mt-2.5">
                 <strong className="text-3xl font-extrabold text-foreground">
-                  325
+                  180
                 </strong>
                 <span className="ml-1 text-sm font-bold text-foreground">phút</span>
-                <p className="mt-1 text-xs font-medium text-muted-foreground">
-                  Thời gian học
+                <p className="mt-0.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                  Thời gian học tuần
                 </p>
               </div>
-              <p className="mt-4 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                <span className="border-b-2 border-emerald-500 pb-1">
-                  65% mục tiêu tuần
+              <p className="mt-3 text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                <span className="border-b-2 border-emerald-500 pb-0.5">
+                  75% mục tiêu tuần
                 </span>
               </p>
               <svg
                 viewBox="0 0 320 120"
-                className="mt-auto h-28 w-full"
+                className="mt-auto h-24 w-full"
                 role="img"
                 aria-label="Biểu đồ tiến độ"
               >
@@ -445,7 +403,7 @@ export function LearningHomeView() {
                   ))}
                 </g>
               </svg>
-              <div className="grid grid-cols-7 text-center text-[10px] font-medium text-muted-foreground">
+              <div className="grid grid-cols-7 text-center text-[10px] font-bold text-slate-600 dark:text-slate-300">
                 <span>T2</span>
                 <span>T3</span>
                 <span>T4</span>
@@ -454,9 +412,13 @@ export function LearningHomeView() {
                 <span>T7</span>
                 <span>CN</span>
               </div>
+              <div className="mt-2 flex items-center justify-between border-t border-border/50 pt-2 text-[10px] text-slate-700 dark:text-slate-300">
+                <span className="truncate font-semibold">Đang học: Quản lý tài chính</span>
+                <span className="shrink-0 font-bold text-emerald-700 dark:text-emerald-400">Bài 3/12</span>
+              </div>
             </div>
             <div className="absolute left-[65%] top-[15%] z-10 flex aspect-[1.38/1] w-[28%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
-              <p className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <p className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
                 <Flame
                   className="h-3.5 w-3.5 text-orange-500"
                   aria-hidden="true"
@@ -468,44 +430,49 @@ export function LearningHomeView() {
                   className="h-6 w-6 fill-orange-400 text-orange-500"
                   aria-hidden="true"
                 />
-                12<span className="-ml-1 text-sm font-bold">ngày</span>
+                7<span className="-ml-1 text-sm font-bold">ngày</span>
               </p>
-              <small className="font-medium text-muted-foreground">Tuyệt vời!</small>
+              <small className="font-semibold text-slate-600 dark:text-slate-300">Kỷ luật bền bỉ!</small>
             </div>
             <div className="absolute bottom-[11%] left-[65%] z-10 flex aspect-[1.38/1] w-[25%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
-              <p className="text-xs font-semibold text-muted-foreground">Hoàn thành</p>
+              <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Hoàn thành</p>
               <p className="mt-2 text-3xl font-extrabold leading-none text-foreground">
-                24
+                6
               </p>
-              <small className="mt-1 text-sm font-medium text-muted-foreground">
+              <small className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
                 Bài học
               </small>
             </div>
           </div>
         </section>
-        <section className="mt-14">
+        <section className="mt-12 sm:mt-14">
           <Heading
-            title="Chủ đề cộng đồng"
-            href="/bai-viet/cong-dong"
-            label="Khám phá cộng đồng"
+            title="Khám phá chủ đề"
+            href="/the"
+            label="Xem tất cả chủ đề"
           />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
-            {displayCategories.map((cat) => {
-              const Icon = cat.Icon;
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">
+            {displayDomains.map((domain) => {
+              const Icon = domain.Icon;
               return (
                 <Link
-                  key={cat.id || cat.slug}
-                  href={cat.href}
-                  className="flex min-h-[104px] cursor-pointer flex-col items-center justify-center rounded-[10px] border border-border bg-card px-2 text-center shadow-[0_2px_10px_rgba(15,23,42,0.025)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-sm active:translate-y-0 dark:hover:border-emerald-800/60"
+                  key={domain.id || domain.slug}
+                  href={domain.href}
+                  className="group flex min-h-[124px] flex-col items-center justify-center rounded-xl border border-slate-200/80 bg-card px-3 py-4 text-center shadow-[0_3px_12px_-3px_rgba(15,23,42,0.07)] transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-[0_10px_24px_-8px_rgba(15,23,42,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 active:translate-y-0 dark:border-slate-800/80 dark:hover:border-emerald-700/60 dark:focus-visible:ring-emerald-400 dark:focus-visible:ring-offset-slate-950"
                 >
                   <span
-                    className={`mb-2 flex h-10 w-10 items-center justify-center rounded-[10px] ${cat.tone}`}
+                    className={`mb-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] transition-transform duration-200 group-hover:scale-105 ${domain.tone}`}
                   >
-                    <Icon className="h-6 w-6" />
+                    <Icon className="h-5 w-5 stroke-[2.2]" />
                   </span>
-                  <span className="whitespace-pre-line text-xs font-semibold leading-5 text-foreground">
-                    {cat.label}
+                  <span className="text-balance text-sm font-bold leading-5 text-slate-900 transition-colors group-hover:text-emerald-700 dark:text-white dark:group-hover:text-emerald-300">
+                    {domain.label}
                   </span>
+                  {domain.subtitle && (
+                    <span className="mt-1.5 text-xs font-medium leading-4 text-slate-600 dark:text-slate-400">
+                      {domain.subtitle}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -513,77 +480,149 @@ export function LearningHomeView() {
         </section>
         <section className="mt-16">
           <Heading
-            title="Khóa học nổi bật"
+            title="Khám phá khóa học"
             href="/khoa-hoc"
             label="Xem tất cả khóa học"
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-            {displaySeries.map((item, index) => (
+            {displaySeries.map((item) => (
               <Link
                 key={item.id || item.slug}
                 href={item.href}
-                className="group cursor-pointer overflow-hidden rounded-[10px] border border-border bg-card shadow-[0_2px_10px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:border-emerald-200 hover:shadow-md active:translate-y-0 dark:hover:border-emerald-800/60"
+                className="group cursor-pointer overflow-hidden rounded-xl border border-slate-200/70 bg-card shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06),0_2px_6px_-1px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_14px_28px_-4px_rgba(15,23,42,0.12)] active:translate-y-0 dark:border-slate-800/80 dark:hover:border-emerald-700/60"
               >
                 <div
                   className={`relative h-32 bg-gradient-to-br ${item.tint}`}
-                  aria-label="Ảnh bìa sẽ được cập nhật"
+                  aria-label={item.title}
                 >
-                  <span className="absolute left-2.5 top-2.5 rounded-md bg-emerald-600 px-2 py-1 text-[10px] font-bold text-white shadow-sm">
-                    {index === 1 ? "HOT" : "MỚI"}
-                  </span>
                 </div>
-                <div className="p-3">
-                  <h3 className="whitespace-pre-line text-[13px] font-bold leading-5 text-foreground transition-colors duration-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                <div className="p-3.5">
+                  <h3 className="whitespace-pre-line text-sm sm:text-base font-bold leading-snug text-slate-900 transition-colors duration-200 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
                     {item.title}
                   </h3>
-                  <div className="mt-3 flex items-center gap-2 text-[11px] font-medium text-muted-foreground">
-                    <span className="inline-flex items-center gap-1">
-                      <BookOpen className="h-3 w-3" aria-hidden="true" />
-                      {item.lessons}
-                    </span>
-                    <span className="h-3 w-px bg-border" />
-                    <span className="inline-flex items-center gap-1">
-                      <UsersRound className="h-3 w-3" aria-hidden="true" />
-                      {item.author}
-                    </span>
+                  <div className="mt-3 flex items-center gap-1.5 text-xs sm:text-[13px] font-semibold text-slate-800 dark:text-slate-200">
+                    <BookOpen className="h-4 w-4 stroke-[2.2] text-slate-700 dark:text-slate-300" aria-hidden="true" />
+                    <span>{item.lessons}</span>
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-[11px] font-medium">
-                    <span className="inline-flex items-center gap-1 text-foreground">
-                      <Star
-                        className="h-3.5 w-3.5 fill-current text-amber-500"
-                        aria-hidden="true"
-                      />
-                      4.9 (256)
-                    </span>
-                    <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
-                      Cơ bản
-                    </span>
-                  </div>
+                  {item.description && (
+                    <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-600 dark:text-slate-400">
+                      {item.description}
+                    </p>
+                  )}
                 </div>
               </Link>
             ))}
           </div>
         </section>
-        <section className="mt-8 grid gap-6 lg:grid-cols-2">
-          <HomeList
-            title="Tiếp tục học tập"
-            href="/bang-dieu-khien"
-            items={[
-              "Quản lý tài chính cá nhân cho người mới bắt đầu",
-              "Đầu tư chứng khoán thực chiến A-Z",
-              "Excel tài chính ứng dụng thực tế",
-            ]}
-            action="Tiếp tục"
+
+        {/* Financial Tools Section */}
+        <section className="mt-14">
+          <Heading
+            title="Công cụ tài chính thực chiến"
+            href="/cong-cu"
+            label="Xem tất cả công cụ"
           />
-          <HomeList
-            title="Bài viết cộng đồng nổi bật"
-            href="/bai-viet/cong-dong"
-            items={displayCommunityPosts}
-            action="Xem bài"
-          />
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Link
+              href="/cong-cu/lai-kep"
+              className="group flex flex-col justify-between rounded-xl border border-slate-200/70 bg-card p-5 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06),0_2px_6px_-1px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_14px_28px_-4px_rgba(15,23,42,0.12)] dark:border-slate-800/80 dark:hover:border-emerald-700/60"
+            >
+              <div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300">
+                  <Calculator className="h-6 w-6 stroke-[2.2]" />
+                </div>
+                <h3 className="mt-3 text-base sm:text-lg font-bold text-slate-900 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
+                  Bảng tính Lãi kép & Hưu trí
+                </h3>
+                <p className="mt-2 text-sm font-normal leading-relaxed text-slate-800 dark:text-slate-200">
+                  Mô phỏng sức mạnh kỳ diệu của lãi kép, lập kế hoạch tích lũy tài chính và tự do nghỉ hưu an nhàn.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-sm font-bold text-emerald-700 dark:text-emerald-400">
+                <span>Tính toán ngay</span>
+                <ArrowRight className="h-4 w-4 stroke-[2.25] transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+
+            <Link
+              href="/cong-cu/dinh-gia-co-phieu"
+              className="group flex flex-col justify-between rounded-xl border border-slate-200/70 bg-card p-5 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06),0_2px_6px_-1px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_14px_28px_-4px_rgba(15,23,42,0.12)] dark:border-slate-800/80 dark:hover:border-violet-700/60"
+            >
+              <div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/80 dark:text-violet-300">
+                  <BarChart3 className="h-6 w-6 stroke-[2.2]" />
+                </div>
+                <h3 className="mt-3 text-base sm:text-lg font-bold text-slate-900 group-hover:text-violet-600 dark:text-white dark:group-hover:text-violet-400">
+                  Định giá nhanh Cổ phiếu
+                </h3>
+                <p className="mt-2 text-sm font-normal leading-relaxed text-slate-800 dark:text-slate-200">
+                  Áp dụng mô hình định giá P/E Multiples & Chiết khấu cổ tức Gordon, tính toán biên an toàn chiết khấu 20%.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-sm font-bold text-violet-700 dark:text-violet-400">
+                <span>Định giá mã cổ phiếu</span>
+                <ArrowRight className="h-4 w-4 stroke-[2.25] transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+
+            <Link
+              href="/cong-cu/tinh-khoan-vay"
+              className="group flex flex-col justify-between rounded-xl border border-slate-200/70 bg-card p-5 shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06),0_2px_6px_-1px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-blue-300 hover:shadow-[0_14px_28px_-4px_rgba(15,23,42,0.12)] dark:border-slate-800/80 dark:hover:border-blue-700/60"
+            >
+              <div>
+                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-950/80 dark:text-blue-300">
+                  <Landmark className="h-6 w-6 stroke-[2.2]" />
+                </div>
+                <h3 className="mt-3 text-base sm:text-lg font-bold text-slate-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
+                  Tính Khoản vay Trả góp
+                </h3>
+                <p className="mt-2 text-sm font-normal leading-relaxed text-slate-800 dark:text-slate-200">
+                  Lập lịch trả nợ vay mua nhà, xe theo phương pháp dư nợ giảm dần hoặc cố định gốc hàng tháng.
+                </p>
+              </div>
+              <div className="mt-4 flex items-center gap-1.5 text-sm font-bold text-blue-700 dark:text-blue-400">
+                <span>Lập kế hoạch vay</span>
+                <ArrowRight className="h-4 w-4 stroke-[2.25] transition-transform group-hover:translate-x-1" />
+              </div>
+            </Link>
+          </div>
+        </section>
+
+        <section className="mt-16">
+          <Heading title="Bài học mới nhất" href="/bai-viet/khoa-hoc" label="Xem tất cả bài học" />
+          {latestLessonItems.length > 0 ? (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              {latestLessonItems.map((lesson) => (
+                <Link key={lesson.id} href={lesson.href} className="group rounded-xl border border-slate-200/80 bg-card p-5 shadow-[0_3px_12px_-3px_rgba(15,23,42,0.07)] transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300"><BookOpen className="h-3.5 w-3.5" />{lesson.category}</span>
+                  <h3 className="mt-4 line-clamp-3 min-h-[4.5rem] text-base font-bold leading-6 text-slate-900 group-hover:text-emerald-700 dark:text-white dark:group-hover:text-emerald-300">{lesson.title}</h3>
+                  <span className="mt-4 flex items-center justify-between text-xs font-medium text-slate-500 dark:text-slate-400"><span>{lesson.time}</span><ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-dashed border-slate-300 px-5 py-8 text-center text-sm text-slate-600 dark:border-slate-700 dark:text-slate-400">Các bài học mới sẽ xuất hiện tại đây khi được xuất bản.</p>
+          )}
+        </section>
+
+        <section className="mt-16">
+          <Heading title="Thảo luận cộng đồng gần đây" href="/bai-viet/cong-dong" label="Vào cộng đồng" />
+          {displayCommunityPosts.length > 0 ? (
+            <div className="grid gap-4 lg:grid-cols-3">
+              {displayCommunityPosts.map((post) => (
+                <Link key={post.id} href={post.href} className="group flex min-h-48 flex-col rounded-xl border border-slate-200/80 bg-card p-5 shadow-[0_3px_12px_-3px_rgba(15,23,42,0.07)] transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md dark:border-slate-800">
+                  <span className={`w-fit rounded-md border px-2.5 py-1 text-[11px] font-bold ${getCategoryBadgeClass(post.category)}`}>{post.category}</span>
+                  <h3 className="mt-3 line-clamp-3 text-base font-bold leading-6 text-slate-900 group-hover:text-emerald-700 dark:text-white dark:group-hover:text-emerald-300">{post.title}</h3>
+                  <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-xs text-slate-500 dark:text-slate-400"><span className="truncate">{post.author}</span><span className="flex shrink-0 items-center gap-3"><span className="inline-flex items-center gap-1"><ThumbsUp className="h-3.5 w-3.5" />{post.likes}</span><span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" />{post.comments}</span></span></div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-dashed border-slate-300 px-5 py-8 text-center text-sm text-slate-600 dark:border-slate-700 dark:text-slate-400">Chưa có thảo luận nào. Hãy là người bắt đầu chia sẻ.</p>
+          )}
         </section>
         <section className="mt-16">
-          <h2 className="text-lg font-bold text-foreground">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
             Vì sao nên chọn {BRAND.name}?
           </h2>
           <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -619,13 +658,13 @@ export function LearningHomeView() {
                   <span
                     className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] ${tone as string}`}
                   >
-                    <I className="h-6 w-6" />
+                    <I className="h-6 w-6 stroke-[2.2]" />
                   </span>
                   <span>
-                    <strong className="text-sm font-bold text-foreground">
+                    <strong className="text-sm font-bold text-slate-900 dark:text-white">
                       {title as string}
                     </strong>
-                    <p className="mt-1 text-xs font-medium leading-5 text-muted-foreground">
+                    <p className="mt-1 text-xs sm:text-sm font-semibold leading-5 text-slate-700 dark:text-slate-300">
                       {description as string}
                     </p>
                   </span>
@@ -634,154 +673,18 @@ export function LearningHomeView() {
             })}
           </div>
         </section>
-        <section className="mt-14 rounded-[10px] border border-emerald-200/60 bg-gradient-to-r from-emerald-50/80 via-white to-emerald-50/60 p-6 sm:flex sm:items-center sm:gap-8 dark:border-emerald-800/40 dark:from-emerald-950/40 dark:via-card dark:to-emerald-950/30">
-          <div className="flex-1">
-            <h2 className="text-base font-bold text-foreground">
-              Nhận bản tin kiến thức hàng tuần
-            </h2>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Cập nhật bài học mới và xu hướng tài chính hữu ích mỗi tuần.
-            </p>
+        <section className="mt-16 overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-7 shadow-sm sm:p-10 dark:border-emerald-800/50 dark:from-emerald-950/50 dark:via-slate-900 dark:to-teal-950/40">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-800 dark:bg-emerald-900/70 dark:text-emerald-300"><UsersRound className="h-6 w-6" /></span>
+            <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl dark:text-white">Cùng cộng đồng xây dựng tương lai tài chính vững vàng</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-700 sm:text-base dark:text-slate-300">Đặt câu hỏi, chia sẻ kinh nghiệm và học từ những góc nhìn thực tế của cộng đồng.</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link href="/bai-viet/cong-dong" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-700 px-5 text-sm font-bold text-white transition hover:bg-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400"><UsersRound className="h-4 w-4" />Khám phá cộng đồng</Link>
+              {!isAuthenticated && <Link href="/dang-ky" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-emerald-300 bg-white/80 px-5 text-sm font-bold text-emerald-900 transition hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 dark:border-emerald-700 dark:bg-slate-900/70 dark:text-emerald-200 dark:hover:bg-slate-900"><UserPlus className="h-4 w-4" />Tạo tài khoản miễn phí</Link>}
+            </div>
           </div>
-          <form className="mt-5 flex h-11 max-w-[390px] overflow-hidden rounded-lg border border-border bg-card sm:mt-0 sm:w-full">
-            <input
-              aria-label="Email nhận bản tin"
-              placeholder="Nhập email của bạn..."
-              className="min-w-0 flex-1 bg-transparent px-3 text-xs text-foreground outline-none placeholder:text-muted-foreground"
-            />
-            <button className="m-1 cursor-pointer rounded-md bg-emerald-600 px-4 text-xs font-bold text-white transition-[background-color,transform,box-shadow] duration-200 hover:bg-emerald-700 hover:shadow-sm active:translate-y-px">
-              Đăng ký
-            </button>
-          </form>
         </section>
       </div>
     </main>
-  );
-}
-
-export type HomeListItem =
-  | {
-      id?: string;
-      title: string;
-      href?: string;
-      author?: string;
-      views?: number;
-      time?: string;
-      likes?: number;
-      comments?: number;
-    }
-  | string;
-
-function HomeList({
-  title,
-  href,
-  items,
-  action,
-}: {
-  title: string;
-  href: string;
-  items: HomeListItem[];
-  action: string;
-}) {
-  const isLearning = title.startsWith("Tiếp");
-  const progress = [65, 40, 20];
-  const lessonLabels = [
-    "Quỹ dự phòng là gì?",
-    "Phân tích kỹ thuật cơ bản",
-    "Hàm tài chính thông dụng",
-  ];
-  const authors = ["Nguyễn Văn A", "Trần Thị B", "Lê Minh C"];
-  const times = ["2 giờ trước", "5 giờ trước", "1 ngày trước"];
-  const likes = [128, 96, 78];
-  const comments = [32, 45, 28];
-
-  return (
-    <div className="rounded-[10px] border border-border bg-card p-4 shadow-[0_4px_16px_rgba(15,23,42,0.04)] text-card-foreground">
-      <Heading title={title} href={href} label="Xem tất cả" />
-      <div>
-        {items.map((item, index) => {
-          const itemTitle = typeof item === "string" ? item : item.title;
-          const itemHref = typeof item === "string" ? href : (item.href || href);
-          const itemAuthor = typeof item === "string" ? authors[index] : (item.author || authors[index]);
-          const itemTime = typeof item === "string" ? times[index] : (item.time || times[index]);
-          const itemLikes = typeof item === "string" ? likes[index] : (item.likes ?? likes[index]);
-          const itemComments = typeof item === "string" ? comments[index] : (item.comments ?? comments[index]);
-
-          return (
-            <Link
-              key={typeof item === "string" ? item : item.id || item.title}
-              href={itemHref}
-              className="group flex min-h-[82px] cursor-pointer items-center gap-3 border-t border-border py-3 transition-colors duration-200 hover:bg-muted/50 first:border-t-0 first:pt-0"
-            >
-              {isLearning ? (
-                <>
-                  <span
-                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ${["from-amber-100 to-emerald-50 dark:from-amber-950/60 dark:to-emerald-950/40", "from-slate-800 to-blue-100 dark:from-slate-900 dark:to-blue-950/60", "from-slate-200 to-emerald-50 dark:from-slate-800 dark:to-emerald-950/40"][index]}`}
-                  >
-                    <BookOpen
-                      className="h-4 w-4 text-emerald-700/60 dark:text-emerald-400"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <strong className="block truncate text-sm font-extrabold text-foreground">
-                      {itemTitle}
-                    </strong>
-                    <small className="mt-1 block truncate text-xs font-medium text-muted-foreground">
-                      Bài {index + 3}: {lessonLabels[index]}
-                    </small>
-                    <span className="mt-1.5 flex items-center gap-2">
-                      <span className="h-1 flex-1 overflow-hidden rounded-full bg-muted">
-                        <span
-                          className="block h-full rounded-full bg-emerald-500"
-                          style={{ width: `${progress[index]}%` }}
-                        />
-                      </span>
-                      <small className="shrink-0 text-[10px] font-semibold text-muted-foreground">
-                        {progress[index]}%
-                      </small>
-                    </span>
-                  </span>
-                  <span className="shrink-0 rounded-[5px] border border-emerald-300 px-3 py-1.5 text-[13px] font-semibold text-emerald-700 transition-colors duration-200 group-hover:bg-emerald-50 dark:border-emerald-700 dark:text-emerald-400 dark:group-hover:bg-emerald-950/50">
-                    {action}
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 via-rose-100 to-slate-200 dark:from-slate-800 dark:to-slate-700">
-                    <UsersRound
-                      className="h-5 w-5 text-slate-600 dark:text-slate-300"
-                      aria-hidden="true"
-                    />
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <strong className="block truncate text-xs font-bold text-foreground">
-                      {itemTitle}
-                    </strong>
-                    <small className="mt-1 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                      <UsersRound className="h-3 w-3" aria-hidden="true" />
-                      {itemAuthor}
-                      <span>·</span>
-                      <Clock3 className="h-3 w-3" aria-hidden="true" />
-                      {itemTime}
-                    </small>
-                  </span>
-                  <span className="hidden shrink-0 items-center gap-4 text-xs font-semibold text-muted-foreground sm:flex">
-                    <span className="inline-flex items-center gap-1">
-                      <ThumbsUp className="h-3.5 w-3.5" aria-hidden="true" />
-                      {itemLikes}
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <MessageCircle className="h-3.5 w-3.5" aria-hidden="true" />
-                      {itemComments}
-                    </span>
-                  </span>
-                </>
-              )}
-            </Link>
-          );
-        })}
-      </div>
-    </div>
   );
 }

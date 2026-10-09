@@ -34,7 +34,7 @@ describe('Series Service', () => {
 
     const result = await courseService.getAllCourses({ page: 1, limit: 20 });
 
-    expect(getSpy).toHaveBeenCalledWith('/khoa-hoc', { params: { page: 1, limit: 20 } });
+    expect(getSpy).toHaveBeenCalledWith('/series', { params: { page: 1, limit: 20 } });
     expect(result).toEqual(mockResponse);
   });
 
@@ -72,7 +72,7 @@ describe('Series Service', () => {
 
     const result = await courseService.getBySlug('macroeconomic-frameworks', { page: 1, limit: 20 });
 
-    expect(getSpy).toHaveBeenCalledWith('/khoa-hoc/macroeconomic-frameworks', {
+    expect(getSpy).toHaveBeenCalledWith('/series/macroeconomic-frameworks', {
       params: { page: 1, limit: 20 },
     });
     expect(result).toEqual(mockDetailResponse);

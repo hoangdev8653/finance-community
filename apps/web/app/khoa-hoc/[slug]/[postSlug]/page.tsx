@@ -16,21 +16,63 @@ interface PageProps {
   }>;
 }
 
-async function getSeriesLesson(seriesSlug: string, postSlug: string) {
-  const seriesDetail = await courseService.getBySlug(seriesSlug, {
-    page: 1,
-    limit: 100,
-  });
-  const belongsToSeries = seriesDetail.articles.some(
-    (article) => article.slug === postSlug
-  );
+const SERIES_ALIASES: Record<string, string> = {
+  'quan-ly-tai-chinh-ca-nhan': 'tai-chinh-ca-nhan',
+  'dau-tu-chung-khoan-tu-nen-tang': 'chung-khoan',
+  'nhap-mon-chung-khoan-tu-nen-tang': 'chung-khoan',
+  'quy-du-phong-va-bao-hiem': 'tai-chinh-ca-nhan',
+  'doc-hieu-bao-cao-tai-chinh': 'chung-khoan',
+  'lam-viec-hieu-qua-trong-thoi-dai-so': 'ky-nang-song',
+  'suc-khoe-tai-chinh-va-the-chat': 'suc-khoe-co-ban',
+  'ung-dung-ai-trong-cong-viec': 'tri-tue-nhan-tao',
+  'giao-tiep-va-dam-phan': 'ky-nang-song',
+};
 
-  if (!belongsToSeries) {
-    return null;
+async function getSeriesLesson(seriesSlug: string, postSlug: string) {
+  const targetSeriesSlug = SERIES_ALIASES[seriesSlug] || seriesSlug;
+  let seriesDetail: any = null;
+
+  try {
+    seriesDetail = await courseService.getBySlug(targetSeriesSlug, {
+      page: 1,
+      limit: 100,
+    });
+  } catch {
+    if (targetSeriesSlug !== seriesSlug) {
+      try {
+        seriesDetail = await courseService.getBySlug(seriesSlug, { page: 1, limit: 100 });
+      } catch {
+        // failed
+      }
+    }
   }
 
-  const post = await postsService.getBySlug('SERIES', postSlug);
-  return post.status === 'PUBLISHED' ? { seriesDetail, post } : null;
+  let post: any = null;
+  try {
+    post = await postsService.getBySlug('SERIES', postSlug);
+  } catch {
+    // try fallback post or null
+  }
+
+  if (post && post.status === 'PUBLISHED') {
+    if (!seriesDetail) {
+      seriesDetail = {
+        series: {
+          id: post.id,
+          name: post.title,
+          slug: seriesSlug,
+          description: post.metaDescription,
+          sortOrder: 0,
+          createdAt: post.createdAt,
+        },
+        articles: [post],
+        meta: { page: 1, limit: 1, totalItems: 1, totalPages: 1, hasNextPage: false, hasPreviousPage: false },
+      };
+    }
+    return { seriesDetail, post };
+  }
+
+  return null;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -42,8 +84,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const { post } = result;
     const coverMedia = post.coverMediaId
-      ? post.media.find((media) => media.id === post.coverMediaId)
-      : post.media[0];
+      ? post.media?.find((media: any) => media.id === post.coverMediaId)
+      : post.media?.[0];
     const canonicalPath = `/series/${encodeURIComponent(slug)}/${encodeURIComponent(postSlug)}`;
 
     return buildPageMetadata({
@@ -57,7 +99,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       twitterCard: 'summary_large_image',
       publishedTime: post.publishedAt || post.createdAt,
       modifiedTime: post.updatedAt,
-      tags: post.tags?.map((tag) => tag.name),
+      tags: post.tags?.map((tag: any) => tag.name),
     });
   } catch {
     return buildPageMetadata({ title: 'Không Tìm Thấy Bài Học', noIndex: true });
