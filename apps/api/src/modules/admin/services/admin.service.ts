@@ -1,5 +1,5 @@
 import { Injectable, ForbiddenException, BadRequestException, NotFoundException, Inject } from '@nestjs/common';
-import { count, eq, isNull, ilike, and, or, desc, gte } from 'drizzle-orm';
+import { count, eq, isNull, ilike, and, or, desc, gte, lte, sql } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { UsersRepository } from '../../../database/repositories/users.repository';
@@ -13,7 +13,7 @@ import { AssignRoleDto } from '../dto/assign-role.dto';
 import { UpdateSystemSettingDto } from '../dto/update-system-setting.dto';
 import { ToggleFeatureFlagDto } from '../dto/toggle-feature-flag.dto';
 import { UpdateCommentStatusDto } from '../dto/update-comment-status.dto';
-import { postsTable, reportsTable, usersTable, profilesTable, mediaTable, commentsTable, categoriesTable, tagsTable, domainsTable } from '../../../database/schema';
+import { postsTable, reportsTable, usersTable, profilesTable, mediaTable, commentsTable, categoriesTable, tagsTable, domainsTable, pageViewsDailyTable, postViewsDailyTable, rolesTable, userRolesTable } from '../../../database/schema';
 
 @Injectable()
 export class AdminService {
@@ -26,6 +26,109 @@ export class AdminService {
     private readonly auditLogRepo: AuditLogRepository,
     private readonly auditLogService: AuditLogService,
   ) {}
+
+  private getBangkokDateKey(date = new Date()): string {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Bangkok',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(date);
+    const part = (type: 'year' | 'month' | 'day') => parts.find((item) => item.type === type)?.value ?? '';
+    return `${part('year')}-${part('month')}-${part('day')}`;
+  }
+
+  async recordPageView(): Promise<void> {
+    const day = this.getBangkokDateKey();
+    await this.db
+      .insert(pageViewsDailyTable)
+      .values({ day, views: 1 })
+      .onConflictDoUpdate({
+        target: pageViewsDailyTable.day,
+        set: {
+          views: sql`${pageViewsDailyTable.views} + 1`,
+          updatedAt: new Date(),
+        },
+      });
+  }
+
+  async getPostViews(days = 7, period?: string) {
+    const dayCount = [1, 7, 30].includes(days) ? days : 7;
+    const todayKey = this.getBangkokDateKey();
+    const [year, month, dayOfMonth] = todayKey.split('-').map(Number);
+    const previousMonth = period === 'previous-month';
+    const rangeStart = previousMonth
+      ? new Date(Date.UTC(year, month - 2, 1))
+      : new Date(Date.UTC(year, month - 1, dayOfMonth - dayCount + 1));
+    const rangeEndExclusive = previousMonth
+      ? new Date(Date.UTC(year, month - 1, 1))
+      : new Date(Date.UTC(year, month - 1, dayOfMonth + 1));
+    const buckets: Array<{ date: string; label: string }> = [];
+    for (const date = new Date(rangeStart); date < rangeEndExclusive; date.setUTCDate(date.getUTCDate() + 1)) {
+      const dateKey = date.toISOString().slice(0, 10);
+      const label = new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        timeZone: 'Asia/Bangkok',
+      }).format(new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 12)));
+      buckets.push({ date: dateKey, label });
+    }
+    const rows = await this.db
+      .select({ day: postViewsDailyTable.day, views: postViewsDailyTable.views })
+      .from(postViewsDailyTable)
+      .where(and(gte(postViewsDailyTable.day, buckets[0].date), lte(postViewsDailyTable.day, buckets[buckets.length - 1].date)));
+    const viewsByDay = new Map(rows.map((row) => [row.day, row.views]));
+
+    return {
+      period: previousMonth ? 'previous-month' : 'days',
+      requestedDays: previousMonth ? null : dayCount,
+      days: buckets.length,
+      rangeStart: buckets[0].date,
+      rangeEndExclusive: rangeEndExclusive.toISOString().slice(0, 10),
+      totalPostViews: buckets.reduce((total, bucket) => total + (viewsByDay.get(bucket.date) ?? 0), 0),
+      series: buckets.map((bucket) => ({ ...bucket, views: viewsByDay.get(bucket.date) ?? 0 })),
+    };
+  }
+
+  async getUserRoleComposition(days = 7) {
+    const dayCount = [1, 7, 30].includes(days) ? days : 7;
+    const todayKey = this.getBangkokDateKey();
+    const [year, month, day] = todayKey.split('-').map(Number);
+    const firstDay = new Date(Date.UTC(year, month - 1, day - dayCount + 1));
+    const since = new Date(Date.UTC(firstDay.getUTCFullYear(), firstDay.getUTCMonth(), firstDay.getUTCDate()) - 7 * 60 * 60 * 1000);
+    const rows = await this.db
+      .select({ userId: usersTable.id, roleName: rolesTable.name })
+      .from(usersTable)
+      .leftJoin(userRolesTable, eq(userRolesTable.userId, usersTable.id))
+      .leftJoin(rolesTable, eq(rolesTable.id, userRolesTable.roleId))
+      .where(and(gte(usersTable.createdAt, since), isNull(usersTable.deletedAt)));
+
+    const rolesByUser = new Map<string, Set<string>>();
+    for (const row of rows) {
+      const roles = rolesByUser.get(row.userId) ?? new Set<string>();
+      if (row.roleName) roles.add(row.roleName);
+      rolesByUser.set(row.userId, roles);
+    }
+
+    const counts = { member: 0, moderator: 0, admin: 0, other: 0 };
+    for (const roles of rolesByUser.values()) {
+      if (roles.has('SUPER_ADMIN') || roles.has('ADMIN')) counts.admin++;
+      else if (roles.has('MODERATOR')) counts.moderator++;
+      else if (roles.size === 0 || roles.has('MEMBER')) counts.member++;
+      else counts.other++;
+    }
+
+    return {
+      days: dayCount,
+      totalUsers: rolesByUser.size,
+      roles: [
+        { key: 'member', label: 'Thành viên', count: counts.member },
+        { key: 'moderator', label: 'Điều hành viên', count: counts.moderator },
+        { key: 'admin', label: 'Quản trị viên', count: counts.admin },
+        { key: 'other', label: 'Vai trò khác', count: counts.other },
+      ],
+    };
+  }
 
   async getOverview() {
     // Generate 7-day day buckets

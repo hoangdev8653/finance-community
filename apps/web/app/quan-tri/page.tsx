@@ -11,46 +11,33 @@ import {
   Calendar,
   ChevronDown,
   FileCheck,
-  FileEdit,
   FileText,
   MessageCircle,
-  MessageSquare,
   Plus,
   TrendingUp,
   User,
-  UserCheck,
   Users,
 } from 'lucide-react';
 import { useAdminOverview, useAdminUsers, useAuditLogs } from '@/lib/admin/use-admin';
-import { learningAdminService } from '@/lib/learning/learning-admin-service';
-import type { EditorialStatus, LearningAdminPost } from '@/types/learning-admin';
+import { adminService } from '@/lib/admin/admin-service';
+import { learningCourseService } from '@/lib/learning/learning-course-service';
+import { postsService } from '@/lib/posts/posts-service';
 import type { AdminUserEntity, AuditLogEntity } from '@/types/admin';
 
 // Number formatter
 const formatter = new Intl.NumberFormat('vi-VN');
-
-// Editorial status mappings
-const editorialStatusLabel: Record<EditorialStatus, string> = {
-  PUBLISHED: 'Đã xuất bản',
-  DRAFT: 'Bản nháp',
-  REVIEW: 'Chờ duyệt',
-  NEEDS_UPDATE: 'Cần cập nhật',
-  ARCHIVED: 'Lưu trữ',
-};
-
-const editorialBadgeClass: Record<EditorialStatus, string> = {
-  PUBLISHED: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-  DRAFT: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800',
-  REVIEW: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
-  NEEDS_UPDATE: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800',
-  ARCHIVED: 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
-};
 
 function formatDate(value?: string | null) {
   const date = value ? new Date(value) : null;
   return date && !Number.isNaN(date.getTime())
     ? new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date)
     : '—';
+}
+
+function formatDateKey(value?: string | null) {
+  if (!value) return '—';
+  const [year, month, day] = value.split('-');
+  return year && month && day ? `${day}/${month}/${year}` : '—';
 }
 
 function formatRelativeTime(dateString?: string | null) {
@@ -80,146 +67,86 @@ function activityLabel(action: string) {
   } as Record<string, string>)[action] || 'Cập nhật hệ thống';
 }
 
-// Fallback reference data
-const referenceCourses = [
-  {
-    id: 'ref-1',
-    title: 'Quản lý tài chính cá nhân cho người mới',
-    instructor: 'Nguyễn Văn A',
-    category: 'Tài chính cá nhân',
-    date: '05/09/2025',
-    status: 'Đã xuất bản',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    thumbGradient: 'from-emerald-600 to-teal-700',
-    thumbIcon: '📈',
-  },
-  {
-    id: 'ref-2',
-    title: 'Đầu tư chứng khoán thực chiến A-Z',
-    instructor: 'Trần Thị B',
-    category: 'Đầu tư',
-    date: '04/09/2025',
-    status: 'Đã xuất bản',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    thumbGradient: 'from-blue-600 to-indigo-700',
-    thumbIcon: '📊',
-  },
-  {
-    id: 'ref-3',
-    title: 'Excel tài chính ứng dụng thực tế',
-    instructor: 'Lê Minh C',
-    category: 'Công cụ',
-    date: '03/09/2025',
-    status: 'Chờ duyệt',
-    badgeClass: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
-    thumbGradient: 'from-green-600 to-emerald-800',
-    thumbIcon: '📑',
-  },
-  {
-    id: 'ref-4',
-    title: 'Tư duy tài chính dài hạn',
-    instructor: 'Phạm Thu D',
-    category: 'Tư duy',
-    date: '02/09/2025',
-    status: 'Đã xuất bản',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    thumbGradient: 'from-violet-600 to-purple-800',
-    thumbIcon: '🧠',
-  },
-  {
-    id: 'ref-5',
-    title: 'Crypto từ cơ bản đến nâng cao',
-    instructor: 'Hoàng Văn E',
-    category: 'Đầu tư',
-    date: '01/09/2025',
-    status: 'Đã xuất bản',
-    badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    thumbGradient: 'from-amber-600 to-orange-700',
-    thumbIcon: '🪙',
-  },
-];
-
-const referenceUsers = [
-  {
-    id: 'u-1',
-    name: 'Nguyễn Hoàng An',
-    email: 'an.nguyen@email.com',
-    role: 'Học viên',
-    roleClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    date: '06/09/2025',
-    avatarBg: 'bg-emerald-100 text-emerald-700',
-  },
-  {
-    id: 'u-2',
-    name: 'Trần Minh Thư',
-    email: 'thu.tran@email.com',
-    role: 'Học viên',
-    roleClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    date: '06/09/2025',
-    avatarBg: 'bg-rose-100 text-rose-700',
-  },
-  {
-    id: 'u-3',
-    name: 'Lê Quang Huy',
-    email: 'huy.le@email.com',
-    role: 'Giảng viên',
-    roleClass: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800',
-    date: '05/09/2025',
-    avatarBg: 'bg-blue-100 text-blue-700',
-  },
-  {
-    id: 'u-4',
-    name: 'Phạm Bảo Ngọc',
-    email: 'ngoc.pham@email.com',
-    role: 'Học viên',
-    roleClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
-    date: '05/09/2025',
-    avatarBg: 'bg-amber-100 text-amber-700',
-  },
-  {
-    id: 'u-5',
-    name: 'Đặng Tuấn Anh',
-    email: 'anh.dang@email.com',
-    role: 'Chuyên gia',
-    roleClass: 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800',
-    date: '04/09/2025',
-    avatarBg: 'bg-purple-100 text-purple-700',
-  },
-];
-
-const referenceActivities = [
-  { id: 'act-1', actor: 'Nguyễn Văn A', text: 'đã đăng khóa học mới', time: '2 phút trước', icon: FileText, color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/50 dark:text-blue-400' },
-  { id: 'act-2', actor: 'Trần Thị B', text: 'đã cập nhật bài học', time: '15 phút trước', icon: FileEdit, color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/50 dark:text-purple-400' },
-  { id: 'act-3', actor: 'Lê Minh C', text: 'đã bình luận', time: '32 phút trước', icon: MessageSquare, color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/50 dark:text-amber-400' },
-  { id: 'act-4', actor: '', text: 'Người dùng mới đăng ký: Nguyễn Hoàng An', time: '1 giờ trước', icon: UserCheck, color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 dark:text-emerald-400' },
-  { id: 'act-5', actor: '', text: 'Bài viết cần duyệt: “Có nên đầu tư vàng…”', time: '2 giờ trước', icon: FileCheck, color: 'text-orange-600 bg-orange-50 dark:bg-orange-950/50 dark:text-orange-400' },
-];
+function getQueryErrorMessage(error: unknown, fallback: string): string {
+  if (typeof error === 'object' && error !== null && 'message' in error) {
+    const message = (error as { message?: unknown }).message;
+    if (typeof message === 'string' && message.trim()) return message;
+    if (Array.isArray(message) && message.length) return message.join(', ');
+  }
+  return fallback;
+}
 
 export default function AdminOverviewPage() {
+  const [postViewsDays, setPostViewsDays] = useState<1 | 7 | 30>(7);
+  const isMonthlyRange = postViewsDays === 30;
+  const [userRoleDays, setUserRoleDays] = useState<1 | 7 | 30>(7);
   // Real database queries
   const overviewQuery = useAdminOverview();
+  const trafficQuery = useQuery({
+    queryKey: ['admin', 'analytics', 'post-views', postViewsDays],
+    queryFn: () => adminService.getPostViews(postViewsDays, isMonthlyRange ? 'previous-month' : undefined),
+    staleTime: 30_000,
+  });
+  const userRoleQuery = useQuery({
+    queryKey: ['admin', 'analytics', 'user-roles', userRoleDays],
+    queryFn: () => adminService.getUserRoleComposition(userRoleDays),
+    staleTime: 30_000,
+  });
   const auditQuery = useAuditLogs({ page: 1, limit: 5 });
   const usersQuery = useAdminUsers({ page: 1, limit: 5 });
-  const lessonsQuery = useQuery({
-    queryKey: ['learning', 'admin', 'dashboard-lessons'],
-    queryFn: () => learningAdminService.getPosts(),
+  const coursesQuery = useQuery({
+    queryKey: ['learning', 'admin', 'dashboard-courses'],
+    queryFn: () => learningCourseService.list(),
+    staleTime: 30_000,
+  });
+  const categoriesQuery = useQuery({
+    queryKey: ['admin', 'dashboard-course-categories'],
+    queryFn: () => postsService.getCategories(),
     staleTime: 30_000,
   });
 
   const overview = overviewQuery.data;
-  const realLessons = lessonsQuery.data?.data ?? [];
+  const realCourses = [...(coursesQuery.data ?? [])].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+  );
+  const categoryNames = new Map(
+    (categoriesQuery.data ?? []).map((category) => [category.id, category.nameVi || category.name]),
+  );
   const realUsers = usersQuery.data?.data ?? [];
   const realAudit = auditQuery.data?.data ?? [];
+  const trafficSeries = trafficQuery.data?.series ?? [];
+  const trafficRangeLabel = trafficQuery.data
+    ? `${formatDateKey(trafficQuery.data.rangeStart)} – ${formatDateKey(trafficQuery.data.rangeEndExclusive)}`
+    : '';
+  const chartMax = Math.max(4, ...trafficSeries.map((point) => point.views));
+  const chartPoints = trafficSeries.map((point, index) => ({
+    ...point,
+    x: trafficSeries.length <= 1 ? 250 : 20 + (460 * index) / (trafficSeries.length - 1),
+    y: 180 - (160 * point.views) / chartMax,
+  }));
+  const chartLine = chartPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
+  const chartArea = chartPoints.length
+    ? `${chartLine} L ${chartPoints[chartPoints.length - 1].x} 190 L ${chartPoints[0].x} 190 Z`
+    : '';
+  const axisValues = [chartMax, Math.round(chartMax * 0.75), Math.round(chartMax * 0.5), Math.round(chartMax * 0.25), 0];
+  const compactCount = (value: number) => value >= 1000 ? `${Math.round(value / 100) / 10}K` : String(value);
+  const roleColors = ['#00B074', '#3B82F6', '#8B5CF6', '#F59E0B'];
+  const roleCircumference = 2 * Math.PI * 60;
+  let roleOffset = 0;
+  const roleChartSegments = (userRoleQuery.data?.roles ?? []).map((role, index) => {
+    const length = userRoleQuery.data!.totalUsers > 0
+      ? (role.count / userRoleQuery.data!.totalUsers) * roleCircumference
+      : 0;
+    const segment = { ...role, color: roleColors[index % roleColors.length], length, offset: roleOffset };
+    roleOffset += length;
+    return segment;
+  });
 
-  // Dropdown states
-  const [trafficPeriod] = useState('7 ngày qua');
-  const [userSegment] = useState('Tất cả');
-
-  // KPI Metrics (real data with fallback)
+  // KPI metrics from the admin and learning APIs.
   const stats = [
     {
       label: 'Tổng người dùng',
-      value: overview?.activeUsers ? formatter.format(overview.activeUsers) : '12,589',
+      value: usersQuery.data?.meta?.totalItems !== undefined ? formatter.format(usersQuery.data.meta.totalItems) : '—',
       trend: '12%',
       isUp: true,
       icon: Users,
@@ -227,7 +154,7 @@ export default function AdminOverviewPage() {
     },
     {
       label: 'Tổng khóa học',
-      value: overview?.totalPosts ? formatter.format(overview.totalPosts) : '1,248',
+      value: coursesQuery.data ? formatter.format(realCourses.length) : '—',
       trend: '8%',
       isUp: true,
       icon: BookOpen,
@@ -235,9 +162,7 @@ export default function AdminOverviewPage() {
     },
     {
       label: 'Tổng bài viết',
-      value: overview?.postStatusBreakdown ? formatter.format(
-        overview.postStatusBreakdown.published + overview.postStatusBreakdown.draft + overview.postStatusBreakdown.unreviewed
-      ) : '3,560',
+      value: overview ? formatter.format(overview.totalPosts) : '—',
       trend: '15%',
       isUp: true,
       icon: FileText,
@@ -245,7 +170,7 @@ export default function AdminOverviewPage() {
     },
     {
       label: 'Bình luận',
-      value: overview?.totalComments !== undefined ? formatter.format(overview.totalComments) : '0',
+      value: overview?.totalComments !== undefined ? formatter.format(overview.totalComments) : '—',
       trend: '22%',
       isUp: true,
       icon: MessageCircle,
@@ -273,7 +198,7 @@ export default function AdminOverviewPage() {
           className="inline-flex h-11 items-center gap-2.5 rounded-[10px] border border-slate-200/90 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-all hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
           <Calendar className="h-4 w-4 text-slate-400" aria-hidden="true" />
-          <span>Hôm nay, 06 Tháng 9, 2025</span>
+          <span>Hôm nay, {new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'Asia/Bangkok' }).format(new Date())}</span>
           <ChevronDown className="h-4 w-4 text-slate-400" aria-hidden="true" />
         </button>
       </div>
@@ -327,127 +252,76 @@ export default function AdminOverviewPage() {
         <div className="space-y-6 xl:col-span-8">
           {/* Charts Row: Platform Traffic & User Composition */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Box 1: Lượt truy cập nền tảng */}
+            {/* Box 1: Lượt xem bài viết */}
             <div className="rounded-[10px] border border-slate-100 bg-white p-5 shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
-                  Lượt truy cập nền tảng
+                  Lượt xem bài viết
                 </h2>
-                <div className="relative inline-flex items-center gap-1.5 rounded-[10px] border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                  <span>{trafficPeriod}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                <div className="relative">
+                  <select
+                    aria-label="Lọc lượt xem bài viết theo thời gian"
+                    value={postViewsDays}
+                    onChange={(event) => setPostViewsDays(Number(event.target.value) as 1 | 7 | 30)}
+                    className="h-9 appearance-none rounded-[10px] border border-slate-200/80 bg-slate-50/50 py-1.5 pl-3 pr-8 text-xs font-medium text-slate-600 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                  >
+                    <option value={1}>1 ngày qua</option>
+                    <option value={7}>7 ngày qua</option>
+                    <option value={30}>30 ngày qua</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
                 </div>
               </div>
 
-              {/* Area Line Chart with Smooth Spline Curve & Highlighted Tooltip */}
-              <div className="relative mt-6 h-56 w-full">
-                {/* Y-axis Guides */}
-                <div className="pointer-events-none absolute inset-0 flex flex-col justify-between text-[11px] font-medium text-slate-400">
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 text-right">20K</span>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 text-right">15K</span>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 text-right">10K</span>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 text-right">5K</span>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-7 text-right">0</span>
-                    <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
-                  </div>
+              <div className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                {trafficQuery.isError
+                  ? getQueryErrorMessage(trafficQuery.error, 'Không tải được dữ liệu lượt xem bài viết.')
+                  : isMonthlyRange
+                    ? `${trafficRangeLabel} · ${formatter.format(trafficQuery.data?.totalPostViews ?? 0)} lượt xem bài viết`
+                    : `${formatter.format(trafficQuery.data?.totalPostViews ?? 0)} lượt xem bài viết trong ${postViewsDays} ngày qua`}
+              </div>
+              <div className="relative mt-6 h-56 w-full" aria-label={`Biểu đồ lượt xem bài viết trong ${isMonthlyRange ? 'khoảng tháng đã chọn' : `${postViewsDays} ngày gần nhất`}`}>
+                <div className="pointer-events-none absolute inset-0 flex flex-col justify-between text-[11px] font-medium text-slate-400" aria-hidden="true">
+                  {axisValues.map((value, index) => (
+                    <div key={`${value}-${index}`} className="flex items-center gap-2">
+                      <span className="w-7 text-right">{compactCount(value)}</span>
+                      <div className="h-px flex-1 bg-slate-100 dark:bg-slate-800" />
+                    </div>
+                  ))}
                 </div>
-
-                {/* SVG Curves */}
-                <svg
-                  viewBox="0 0 500 200"
-                  preserveAspectRatio="none"
-                  className="absolute inset-0 h-full w-full pl-9 pr-2"
-                >
+                <svg viewBox="0 0 500 200" preserveAspectRatio="none" className="absolute inset-0 h-full w-full pl-9 pr-2" role="img" aria-label="Lượt xem bài viết mỗi ngày">
                   <defs>
                     <linearGradient id="traffic-gradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#00B074" stopOpacity="0.22" />
-                      <stop offset="100%" stopColor="#00B074" stopOpacity="0.0" />
+                      <stop offset="100%" stopColor="#00B074" stopOpacity="0" />
                     </linearGradient>
                   </defs>
-
-                  {/* Shaded Area Under Curve */}
-                  <path
-                    d="M 20 160 
-                       C 50 150, 60 130, 90 130 
-                       C 120 130, 130 150, 160 150 
-                       C 190 150, 210 100, 240 100 
-                       C 270 100, 290 100, 320 100 
-                       C 350 100, 370 70, 400 70 
-                       C 430 70, 450 85, 480 40 
-                       L 480 190 L 20 190 Z"
-                    fill="url(#traffic-gradient)"
-                  />
-
-                  {/* Main Smooth Line */}
-                  <path
-                    d="M 20 160 
-                       C 50 150, 60 130, 90 130 
-                       C 120 130, 130 150, 160 150 
-                       C 190 150, 210 100, 240 100 
-                       C 270 100, 290 100, 320 100 
-                       C 350 100, 370 70, 400 70 
-                       C 430 70, 450 85, 480 40"
-                    fill="none"
-                    stroke="#00B074"
-                    strokeWidth="3.2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-
-                  {/* Dotted line to 05/09 */}
-                  <line
-                    x1="400"
-                    y1="70"
-                    x2="400"
-                    y2="190"
-                    stroke="#00B074"
-                    strokeWidth="1.5"
-                    strokeDasharray="4 4"
-                  />
-
-                  {/* Data Points */}
-                  <circle cx="20" cy="160" r="4.5" fill="#00B074" />
-                  <circle cx="90" cy="130" r="4.5" fill="#00B074" />
-                  <circle cx="160" cy="150" r="4.5" fill="#00B074" />
-                  <circle cx="240" cy="100" r="4.5" fill="#00B074" />
-                  <circle cx="320" cy="100" r="4.5" fill="#00B074" />
-                  <circle cx="400" cy="70" r="5" fill="#00B074" stroke="#FFFFFF" strokeWidth="2" />
-                  <circle cx="480" cy="40" r="4.5" fill="#00B074" />
+                  {chartArea && <path d={chartArea} fill="url(#traffic-gradient)" />}
+                  {chartLine && <path d={chartLine} fill="none" stroke="#00B074" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />}
+                  {chartPoints.map((point, index) => (
+                    <circle key={point.date} cx={point.x} cy={point.y} r={index === chartPoints.length - 1 ? 5 : 4} fill="#00B074" stroke={index === chartPoints.length - 1 ? '#FFFFFF' : 'none'} strokeWidth="2">
+                      <title>{`${point.label}: ${formatter.format(point.views)} lượt xem bài viết`}</title>
+                    </circle>
+                  ))}
                 </svg>
-
-                {/* Floating Tooltip matching dashboard.png */}
-                <div className="absolute right-12 top-6 z-10 rounded-[10px] border border-slate-100 bg-white/95 px-3 py-2 shadow-lg shadow-slate-200/50 backdrop-blur dark:border-slate-700 dark:bg-slate-800/95 dark:shadow-none">
-                  <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">05/09/2025</p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-white">
-                    <span className="h-2 w-2 rounded-full bg-[#00B074]" />
-                    <span>12,580</span>
-                    <span className="font-normal text-slate-500 dark:text-slate-400">lượt truy cập</span>
-                  </p>
-                </div>
+                {trafficQuery.isLoading && <p className="absolute inset-x-10 top-1/2 text-center text-xs text-slate-400">Đang tải dữ liệu…</p>}
+                {!trafficQuery.isLoading && trafficSeries.length > 0 && !isMonthlyRange && (
+                  <div className="absolute right-3 top-2 z-10 rounded-[10px] border border-slate-100 bg-white/95 px-3 py-2 shadow-lg shadow-slate-200/50 backdrop-blur dark:border-slate-700 dark:bg-slate-800/95 dark:shadow-none">
+                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">{trafficSeries[trafficSeries.length - 1].label}</p>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-white">
+                      <span className="h-2 w-2 rounded-full bg-[#00B074]" />
+                      <span>{formatter.format(trafficSeries[trafficSeries.length - 1].views)}</span>
+                      <span className="font-normal text-slate-500 dark:text-slate-400">lượt xem bài viết</span>
+                    </p>
+                  </div>
+                )}
               </div>
-
-              {/* X-axis Dates */}
-              <div className="mt-4 flex justify-between pl-9 text-[11px] font-medium text-slate-400 dark:text-slate-500">
-                <span>31/08</span>
-                <span>01/09</span>
-                <span>02/09</span>
-                <span>03/09</span>
-                <span>04/09</span>
-                <span className="font-bold text-[#00B074]">05/09</span>
-                <span>06/09</span>
+              <div className="mt-4 flex justify-between gap-1 pl-9 text-[11px] font-medium text-slate-400 dark:text-slate-500">
+                {isMonthlyRange
+                  ? <><span>{formatDateKey(trafficQuery.data?.rangeStart).slice(0, 5)}</span><span>{formatDateKey(trafficQuery.data?.rangeEndExclusive).slice(0, 5)}</span></>
+                  : trafficSeries.map((point, index) => (
+                    <span key={point.date} className={index === trafficSeries.length - 1 ? 'font-bold text-[#00B074]' : ''}>{point.label}</span>
+                  ))}
               </div>
             </div>
 
@@ -457,9 +331,18 @@ export default function AdminOverviewPage() {
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
                   Cơ cấu người dùng
                 </h2>
-                <div className="relative inline-flex items-center gap-1.5 rounded-[10px] border border-slate-200/80 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                  <span>{userSegment}</span>
-                  <ChevronDown className="h-3.5 w-3.5 text-slate-400" />
+                <div className="relative">
+                  <select
+                    aria-label="Lọc cơ cấu người dùng theo thời gian"
+                    value={userRoleDays}
+                    onChange={(event) => setUserRoleDays(Number(event.target.value) as 1 | 7 | 30)}
+                    className="h-9 appearance-none rounded-[10px] border border-slate-200/80 bg-slate-50/50 py-1.5 pl-3 pr-8 text-xs font-medium text-slate-600 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                  >
+                    <option value={1}>1 ngày qua</option>
+                    <option value={7}>7 ngày qua</option>
+                    <option value={30}>30 ngày qua</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
                 </div>
               </div>
 
@@ -478,97 +361,51 @@ export default function AdminOverviewPage() {
                       strokeWidth="22"
                       className="dark:stroke-slate-800"
                     />
-                    {/* Học viên: 68% */}
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="60"
-                      fill="none"
-                      stroke="#00B074"
-                      strokeWidth="22"
-                      strokeDasharray="256 377"
-                      strokeDashoffset="0"
-                      strokeLinecap="butt"
-                    />
-                    {/* Giảng viên: 12% */}
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="60"
-                      fill="none"
-                      stroke="#3B82F6"
-                      strokeWidth="22"
-                      strokeDasharray="45 377"
-                      strokeDashoffset="-256"
-                      strokeLinecap="butt"
-                    />
-                    {/* Chuyên gia: 8% */}
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="60"
-                      fill="none"
-                      stroke="#8B5CF6"
-                      strokeWidth="22"
-                      strokeDasharray="30 377"
-                      strokeDashoffset="-301"
-                      strokeLinecap="butt"
-                    />
-                    {/* Khác: 12% */}
-                    <circle
-                      cx="80"
-                      cy="80"
-                      r="60"
-                      fill="none"
-                      stroke="#F59E0B"
-                      strokeWidth="22"
-                      strokeDasharray="45 377"
-                      strokeDashoffset="-331"
-                      strokeLinecap="butt"
-                    />
+                    {roleChartSegments.map((segment) => (
+                      <circle
+                        key={segment.key}
+                        cx="80"
+                        cy="80"
+                        r="60"
+                        fill="none"
+                        stroke={segment.color}
+                        strokeWidth="22"
+                        strokeDasharray={`${segment.length} ${roleCircumference - segment.length}`}
+                        strokeDashoffset={-segment.offset}
+                        strokeLinecap="butt"
+                      >
+                        <title>{`${segment.label}: ${segment.count} người dùng`}</title>
+                      </circle>
+                    ))}
                   </svg>
 
                   {/* Center Text */}
                   <div className="absolute text-center">
                     <span className="font-heading text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-                      {overview?.activeUsers ? formatter.format(overview.activeUsers) : '12,589'}
+                      {userRoleQuery.data ? formatter.format(userRoleQuery.data.totalUsers) : '—'}
                     </span>
-                    <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-                      người dùng
-                    </p>
+                    <p className="text-[11px] font-medium text-slate-400 dark:text-slate-500">trong {userRoleDays} ngày qua</p>
                   </div>
                 </div>
 
                 {/* Legend */}
-                <div className="w-full max-w-[160px] space-y-3.5">
-                  <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#00B074]" />
-                      Học viên
-                    </span>
-                    <span className="text-slate-900 dark:text-white">68%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#3B82F6]" />
-                      Giảng viên
-                    </span>
-                    <span className="text-slate-900 dark:text-white">12%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#8B5CF6]" />
-                      Chuyên gia
-                    </span>
-                    <span className="text-slate-900 dark:text-white">8%</span>
-                  </div>
-                  <div className="flex items-center justify-between text-xs font-semibold">
-                    <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#F59E0B]" />
-                      Khác
-                    </span>
-                    <span className="text-slate-900 dark:text-white">12%</span>
-                  </div>
+                <div className="w-full max-w-[180px] space-y-3.5">
+                  {roleChartSegments.map((segment) => {
+                    const percent = userRoleQuery.data?.totalUsers
+                      ? Math.round((segment.count / userRoleQuery.data.totalUsers) * 100)
+                      : 0;
+                    return (
+                      <div key={segment.key} className="flex items-center justify-between gap-3 text-xs font-semibold">
+                        <span className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                          <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: segment.color }} />
+                          {segment.label}
+                        </span>
+                        <span className="text-slate-900 dark:text-white">{userRoleQuery.isError ? '—' : `${percent}%`}</span>
+                      </div>
+                    );
+                  })}
+                  {userRoleQuery.isLoading && <p className="text-xs text-slate-400">Đang tải vai trò…</p>}
+                  {userRoleQuery.isError && <p className="text-xs text-rose-500">{getQueryErrorMessage(userRoleQuery.error, 'Không tải được cơ cấu người dùng.')}</p>}
                 </div>
               </div>
             </div>
@@ -576,11 +413,11 @@ export default function AdminOverviewPage() {
 
           {/* Tables Row: Latest Courses & New Users */}
           <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
-            {/* Box 3: Khóa học mới nhất */}
+            {/* Box 3: Lộ trình học mới nhất */}
             <div className="self-start overflow-hidden rounded-[10px] border border-slate-100 bg-white shadow-sm dark:border-slate-800/80 dark:bg-slate-900">
               <div className="flex items-center justify-between p-5 pb-3">
                 <h2 className="font-heading text-base font-bold text-slate-900 dark:text-white">
-                  Khóa học mới nhất
+                  Lộ trình học mới nhất
                 </h2>
                 <Link
                   href="/quan-tri/hoc-tap"
@@ -597,77 +434,34 @@ export default function AdminOverviewPage() {
                     <tr>
                       <th className="py-2.5 pl-5 pr-2">#</th>
                       <th className="py-2.5 px-3">Tiêu đề</th>
-                      <th className="hidden py-2.5 px-3 sm:table-cell">Giảng viên</th>
                       <th className="hidden py-2.5 px-3 md:table-cell">Danh mục</th>
                       <th className="hidden py-2.5 px-3 sm:table-cell">Ngày tạo</th>
-                      <th className="py-2.5 pl-3 pr-5 text-right">Trạng thái</th>
+                      <th className="whitespace-nowrap py-2.5 pl-3 pr-5 text-right">Trạng thái</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                    {/* If database has posts, render real posts. Otherwise render reference courses */}
-                    {realLessons.length > 0 ? (
-                      realLessons.slice(0, 5).map((lesson: LearningAdminPost, index: number) => (
-                        <tr key={lesson.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                          <td className="py-3 pl-5 pr-2 font-medium text-slate-400">{index + 1}</td>
-                          <td className="py-3 px-3">
-                            <Link
-                              href={`/quan-tri/hoc-tap/${lesson.id}`}
-                              className="flex items-center gap-2.5 group"
-                            >
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-700 text-sm text-white shadow-sm">
-                                📚
-                              </div>
-                              <span className="line-clamp-1 font-semibold text-slate-800 transition-colors group-hover:text-emerald-600 dark:text-slate-200 dark:group-hover:text-emerald-400">
-                                {lesson.title}
-                              </span>
-                            </Link>
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-500 sm:table-cell dark:text-slate-400">
-                            Ban biên tập
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-500 md:table-cell dark:text-slate-400">
-                            Khóa học
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-400 sm:table-cell">
-                            {formatDate(lesson.createdAt)}
-                          </td>
-                          <td className="py-3 pl-3 pr-5 text-right">
-                            <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${editorialBadgeClass[lesson.editorialStatus] || 'bg-slate-50 text-slate-600'}`}>
-                              {editorialStatusLabel[lesson.editorialStatus] || lesson.editorialStatus}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
-                    ) : (
-                      referenceCourses.map((course, idx) => (
-                        <tr key={course.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                          <td className="py-3 pl-5 pr-2 font-medium text-slate-400">{idx + 1}</td>
-                          <td className="py-3 px-3">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr ${course.thumbGradient} text-sm shadow-sm`}>
-                                {course.thumbIcon}
-                              </div>
-                              <span className="line-clamp-1 font-semibold text-slate-800 dark:text-slate-200">
-                                {course.title}
-                              </span>
+                    {realCourses.slice(0, 5).map((course, index) => (
+                      <tr key={course.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
+                        <td className="py-3 pl-5 pr-2 font-medium text-slate-400">{index + 1}</td>
+                        <td className="py-3 px-3">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-tr from-emerald-600 to-teal-700 text-white shadow-sm">
+                              <BookOpen className="h-4 w-4" aria-hidden="true" />
                             </div>
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-500 sm:table-cell dark:text-slate-400">
-                            {course.instructor}
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-500 md:table-cell dark:text-slate-400">
-                            {course.category}
-                          </td>
-                          <td className="hidden py-3 px-3 text-slate-400 sm:table-cell">
-                            {course.date}
-                          </td>
-                          <td className="py-3 pl-3 pr-5 text-right">
-                            <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${course.badgeClass}`}>
-                              {course.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))
+                            <span className="line-clamp-1 font-semibold text-slate-800 dark:text-slate-200">{course.title}</span>
+                          </div>
+                        </td>
+                        <td className="hidden py-3 px-3 text-slate-500 md:table-cell dark:text-slate-400">{categoryNames.get(course.categoryId) || '—'}</td>
+                        <td className="hidden py-3 px-3 text-slate-400 sm:table-cell">{formatDate(course.createdAt)}</td>
+                        <td className="py-3 pl-3 pr-5 text-right">
+                          <span className={`inline-flex whitespace-nowrap rounded-full border px-2 py-1 text-[10px] font-semibold ${course.isPublished ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'}`}>
+                            {course.isPublished ? 'Đã xuất bản' : 'Bản nháp'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                    {!coursesQuery.isLoading && realCourses.length === 0 && (
+                      <tr><td colSpan={5} className="px-5 py-8 text-center text-xs text-slate-500">Chưa có lộ trình học nào.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -731,35 +525,9 @@ export default function AdminOverviewPage() {
                           </td>
                         </tr>
                       ))
-                    ) : (
-                      referenceUsers.map((user) => (
-                        <tr key={user.id} className="transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                          <td className="py-3 pl-5 pr-3">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-xs ${user.avatarBg}`}>
-                                {user.name.split(' ').pop()?.[0] || 'U'}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="truncate font-semibold text-slate-800 dark:text-slate-200">
-                                  {user.name}
-                                </p>
-                                <p className="truncate text-[11px] text-slate-400">
-                                  {user.email}
-                                </p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="py-3 px-3">
-                            <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${user.roleClass}`}>
-                              {user.role}
-                            </span>
-                          </td>
-                          <td className="py-3 pl-3 pr-5 text-right text-slate-400">
-                            {user.date}
-                          </td>
-                        </tr>
-                      ))
-                    )}
+                    ) : !usersQuery.isLoading ? (
+                      <tr><td colSpan={3} className="px-5 py-8 text-center text-xs text-slate-500">Chưa có người dùng.</td></tr>
+                    ) : null}
                   </tbody>
                 </table>
               </div>
@@ -804,7 +572,7 @@ export default function AdminOverviewPage() {
                 <span>Tạo khóa học mới</span>
               </Link>
 
-              {/* Button 2: Duyệt bài viết (with Badge count from reviewQueue or 12) */}
+              {/* Button 2: Duyệt bài viết (số lượng từ API overview) */}
               <Link
                 href="/quan-tri/kiem-duyet"
                 className="group flex h-12 w-full items-center justify-between rounded-[10px] border border-slate-200/80 bg-white px-4 text-xs font-semibold text-slate-700 transition-all hover:border-emerald-400 hover:bg-emerald-50/40 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200 dark:hover:bg-slate-800"
@@ -816,7 +584,7 @@ export default function AdminOverviewPage() {
                   <span>Duyệt bài viết</span>
                 </div>
                 <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[10px] font-bold text-white shadow-sm">
-                  {overview?.reviewQueue ?? 12}
+                  {overview?.reviewQueue ?? 0}
                 </span>
               </Link>
 
@@ -879,30 +647,9 @@ export default function AdminOverviewPage() {
                     </div>
                   </div>
                 ))
-              ) : (
-                referenceActivities.map((act) => {
-                  const Icon = act.icon;
-                  return (
-                    <div key={act.id} className="flex items-start gap-3 py-3">
-                      <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${act.color}`}>
-                        <Icon className="h-4 w-4" />
-                      </span>
-                      <div className="min-w-0 text-xs">
-                        <p className="text-slate-700 dark:text-slate-200">
-                          {act.actor ? (
-                            <>
-                              <strong className="font-bold text-slate-900 dark:text-white">{act.actor}</strong> {act.text}
-                            </>
-                          ) : (
-                            act.text
-                          )}
-                        </p>
-                        <p className="mt-0.5 text-[11px] text-slate-400">{act.time}</p>
-                      </div>
-                    </div>
-                  );
-                })
-              )}
+              ) : !auditQuery.isLoading ? (
+                <p className="py-6 text-center text-xs text-slate-500">Chưa có hoạt động quản trị gần đây.</p>
+              ) : null}
             </div>
           </div>
         </div>

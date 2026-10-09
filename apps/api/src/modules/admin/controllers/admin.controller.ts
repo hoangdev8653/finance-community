@@ -62,6 +62,32 @@ export class AdminController {
     return this.adminService.getPostCategoryStats();
   }
 
+  @Public()
+  @Post('analytics/page-view')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Record one anonymous page view in the current Bangkok day bucket' })
+  recordPageView() {
+    return this.adminService.recordPageView();
+  }
+
+  @Get('admin/analytics/post-views')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get daily post views for a rolling day range or a calendar month' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getPostViews(@Query('days') days?: string, @Query('period') period?: string) {
+    return this.adminService.getPostViews(Number(days) || 7, period);
+  }
+
+  @Get('admin/analytics/user-roles')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get role composition for users created in the last 1, 7, or 30 days' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  getUserRoleComposition(@Query('days') days?: string) {
+    return this.adminService.getUserRoleComposition(Number(days) || 7);
+  }
+
   @Get('admin/users')
   @ApiBearerAuth('JWT-auth')
   @ApiOperation({ summary: 'List users for admin governance' })

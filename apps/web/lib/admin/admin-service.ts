@@ -22,6 +22,22 @@ import {
 } from '../../types/admin';
 import { CategoryEntity, TagEntity } from '../../types/content';
 
+export interface PostViewsAnalyticsResponse {
+  period: 'days' | 'previous-month';
+  requestedDays: number | null;
+  days: number;
+  rangeStart: string;
+  rangeEndExclusive: string;
+  totalPostViews: number;
+  series: Array<{ date: string; label: string; views: number }>;
+}
+
+export interface UserRoleCompositionResponse {
+  days: number;
+  totalUsers: number;
+  roles: Array<{ key: string; label: string; count: number }>;
+}
+
 export const adminService = {
   async getOverview(): Promise<AdminOverviewEntity> {
     const response = await apiClient.get<AdminOverviewEntity>('/admin/overview');
@@ -29,6 +45,15 @@ export const adminService = {
   },
   async getPopularPosts(limit = 5) { return (await apiClient.get('/admin/analytics/popular-posts', { params: { limit } })).data; },
   async getPostCategoryStats() { return (await apiClient.get('/admin/analytics/posts-by-category')).data; },
+  async getPostViews(days = 7, period?: 'previous-month'): Promise<PostViewsAnalyticsResponse> {
+    return (await apiClient.get<PostViewsAnalyticsResponse>('/admin/analytics/post-views', { params: { days, period } })).data;
+  },
+  async getUserRoleComposition(days = 7): Promise<UserRoleCompositionResponse> {
+    return (await apiClient.get<UserRoleCompositionResponse>('/admin/analytics/user-roles', { params: { days } })).data;
+  },
+  async recordPageView(): Promise<void> {
+    await apiClient.post('/analytics/page-view');
+  },
   async getUsers(params?: { page?: number; limit?: number; search?: string; status?: string }): Promise<PaginatedAdminUsersResponse> {
     const response = await apiClient.get<PaginatedAdminUsersResponse>('/admin/users', { params });
     return response.data;

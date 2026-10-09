@@ -9,6 +9,7 @@ import { postTopicsTable } from '../schema/post-topics.schema';
 import { profilesTable } from '../schema/profiles.schema';
 import { followsTable } from '../schema/follows.schema';
 import { domainsTable } from '../schema/domains.schema';
+import { postViewsDailyTable } from '../schema/post-views-daily.schema';
 
 export interface PostAuthorItem {
   id?: string;
@@ -264,11 +265,37 @@ export class PostsRepository {
   }
 
   async incrementViewCountTx(tx: any, id: string): Promise<void> {
-    const client = tx || this.db;
-    await client
-      .update(postsTable)
-      .set({ viewCount: sql`${postsTable.viewCount} + 1` })
-      .where(eq(postsTable.id, id));
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'Asia/Bangkok',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(now);
+    const part = (type: 'year' | 'month' | 'day') => parts.find((item) => item.type === type)?.value ?? '';
+    const day = `${part('year')}-${part('month')}-${part('day')}`;
+    const increment = async (client: any) => {
+      const [updatedPost] = await client
+        .update(postsTable)
+        .set({ viewCount: sql`${postsTable.viewCount} + 1` })
+        .where(eq(postsTable.id, id))
+        .returning({ id: postsTable.id });
+      if (!updatedPost) return;
+
+      await client
+        .insert(postViewsDailyTable)
+        .values({ day, views: 1 })
+        .onConflictDoUpdate({
+          target: postViewsDailyTable.day,
+          set: { views: sql`${postViewsDailyTable.views} + 1`, updatedAt: now },
+        });
+    };
+
+    if (tx) {
+      await increment(tx);
+      return;
+    }
+    await this.db.transaction(increment);
   }
 
   async findModerationPostsPaginated(

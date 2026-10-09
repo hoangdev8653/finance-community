@@ -27,6 +27,8 @@ import { quizzesTable, quizQuestionsTable, learningProgressTable } from './learn
 import { learningSourcesTable } from './learning-sources.schema';
 import { learningSeriesTable, learningSeriesPostsTable } from './learning-series.schema';
 import { refreshTokensTable } from './refresh-tokens.schema';
+import { pageViewsDailyTable } from './page-views-daily.schema';
+import { postViewsDailyTable } from './post-views-daily.schema';
 
 export * from './users.schema';
 export * from './roles.schema';
@@ -57,6 +59,8 @@ export * from './learning.schema';
 export * from './learning-sources.schema';
 export * from './learning-series.schema';
 export * from './refresh-tokens.schema';
+export * from './page-views-daily.schema';
+export * from './post-views-daily.schema';
 
 export const schema = {
   users: usersTable,
@@ -91,4 +95,6 @@ export const schema = {
   learningSeries: learningSeriesTable,
   learningSeriesPosts: learningSeriesPostsTable,
   refreshTokens: refreshTokensTable,
+  pageViewsDaily: pageViewsDailyTable,
+  postViewsDaily: postViewsDailyTable,
 };

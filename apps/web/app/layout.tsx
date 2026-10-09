@@ -23,6 +23,7 @@ export const viewport: Viewport = {
 import { getSiteUrlObject, siteConfig, BRAND } from '@/lib/seo/site-config';
 import { generateWebSiteJsonLd, generateOrganizationJsonLd } from '@/lib/seo/structured-data';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { PlatformPageViewTracker } from '@/components/analytics/PlatformPageViewTracker';
 
 export const metadata: Metadata = {
   metadataBase: getSiteUrlObject(),
@@ -70,6 +71,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
         <JsonLd data={[generateWebSiteJsonLd(), generateOrganizationJsonLd()]} />
         <Providers>
+          <PlatformPageViewTracker />
           <SiteChrome>{children}</SiteChrome>
         </Providers>
       </body>
