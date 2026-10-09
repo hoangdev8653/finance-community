@@ -92,21 +92,21 @@ export function PostModerationTable() {
     switch (status) {
       case 'UNREVIEWED':
         return (
-          <Badge variant="warning" className="inline-flex items-center gap-1 font-mono text-xs">
+          <Badge variant="warning" className="inline-flex items-center gap-1 text-xs">
             <Clock className="h-3 w-3" />
             <span>Chưa xem</span>
           </Badge>
         );
       case 'APPROVED':
         return (
-          <Badge variant="success" className="inline-flex items-center gap-1 font-mono text-xs">
+          <Badge variant="success" className="inline-flex items-center gap-1 text-xs">
             <CheckCircle2 className="h-3 w-3" />
             <span>Đã duyệt</span>
           </Badge>
         );
       case 'BANNED':
         return (
-          <Badge variant="danger" className="inline-flex items-center gap-1 font-mono text-xs">
+          <Badge variant="danger" className="inline-flex items-center gap-1 text-xs">
             <AlertCircle className="h-3 w-3" />
             <span>Đã cấm</span>
           </Badge>
@@ -117,25 +117,25 @@ export function PostModerationTable() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
             </div>
-            <h1 className="font-heading text-xl font-bold text-foreground">
+            <h2 className="font-heading text-lg font-bold tracking-tight text-slate-900">
               Hàng đợi Kiểm duyệt Bài viết
-            </h1>
+            </h2>
           </div>
-          <p className="text-xs text-muted-foreground font-mono mt-1">
+          <p className="mt-1 max-w-2xl text-sm text-slate-600">
             Duyệt các bài viết mới đăng hoặc khóa các bài viết vi phạm chính sách cộng đồng
           </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-lg self-start sm:self-auto text-xs font-mono">
+        <div className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-1 self-start sm:self-auto text-sm">
           {[
             { key: 'UNREVIEWED', label: 'Chưa xem' },
             { key: 'APPROVED', label: 'Đã duyệt' },
@@ -146,10 +146,10 @@ export function PostModerationTable() {
               key={tab.key}
               type="button"
               onClick={() => handleStatusTab(tab.key)}
-              className={`px-3 py-1.5 rounded-md transition-all font-semibold ${
+              className={`shrink-0 rounded-lg px-3.5 py-2 transition-all font-semibold ${
                 selectedStatus === tab.key
-                  ? 'bg-primary text-primary-foreground shadow-2xs'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  ? 'bg-white text-emerald-800 shadow-sm ring-1 ring-slate-200'
+                  : 'text-slate-600 hover:bg-white hover:text-slate-900'
               }`}
             >
               {tab.label}
@@ -158,7 +158,7 @@ export function PostModerationTable() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -166,27 +166,27 @@ export function PostModerationTable() {
             setCurrentPage(1);
           }}
           isLoading={isLoading}
-          placeholder="Tìm bài viết cần duyệt theo tiêu đề, slug, tác giả..."
+          placeholder="Tiêu đề, slug hoặc tác giả..."
           aria-label="Tìm kiếm kiểm duyệt bài viết"
         />
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
             <span className="font-semibold text-foreground">{filteredPosts.length} / {meta?.totalItems ?? '—'} bài viết</span>
             <span>•</span>
             <span>{selectedStatus === 'ALL' ? 'Tất cả trạng thái' : selectedStatus === 'UNREVIEWED' ? 'Đang chờ xử lý' : selectedStatus === 'APPROVED' ? 'Đã duyệt' : 'Đã cấm'}</span>
           </div>
-          <Button variant="outline" size="sm" onClick={() => void refetch()} disabled={isLoading} className="h-8 self-start text-xs sm:self-auto">
+          <Button variant="outline" size="sm" onClick={() => void refetch()} disabled={isLoading} className="h-9 self-start rounded-lg px-3 text-sm sm:self-auto">
             Làm mới dữ liệu
           </Button>
         </div>
       </div>
 
       {/* Table Container */}
-      <div className="rounded-[10px] border border-border bg-surface overflow-hidden shadow-2xs">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans">
-            <colgroup><col className="w-[38%]" /><col className="w-[16%]" /><col className="w-[12%]" /><col className="w-[12%]" /><col className="w-[10%]" /><col className="w-[12%]" /></colgroup>
-            <thead className="bg-muted/50 border-b border-border text-muted-foreground font-mono text-xs uppercase">
+          <table className="w-full min-w-[1000px] text-left text-sm font-sans">
+            <colgroup><col className="w-[38%]" /><col className="w-[14%]" /><col className="w-[13%]" /><col className="w-[12%]" /><col className="w-[10%]" /><col className="w-[13%]" /></colgroup>
+            <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
               <tr>
                 <th className="py-3 px-4">Bài viết</th>
                 <th className="py-3 px-4">Tác giả</th>
@@ -196,37 +196,43 @@ export function PostModerationTable() {
                 <th className="py-3 px-4 text-right">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-slate-100">
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-muted-foreground font-mono text-xs">
+                  <td colSpan={6} className="py-14 text-center text-sm text-slate-500">
                     Đang tải danh sách bài viết...
                   </td>
                 </tr>
               ) : isError ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-danger font-mono text-xs">
+                  <td colSpan={6} className="py-14 text-center text-sm text-red-600">
                     Không thể tải dữ liệu kiểm duyệt. Vui lòng thử lại.
                   </td>
                 </tr>
               ) : filteredPosts.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center text-muted-foreground font-mono text-xs">
+                  <td colSpan={6} className="py-14 text-center text-sm text-slate-500">
                     {search ? 'Không tìm thấy bài viết phù hợp với từ khóa.' : 'Không có bài viết nào trong trạng thái này.'}
                   </td>
                 </tr>
               ) : (
                 filteredPosts.map((post) => (
-                  <tr key={post.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="max-w-0 overflow-hidden px-4 py-3.5">
-                      <div className="flex items-start gap-2">
-                        <img src={resolveMediaUrl(post.coverMedia?.secureUrl, 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=320&h=220&auto=format&fit=crop&q=80')} alt="" className="h-10 w-14 shrink-0 rounded-md border border-border bg-muted object-cover" />
-                        <div className="space-y-0.5">
-                          <p className="line-clamp-2 font-semibold leading-5 text-foreground transition-colors hover:text-primary" title={post.title}>
+                  <tr key={post.id} className="group transition-colors hover:bg-emerald-50/40">
+                    <td className="max-w-0 overflow-hidden px-5 py-4">
+                      <div className="flex min-w-0 items-center gap-3">
+                        {post.coverMedia?.secureUrl ? (
+                          <img src={resolveMediaUrl(post.coverMedia.secureUrl)} alt="" loading="lazy" className="h-12 w-14 shrink-0 rounded-lg border border-slate-200 object-cover" />
+                        ) : (
+                          <div className="grid h-12 w-14 shrink-0 place-items-center rounded-lg border border-emerald-100 bg-emerald-50 text-emerald-700">
+                            <FileText className="h-5 w-5" aria-hidden="true" />
+                          </div>
+                        )}
+                        <div className="min-w-0 space-y-1">
+                          <p className="line-clamp-2 font-semibold leading-5 text-slate-900 transition-colors group-hover:text-emerald-800" title={post.title}>
                             {post.title}
                           </p>
-                          <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-                            <span>{post.contentType}</span>
+                          <div className="flex items-center gap-2 text-sm text-slate-600">
+                            <span className="shrink-0 rounded-md bg-slate-100 px-1.5 py-0.5 font-medium text-slate-600">{post.contentType === 'SERIES' ? 'LO TRÌNH' : 'CỘNG ĐỒNG'}</span>
                             <span>•</span>
                             <span className="truncate" title={post.slug}>{post.slug}</span>
                           </div>
@@ -234,11 +240,11 @@ export function PostModerationTable() {
                       </div>
                     </td>
 
-                    <td className="max-w-0 overflow-hidden px-4 py-3.5 font-mono text-xs text-foreground">
-                      <span className="block truncate" title={post.author?.username || post.authorId}>{post.author?.username || post.authorId.slice(0, 8)}</span>
+                    <td className="max-w-0 overflow-hidden px-4 py-4 text-sm text-slate-700">
+                      <span className="block truncate font-medium" title={post.author?.username || post.authorId}>{post.author?.username || post.authorId.slice(0, 8)}</span>
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-3.5 font-mono text-xs text-muted-foreground">
+                    <td className="whitespace-nowrap px-4 py-4 text-sm text-slate-600">
                       {post.publishedAt || post.createdAt
                         ? new Date(post.publishedAt || post.createdAt).toLocaleDateString('vi-VN', {
                             hour: '2-digit',
@@ -250,27 +256,27 @@ export function PostModerationTable() {
                         : 'Bản nháp'}
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-3.5">
+                    <td className="whitespace-nowrap px-4 py-4">
                       {getStatusBadge(post.moderationStatus)}
                     </td>
 
-                    <td className="max-w-0 overflow-hidden px-4 py-3.5 text-xs text-muted-foreground">
+                    <td className="max-w-0 overflow-hidden px-5 py-4 text-sm text-slate-600">
                       {post.moderationReason ? (
-                        <p className="line-clamp-2 text-danger/90 font-mono text-xs">
+                        <p className="line-clamp-2 text-sm text-red-700">
                           {post.moderationReason}
                         </p>
                       ) : (
-                        <span className="text-muted-foreground/50 font-mono text-xs">—</span>
+                        <span className="text-slate-400">—</span>
                       )}
                     </td>
 
-                    <td className="whitespace-nowrap px-4 py-3.5 text-right">
+                    <td className="whitespace-nowrap px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <Link
                           href="#"
                           onClick={(event) => { event.preventDefault(); setSelectedPost(post); }}
-                          className="inline-flex items-center gap-1 p-1.5 rounded-md border border-border text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-xs font-mono"
-                          title="Xem bài viết"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition-colors hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-800"
+                          aria-label="Preview post" title="Xem bài viết"
                         >
                           <ExternalLink className="h-3.5 w-3.5" />
                         </Link>
@@ -282,7 +288,7 @@ export function PostModerationTable() {
                             onClick={() => handleApprove(post)}
                             disabled={approveMutation.isPending}
                             isLoading={approveMutation.isPending}
-                            className="inline-flex items-center gap-1 text-xs h-7 px-2.5"
+                            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm"
                           >
                             <ShieldCheck className="h-3.5 w-3.5" />
                             <span>Duyệt</span>
@@ -295,7 +301,7 @@ export function PostModerationTable() {
                             variant="destructive"
                             onClick={() => setPostToBan(post)}
                             disabled={banMutation.isPending}
-                            className="inline-flex items-center gap-1 text-xs h-7 px-2.5"
+                            className="inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-sm"
                           >
                             <ShieldBan className="h-3.5 w-3.5" />
                             <span>Cấm</span>
@@ -313,7 +319,7 @@ export function PostModerationTable() {
         {/* Pagination */}
         {meta && <AdminPagination meta={meta} itemLabel="bài viết" pageLabel="Trang" onPageChange={setCurrentPage} />}
         {meta && meta.totalPages > 1 && false && (
-          <div className="flex items-center justify-between border-t border-border px-4 py-3 bg-muted/20 font-mono text-xs">
+          <div className="flex items-center justify-between border-t border-border px-4 py-3 bg-muted/20 text-xs">
             <span className="text-muted-foreground">
               Trang {meta.page} / {meta.totalPages} ({meta.totalItems} bài viết)
             </span>

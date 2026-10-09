@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import { useQuery } from '@tanstack/react-query';
 import { useCategories } from '@/lib/posts/use-posts-feed';
 import { postsService } from '@/lib/posts/posts-service';
@@ -16,7 +17,6 @@ import {
   AlertCircle,
   BookOpen,
   MessagesSquare,
-  Search,
   ChevronDown,
   LayoutGrid,
   TableProperties,
@@ -376,19 +376,7 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
         {/* Filter Toolbar */}
         <div className="flex flex-col gap-3.5 p-4 sm:px-5 sm:py-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-border/60 bg-slate-50/50 dark:bg-slate-900/30">
           {/* Search Input (Expanded Width & Height) */}
-          <div className="relative flex-1 sm:max-w-lg lg:max-w-xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              placeholder="Tìm kiếm danh mục theo tên, slug hoặc mô tả..."
-              className="h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-white dark:bg-card pl-11 pr-4 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all shadow-2xs"
-            />
-          </div>
+          <AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tên danh mục, slug hoặc mô tả..." aria-label="Tìm kiếm danh mục" fullWidth containerClassName="min-w-[220px] flex-1" />
 
           <div className="flex flex-wrap items-center gap-3">
             {/* Domain Filter Dropdown with Distinct Colors */}

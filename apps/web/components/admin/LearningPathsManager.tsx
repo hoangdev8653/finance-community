@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import Link from 'next/link';
 import {
   ArrowDown,
@@ -16,7 +17,6 @@ import {
   Map,
   Compass,
   FileText,
-  Search,
   ExternalLink,
   Layers,
   ChevronRight,
@@ -402,25 +402,7 @@ export function LearningPathsManager() {
           <div className="rounded-[10px] border border-slate-200/60 bg-white p-4 shadow-xs dark:border-border/60 dark:bg-card space-y-3">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               {/* Search */}
-              <div className="relative flex-1 min-w-[220px]">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Tìm kiếm theo tiêu đề hoặc slug..."
-                  className="h-10 w-full rounded-lg border border-slate-200/80 bg-background pl-9 pr-8 text-sm text-foreground shadow-2xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
-                />
-                {search && (
-                  <button
-                    type="button"
-                    onClick={() => setSearch('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
+              <AdminSearchInput value={search} onValueChange={setSearch} placeholder="Tên lộ trình hoặc slug..." aria-label="Tìm kiếm lộ trình học" fullWidth containerClassName="min-w-[220px] flex-1" />
 
               {/* Domain Filter */}
               <div className="relative min-w-[150px]">

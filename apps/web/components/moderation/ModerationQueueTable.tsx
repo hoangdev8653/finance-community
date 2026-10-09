@@ -107,25 +107,25 @@ export function ModerationQueueTable() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header & Status Filter Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
+      <div className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
           <div className="flex items-center gap-2">
-            <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-50 text-emerald-700">
               <ShieldAlert className="h-5 w-5" aria-hidden="true" />
             </div>
-            <h1 className="font-heading text-xl font-bold text-foreground">
+            <h1 className="font-heading text-lg font-bold tracking-tight text-slate-900">
               Hàng đợi Báo cáo Vi phạm
             </h1>
           </div>
-          <p className="text-xs text-muted-foreground font-mono mt-1">
+          <p className="mt-1 max-w-2xl text-sm text-slate-600">
             Xem xét và xử lý các báo cáo vi phạm nội dung hoặc hành vi từ cộng đồng
           </p>
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1 bg-surface border border-border p-1 rounded-lg self-start sm:self-auto text-xs font-mono">
+        <div className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 p-1 self-start sm:self-auto text-sm">
           {[
             { key: 'OPEN', label: 'Chờ xử lý' },
             { key: 'REVIEWING', label: 'Đang xem xét' },
@@ -137,10 +137,10 @@ export function ModerationQueueTable() {
               key={tab.key}
               type="button"
               onClick={() => handleStatusTab(tab.key)}
-              className={`px-3 py-1.5 rounded-md transition-all font-semibold ${
+              className={`shrink-0 rounded-lg px-3 py-2 transition-all font-semibold ${
                 selectedStatus === tab.key
-                  ? 'bg-primary text-primary-foreground shadow-2xs'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
+                  ? 'bg-white text-emerald-800 shadow-sm ring-1 ring-slate-200'
+                  : 'text-slate-600 hover:bg-white hover:text-slate-900'
               }`}
             >
               {tab.label}
@@ -150,7 +150,7 @@ export function ModerationQueueTable() {
       </div>
 
       {/* Summary & Search Toolbar */}
-      <div className="flex flex-col gap-3 rounded-[10px] border border-border bg-surface/70 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:px-5">
         <AdminSearchInput
           value={search}
           onValueChange={(val) => {
@@ -161,9 +161,9 @@ export function ModerationQueueTable() {
           placeholder="Tìm theo lý do, mô tả, người báo cáo hoặc ID đối tượng..."
           aria-label="Tìm kiếm báo cáo vi phạm"
         />
-        <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground">
+        <div className="flex flex-wrap items-center gap-3 sm:justify-end">
+          <div className="flex items-center gap-2 text-sm text-slate-600">
+            <span className="font-semibold text-slate-900">
               {filteredReports.length} / {meta.totalItems} báo cáo
             </span>
             <span>•</span>
@@ -184,7 +184,7 @@ export function ModerationQueueTable() {
             size="sm"
             onClick={() => void refetch()}
             disabled={isLoading}
-            className="h-8 text-xs self-start sm:self-auto"
+            className="h-9 rounded-lg px-3 text-sm self-start sm:self-auto"
           >
             <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
             <span>Làm mới dữ liệu</span>
@@ -239,11 +239,11 @@ export function ModerationQueueTable() {
 
       {/* Table Container */}
       {!isLoading && !isError && filteredReports.length > 0 && (
-        <div className="rounded-[10px] border border-border bg-surface overflow-hidden shadow-2xs">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left text-xs font-sans">
-              <thead className="bg-muted/50 border-b border-border font-mono text-muted-foreground uppercase text-xs">
+            <table className="w-full min-w-[900px] text-left text-sm font-sans">
+              <thead className="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-600">
                 <tr>
                   <th className="py-3 px-4">Đối tượng</th>
                   <th className="py-3 px-4">Lý do / Mô tả</th>
@@ -253,7 +253,7 @@ export function ModerationQueueTable() {
                   <th className="py-3 px-4 text-right">Thao tác</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              <tbody className="divide-y divide-slate-100">
                 {filteredReports.map((report) => {
                   const target = getTargetInfo(report);
                   const formattedDate = new Date(report.createdAt).toLocaleString('vi-VN', {
@@ -265,51 +265,51 @@ export function ModerationQueueTable() {
                   });
 
                   return (
-                    <tr key={report.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="py-3.5 px-4 font-mono">
+                    <tr key={report.id} className="group transition-colors hover:bg-emerald-50/40">
+                      <td className="py-4 px-4">
                         <div className="flex items-center gap-1.5">
                           {getTargetIcon(report)}
-                          <span className="font-semibold text-foreground">{target.type}</span>
-                          <span className="text-muted-foreground text-xs">
+                          <span className="font-semibold text-slate-900">{target.type}</span>
+                          <span className="text-slate-500 text-sm">
                             #{target.id.slice(0, 8)}
                           </span>
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 max-w-xs">
+                      <td className="py-4 px-4 max-w-xs">
                         <div className="space-y-0.5">
                           <div className="font-medium text-foreground">{report.reason}</div>
                           {report.description && (
-                            <div className="text-xs text-muted-foreground truncate">
+                            <div className="text-sm text-slate-600 truncate">
                               "{report.description}"
                             </div>
                           )}
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono text-muted-foreground text-xs">
+                      <td className="py-4 px-4 text-slate-500 text-sm">
                         {report.reporterId ? `#${report.reporterId.slice(0, 8)}` : 'Ẩn danh'}
                       </td>
 
-                      <td className="py-3.5 px-4">
-                        <Badge variant={getStatusBadgeVariant(report.status)} className="text-xs font-mono">
+                      <td className="py-4 px-4">
+                        <Badge variant={getStatusBadgeVariant(report.status)} className="text-xs">
                           {getStatusLabel(report.status)}
                         </Badge>
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono text-xs text-muted-foreground">
+                      <td className="py-4 px-4 text-sm text-slate-600">
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
                           <span>{formattedDate}</span>
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-4 px-4 text-right">
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => setSelectedReport(report)}
-                          className="text-xs h-8 px-3 font-mono"
+                          className="text-sm h-9 rounded-lg px-3"
                         >
                           Xem xét
                         </Button>
@@ -322,7 +322,7 @@ export function ModerationQueueTable() {
           </div>
 
           {/* Mobile Cards (<768px) */}
-          <div className="md:hidden divide-y divide-border">
+          <div className="md:hidden divide-y divide-slate-100">
             {filteredReports.map((report) => {
               const target = getTargetInfo(report);
               const formattedDate = new Date(report.createdAt).toLocaleString('vi-VN', {
@@ -334,35 +334,35 @@ export function ModerationQueueTable() {
               });
 
               return (
-                <div key={report.id} className="p-4 space-y-3">
+                <div key={report.id} className="p-5 space-y-4">
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 font-mono text-xs font-semibold text-foreground">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                       {getTargetIcon(report)}
                       <span>{target.type}</span>
-                      <span className="text-muted-foreground text-xs font-normal">
+                      <span className="text-slate-500 text-sm font-normal">
                         #{target.id.slice(0, 8)}
                       </span>
                     </div>
 
-                    <Badge variant={getStatusBadgeVariant(report.status)} className="text-xs font-mono">
+                    <Badge variant={getStatusBadgeVariant(report.status)} className="text-xs">
                       {getStatusLabel(report.status)}
                     </Badge>
                   </div>
 
                   <div className="space-y-1">
-                    <p className="text-xs font-medium text-foreground">{report.reason}</p>
+                    <p className="text-sm font-semibold text-slate-900">{report.reason}</p>
                     {report.description && (
-                      <p className="text-xs text-muted-foreground italic">"{report.description}"</p>
+                      <p className="text-sm text-slate-600 italic">"{report.description}"</p>
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-border/60 text-xs text-muted-foreground font-mono">
+                  <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 text-sm text-slate-600">
                     <span>{formattedDate}</span>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setSelectedReport(report)}
-                      className="text-xs h-8 px-3"
+                      className="text-sm h-9 rounded-lg px-3"
                     >
                       Xem xét
                     </Button>

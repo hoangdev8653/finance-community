@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import { useAuditLogs } from '@/lib/admin/use-admin';
 import { AdminPagination } from './AdminPagination';
 import { AuditLogEntity } from '@/types/admin';
@@ -13,7 +14,6 @@ import {
   Activity,
   Code,
   X,
-  Search,
   RefreshCw,
   Download,
   ShieldCheck,
@@ -428,32 +428,7 @@ export function AuditLogsTable() {
 
         {/* Filter Toolbar */}
         <div className="flex flex-col gap-3 p-4 sm:px-5 sm:py-3.5 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-border/60 bg-slate-50/50 dark:bg-slate-900/30">
-          <div className="relative w-full sm:w-80 md:w-96">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              placeholder="Tìm theo hành động, email, lý do..."
-              className="h-10 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-white dark:bg-card pl-10 pr-9 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all shadow-2xs"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearch('');
-                  setCurrentPage(1);
-                }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-[6px] p-1 text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-muted"
-                aria-label="Xóa tìm kiếm"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+          <AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setCurrentPage(1); }} placeholder="Hành động, email hoặc lý do..." aria-label="Tìm kiếm nhật ký hệ thống" />
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Entity Type Filter */}

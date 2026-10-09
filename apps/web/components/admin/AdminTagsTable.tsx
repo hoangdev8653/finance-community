@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import {
   useAdminTags,
   useCreateTag,
@@ -262,32 +263,7 @@ export function AdminTagsTable() {
 
         {/* Filter Toolbar (Clean, properly bounded, responsive) */}
         <div className="flex flex-col gap-3 p-4 sm:px-5 sm:py-3.5 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-border/60 bg-slate-50/50 dark:bg-slate-900/30">
-          <div className="relative w-full sm:w-80 md:w-96">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/70" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              placeholder="Tìm theo tên thẻ hoặc slug..."
-              className="h-10 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-white dark:bg-card pl-10 pr-9 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all shadow-2xs"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => {
-                  setSearch('');
-                  setPage(1);
-                }}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-[6px] p-1 text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-muted"
-                aria-label="Xóa tìm kiếm"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+          <AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tên thẻ hoặc slug..." aria-label="Tìm kiếm thẻ" fullWidth containerClassName="min-w-[220px] flex-1" />
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Sort Selector */}
@@ -343,8 +319,8 @@ export function AdminTagsTable() {
         {/* Table View (Harmonized with DomainManagementView and CategoryManagementView) */}
         {!isLoading && !isError && visibleTags.length > 0 && (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-border/60 text-muted-foreground font-semibold">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-border/60 text-slate-700 dark:text-slate-200 text-sm font-bold">
                 <tr>
                   <th className="py-3.5 px-5">Tên thẻ</th>
                   <th className="py-3.5 px-4">Đường dẫn (Slug)</th>
@@ -364,20 +340,20 @@ export function AdminTagsTable() {
                         <span className="flex h-7 w-7 items-center justify-center rounded-[6px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400 font-bold text-xs border border-emerald-200/60 dark:border-emerald-800/60">
                           #
                         </span>
-                        <span className="font-heading font-semibold text-xs text-foreground">
+                        <span className="font-heading text-sm font-semibold text-foreground">
                           {tag.name}
                         </span>
                       </div>
                     </td>
-                    <td className="whitespace-nowrap py-3.5 px-4 font-mono text-xs text-muted-foreground">
+                    <td className="whitespace-nowrap py-3.5 px-4 font-mono text-sm font-medium text-slate-700 dark:text-slate-300">
                       /{tag.slug}
                     </td>
                     <td className="whitespace-nowrap py-3.5 px-4 text-center">
-                      <span className="inline-flex items-center rounded-full border border-slate-200/80 dark:border-border bg-slate-100/70 dark:bg-muted px-2.5 py-0.5 text-xs font-mono font-medium text-slate-700 dark:text-slate-300 tabular-nums">
+                      <span className="inline-flex items-center rounded-full border border-slate-200/80 dark:border-border bg-slate-100/70 dark:bg-muted px-2.5 py-0.5 text-sm font-mono font-semibold text-slate-700 dark:text-slate-300 tabular-nums">
                         {tag.usageCount || 0} bài viết
                       </span>
                     </td>
-                    <td className="whitespace-nowrap py-3.5 px-4 font-mono text-xs text-muted-foreground tabular-nums">
+                    <td className="whitespace-nowrap py-3.5 px-4 font-mono text-sm font-medium text-slate-700 dark:text-slate-300 tabular-nums">
                       {tag.createdAt
                         ? new Intl.DateTimeFormat('vi-VN', {
                             dateStyle: 'medium',
@@ -391,7 +367,7 @@ export function AdminTagsTable() {
                           variant="outline"
                           size="sm"
                           onClick={() => openEditModal(tag)}
-                          className="h-8 gap-1.5 rounded-[6px] border-slate-200/80 dark:border-border px-3 text-xs font-medium text-foreground hover:bg-slate-50 dark:hover:bg-muted"
+                          className="h-9 gap-1.5 rounded-[6px] border-slate-200/80 dark:border-border px-3 text-sm font-semibold text-foreground hover:bg-slate-50 dark:hover:bg-muted"
                           aria-label={`Chỉnh sửa thẻ ${tag.name}`}
                         >
                           <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
@@ -401,7 +377,7 @@ export function AdminTagsTable() {
                           variant="outline"
                           size="sm"
                           onClick={() => setDeleteConfirmTag(tag)}
-                          className="h-8 gap-1.5 rounded-[6px] border-rose-200/70 dark:border-rose-900/60 px-3 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30"
+                          className="h-9 gap-1.5 rounded-[6px] border-rose-200/70 dark:border-rose-900/60 px-3 text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30"
                           aria-label={`Xóa thẻ ${tag.name}`}
                         >
                           <Trash2 className="h-3.5 w-3.5" />

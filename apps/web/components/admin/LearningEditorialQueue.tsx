@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useMemo } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import Link from 'next/link';
 import {
   BookOpen,
@@ -11,8 +12,6 @@ import {
   Archive,
   RefreshCw,
   Map,
-  Search,
-  X,
   ChevronDown,
   Loader2,
   Calendar,
@@ -287,25 +286,7 @@ export function LearningEditorialQueue() {
 
         {/* Toolbar: Search input & Meta Counters */}
         <div className="flex flex-col gap-3 border-b border-slate-100 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-border/40">
-          <div className="relative w-full max-w-sm">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm bài học theo tiêu đề hoặc slug..."
-              className="h-10 w-full rounded-[8px] border border-slate-200/80 bg-background pl-9 pr-9 text-sm text-foreground shadow-2xs placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          <AdminSearchInput value={search} onValueChange={setSearch} placeholder="Tiêu đề hoặc slug bài học..." aria-label="Tìm kiếm bài học" fullWidth containerClassName="min-w-[220px] flex-1" />
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>

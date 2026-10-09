@@ -257,7 +257,7 @@ export function SystemSettingsView() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 relative shrink-0 border-b-2 px-4 py-3.5 text-xs sm:text-[13px] font-semibold transition-colors ${
+                className={`flex items-center gap-2 relative shrink-0 border-b-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
                   isActive
                     ? 'border-emerald-600 text-emerald-600 dark:border-emerald-500 dark:text-emerald-400'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -279,14 +279,14 @@ export function SystemSettingsView() {
                 <h3 className="font-heading text-base font-bold text-foreground">
                   Thông tin định danh nền tảng
                 </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Tên hiển thị, khẩu hiệu và các kênh liên hệ chính thức trên toàn bộ giao diện.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
                 <div className="xl:col-span-1">
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Tên nền tảng (Site Name) <span className="text-rose-500">*</span>
                   </label>
                   <input
@@ -295,12 +295,12 @@ export function SystemSettingsView() {
                     onChange={(e) =>
                       setGeneralConfig((p) => ({ ...p, platformName: e.target.value }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
                 </div>
 
                 <div className="xl:col-span-2">
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Khẩu hiệu thương hiệu (Slogan)
                   </label>
                   <input
@@ -309,12 +309,12 @@ export function SystemSettingsView() {
                     onChange={(e) =>
                       setGeneralConfig((p) => ({ ...p, platformSlogan: e.target.value }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Email hỗ trợ quản trị (Support Email)
                   </label>
                   <input
@@ -323,12 +323,12 @@ export function SystemSettingsView() {
                     onChange={(e) =>
                       setGeneralConfig((p) => ({ ...p, supportEmail: e.target.value }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Hotline CSKH
                   </label>
                   <input
@@ -337,12 +337,12 @@ export function SystemSettingsView() {
                     onChange={(e) =>
                       setGeneralConfig((p) => ({ ...p, hotline: e.target.value }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Đường dẫn cộng đồng (Telegram / Zalo Group)
                   </label>
                   <input
@@ -351,7 +351,7 @@ export function SystemSettingsView() {
                     onChange={(e) =>
                       setGeneralConfig((p) => ({ ...p, communityTelegram: e.target.value }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
                 </div>
               </div>
@@ -367,7 +367,7 @@ export function SystemSettingsView() {
                       <h4 className="font-heading text-sm font-bold text-foreground">
                         Chế độ bảo trì hệ thống (Maintenance Mode)
                       </h4>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-sm text-muted-foreground mt-0.5">
                         Khi kích hoạt, người dùng thông thường sẽ thấy trang thông báo bảo trì. Chỉ tài khoản Quản trị viên mới có thể truy cập hệ thống.
                       </p>
                     </div>
@@ -394,7 +394,7 @@ export function SystemSettingsView() {
 
                 {generalConfig.maintenanceMode && (
                   <div className="pt-2 border-t border-amber-200/60 dark:border-amber-900/40">
-                    <label className="block text-xs font-semibold text-foreground">
+                    <label className="block text-sm font-semibold text-foreground">
                       Thông điệp thông báo bảo trì gửi người dùng:
                     </label>
                     <textarea
@@ -403,7 +403,7 @@ export function SystemSettingsView() {
                       onChange={(e) =>
                         setGeneralConfig((p) => ({ ...p, maintenanceMessage: e.target.value }))
                       }
-                      className="mt-1.5 w-full rounded-[8px] border border-amber-300 dark:border-amber-800 bg-white dark:bg-card p-3 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500"
+                      className="mt-1.5 w-full rounded-[8px] border border-amber-300 dark:border-amber-800 bg-white dark:bg-card p-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-500"
                     />
                   </div>
                 )}
@@ -418,14 +418,14 @@ export function SystemSettingsView() {
                 <h3 className="font-heading text-base font-bold text-foreground">
                   Quy tắc duyệt bài & Giới hạn chống Spam
                 </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Thiết lập cơ chế kiểm soát chất lượng thảo luận và ngăn chặn bot tự động.
                 </p>
               </div>
 
               {/* Moderation Mode Radio Selection */}
               <div className="rounded-[10px] border border-slate-100 dark:border-border/80 bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-3">
-                <label className="block text-xs font-semibold text-foreground">
+                <label className="block text-sm font-semibold text-foreground">
                   Cơ chế xuất bản bài viết cộng đồng:
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -451,9 +451,9 @@ export function SystemSettingsView() {
                           <div className="h-1.5 w-1.5 rounded-full bg-white" />
                         )}
                       </div>
-                      <span className="text-xs font-bold text-foreground">Tự động xuất bản (Hậu kiểm)</span>
+                      <span className="text-sm font-bold text-foreground">Tự động xuất bản (Hậu kiểm)</span>
                     </div>
-                    <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                       Bài viết hiển thị ngay sau khi người dùng nhấn đăng. Hệ thống chỉ gắn cờ nếu phát hiện từ khóa nhạy cảm.
                     </p>
                   </div>
@@ -480,9 +480,9 @@ export function SystemSettingsView() {
                           <div className="h-1.5 w-1.5 rounded-full bg-white" />
                         )}
                       </div>
-                      <span className="text-xs font-bold text-foreground">Kiểm duyệt trước (Tiền kiểm)</span>
+                      <span className="text-sm font-bold text-foreground">Kiểm duyệt trước (Tiền kiểm)</span>
                     </div>
-                    <p className="mt-2 text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
                       Bài viết được đưa vào hàng đợi kiểm duyệt. Quản trị viên phê duyệt thì bài mới xuất hiện công khai.
                     </p>
                   </div>
@@ -492,7 +492,7 @@ export function SystemSettingsView() {
               {/* Rate Limiting Inputs */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Thời gian chờ giữa 2 bài đăng (phút)
                   </label>
                   <input
@@ -506,13 +506,13 @@ export function SystemSettingsView() {
                         postCooldownMinutes: Number(e.target.value) || 1,
                       }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Mặc định: 5 phút</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Mặc định: 5 phút</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Thời gian chờ giữa 2 bình luận (giây)
                   </label>
                   <input
@@ -526,13 +526,13 @@ export function SystemSettingsView() {
                         commentCooldownSeconds: Number(e.target.value) || 10,
                       }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Mặc định: 30 giây</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Mặc định: 30 giây</p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Số bài đăng tối đa / ngày (Mem mới)
                   </label>
                   <input
@@ -546,15 +546,15 @@ export function SystemSettingsView() {
                         dailyPostLimitNewUsers: Number(e.target.value) || 3,
                       }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-4 text-base font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Áp dụng tài khoản &lt; 7 ngày</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Áp dụng tài khoản &lt; 7 ngày</p>
                 </div>
               </div>
 
               {/* Banned Keywords */}
               <div>
-                <label className="block text-xs font-semibold text-foreground">
+                <label className="block text-sm font-semibold text-foreground">
                   Danh sách từ khóa nhạy cảm / Chặn tự động (Phân cách bằng dấu phẩy)
                 </label>
                 <textarea
@@ -564,9 +564,9 @@ export function SystemSettingsView() {
                     setCommunityConfig((p) => ({ ...p, bannedKeywords: e.target.value }))
                   }
                   placeholder="lừa đảo, cam kết lãi khủng, ủy thác, ..."
-                  className="mt-1.5 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background p-3.5 text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 leading-relaxed shadow-2xs"
+                  className="mt-1.5 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background p-3.5 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 leading-relaxed shadow-2xs"
                 />
-                <p className="mt-1 text-[11px] text-muted-foreground">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Bài viết hoặc bình luận chứa các từ khóa này sẽ tự động bị tạm giữ để quản trị viên kiểm tra.
                 </p>
               </div>
@@ -580,7 +580,7 @@ export function SystemSettingsView() {
                 <h3 className="font-heading text-base font-bold text-foreground">
                   Giáo trình khóa học & Cấp dữ liệu thị trường
                 </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Cấu hình hành vi học tập và nguồn cấp chỉ số tài chính cho các công cụ định giá.
                 </p>
               </div>
@@ -589,7 +589,7 @@ export function SystemSettingsView() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="flex flex-col justify-between rounded-[10px] border border-slate-100 dark:border-border/80 bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <h4 className="text-xs font-bold text-foreground leading-snug">
+                    <h4 className="text-sm font-bold text-foreground leading-snug">
                       Đọc trước bài mở đầu (Guest Preview)
                     </h4>
                     <button
@@ -613,14 +613,14 @@ export function SystemSettingsView() {
                       />
                     </button>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Khách vãng lai chưa đăng nhập có thể xem bài học đầu tiên của mỗi khóa học để trải nghiệm.
                   </p>
                 </div>
 
                 <div className="flex flex-col justify-between rounded-[10px] border border-slate-100 dark:border-border/80 bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <h4 className="text-xs font-bold text-foreground leading-snug">
+                    <h4 className="text-sm font-bold text-foreground leading-snug">
                       Khu vực thảo luận bài học (Q&A)
                     </h4>
                     <button
@@ -644,14 +644,14 @@ export function SystemSettingsView() {
                       />
                     </button>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Hiển thị khung bình luận và giải đáp thắc mắc dưới mỗi bài học trong giáo trình.
                   </p>
                 </div>
 
                 <div className="flex flex-col justify-between rounded-[10px] border border-slate-100 dark:border-border/80 bg-slate-50/50 dark:bg-slate-900/30 p-5 space-y-3">
                   <div className="flex items-start justify-between gap-3">
-                    <h4 className="text-xs font-bold text-foreground leading-snug">
+                    <h4 className="text-sm font-bold text-foreground leading-snug">
                       Tự động lưu tiến độ (Auto-Save)
                     </h4>
                     <button
@@ -675,7 +675,7 @@ export function SystemSettingsView() {
                       />
                     </button>
                   </div>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     Tự động lưu % tiến độ hoàn thành bài học khi học viên cuộn qua 90% nội dung.
                   </p>
                 </div>
@@ -684,7 +684,7 @@ export function SystemSettingsView() {
               {/* Financial Data Feeds */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Nhà cung cấp dữ liệu thị trường mặc định:
                   </label>
                   <select
@@ -695,7 +695,7 @@ export function SystemSettingsView() {
                         marketDataProvider: e.target.value as any,
                       }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-3 text-xs font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-3 text-base font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   >
                     <option value="VNSTOCK">Vnstock Open Data (Khuyên dùng - Ổn định)</option>
                     <option value="SSI">SSI iBoard API Connector</option>
@@ -704,7 +704,7 @@ export function SystemSettingsView() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-semibold text-foreground">
                     Tần suất đồng bộ số liệu vĩ mô & cổ phiếu:
                   </label>
                   <select
@@ -715,7 +715,7 @@ export function SystemSettingsView() {
                         dataRefreshFrequency: e.target.value as any,
                       }))
                     }
-                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-3 text-xs font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
+                    className="mt-1.5 h-11 w-full rounded-[8px] border border-slate-200/80 dark:border-border bg-background px-3 text-base font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 shadow-2xs"
                   >
                     <option value="REALTIME">Thời gian thực (Trong phiên giao dịch)</option>
                     <option value="15_MINUTES">15 phút một lần</option>
@@ -735,25 +735,25 @@ export function SystemSettingsView() {
                   <h3 className="font-heading text-base font-bold text-foreground">
                     Cờ tính năng hệ thống (Feature Flags)
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-0.5">
+                  <p className="text-sm text-muted-foreground mt-0.5">
                     Bật hoặc tắt tức thời các tính năng thử nghiệm và module mới mà không cần khởi động lại server.
                   </p>
                 </div>
                 <Link
                   href="/quan-tri/tinh-nang"
-                  className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
+                  className="text-sm font-semibold text-emerald-600 hover:text-emerald-700 dark:text-emerald-400"
                 >
                   Quản lý chi tiết →
                 </Link>
               </div>
 
               {isFlagsLoading ? (
-                <div className="p-8 text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
+                <div className="p-8 text-center text-sm text-muted-foreground flex items-center justify-center gap-2">
                   <Loader2 className="h-4 w-4 animate-spin text-emerald-600" />
                   <span>Đang tải danh sách tính năng...</span>
                 </div>
               ) : featureFlags.length === 0 ? (
-                <div className="p-8 text-center text-xs text-muted-foreground border border-dashed rounded-[8px]">
+                <div className="p-8 text-center text-sm text-muted-foreground border border-dashed rounded-[8px]">
                   Chưa có cờ tính năng nào trong hệ thống.
                 </div>
               ) : (
@@ -765,11 +765,11 @@ export function SystemSettingsView() {
                     >
                       <div className="min-w-0 pr-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-bold text-foreground">
+                          <span className="font-mono text-sm font-bold text-foreground">
                             {flag.key}
                           </span>
                           <span
-                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${
                               flag.isEnabled
                                 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
                                 : 'bg-slate-100 text-slate-600 dark:bg-muted dark:text-slate-400'
@@ -779,7 +779,7 @@ export function SystemSettingsView() {
                           </span>
                         </div>
                         {flag.description && (
-                          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                          <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                             {flag.description}
                           </p>
                         )}
@@ -814,9 +814,9 @@ export function SystemSettingsView() {
                 <h3 className="font-heading text-base font-bold text-foreground">
                   Tham số cấu hình JSON chuyên sâu (Database Raw Values)
                 </h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
+                <p className="text-sm text-muted-foreground mt-0.5">
                   Dành riêng cho kỹ sư hệ thống kiểm tra và hiệu chỉnh trực tiếp các key-value trong bảng{' '}
-                  <code className="rounded bg-slate-100 dark:bg-muted px-1.5 py-0.5 font-mono text-[11px] text-emerald-600">
+                  <code className="rounded bg-slate-100 dark:bg-muted px-1.5 py-0.5 font-mono text-sm text-emerald-600">
                     system_settings
                   </code>.
                 </p>
@@ -825,7 +825,7 @@ export function SystemSettingsView() {
               {feedback && (
                 <div
                   role={feedback.type === 'error' ? 'alert' : 'status'}
-                  className={`flex items-center gap-2 p-3.5 rounded-[8px] border text-xs font-medium ${
+                  className={`flex items-center gap-2 p-3.5 rounded-[8px] border text-sm font-medium ${
                     feedback.type === 'error'
                       ? 'bg-rose-50 border-rose-200 text-rose-700 dark:bg-rose-950/40 dark:border-rose-900/60 dark:text-rose-300'
                       : 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950/40 dark:border-emerald-900/60 dark:text-emerald-300'
@@ -841,7 +841,7 @@ export function SystemSettingsView() {
               )}
 
               {settings.length === 0 ? (
-                <div className="p-12 text-center rounded-[8px] border border-dashed border-slate-200 dark:border-border text-xs text-muted-foreground space-y-3">
+                <div className="p-12 text-center rounded-[8px] border border-dashed border-slate-200 dark:border-border text-sm text-muted-foreground space-y-3">
                   <Sliders className="h-8 w-8 mx-auto text-muted-foreground/60" />
                   <p className="font-semibold text-foreground">Chưa có cài đặt raw nào trong cơ sở dữ liệu.</p>
                   <p>Khi bạn lưu cài đặt ở các tab trên, dữ liệu sẽ tự động xuất hiện tại đây.</p>
@@ -858,11 +858,11 @@ export function SystemSettingsView() {
                       >
                         <div className="flex items-center justify-between gap-4 border-b border-slate-200/60 dark:border-border/60 pb-3">
                           <div>
-                            <span className="font-mono text-xs font-bold text-foreground">
+                            <span className="font-mono text-sm font-bold text-foreground">
                               {setting.key}
                             </span>
                             {setting.description && !isEditing && (
-                              <p className="text-xs text-muted-foreground pt-0.5">
+                              <p className="text-sm text-muted-foreground pt-0.5">
                                 {setting.description}
                               </p>
                             )}
@@ -873,7 +873,7 @@ export function SystemSettingsView() {
                               variant="outline"
                               size="sm"
                               onClick={() => startEditRaw(setting)}
-                              className="text-xs h-8 px-3 rounded-[6px] gap-1.5 font-mono"
+                              className="text-sm h-8 px-3 rounded-[6px] gap-1.5 font-mono"
                             >
                               <Edit3 className="h-3 w-3" />
                               <span>Edit</span>
@@ -886,7 +886,7 @@ export function SystemSettingsView() {
                             <div>
                               <label
                                 htmlFor={`edit-desc-${setting.key}`}
-                                className="block text-xs font-semibold text-foreground font-mono"
+                                className="block text-sm font-semibold text-foreground font-mono"
                               >
                                 Description
                               </label>
@@ -895,14 +895,14 @@ export function SystemSettingsView() {
                                 type="text"
                                 value={descriptionText}
                                 onChange={(e) => setDescriptionText(e.target.value)}
-                                className="mt-1 w-full rounded-[6px] border border-slate-200 dark:border-border bg-white dark:bg-card p-2 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+                                className="mt-1 w-full rounded-[6px] border border-slate-200 dark:border-border bg-white dark:bg-card p-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
                               />
                             </div>
 
                             <div>
                               <label
                                 htmlFor={`edit-json-${setting.key}`}
-                                className="block text-xs font-semibold text-foreground font-mono"
+                                className="block text-sm font-semibold text-foreground font-mono"
                               >
                                 JSON Configuration Payload
                               </label>
@@ -911,7 +911,7 @@ export function SystemSettingsView() {
                                 rows={6}
                                 value={jsonText}
                                 onChange={(e) => setJsonText(e.target.value)}
-                                className="mt-1 w-full rounded-[6px] border border-slate-200 dark:border-border bg-white dark:bg-card p-3 font-mono text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
+                                className="mt-1 w-full rounded-[6px] border border-slate-200 dark:border-border bg-white dark:bg-card p-3 font-mono text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
                               />
                             </div>
 
@@ -920,7 +920,7 @@ export function SystemSettingsView() {
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setEditingKey(null)}
-                                className="rounded-[6px] text-xs h-8 px-3 font-mono"
+                                className="rounded-[6px] text-sm h-8 px-3 font-mono"
                               >
                                 Cancel
                               </Button>
@@ -928,7 +928,7 @@ export function SystemSettingsView() {
                                 size="sm"
                                 onClick={() => handleSaveRaw(setting.key)}
                                 disabled={updateSettingMutation.isPending}
-                                className="rounded-[6px] text-xs h-8 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono gap-1.5"
+                                className="rounded-[6px] text-sm h-8 px-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono gap-1.5"
                               >
                                 <Save className="h-3 w-3" />
                                 <span>Save Configuration</span>
@@ -936,7 +936,7 @@ export function SystemSettingsView() {
                             </div>
                           </div>
                         ) : (
-                          <pre className="p-3.5 rounded-[6px] bg-slate-900 text-slate-100 text-xs font-mono overflow-x-auto max-h-52">
+                          <pre className="p-3.5 rounded-[6px] bg-slate-900 text-slate-100 text-sm font-mono overflow-x-auto max-h-52">
                             {JSON.stringify(setting.value, null, 2)}
                           </pre>
                         )}

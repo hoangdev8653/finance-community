@@ -602,15 +602,11 @@ export function UserManagementView() {
         {/* Filter Toolbar */}
         <div className="grid gap-3 border-b border-slate-100 p-4 sm:grid-cols-2 lg:grid-cols-[minmax(280px,1.5fr)_minmax(180px,1fr)_minmax(180px,1fr)] lg:items-center dark:border-border/40">
           {/* Smart Search */}
-          <div className="relative min-w-0 [&_input]:h-10 [&_input]:rounded-lg [&_input]:border-slate-200/80 [&_input]:bg-background [&_input]:pl-10 [&_input]:text-sm [&_input]:text-foreground [&_input]:placeholder:text-muted-foreground [&_input]:shadow-2xs [&_input]:focus:border-emerald-500 [&_input]:focus:ring-1 [&_input]:focus:ring-emerald-500 dark:[&_input]:border-border/60">
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 z-10 h-4 w-4 -translate-y-1/2 text-muted-foreground"
-              aria-hidden="true"
-            />
+          <div className="relative min-w-0">
             <AdminSearchInput
               value={userSearch}
               onValueChange={setUserSearch}
-              placeholder="Tìm theo email, tên, username hoặc UUID..."
+              placeholder="Email, tên hoặc username..."
               aria-label="Tìm kiếm user"
             />
           </div>

@@ -43,6 +43,8 @@ export interface AdminSearchInputProps
    * Custom CSS classes for the outer wrapper container.
    */
   containerClassName?: string;
+  /** Let the search control fill the available row instead of using its default width. */
+  fullWidth?: boolean;
 }
 
 export function AdminSearchInput({
@@ -54,8 +56,9 @@ export function AdminSearchInput({
   isLoading = false,
   syncWithUrl = false,
   queryParamKey = 'q',
-  placeholder = 'Tìm kiếm...',
+  placeholder = '',
   containerClassName = '',
+  fullWidth = false,
   className = '',
   disabled,
   ...props
@@ -137,18 +140,18 @@ export function AdminSearchInput({
 
   return (
     <div
-      className={`relative flex w-full items-center sm:w-80 lg:w-96 ${containerClassName}`}
+      className={`relative flex w-full min-w-0 items-center sm:w-full sm:max-w-[680px] ${containerClassName}`}
       role="search"
     >
       {/* Search or Loading Icon */}
       <div
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors"
+        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 transition-colors dark:text-slate-300"
         aria-hidden="true"
       >
         {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin text-primary" data-testid="search-spinner" />
+          <Loader2 className="h-4 w-4 animate-spin text-emerald-700" data-testid="search-spinner" />
         ) : (
-          <Search className="h-4 w-4 text-muted-foreground" data-testid="search-icon" />
+          <Search className="h-4 w-4 text-slate-600 dark:text-slate-300" data-testid="search-icon" />
         )}
       </div>
 
@@ -160,8 +163,8 @@ export function AdminSearchInput({
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        aria-label={props['aria-label'] || placeholder}
-        className={`h-10 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-10 text-[13px] text-slate-700 placeholder:text-slate-400 transition-colors focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/10 disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        aria-label={props['aria-label'] || placeholder || 'Tìm kiếm'}
+        className={`h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white pl-10 pr-10 text-base font-medium text-slate-900 shadow-sm transition-[border-color,background-color,box-shadow] duration-200 hover:border-slate-400 focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:border-slate-500 dark:focus:border-emerald-500 dark:focus:bg-slate-900 ${className}`}
         {...props}
       />
 
@@ -170,7 +173,7 @@ export function AdminSearchInput({
         <button
           type="button"
           onClick={handleClear}
-          className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-600 transition-colors hover:bg-slate-200/70 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/30 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white"
           aria-label="Xóa tìm kiếm"
           title="Xóa tìm kiếm (Esc)"
         >

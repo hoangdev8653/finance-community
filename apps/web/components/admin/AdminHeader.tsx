@@ -29,14 +29,17 @@ export function AdminHeader() {
         </button>
 
         {/* Big Rounded Search Input matching dashboard.png */}
-        <div className="relative hidden w-full max-w-[480px] sm:block">
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
-            <Search className="h-4 w-4 text-slate-400" aria-hidden="true" />
+        <div className="group relative hidden w-full max-w-[560px] sm:block">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+            <span className="grid h-7 w-7 place-items-center rounded-lg bg-white text-slate-500 shadow-sm ring-1 ring-slate-200/70 transition-colors group-focus-within:text-emerald-700 dark:bg-slate-800 dark:ring-slate-700">
+              <Search className="h-4 w-4" aria-hidden="true" />
+            </span>
           </div>
           <input
             type="search"
+            aria-label="Tìm kiếm người dùng, khóa học và bài viết"
             placeholder="Tìm kiếm người dùng, khóa học, bài viết..."
-            className="h-11 w-full rounded-[8px] border border-slate-200/80 bg-slate-50/50 pl-11 pr-4 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-emerald-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800/60 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-emerald-500 dark:focus:bg-slate-900"
+            className="h-11 w-full rounded-xl border border-slate-200/70 bg-slate-50 pl-[52px] pr-4 text-sm font-medium text-slate-800 shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-[border-color,background-color,box-shadow] duration-200 placeholder:font-normal placeholder:text-slate-400 hover:border-slate-300 hover:bg-white focus:border-emerald-400 focus:bg-white focus:outline-none focus:ring-[3px] focus:ring-emerald-500/15 dark:border-slate-700/80 dark:bg-slate-800/70 dark:text-slate-100 dark:placeholder:text-slate-500 dark:hover:border-slate-600 dark:hover:bg-slate-800 dark:focus:border-emerald-500 dark:focus:bg-slate-900"
           />
         </div>
       </div>

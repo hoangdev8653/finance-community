@@ -13,7 +13,6 @@ import {
   Home,
   Layers,
   Map,
-  MessageCircle,
   Settings,
   Tags,
   Users,
@@ -50,7 +49,6 @@ const navGroups: NavGroup[] = [
     label: 'CỘNG ĐỒNG',
     items: [
       { href: '/quan-tri/bai-viet', label: 'Bài viết cộng đồng', icon: FileText },
-      { href: '/quan-tri/binh-luan', label: 'Bình luận', icon: MessageCircle },
       { href: '/quan-tri/kiem-duyet', label: 'Kiểm duyệt', icon: CheckSquare },
     ],
   },
@@ -82,7 +80,7 @@ export function AdminNav() {
   };
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col justify-between border-r border-border bg-card px-4 py-6 lg:flex text-card-foreground">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col justify-between border-r border-slate-200/70 bg-card px-4 py-6 text-card-foreground shadow-[1px_0_10px_rgba(15,23,42,0.025)] transition-[border-color,box-shadow] duration-200 dark:border-slate-800/70 lg:flex">
       <div className="space-y-6">
         {/* Brand Logo & Slogan (Centered) */}
         <div className="flex flex-col items-center justify-center text-center px-1">

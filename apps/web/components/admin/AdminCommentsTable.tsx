@@ -159,7 +159,7 @@ export function AdminCommentsTable() {
             setPage(1);
           }}
           isLoading={isLoading}
-          placeholder="Tìm theo nội dung, tác giả, bài viết..."
+          placeholder="Nội dung, tác giả hoặc bài viết..."
           aria-label="Tìm kiếm bình luận"
         />
         <div className="flex flex-wrap items-center gap-3">

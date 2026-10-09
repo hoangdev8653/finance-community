@@ -5,7 +5,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Compass,
   Plus,
-  Search,
   Edit2,
   Trash2,
   CheckCircle2,
@@ -23,6 +22,7 @@ import {
 import { postsService } from '@/lib/posts/posts-service';
 import type { DomainEntity } from '@/types/content';
 import { Button } from '@/components/ui/Button';
+import { AdminSearchInput } from './AdminSearchInput';
 import { useToast } from '@/lib/toast/ToastContext';
 import { getDomainColorTheme } from '@/lib/utils/domain-colors';
 
@@ -337,7 +337,7 @@ export function DomainManagementView() {
                 <Icon className="h-6 w-6" />
               </div>
               <div className="min-w-0">
-                <p className="truncate text-xs font-medium text-muted-foreground">{stat.label}</p>
+                <p className="truncate text-sm font-medium text-slate-600 dark:text-slate-300">{stat.label}</p>
                 <p className="mt-0.5 font-heading text-2xl font-bold tabular-nums text-foreground">
                   {stat.value.toLocaleString('vi-VN')}
                 </p>
@@ -370,10 +370,10 @@ export function DomainManagementView() {
                 key={tab.value}
                 type="button"
                 onClick={() => setStatusFilter(tab.value)}
-                className={`relative shrink-0 border-b-2 px-4 py-3.5 text-[13px] font-semibold transition-colors ${
+                className={`relative shrink-0 border-b-2 px-4 py-3.5 text-sm font-semibold transition-colors ${
                   isActive
                     ? 'border-emerald-600 font-semibold text-emerald-600 dark:border-emerald-500 dark:text-emerald-400'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
+                    : 'border-transparent text-slate-600 dark:text-slate-300 hover:text-foreground'
                 }`}
               >
                 <span>{tab.label}</span>{' '}
@@ -385,26 +385,24 @@ export function DomainManagementView() {
 
         {/* Filter Toolbar (Matching AdminPostsTable) */}
         <div className="flex flex-col gap-3 border-b border-border bg-muted/20 p-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="relative flex-1 min-w-[280px]">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm kiếm lĩnh vực theo tên, mã code, slug..."
-              className="h-10 w-full rounded-[8px] border border-input bg-background pl-9 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500"
-            />
-          </div>
+          <AdminSearchInput
+            value={search}
+            onValueChange={setSearch}
+            fullWidth
+            containerClassName="min-w-[220px] flex-1"
+            placeholder="Tên lĩnh vực, mã hoặc slug..."
+            aria-label="Tìm kiếm lĩnh vực"
+          />
 
-          <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+          <div className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300">
             <span>Hiển thị {filteredDomains.length} / {domains.length} lĩnh vực</span>
           </div>
         </div>
 
         {/* Table Content */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-border/60 text-muted-foreground font-semibold">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-border/60 text-slate-700 dark:text-slate-200 font-semibold">
               <tr>
                 <th className="py-3.5 px-5">Lĩnh vực</th>
                 <th className="py-3.5 px-4">Mã Code</th>
@@ -449,21 +447,21 @@ export function DomainManagementView() {
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-heading font-bold text-sm text-foreground">
+                              <span className="font-heading font-bold text-base text-foreground">
                                 {domain.name}
                               </span>
                               {domain.isPromoted && (
-                                <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-medium text-amber-600 dark:text-amber-400">
+                                <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
                                   <Sparkles className="h-2.5 w-2.5" /> Nổi bật
                                 </span>
                               )}
                             </div>
                             {domain.description ? (
-                              <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                              <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5">
                                 {domain.description}
                               </p>
                             ) : (
-                              <p className="text-[11px] text-muted-foreground/60 mt-0.5">
+                              <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5">
                                 {domain.nameVi || domain.nameEn || 'Trục nội dung hệ thống'}
                               </p>
                             )}
@@ -473,13 +471,13 @@ export function DomainManagementView() {
 
                       {/* Code */}
                       <td className="py-4 px-4 font-mono">
-                        <span className={`inline-flex items-center rounded-[6px] border px-2.5 py-1 text-xs font-semibold ${domainColor.border} ${domainColor.bg} ${domainColor.text}`}>
+                        <span className={`inline-flex items-center rounded-[6px] border px-2.5 py-1 text-sm font-semibold ${domainColor.border} ${domainColor.bg} ${domainColor.text}`}>
                           {domain.code}
                         </span>
                       </td>
 
                     {/* Slug */}
-                    <td className="py-4 px-4 font-mono text-muted-foreground text-xs">
+                    <td className="py-4 px-4 text-sm font-medium text-slate-600 dark:text-slate-300">
                       /{domain.slug}
                     </td>
 
@@ -487,25 +485,25 @@ export function DomainManagementView() {
                     <td className="py-4 px-4 text-center">
                       <div className="inline-flex items-center gap-2">
                         <span
-                          className="inline-flex items-center gap-1 text-xs font-medium text-slate-600 dark:text-slate-400"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-slate-700 dark:text-slate-300"
                           title="Danh mục con"
                         >
-                          <FolderTree className="h-3.5 w-3.5 text-muted-foreground" />
+                          <FolderTree className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                           {domain.categoryCount ?? 0}
                         </span>
-                        <span className="text-muted-foreground/60">•</span>
+                        <span className="text-slate-400 dark:text-slate-500">•</span>
                         <span
-                          className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700 dark:text-emerald-300"
                           title="Khóa học con"
                         >
-                          <BookOpen className="h-3.5 w-3.5 text-emerald-500" />
+                          <BookOpen className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                           {domain.courseCount ?? 0}
                         </span>
                       </div>
                     </td>
 
                     {/* Sort Order */}
-                    <td className="py-4 px-4 text-center font-mono text-muted-foreground">
+                    <td className="py-4 px-4 text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
                       {domain.sortOrder}
                     </td>
 
@@ -514,7 +512,7 @@ export function DomainManagementView() {
                       <button
                         type="button"
                         onClick={() => handleToggleStatus(domain)}
-                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-semibold transition-all border ${
+                        className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold transition-all border ${
                           domain.isActive
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800/60 hover:bg-emerald-100'
                             : 'bg-rose-50 text-rose-700 border-rose-200/60 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/60 hover:bg-rose-100'

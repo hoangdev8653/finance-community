@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import {
   Plus,
   Eye,
@@ -775,28 +776,7 @@ export function AdminPostsTable() {
         {/* Filter Toolbar */}
         <div className="flex flex-col gap-3 border-b border-border bg-muted/20 p-4 lg:flex-row lg:items-center lg:justify-between">
           {/* Search Input */}
-          <div className="relative flex-1 min-w-[280px]">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setPage(1);
-              }}
-              placeholder="Tìm kiếm bài viết theo tiêu đề, nội dung, tác giả..."
-              className="h-11 w-full rounded-lg border border-border bg-background pl-10 pr-9 text-sm font-medium text-foreground placeholder:font-normal placeholder:text-muted-foreground transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-md p-0.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+          <AdminSearchInput value={search} onValueChange={(value) => { setSearch(value); setPage(1); }} placeholder="Tiêu đề, nội dung hoặc tác giả..." aria-label="Tìm kiếm bài viết" fullWidth containerClassName="min-w-[220px] flex-1" />
 
           {/* Dropdown Filters & Actions */}
           <div className="flex flex-wrap items-center gap-2.5">
