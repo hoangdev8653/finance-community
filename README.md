@@ -26,7 +26,7 @@ A high-precision financial knowledge and community platform for editorial resear
 
 ### 🗄️ 2. Khởi động Cơ sở Dữ liệu (Database)
 
-Dự án đã cấu hình sẵn Docker Compose tự động nạp toàn bộ Schema cơ sở dữ liệu ([docs/DATABASE_SCHEMA.sql](file:///d:/tools/finance-community/docs/DATABASE_SCHEMA.sql)).
+Dự án cấu hình Docker Compose để khởi tạo PostgreSQL cục bộ từ schema và các migration được mount trong `docker-compose.yml`. Đây là baseline khởi tạo database mới; database đã có volume sẽ không tự chạy lại các tệp init.
 
 Chạy lệnh tại thư mục gốc của dự án:
 ```bash
@@ -88,7 +88,7 @@ npm run dev
 Dự án đã chuẩn bị sẵn bộ Collection hoàn chỉnh gồm hơn 40 API chuẩn RESTful:
 1. Mở ứng dụng **Postman**.
 2. Bấm nút **Import** ở góc trên bên trái.
-3. Chọn file: [docs/finance_community_postman_collection.json](file:///d:/tools/finance-community/docs/finance_community_postman_collection.json).
+3. Chọn file: [docs/finance_community_postman_collection.json](docs/finance_community_postman_collection.json).
 4. Biến môi trường mặc định:
    - `{{baseUrl}}`: `http://localhost:4000`
    - `{{token}}`: Dán chuỗi Bearer JWT Token sau khi đăng nhập.

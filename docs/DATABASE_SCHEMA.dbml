@@ -1,0 +1,482 @@
+// Finance Community schema reference for dbdiagram.io (DBML)
+// Based on DATABASE_SCHEMA_FULL.sql; verify against the live database before using as an authoritative schema.
+
+Table users {
+  id uuid [pk]
+  email varchar(255) [not null, unique]
+  status varchar(20) [not null, default: 'ACTIVE']
+  provider varchar(30) [not null, default: 'LOCAL']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+}
+
+Table roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(50) [not null, unique]
+  description text
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table domains {
+  id uuid [pk, default: `gen_random_uuid()`]
+  code varchar(50) [not null, unique]
+  slug varchar(80) [not null, unique]
+  name varchar(120) [not null]
+  name_vi varchar(120)
+  name_en varchar(120)
+  description text
+  sort_order integer [not null, default: 0]
+  is_active boolean [not null, default: true]
+  is_promoted boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table media {
+  id uuid [pk, default: `gen_random_uuid()`]
+  uploader_id uuid [not null]
+  cloudinary_public_id varchar(255) [not null, unique]
+  secure_url varchar(500) [not null]
+  resource_type varchar(20) [not null]
+  format varchar(20)
+  width integer
+  height integer
+  file_size integer
+  content_hash varchar(64)
+  purpose varchar(20) [not null, default: 'content']
+  created_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+}
+
+Table categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(100) [not null]
+  slug varchar(120) [not null]
+  scope varchar(20) [not null]
+  domain_id uuid
+  parent_id uuid
+  name_vi varchar(100)
+  name_en varchar(100)
+  content_types jsonb [not null, default: `'[]'`]
+  description text
+  sort_order integer [not null, default: 0]
+  is_active boolean [not null, default: true]
+  is_promoted boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (scope, slug) [unique]
+    (scope, name) [unique]
+  }
+}
+
+Table profiles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, unique]
+  username varchar(50) [not null, unique]
+  display_name varchar(100)
+  avatar_media_id uuid
+  avatar_url varchar(2048)
+  bio text
+  reputation_score integer [not null, default: 0]
+  badge varchar(50) [not null, default: 'MEMBER']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table auth_credentials {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, unique]
+  password_hash varchar(255) [not null]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table user_roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  role_id uuid [not null]
+  assigned_by uuid
+  assigned_at timestamptz [not null, default: `now()`]
+  indexes {
+    (user_id, role_id) [unique]
+  }
+}
+
+Table tags {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(100) [not null, unique]
+  slug varchar(120) [not null, unique]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table posts {
+  id uuid [pk, default: `gen_random_uuid()`]
+  author_id uuid [not null]
+  content_type varchar(20) [not null]
+  title varchar(300) [not null]
+  slug varchar(350) [not null]
+  body text
+  cover_media_id uuid
+  category_id uuid
+  domain_id uuid
+  status varchar(20) [not null, default: 'DRAFT']
+  editorial_status varchar(20) [not null, default: 'DRAFT']
+  moderation_status varchar(20) [not null, default: 'UNREVIEWED']
+  moderated_by uuid
+  moderated_at timestamptz
+  moderation_reason text
+  meta_title varchar(70)
+  meta_description varchar(160)
+  view_count integer [not null, default: 0]
+  published_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+
+  indexes {
+    (content_type, slug) [unique]
+    (status, published_at)
+    author_id
+    category_id
+    domain_id
+    created_at
+  }
+}
+
+Table topics {
+  id uuid [pk, default: `gen_random_uuid()`]
+  domain_id uuid [not null]
+  category_id uuid
+  parent_id uuid
+  name varchar(120) [not null]
+  slug varchar(140) [not null]
+  description text
+  sort_order integer [not null, default: 0]
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  indexes {
+    (domain_id, slug) [unique]
+  }
+}
+
+Table post_tags {
+  id uuid [pk, default: `gen_random_uuid()`]
+  post_id uuid [not null]
+  tag_id uuid [not null]
+  indexes {
+    (post_id, tag_id) [unique]
+  }
+}
+
+Table post_media {
+  id uuid [pk, default: `gen_random_uuid()`]
+  post_id uuid [not null]
+  media_id uuid [not null]
+  sort_order integer [not null, default: 0]
+  indexes {
+    (post_id, media_id) [unique]
+  }
+}
+
+Table post_topics {
+  post_id uuid [not null]
+  topic_id uuid [not null]
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (post_id, topic_id) [pk]
+    topic_id
+  }
+}
+
+Table comments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  post_id uuid [not null]
+  author_id uuid [not null]
+  parent_id uuid
+  body text [not null]
+  media_id uuid
+  status varchar(20) [not null, default: 'VISIBLE']
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  deleted_at timestamptz
+}
+
+Table post_reactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  post_id uuid [not null]
+  reaction_type varchar(20) [not null, default: 'LIKE']
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (user_id, post_id) [unique]
+    post_id
+  }
+}
+
+Table comment_reactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  comment_id uuid [not null]
+  reaction_type varchar(20) [not null, default: 'LIKE']
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (user_id, comment_id) [unique]
+    comment_id
+  }
+}
+
+Table follows {
+  id uuid [pk, default: `gen_random_uuid()`]
+  follower_id uuid [not null]
+  following_id uuid [not null]
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (follower_id, following_id) [unique]
+  }
+}
+
+Table post_bookmarks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  post_id uuid [not null]
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (user_id, post_id) [unique]
+  }
+}
+
+Table notifications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  type varchar(30) [not null]
+  title varchar(255) [not null]
+  message text
+  reference_post_id uuid
+  reference_comment_id uuid
+  reference_user_id uuid
+  is_read boolean [not null, default: false]
+  read_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table reports {
+  id uuid [pk, default: `gen_random_uuid()`]
+  reporter_id uuid
+  reported_post_id uuid
+  reported_comment_id uuid
+  reported_user_id uuid
+  reason varchar(100) [not null]
+  description text
+  status varchar(20) [not null, default: 'PENDING']
+  created_at timestamptz [not null, default: `now()`]
+  resolved_at timestamptz
+}
+
+Table moderation_actions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  moderator_id uuid [not null]
+  report_id uuid
+  action_type varchar(30) [not null]
+  target_user_id uuid
+  reason text [not null]
+  metadata jsonb
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table audit_logs {
+  id uuid [pk, default: `gen_random_uuid()`]
+  actor_id uuid
+  action varchar(100) [not null]
+  entity_type varchar(50) [not null]
+  entity_id varchar(100)
+  metadata jsonb
+  ip_address varchar(45)
+  reason text
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table system_settings {
+  id uuid [pk, default: `gen_random_uuid()`]
+  key varchar(100) [not null, unique]
+  value jsonb [not null]
+  description text
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table feature_flags {
+  id uuid [pk, default: `gen_random_uuid()`]
+  key varchar(100) [not null, unique]
+  is_enabled boolean [not null, default: false]
+  description text
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table learning_series {
+  id uuid [pk, default: `gen_random_uuid()`]
+  title varchar(300) [not null]
+  slug varchar(320) [not null, unique]
+  description text
+  estimated_duration_minutes integer
+  learning_outcomes jsonb [not null, default: `'[]'`]
+  hero_media_id uuid
+  hero_alt_text varchar(250)
+  outcomes_media_id uuid
+  outcomes_alt_text varchar(250)
+  cta_media_id uuid
+  cta_alt_text varchar(250)
+  domain_id uuid [not null]
+  category_id uuid [not null]
+  status varchar(20) [not null, default: 'DRAFT']
+  is_published boolean [not null, default: false]
+  created_by uuid [not null]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table learning_series_posts {
+  series_id uuid [not null]
+  post_id uuid [not null]
+  lesson_order integer [not null]
+  is_required boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  indexes {
+    (series_id, post_id) [unique]
+    (series_id, lesson_order) [unique]
+  }
+}
+
+Table learning_sources {
+  id uuid [pk, default: `gen_random_uuid()`]
+  post_id uuid [not null]
+  title varchar(300) [not null]
+  url varchar(1000) [not null]
+  publisher varchar(200)
+  source_type varchar(30) [not null, default: 'REFERENCE']
+  checked_at timestamptz
+  is_public boolean [not null, default: true]
+  notes text
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table quizzes {
+  id uuid [pk, default: `gen_random_uuid()`]
+  post_id uuid [not null]
+  title varchar(200) [not null]
+  description text
+  sort_order integer [not null, default: 0]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  indexes {
+    post_id [unique]
+  }
+}
+
+Table quiz_questions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  quiz_id uuid [not null]
+  prompt text [not null]
+  options jsonb [not null, default: `'[]'`]
+  explanation text
+  sort_order integer [not null, default: 0]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table learning_progress {
+  user_id uuid [not null]
+  post_id uuid [not null]
+  completed_at timestamptz
+  last_viewed_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  indexes {
+    (user_id, post_id) [pk]
+  }
+}
+
+Table refresh_tokens {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null]
+  token_hash varchar(64) [not null]
+  family uuid [not null]
+  is_revoked boolean [not null, default: false]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
+}
+
+Table page_views_daily {
+  day date [pk]
+  views integer [not null, default: 0]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Table post_views_daily {
+  day date [pk]
+  views integer [not null, default: 0]
+  updated_at timestamptz [not null, default: `now()`]
+}
+
+Ref: media.uploader_id > users.id
+Ref: categories.domain_id > domains.id
+Ref: categories.parent_id > categories.id
+Ref: profiles.user_id > users.id
+Ref: profiles.avatar_media_id > media.id
+Ref: auth_credentials.user_id > users.id
+Ref: user_roles.user_id > users.id
+Ref: user_roles.role_id > roles.id
+Ref: user_roles.assigned_by > users.id
+Ref: posts.author_id > users.id
+Ref: posts.cover_media_id > media.id
+Ref: posts.category_id > categories.id
+Ref: posts.domain_id > domains.id
+Ref: posts.moderated_by > users.id
+Ref: topics.domain_id > domains.id
+Ref: topics.category_id > categories.id
+Ref: topics.parent_id > topics.id
+Ref: post_tags.post_id > posts.id
+Ref: post_tags.tag_id > tags.id
+Ref: post_media.post_id > posts.id
+Ref: post_media.media_id > media.id
+Ref: post_topics.post_id > posts.id
+Ref: post_topics.topic_id > topics.id
+Ref: comments.post_id > posts.id
+Ref: comments.author_id > users.id
+Ref: comments.parent_id > comments.id
+Ref: comments.media_id > media.id
+Ref: post_reactions.user_id > users.id
+Ref: post_reactions.post_id > posts.id
+Ref: comment_reactions.user_id > users.id
+Ref: comment_reactions.comment_id > comments.id
+Ref: follows.follower_id > users.id
+Ref: follows.following_id > users.id
+Ref: post_bookmarks.user_id > users.id
+Ref: post_bookmarks.post_id > posts.id
+Ref: notifications.user_id > users.id
+Ref: notifications.reference_post_id > posts.id
+Ref: notifications.reference_comment_id > comments.id
+Ref: notifications.reference_user_id > users.id
+Ref: reports.reporter_id > users.id
+Ref: reports.reported_post_id > posts.id
+Ref: reports.reported_comment_id > comments.id
+Ref: reports.reported_user_id > users.id
+Ref: moderation_actions.moderator_id > users.id
+Ref: moderation_actions.report_id > reports.id
+Ref: moderation_actions.target_user_id > users.id
+Ref: audit_logs.actor_id > users.id
+Ref: learning_series.hero_media_id > media.id
+Ref: learning_series.outcomes_media_id > media.id
+Ref: learning_series.cta_media_id > media.id
+Ref: learning_series.domain_id > domains.id
+Ref: learning_series.category_id > categories.id
+Ref: learning_series.created_by > users.id
+Ref: learning_series_posts.series_id > learning_series.id
+Ref: learning_series_posts.post_id > posts.id
+Ref: learning_sources.post_id > posts.id
+Ref: quizzes.post_id > posts.id
+Ref: quiz_questions.quiz_id > quizzes.id
+Ref: learning_progress.user_id > users.id
+Ref: learning_progress.post_id > posts.id
+Ref: refresh_tokens.user_id > users.id

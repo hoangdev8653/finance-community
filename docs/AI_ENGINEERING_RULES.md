@@ -1,7 +1,6 @@
-# AI Engineering Rules v1.0
+# AI Engineering Rules
 
-These rules are mandatory guidance for Antigravity and any AI-assisted
-implementation.
+These rules guide AI-assisted implementation in this repository.
 
 ## Rule 1 --- Read before modifying
 
@@ -9,9 +8,10 @@ Before changing architecture, database, authentication, or core modules,
 read:
 
 -   README.md
--   PRODUCT_SPEC.md
--   SYSTEM_ARCHITECTURE.md
--   DOMAIN_ARCHITECTURE.md
+-   PRODUCT_DIRECTION.md
+-   architecture.md
+-   BACKEND_SYSTEM_ARCHITECTURE.md
+-   CONTENT_ARCHITECTURE.md
 -   this file
 
 ## Rule 2 --- Do not invent approved architecture
