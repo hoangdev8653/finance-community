@@ -17,12 +17,14 @@ import {
   Calendar,
   ExternalLink,
   Sparkles,
+  Trash2,
 } from 'lucide-react';
 import { learningAdminService } from '@/lib/learning/learning-admin-service';
 import type { EditorialStatus, LearningAdminPost } from '@/types/learning-admin';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/lib/toast/ToastContext';
 import { useDebounce } from '@/lib/hooks/use-debounce';
+import { AdminConfirmDialog } from './AdminConfirmDialog';
 
 type FilterTab = 'ALL' | EditorialStatus;
 
@@ -71,6 +73,9 @@ export function LearningEditorialQueue() {
   const [allPosts, setAllPosts] = useState<LearningAdminPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<LearningAdminPost | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 250);
 
@@ -106,6 +111,28 @@ export function LearningEditorialQueue() {
       toast.error('Không thể cập nhật trạng thái bài học. Vui lòng thử lại.');
     } finally {
       setSavingId(null);
+    }
+  }
+
+  function requestDelete(post: LearningAdminPost) {
+    setDeleteError(null);
+    setDeleteTarget(post);
+  }
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      await learningAdminService.deletePost(deleteTarget.id);
+      setAllPosts((current) => current.filter((post) => post.id !== deleteTarget.id));
+      toast.success(`Đã chuyển bài học “${deleteTarget.title}” vào thùng lưu trữ.`);
+      setDeleteTarget(null);
+      setDeleteError(null);
+    } catch (reason: any) {
+      const rawMessage = reason?.response?.data?.message || reason?.message;
+      setDeleteError(Array.isArray(rawMessage) ? rawMessage.join(', ') : rawMessage || 'Không thể xóa bài học. Vui lòng thử lại.');
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -392,7 +419,7 @@ export function LearningEditorialQueue() {
                   </div>
 
                   {/* Right: Actions & Status Select */}
-                  <div className="flex items-center gap-3 shrink-0 self-end lg:self-center">
+                  <div className="flex items-center gap-2 shrink-0 self-end lg:self-center">
                     <div className="relative">
                       <select
                         value={post.editorialStatus}
@@ -425,6 +452,18 @@ export function LearningEditorialQueue() {
                     >
                       <ExternalLink className="h-4 w-4" />
                     </Link>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => requestDelete(post)}
+                      disabled={deleting || isSaving}
+                      title="Xóa bài học"
+                      aria-label={`Xóa bài học ${post.title}`}
+                      className="h-10 w-10 rounded-lg border-rose-200 text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:border-rose-900/60 dark:hover:bg-rose-950/40"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                 </article>
               );
@@ -432,6 +471,7 @@ export function LearningEditorialQueue() {
           </div>
         )}
       </div>
+      {deleteTarget && <AdminConfirmDialog title="Xóa bài học này?" description={<>Bài học <strong className="text-foreground">{deleteTarget.title}</strong> sẽ được chuyển vào thùng lưu trữ và không còn hiển thị cho học viên.</>} confirmLabel="Xóa bài học" isPending={deleting} errorMessage={deleteError} onCancel={() => { setDeleteTarget(null); setDeleteError(null); }} onConfirm={() => void confirmDelete()} />}
     </div>
   );
 }

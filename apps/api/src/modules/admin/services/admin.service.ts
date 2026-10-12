@@ -294,7 +294,7 @@ export class AdminService {
   }
 
   async getUsers(page = 1, limit = 20, search?: string, status?: string) {
-    const filters = [] as any[];
+    const filters = [isNull(usersTable.deletedAt)] as any[];
     if (search?.trim()) {
       const term = `%${search.trim()}%`;
       filters.push(or(
@@ -384,6 +384,35 @@ export class AdminService {
       );
 
       return updated;
+    });
+  }
+
+  async deleteUser(adminId: string, adminRoles: string[], targetUserId: string) {
+    if (adminId === targetUserId) {
+      throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'Administrators cannot delete their own account.', code: 'CANNOT_DELETE_SELF' });
+    }
+    const target = await this.usersRepo.findById(targetUserId);
+    if (!target || target.deletedAt) {
+      throw new NotFoundException({ statusCode: 404, error: 'Not Found', message: 'Target user not found.', code: 'USER_NOT_FOUND' });
+    }
+    const roles = await this.rolesRepo.getUserRoles(targetUserId);
+    const callerIsSuperAdmin = adminRoles.includes('SUPER_ADMIN');
+    if ((roles.includes('ADMIN') || roles.includes('SUPER_ADMIN')) && !callerIsSuperAdmin) {
+      throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: 'Only SUPER_ADMIN can delete an administrator account.', code: 'PROTECTED_ADMIN_ACCOUNT' });
+    }
+    if (roles.includes('SUPER_ADMIN')) {
+      const [{ value }] = await this.db.select({ value: count() }).from(userRolesTable)
+        .innerJoin(rolesTable, eq(userRolesTable.roleId, rolesTable.id))
+        .innerJoin(usersTable, eq(userRolesTable.userId, usersTable.id))
+        .where(and(eq(rolesTable.name, 'SUPER_ADMIN'), isNull(usersTable.deletedAt)));
+      if (Number(value) <= 1) {
+        throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'The last SUPER_ADMIN account cannot be deleted.', code: 'CANNOT_DELETE_LAST_SUPER_ADMIN' });
+      }
+    }
+    return this.db.transaction(async (tx) => {
+      const deleted = await this.usersRepo.softDeleteTx(tx, targetUserId);
+      await this.auditLogService.log({ actor_id: adminId, action: 'USER_DELETE', entity_type: 'users', entity_id: targetUserId, reason: 'Deleted from admin user management', metadata: { email: target.email } }, tx);
+      return { id: deleted?.id, deleted: Boolean(deleted) };
     });
   }
 

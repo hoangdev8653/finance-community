@@ -132,6 +132,18 @@ export function useChangeUserStatus() {
   });
 }
 
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, string>({
+    mutationFn: (id) => adminService.deleteUser(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'users'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'overview'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'auditLogs'] });
+    },
+  });
+}
+
 export function useAssignRole() {
   const queryClient = useQueryClient();
 
@@ -185,7 +197,7 @@ export function useUpdateCategory() {
 export function useDeleteCategory() {
   const queryClient = useQueryClient();
   return useMutation<void, Error, string>({
-    mutationFn: (id: string) => adminService.deleteCategory(id),
+    mutationFn: (id) => adminService.deleteCategory(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: queryKeys.categories.all }),
   });
 }

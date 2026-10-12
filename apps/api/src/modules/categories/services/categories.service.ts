@@ -186,17 +186,15 @@ export class CategoriesService {
     return updated;
   }
 
-  async deleteCategory(adminId: string, id: string, tx?: any): Promise<{ id: string; deleted: boolean }> {
+  async deleteCategory(adminId: string, id: string, tx?: any): Promise<{ id: string; deleted: boolean; deletedContent: { posts: number; learningPaths: number } }> {
     const category = await this.getCategoryById(id);
-    const deleted = await this.categoriesRepo.deleteTx(tx, id);
-    if (!deleted) throw new NotFoundException(`Category with ID '${id}' not found.`);
-    await this.auditLogService?.log({
-      actor_id: adminId,
-      action: 'CATEGORY_DELETE',
-      entity_type: 'categories',
-      entity_id: id,
-      metadata: { name: category.name, slug: category.slug, scope: category.scope },
-    });
-    return { id, deleted: true };
+    const execute = async (client: any) => {
+      const deletedContent = await this.categoriesRepo.deleteContentsTx(client, id);
+      const deleted = await this.categoriesRepo.deleteTx(client, id);
+      if (!deleted) throw new NotFoundException(`Category with ID '${id}' not found.`);
+      await this.auditLogService?.log({ actor_id: adminId, action: 'CATEGORY_DELETE', entity_type: 'categories', entity_id: id, metadata: { name: category.name, slug: category.slug, scope: category.scope, deletedContent } }, client);
+      return { id, deleted: true as const, deletedContent };
+    };
+    return tx ? execute(tx) : this.categoriesRepo.transaction(execute);
   }
 }

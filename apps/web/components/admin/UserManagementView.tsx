@@ -8,6 +8,7 @@ import {
   useRevokeRole,
   useAdminUsers,
   useAdminOverview,
+  useDeleteUser,
 } from '@/lib/admin/use-admin';
 import { UserStatus, RoleName, AdminUserEntity } from '@/types/admin';
 import { Button } from '@/components/ui/Button';
@@ -24,6 +25,7 @@ import {
   ShieldMinus,
   Lock,
   LockKeyhole,
+  Trash2,
   Eye,
   Search,
   RefreshCw,
@@ -73,6 +75,7 @@ export function UserManagementView() {
     email: string;
   } | null>(null);
   const [quickStatusReason, setQuickStatusReason] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState<AdminUserEntity | null>(null);
 
   const [feedback, setFeedback] = useState<{
     type: 'success' | 'error';
@@ -104,6 +107,7 @@ export function UserManagementView() {
   const changeStatusMutation = useChangeUserStatus();
   const assignRoleMutation = useAssignRole();
   const revokeRoleMutation = useRevokeRole();
+  const deleteUserMutation = useDeleteUser();
 
   const isCallerSuperAdmin = Boolean(
     user && user.roles && user.roles.includes('SUPER_ADMIN')
@@ -400,6 +404,19 @@ export function UserManagementView() {
     } catch (err: any) {
       const msg = err?.response?.data?.message || 'Không thể cập nhật vai trò.';
       setFeedback({ type: 'error', message: msg });
+      toast.error(msg);
+    }
+  };
+
+  const confirmDeleteUser = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteUserMutation.mutateAsync(deleteTarget.id);
+      toast.success('Đã xóa tài khoản khỏi danh sách quản trị.');
+      setDeleteTarget(null);
+      void refetchUsers();
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || err?.message || 'Không thể xóa tài khoản.';
       toast.error(msg);
     }
   };
@@ -822,6 +839,17 @@ export function UserManagementView() {
                         >
                           <Eye className="h-4 w-4" />
                         </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setDeleteTarget(item)}
+                          disabled={item.id === user?.id || deleteUserMutation.isPending || (item.roles.includes('SUPER_ADMIN') && !isCallerSuperAdmin)}
+                          title="Xóa tài khoản"
+                          aria-label={`Xóa tài khoản ${item.email}`}
+                          className="h-9 w-9 rounded-lg border border-rose-200/70 bg-card p-0 text-rose-600 shadow-2xs hover:bg-rose-50 dark:border-rose-900/50 dark:hover:bg-rose-950/40"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -840,6 +868,15 @@ export function UserManagementView() {
           />
         )}
       </section>
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm" role="presentation">
+          <section role="alertdialog" aria-modal="true" aria-labelledby="delete-user-title" className="w-full max-w-md space-y-4 rounded-xl border border-border bg-card p-6 text-foreground shadow-2xl">
+            <div className="flex items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300"><AlertTriangle className="h-5 w-5" /></span><div><h2 id="delete-user-title" className="font-heading text-lg font-bold">Xóa tài khoản này?</h2><p className="mt-1 text-sm text-muted-foreground">Tài khoản <strong className="text-foreground">{deleteTarget.email}</strong> sẽ bị xóa mềm và không còn xuất hiện trong danh sách.</p></div></div>
+            <div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleteUserMutation.isPending}>Hủy</Button><Button variant="destructive" onClick={() => void confirmDeleteUser()} disabled={deleteUserMutation.isPending}>{deleteUserMutation.isPending ? 'Đang xóa…' : 'Xóa tài khoản'}</Button></div>
+          </section>
+        </div>
+      )}
 
       {/* 4. Target User Detail & RBAC Modal */}
       {targetUserId && (

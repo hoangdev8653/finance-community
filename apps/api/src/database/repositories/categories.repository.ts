@@ -1,8 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq, and, asc, sql } from 'drizzle-orm';
+import { eq, and, asc, sql, count, inArray, or } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { categoriesTable } from '../schema/categories.schema';
+import { postsTable } from '../schema/posts.schema';
+import { learningSeriesTable } from '../schema/learning-series.schema';
+import { commentsTable } from '../schema/comments.schema';
+import { reportsTable } from '../schema/reports.schema';
+import { notificationsTable } from '../schema/notifications.schema';
 
 export type CategoryEntity = typeof categoriesTable.$inferSelect;
 export type NewCategoryEntity = typeof categoriesTable.$inferInsert;
@@ -10,6 +15,10 @@ export type NewCategoryEntity = typeof categoriesTable.$inferInsert;
 @Injectable()
 export class CategoriesRepository {
   constructor(@Inject(DRIZZLE_TOKEN) private readonly db: DrizzleDB) {}
+
+  async transaction<T>(work: (tx: any) => Promise<T>): Promise<T> {
+    return this.db.transaction(work);
+  }
 
   async createTx(tx: any, data: NewCategoryEntity): Promise<CategoryEntity> {
     const client = tx || this.db;
@@ -60,5 +69,41 @@ export class CategoriesRepository {
     const client = tx || this.db;
     const [deleted] = await client.delete(categoriesTable).where(eq(categoriesTable.id, id)).returning();
     return deleted;
+  }
+
+  async getUsageCounts(id: string, tx?: any): Promise<{ posts: number; learningPaths: number }> {
+    const client = tx || this.db;
+    const [posts, paths] = await Promise.all([
+      client.select({ value: count() }).from(postsTable).where(eq(postsTable.categoryId, id)),
+      client.select({ value: count() }).from(learningSeriesTable).where(eq(learningSeriesTable.categoryId, id)),
+    ]);
+    return { posts: Number(posts[0]?.value ?? 0), learningPaths: Number(paths[0]?.value ?? 0) };
+  }
+
+  async reassignUsageTx(tx: any, oldId: string, newId: string): Promise<void> {
+    await tx.update(postsTable).set({ categoryId: newId, updatedAt: new Date() }).where(eq(postsTable.categoryId, oldId));
+    await tx.update(learningSeriesTable).set({ categoryId: newId, updatedAt: new Date() }).where(eq(learningSeriesTable.categoryId, oldId));
+  }
+
+  async deleteContentsTx(tx: any, categoryId: string): Promise<{ posts: number; learningPaths: number }> {
+    const postRows = await tx.select({ id: postsTable.id }).from(postsTable).where(eq(postsTable.categoryId, categoryId));
+    const postIds = postRows.map((post: { id: string }) => post.id);
+    const deletedPaths = await tx.delete(learningSeriesTable)
+      .where(eq(learningSeriesTable.categoryId, categoryId))
+      .returning({ id: learningSeriesTable.id });
+
+    if (postIds.length > 0) {
+      const commentRows = await tx.select({ id: commentsTable.id })
+        .from(commentsTable)
+        .where(inArray(commentsTable.postId, postIds));
+      const commentIds = commentRows.map((comment: { id: string }) => comment.id);
+      const reportConditions = [inArray(reportsTable.reportedPostId, postIds)];
+      if (commentIds.length > 0) reportConditions.push(inArray(reportsTable.reportedCommentId, commentIds));
+      await tx.delete(reportsTable).where(or(...reportConditions));
+      await tx.delete(notificationsTable).where(inArray(notificationsTable.referencePostId, postIds));
+      await tx.delete(postsTable).where(inArray(postsTable.id, postIds));
+    }
+
+    return { posts: postIds.length, learningPaths: deletedPaths.length };
   }
 }

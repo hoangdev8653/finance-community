@@ -46,19 +46,19 @@ export function ToastContainer() {
       {toasts.map((t) => (
         <div
           key={t.id}
-          className={`pointer-events-auto flex items-start justify-between gap-3 p-4 rounded-[10px] border ${getToastClasses(
+          className={`pointer-events-auto flex items-start justify-between gap-3 rounded-xl border p-4 shadow-xl backdrop-blur-md animate-in slide-in-from-right-4 fade-in duration-300 sm:p-5 ${getToastClasses(
             t.type
-          )} bg-surface/95 shadow-xl text-xs font-sans text-foreground backdrop-blur-md animate-in slide-in-from-right-4 fade-in duration-300`}
+          )} bg-surface text-base font-sans text-foreground`}
         >
           <div className="flex items-start gap-3 min-w-0 flex-1">
             <div className="mt-0.5">{getToastIcon(t.type)}</div>
-            <div className="space-y-1 min-w-0 flex-1">
+            <div className="min-w-0 flex-1 space-y-1">
               {t.title && (
-                <h4 className="font-heading font-semibold text-foreground text-xs leading-snug">
+                <h4 className="font-heading text-base font-bold leading-snug text-foreground sm:text-[17px]">
                   {t.title}
                 </h4>
               )}
-              <p className="font-normal text-muted-foreground leading-relaxed break-words">
+              <p className="break-words text-sm font-medium leading-6 text-slate-700 dark:text-slate-200 sm:text-[15px]">
                 {t.description || t.message}
               </p>
             </div>
@@ -66,7 +66,7 @@ export function ToastContainer() {
           <button
             type="button"
             onClick={() => removeToast(t.id)}
-            className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/40 transition-colors shrink-0"
+            className="shrink-0 rounded-lg p-1.5 text-slate-600 transition-colors hover:bg-muted/60 hover:text-foreground dark:text-slate-300"
             aria-label="Đóng thông báo"
           >
             <X className="h-4 w-4" />

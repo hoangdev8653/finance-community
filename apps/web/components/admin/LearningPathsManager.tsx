@@ -30,6 +30,7 @@ import type { LearningPathDetail, LearningCourse } from '@/types/learning-course
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/lib/toast/ToastContext';
 import { useDebounce } from '@/lib/hooks/use-debounce';
+import { AdminConfirmDialog } from './AdminConfirmDialog';
 
 const slugify = (value: string) =>
   value
@@ -62,6 +63,8 @@ export function LearningPathsManager() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<LearningCourse | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Search & Filter state for path list
   const [search, setSearch] = useState('');
@@ -233,16 +236,25 @@ export function LearningPathsManager() {
   };
 
   const removePath = async (path: LearningCourse) => {
-    if (!window.confirm(`Bạn có chắc chắn muốn xóa lộ trình “${path.title}”?`)) return;
+    setDeleteError(null);
+    setDeleteTarget(path);
+  };
+
+  const confirmRemovePath = async () => {
+    if (!deleteTarget) return;
+    setBusy(true);
     try {
-      await learningCourseService.deletePath(path.id);
-      toast.success(`Đã xóa lộ trình “${path.title}”.`);
-      if (selected?.series.id === path.id) setSelected(null);
+      await learningCourseService.deletePath(deleteTarget.id);
+      toast.success(`Đã xóa lộ trình “${deleteTarget.title}”.`);
+      if (selected?.series.id === deleteTarget.id) setSelected(null);
+      setDeleteTarget(null);
       await load();
     } catch (reason: any) {
       const msg = reason?.response?.data?.message || 'Không thể xóa lộ trình.';
+      setDeleteError(Array.isArray(msg) ? msg.join(', ') : String(msg));
       setError(msg);
-      toast.error(msg);
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -906,6 +918,7 @@ export function LearningPathsManager() {
           </form>
         </div>
       )}
+      {deleteTarget && <AdminConfirmDialog title="Xóa lộ trình này?" description={<>Lộ trình <strong className="text-foreground">{deleteTarget.title}</strong> sẽ bị xóa khỏi danh sách quản trị.</>} confirmLabel="Xóa lộ trình" isPending={busy} errorMessage={deleteError} onCancel={() => { setDeleteTarget(null); setDeleteError(null); }} onConfirm={() => void confirmRemovePath()} />}
     </div>
   );
 }

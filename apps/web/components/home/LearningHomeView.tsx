@@ -14,7 +14,6 @@ import {
   ChevronRight,
   CircleDollarSign,
   Compass,
-  Flame,
   GraduationCap,
   Heart,
   HeartPulse,
@@ -190,7 +189,7 @@ export function LearningHomeView() {
           href: `/${d.slug}`,
           Icon,
           tone,
-          subtitle: `${courseCount} khóa học`,
+          subtitle: typeof courseCount === "number" ? `${courseCount} khóa học` : "Khám phá chủ đề",
         };
       });
     }
@@ -206,19 +205,19 @@ export function LearningHomeView() {
           href: `/${cat.slug}`,
           Icon,
           tone,
-          subtitle: `${cat.courseCount ?? 0} khóa học`,
+          subtitle: typeof cat.courseCount === "number" ? `${cat.courseCount} khóa học` : "Khám phá chủ đề",
         };
       });
     }
 
     // Default core domains matching the database
     return [
-      { id: "MONEY", label: "Tài chính", slug: "tai-chinh", href: "/tai-chinh", Icon: CircleDollarSign, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", subtitle: "4 khóa học" },
-      { id: "BUSINESS", label: "Kinh doanh", slug: "business", href: "/business", Icon: BriefcaseBusiness, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400", subtitle: "0 khóa học" },
-      { id: "TECH", label: "Công nghệ", slug: "technology", href: "/technology", Icon: Sparkles, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", subtitle: "0 khóa học" },
-      { id: "CAREER", label: "Nghề nghiệp và Học tập", slug: "career", href: "/career", Icon: GraduationCap, tone: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", subtitle: "0 khóa học" },
-      { id: "LIFE", label: "Đời sống và Sức khỏe", slug: "doi-song-suc-khoe", href: "/doi-song-suc-khoe", Icon: HeartPulse, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400", subtitle: "0 khóa học" },
-      { id: "SPORTS", label: "Thể thao", slug: "sports", href: "/sports", Icon: Medal, tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400", subtitle: "0 khóa học" },
+      { id: "MONEY", label: "Tài chính", slug: "tai-chinh", href: "/tai-chinh", Icon: CircleDollarSign, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", subtitle: "Khám phá chủ đề" },
+      { id: "BUSINESS", label: "Kinh doanh", slug: "business", href: "/business", Icon: BriefcaseBusiness, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400", subtitle: "Khám phá chủ đề" },
+      { id: "TECH", label: "Công nghệ", slug: "technology", href: "/technology", Icon: Sparkles, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", subtitle: "Khám phá chủ đề" },
+      { id: "CAREER", label: "Nghề nghiệp và Học tập", slug: "career", href: "/career", Icon: GraduationCap, tone: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", subtitle: "Khám phá chủ đề" },
+      { id: "LIFE", label: "Đời sống và Sức khỏe", slug: "doi-song-suc-khoe", href: "/doi-song-suc-khoe", Icon: HeartPulse, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400", subtitle: "Khám phá chủ đề" },
+      { id: "SPORTS", label: "Thể thao", slug: "sports", href: "/sports", Icon: Medal, tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400", subtitle: "Khám phá chủ đề" },
     ];
   }, [remoteDomains, remoteCategories]);
 
@@ -229,7 +228,8 @@ export function LearningHomeView() {
       title: item.name,
       slug: item.slug,
       href: `/khoa-hoc/${item.slug}`,
-      lessons: `${item.publishedArticleCount ?? 0} bài học`,
+      lessons: item.publishedArticleCount > 0 ? `${item.publishedArticleCount} bài học` : "Đang xây dựng nội dung",
+      description: item.description,
       tint: SERIES_TINTS[index % SERIES_TINTS.length],
     }));
   }, [remoteSeries]);
@@ -310,8 +310,8 @@ export function LearningHomeView() {
             </form>
             <div className="mt-8 grid max-w-[560px] grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4 sm:gap-x-3">
               {[
-                [BookOpen, String(publishedLessonCount), "Bài học", "text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 border-emerald-200"],
-                [Compass, "6", "Lĩnh vực", "text-blue-700 dark:text-blue-400 bg-blue-100/80 border-blue-200"],
+                [BookOpen, remoteSeries ? String(publishedLessonCount) : "—", "Bài học", "text-emerald-700 dark:text-emerald-400 bg-emerald-100/80 border-emerald-200"],
+                [Compass, remoteDomains ? String(remoteDomains.filter((domain) => domain.code !== "GENERAL").length) : "—", "Lĩnh vực", "text-blue-700 dark:text-blue-400 bg-blue-100/80 border-blue-200"],
                 [Calculator, "3", "Công cụ", "text-violet-700 dark:text-violet-400 bg-violet-100/80 border-violet-200"],
                 [ShieldCheck, "100%", "Kiểm chứng", "text-amber-700 dark:text-amber-400 bg-amber-100/80 border-amber-200"],
               ].map(([Icon, value, label, tone]) => {
@@ -322,7 +322,7 @@ export function LearningHomeView() {
                     className="flex min-w-0 items-center gap-2"
                   >
                     <span
-                      className={`flex h-10 w-10 items-center justify-center rounded-[10px] border shadow-[0_2px_8px_rgba(15,23,42,0.04)] dark:border-slate-800 dark:bg-slate-900 ${tone as string}`}
+                      className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border shadow-[0_2px_8px_rgba(15,23,42,0.04)] dark:border-slate-800 dark:bg-slate-900 ${tone as string}`}
                     >
                       <I className="h-5 w-5 shrink-0 stroke-[2.2]" />
                     </span>
@@ -330,7 +330,7 @@ export function LearningHomeView() {
                       <strong className="block text-sm font-bold text-slate-900 dark:text-white">
                         {value as string}
                       </strong>
-                      <small className="block whitespace-nowrap text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      <small className="block whitespace-normal text-xs font-semibold leading-4 text-slate-700 dark:text-slate-300">
                         {label as string}
                       </small>
                     </span>
@@ -364,17 +364,14 @@ export function LearningHomeView() {
                 <span>Tuần này ▾</span>
               </div>
               <div className="mt-2.5">
-                <strong className="text-3xl font-extrabold text-foreground">
-                  180
-                </strong>
-                <span className="ml-1 text-sm font-bold text-foreground">phút</span>
+                <strong className="text-3xl font-extrabold text-foreground">Bắt đầu</strong>
                 <p className="mt-0.5 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  Thời gian học tuần
+                  hành trình học của bạn
                 </p>
               </div>
               <p className="mt-3 text-xs font-bold text-emerald-700 dark:text-emerald-400">
                 <span className="border-b-2 border-emerald-500 pb-0.5">
-                  75% mục tiêu tuần
+                  Chọn một bài học để bắt đầu
                 </span>
               </p>
               <svg
@@ -413,34 +410,27 @@ export function LearningHomeView() {
                 <span>CN</span>
               </div>
               <div className="mt-2 flex items-center justify-between border-t border-border/50 pt-2 text-[10px] text-slate-700 dark:text-slate-300">
-                <span className="truncate font-semibold">Đang học: Quản lý tài chính</span>
-                <span className="shrink-0 font-bold text-emerald-700 dark:text-emerald-400">Bài 3/12</span>
+                <span className="truncate font-semibold">Học theo nhịp độ của riêng bạn</span>
+                <Link href="/khoa-hoc" className="shrink-0 font-bold text-emerald-700 dark:text-emerald-400">Xem khóa học</Link>
               </div>
             </div>
             <div className="absolute left-[65%] top-[15%] z-10 flex aspect-[1.38/1] w-[28%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
               <p className="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
-                <Flame
-                  className="h-3.5 w-3.5 text-orange-500"
-                  aria-hidden="true"
-                />
+                <Sparkles className="h-3.5 w-3.5 text-orange-500" aria-hidden="true" />
                 Chuỗi ngày học
               </p>
               <p className="mt-2 flex items-center gap-2 text-2xl font-extrabold text-foreground">
-                <Flame
-                  className="h-6 w-6 fill-orange-400 text-orange-500"
-                  aria-hidden="true"
-                />
-                7<span className="-ml-1 text-sm font-bold">ngày</span>
+                Từng bước
               </p>
-              <small className="font-semibold text-slate-600 dark:text-slate-300">Kỷ luật bền bỉ!</small>
+              <small className="font-semibold text-slate-600 dark:text-slate-300">Kiến thức dễ áp dụng</small>
             </div>
             <div className="absolute bottom-[11%] left-[65%] z-10 flex aspect-[1.38/1] w-[25%] max-w-[178px] flex-col rounded-[10px] border border-border/60 bg-card p-4 shadow-[0_8px_20px_rgba(15,23,42,0.10)] text-card-foreground">
               <p className="text-xs font-bold text-slate-700 dark:text-slate-300">Hoàn thành</p>
               <p className="mt-2 text-3xl font-extrabold leading-none text-foreground">
-                6
+                3
               </p>
               <small className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                Bài học
+                công cụ miễn phí
               </small>
             </div>
           </div>
@@ -491,10 +481,10 @@ export function LearningHomeView() {
                 href={item.href}
                 className="group cursor-pointer overflow-hidden rounded-xl border border-slate-200/70 bg-card shadow-[0_4px_20px_-2px_rgba(15,23,42,0.06),0_2px_6px_-1px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_14px_28px_-4px_rgba(15,23,42,0.12)] active:translate-y-0 dark:border-slate-800/80 dark:hover:border-emerald-700/60"
               >
-                <div
-                  className={`relative h-32 bg-gradient-to-br ${item.tint}`}
-                  aria-label={item.title}
-                >
+                <div className={`relative flex h-32 items-end overflow-hidden bg-gradient-to-br ${item.tint} p-4`}>
+                  <div aria-hidden="true" className="absolute -right-5 -top-8 h-32 w-32 rounded-full border border-white/15 bg-white/10" />
+                  <div aria-hidden="true" className="absolute right-8 top-5 h-16 w-16 rotate-12 rounded-2xl border border-white/20 bg-white/10" />
+                  <span className="relative z-10 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/20 px-3 py-1.5 text-xs font-bold text-white backdrop-blur-sm"><BookOpen className="h-3.5 w-3.5" />Lộ trình học</span>
                 </div>
                 <div className="p-3.5">
                   <h3 className="whitespace-pre-line text-sm sm:text-base font-bold leading-snug text-slate-900 transition-colors duration-200 group-hover:text-emerald-600 dark:text-white dark:group-hover:text-emerald-400">
@@ -601,7 +591,10 @@ export function LearningHomeView() {
               ))}
             </div>
           ) : (
-            <p className="rounded-xl border border-dashed border-slate-300 px-5 py-8 text-center text-sm text-slate-600 dark:border-slate-700 dark:text-slate-400">Các bài học mới sẽ xuất hiện tại đây khi được xuất bản.</p>
+            <div className="flex flex-col gap-5 rounded-xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50 to-white p-6 sm:flex-row sm:items-center sm:justify-between dark:border-emerald-900 dark:from-emerald-950/40 dark:to-slate-900">
+              <div className="flex items-start gap-4"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300"><BookOpen className="h-5 w-5" /></span><div><h3 className="font-bold text-slate-900 dark:text-white">Bắt đầu với kiến thức nền tảng</h3><p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">Khám phá các khóa học hiện có, chọn chủ đề phù hợp và học từng bước theo tốc độ của bạn.</p></div></div>
+              <Link href="/khoa-hoc" className="inline-flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-emerald-700 px-4 text-sm font-bold text-white transition hover:bg-emerald-800 dark:bg-emerald-500 dark:text-slate-950 dark:hover:bg-emerald-400">Khám phá khóa học<ArrowRight className="h-4 w-4" /></Link>
+            </div>
           )}
         </section>
 

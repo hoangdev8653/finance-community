@@ -35,6 +35,7 @@ import { DEFAULT_PAGE_SIZE } from '@/lib/constants/pagination';
 import { useToast } from '@/lib/toast/ToastContext';
 import { getDomainColorTheme } from '@/lib/utils/domain-colors';
 import { DomainFilterDropdown } from './DomainFilterDropdown';
+import { AdminConfirmDialog } from './AdminConfirmDialog';
 
 interface CategoryManagementViewProps {
   learningOnly?: boolean;
@@ -90,6 +91,8 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   const [expandedDomains, setExpandedDomains] = useState<Record<string, boolean>>({});
   const [viewMode, setViewMode] = useState<'DOMAIN' | 'TABLE'>('DOMAIN');
   const [selectedPreview, setSelectedPreview] = useState<CategoryEntity | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<CategoryEntity | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const pageSize = DEFAULT_PAGE_SIZE;
 
   // Compute metric stats
@@ -251,21 +254,22 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   };
 
   const handleDelete = async (category: CategoryEntity) => {
-    if (
-      !window.confirm(
-        `Xóa danh mục “${category.name}”? Các bài viết thuộc danh mục này sẽ không bị xóa.`
-      )
-    )
-      return;
+    setDeleteError(null);
+    setDeleteTarget(category);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
     try {
-      await deleteCategoryMutation.mutateAsync(category.id);
-      toast.success(`Đã xóa danh mục “${category.name}”.`);
-      if (selectedPreview?.id === category.id) {
+      await deleteCategoryMutation.mutateAsync(deleteTarget.id);
+      toast.success(`Đã xóa danh mục “${deleteTarget.name}”.`);
+      if (selectedPreview?.id === deleteTarget.id) {
         setSelectedPreview(null);
       }
+      setDeleteTarget(null);
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || 'Không thể xóa danh mục.';
-      toast.error(msg);
+      setDeleteError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     }
   };
 
@@ -889,6 +893,21 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
           </div>
         </div>
       )}
-    </div>
+      {deleteTarget && (
+        <AdminConfirmDialog
+          title="Xóa danh mục và nội dung?"
+          description={<>Danh mục <strong className="text-foreground">{deleteTarget.name}</strong> cùng toàn bộ nội dung gắn với danh mục sẽ bị xóa vĩnh viễn khỏi database.</>}
+          additionalContent={(
+            <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm leading-5 text-rose-800 dark:border-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
+              Bài viết, bình luận, báo cáo và dữ liệu liên kết sẽ bị xóa. Lộ trình thuộc danh mục này cũng sẽ bị xóa. Thao tác này không thể hoàn tác.
+            </div>
+          )}
+          confirmLabel="Xóa nội dung & danh mục"
+          isPending={deleteCategoryMutation.isPending}
+          errorMessage={deleteError}
+          onCancel={() => { setDeleteTarget(null); setDeleteError(null); }}
+          onConfirm={() => void confirmDelete()}
+        />
+      )}    </div>
   );
 }

@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Patch,
+  Delete,
   Post,
   Body,
   Param,
@@ -122,6 +123,16 @@ export class AdminController {
   ) {
     const roles = this.jitService.getUserRoles(user.sub);
     return this.adminService.changeUserStatus(user.sub, roles, id, dto);
+  }
+
+  @Delete('admin/users/:id')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Soft-delete a user account (Requires admin:full)' })
+  @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard)
+  @RequirePermission('admin:full')
+  deleteUser(@CurrentUser() user: any, @Param('id') id: string) {
+    const roles = this.jitService.getUserRoles(user.sub);
+    return this.adminService.deleteUser(user.sub, roles, id);
   }
 
   @Post('admin/roles/assign')

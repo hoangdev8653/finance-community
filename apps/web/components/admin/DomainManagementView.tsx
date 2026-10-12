@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/Button';
 import { AdminSearchInput } from './AdminSearchInput';
 import { useToast } from '@/lib/toast/ToastContext';
 import { getDomainColorTheme } from '@/lib/utils/domain-colors';
+import { AdminConfirmDialog } from './AdminConfirmDialog';
 
 interface DomainFormData {
   name: string;
@@ -79,6 +80,8 @@ export function DomainManagementView() {
   const [editingDomain, setEditingDomain] = useState<DomainEntity | null>(null);
   const [form, setForm] = useState<DomainFormData>(emptyForm);
   const [autoGenerateSlug, setAutoGenerateSlug] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<DomainEntity | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // Fetch domains (with inactive domains included for admin)
   const {
@@ -178,7 +181,7 @@ export function DomainManagementView() {
     },
     onError: (error: any) => {
       const msg = error?.response?.data?.message || error?.message || 'Không thể xóa lĩnh vực.';
-      toast.error(msg);
+      setDeleteError(Array.isArray(msg) ? msg.join(', ') : String(msg));
     },
   });
 
@@ -281,9 +284,13 @@ export function DomainManagementView() {
       return;
     }
 
-    if (window.confirm(`Bạn có chắc chắn muốn xóa lĩnh vực “${domain.name}” (${domain.code})?`)) {
-      deleteMutation.mutate(domain.id);
-    }
+    setDeleteError(null);
+    setDeleteTarget(domain);
+  };
+
+  const confirmDeleteDomain = () => {
+    if (!deleteTarget) return;
+    deleteMutation.mutate(deleteTarget.id, { onSuccess: () => setDeleteTarget(null) });
   };
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
@@ -769,6 +776,7 @@ export function DomainManagementView() {
           </div>
         </div>
       )}
+      {deleteTarget && <AdminConfirmDialog title="Xóa lĩnh vực này?" description={<>Lĩnh vực <strong className="text-foreground">{deleteTarget.name}</strong> ({deleteTarget.code}) sẽ bị xóa. Chỉ có thể xóa khi lĩnh vực không còn danh mục hoặc khóa học liên kết.</>} confirmLabel="Xóa lĩnh vực" isPending={deleteMutation.isPending} errorMessage={deleteError} onCancel={() => { setDeleteTarget(null); setDeleteError(null); }} onConfirm={confirmDeleteDomain} />}
     </div>
   );
 }

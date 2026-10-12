@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import {
   Plus,
@@ -15,7 +15,7 @@ import {
   Clock3,
   Search,
   Download,
-  SlidersHorizontal,
+  RefreshCw,
   Heart,
   MessageSquare,
   Bookmark,
@@ -36,6 +36,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useToast } from '@/lib/toast/ToastContext';
 import { resolveMediaUrl } from '@/lib/utils/media';
 import { DEFAULT_POST_COVER } from '@/lib/constants/media';
+import { moderationService } from '@/lib/moderation/moderation-service';
+import { postsService } from '@/lib/posts/posts-service';
+import { PaginatedModerationPostsResponse } from '@/types/moderation';
+import { AdminCreatePostModal } from '@/components/admin/AdminCreatePostModal';
 
 type EditablePost = ModerationPostItem & {
   body?: string | null;
@@ -49,302 +53,6 @@ type EditablePost = ModerationPostItem & {
 };
 
 const fallbackCover = DEFAULT_POST_COVER;
-
-// High-fidelity 8 Mock Community Posts matching mockup image quan_li_bai_viet_cong_dong.png
-const MOCK_COMMUNITY_POSTS: EditablePost[] = [
-  {
-    id: 'mock-post-1',
-    title: 'Quản lý tài chính cá nhân cho người mới bắt đầu',
-    slug: 'quan-ly-tai-chinh-ca-nhan-cho-nguoi-moi-bat-dau',
-    metaDescription: 'Chia sẻ một số nguyên tắc cơ bản giúp bạn bắt đầu...',
-    body: 'Chia sẻ một số nguyên tắc cơ bản giúp bạn bắt đầu hành trình quản lý tài chính cá nhân dễ dàng hơn. Đây là những kinh nghiệm mình rút ra sau nhiều năm tìm hiểu và áp dụng.\n\n1. Quy tắc 50/30/20 trong việc phân bổ dòng tiền hàng tháng.\n2. Lập quỹ khẩn cấp tương đương 3 đến 6 tháng sinh hoạt phí.\n3. Tránh các khoản vay tiêu dùng lãi suất cao.\n4. Đầu tư tích lũy định kỳ để tận dụng sức mạnh lãi suất kép.',
-    contentType: 'COMMUNITY',
-    status: 'PUBLISHED',
-    moderationStatus: 'APPROVED',
-    moderatedBy: null,
-    moderatedAt: '2025-09-06T14:30:00.000Z',
-    moderationReason: null,
-    authorId: 'user-a',
-    categoryId: 'cat-tc-canhan',
-    categoryName: 'Tài chính cá nhân',
-    publishedAt: '2025-09-06T14:30:00.000Z',
-    createdAt: '2025-09-06T14:30:00.000Z',
-    updatedAt: '2025-09-06T14:30:00.000Z',
-    coverMedia: {
-      id: 'media-1',
-      secureUrl: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Nguyễn Văn A',
-      username: 'nguyenvana',
-      avatarMediaId: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 128,
-    commentCount: 32,
-    bookmarkCount: 5,
-    viewCount: '1.2K',
-    tags: [
-      { id: 't1', name: 'tài chính' },
-      { id: 't2', name: 'quản lý chi tiêu' },
-      { id: 't3', name: 'tiết kiệm' },
-    ],
-  },
-  {
-    id: 'mock-post-2',
-    title: 'Có nên đầu tư vào bất động sản lúc này?',
-    slug: 'co-nen-dau-tu-vao-bat-dong-san-luc-nay',
-    metaDescription: 'Thị trường bất động sản 2025 có...',
-    body: 'Thị trường bất động sản 2025 có những biến số lớn khi khung pháp lý mới chính thức có hiệu lực. Phân tích chi tiết về thanh khoản, tỷ lệ đòn bẩy ngân hàng và những phân khúc có nhu cầu ở thực.',
-    contentType: 'COMMUNITY',
-    status: 'DRAFT',
-    moderationStatus: 'UNREVIEWED',
-    moderatedBy: null,
-    moderatedAt: null,
-    moderationReason: null,
-    authorId: 'user-b',
-    categoryId: 'cat-dautu',
-    categoryName: 'Đầu tư',
-    publishedAt: '2025-09-06T10:15:00.000Z',
-    createdAt: '2025-09-06T10:15:00.000Z',
-    updatedAt: '2025-09-06T10:15:00.000Z',
-    coverMedia: {
-      id: 'media-2',
-      secureUrl: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Trần Thị B',
-      username: 'tranthib',
-      avatarMediaId: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 96,
-    commentCount: 45,
-    bookmarkCount: 12,
-    viewCount: '2.4K',
-    tags: [
-      { id: 't4', name: 'đầu tư' },
-      { id: 't5', name: 'bất động sản' },
-      { id: 't6', name: 'xu hướng' },
-    ],
-  },
-  {
-    id: 'mock-post-3',
-    title: 'Kinh nghiệm học phân tích kỹ thuật hiệu quả',
-    slug: 'kinh-nghiem-hoc-phan-tich-ky-thuat-hieu-qua',
-    metaDescription: 'Mình đã tổng hợp một số phương...',
-    body: 'Mình đã tổng hợp một số phương pháp phân tích kỹ thuật từ cơ bản đến nâng cao bao gồm nến Nhật, chỉ báo MACD, RSI và các mẫu hình giá có tỷ lệ thắng cao.',
-    contentType: 'COMMUNITY',
-    status: 'PUBLISHED',
-    moderationStatus: 'APPROVED',
-    moderatedBy: null,
-    moderatedAt: '2025-09-05T20:22:00.000Z',
-    moderationReason: null,
-    authorId: 'user-c',
-    categoryId: 'cat-chungkhoan',
-    categoryName: 'Chứng khoán',
-    publishedAt: '2025-09-05T20:22:00.000Z',
-    createdAt: '2025-09-05T20:22:00.000Z',
-    updatedAt: '2025-09-05T20:22:00.000Z',
-    coverMedia: {
-      id: 'media-3',
-      secureUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Lê Minh C',
-      username: 'leminhc',
-      avatarMediaId: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 78,
-    commentCount: 28,
-    bookmarkCount: 8,
-    viewCount: '980',
-    tags: [
-      { id: 't7', name: 'chứng khoán' },
-      { id: 't8', name: 'phân tích kỹ thuật' },
-    ],
-  },
-  {
-    id: 'mock-post-4',
-    title: 'Tư duy tài chính dài hạn',
-    slug: 'tu-duy-tai-chinh-dai-han',
-    metaDescription: 'Làm thế nào để xây dựng tư duy...',
-    body: 'Làm thế nào để xây dựng tư duy đầu tư bền bỉ, không bị dao động trước những đợt rung lắc ngắn hạn của thị trường tài chính.',
-    contentType: 'COMMUNITY',
-    status: 'PUBLISHED',
-    moderationStatus: 'APPROVED',
-    moderatedBy: null,
-    moderatedAt: '2025-09-05T16:40:00.000Z',
-    moderationReason: null,
-    authorId: 'user-d',
-    categoryId: 'cat-tuduy',
-    categoryName: 'Tư duy',
-    publishedAt: '2025-09-05T16:40:00.000Z',
-    createdAt: '2025-09-05T16:40:00.000Z',
-    updatedAt: '2025-09-05T16:40:00.000Z',
-    coverMedia: {
-      id: 'media-4',
-      secureUrl: 'https://images.unsplash.com/photo-1565372195458-9de0b320ef04?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Phạm Thu D',
-      username: 'phamthud',
-      avatarMediaId: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 64,
-    commentCount: 17,
-    bookmarkCount: 4,
-    viewCount: '650',
-    tags: [
-      { id: 't9', name: 'tư duy' },
-      { id: 't10', name: 'đầu tư dài hạn' },
-    ],
-  },
-  {
-    id: 'mock-post-5',
-    title: 'Crypto từ cơ bản đến nâng cao',
-    slug: 'crypto-tu-co-ban-den-nang-cao',
-    metaDescription: 'Hành trình tìm hiểu về blockchain...',
-    body: 'Hành trình tìm hiểu về blockchain, kiến trúc mạng phi tập trung và các nguyên lý an toàn bảo mật tài sản số cho người mới.',
-    contentType: 'COMMUNITY',
-    status: 'HIDDEN',
-    moderationStatus: 'BANNED',
-    moderatedBy: 'admin',
-    moderatedAt: '2025-09-04T11:05:00.000Z',
-    moderationReason: 'Nội dung chứa liên kết mời gọi đầu cơ cần rà soát thêm',
-    authorId: 'user-e',
-    categoryId: 'cat-crypto',
-    categoryName: 'Crypto',
-    publishedAt: '2025-09-04T11:05:00.000Z',
-    createdAt: '2025-09-04T11:05:00.000Z',
-    updatedAt: '2025-09-04T11:05:00.000Z',
-    coverMedia: {
-      id: 'media-5',
-      secureUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Hoàng Văn E',
-      username: 'hoangvane',
-      avatarMediaId: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 55,
-    commentCount: 21,
-    bookmarkCount: 7,
-    viewCount: '820',
-    tags: [
-      { id: 't11', name: 'crypto' },
-      { id: 't12', name: 'blockchain' },
-    ],
-  },
-  {
-    id: 'mock-post-6',
-    title: 'Excel tài chính ứng dụng thực tế',
-    slug: 'excel-tai-chinh-ung-dung-thuc-te',
-    metaDescription: 'Một số hàm Excel hữu ích cho...',
-    body: 'Một số hàm Excel hữu ích cho việc quản lý bảng cân đối thu chi, tính toán lãi vay mua nhà và tự động hóa báo cáo tài chính cá nhân.',
-    contentType: 'COMMUNITY',
-    status: 'PUBLISHED',
-    moderationStatus: 'APPROVED',
-    moderatedBy: null,
-    moderatedAt: '2025-09-03T09:30:00.000Z',
-    moderationReason: null,
-    authorId: 'user-f',
-    categoryId: 'cat-congcu',
-    categoryName: 'Công cụ',
-    publishedAt: '2025-09-03T09:30:00.000Z',
-    createdAt: '2025-09-03T09:30:00.000Z',
-    updatedAt: '2025-09-03T09:30:00.000Z',
-    coverMedia: {
-      id: 'media-6',
-      secureUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Nguyễn Thị F',
-      username: 'nguyenthif',
-      avatarMediaId: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 112,
-    commentCount: 36,
-    bookmarkCount: 25,
-    viewCount: '3.1K',
-    tags: [
-      { id: 't13', name: 'công cụ' },
-      { id: 't14', name: 'excel' },
-      { id: 't15', name: 'quản lý ngân sách' },
-    ],
-  },
-  {
-    id: 'mock-post-7',
-    title: 'Xu hướng thị trường bất động sản 2025',
-    slug: 'xu-huong-thi-truong-bat-dong-san-2025',
-    metaDescription: 'Phân tích cơ hội và rủi ro trong...',
-    body: 'Phân tích cơ hội và rủi ro trong các phân khúc căn hộ và đất nền vùng ven trước thềm các quy hoạch hạ tầng mới.',
-    contentType: 'COMMUNITY',
-    status: 'REJECTED',
-    moderationStatus: 'UNREVIEWED',
-    moderatedBy: 'admin',
-    moderatedAt: '2025-09-02T18:12:00.000Z',
-    moderationReason: 'Thiếu trích dẫn nguồn số liệu thống kê chính thống',
-    authorId: 'user-g',
-    categoryId: 'cat-batdongsan',
-    categoryName: 'Bất động sản',
-    publishedAt: '2025-09-02T18:12:00.000Z',
-    createdAt: '2025-09-02T18:12:00.000Z',
-    updatedAt: '2025-09-02T18:12:00.000Z',
-    coverMedia: {
-      id: 'media-7',
-      secureUrl: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Đặng Tuấn Anh',
-      username: 'dangtuanan',
-      avatarMediaId: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 89,
-    commentCount: 40,
-    bookmarkCount: 11,
-    viewCount: '1.7K',
-    tags: [
-      { id: 't16', name: 'bất động sản' },
-      { id: 't17', name: 'nhà đất' },
-    ],
-  },
-  {
-    id: 'mock-post-8',
-    title: 'Thói quen chi tiêu giúp bạn giàu hơn',
-    slug: 'thoi-quen-chi-tieu-giup-ban-giau-hon',
-    metaDescription: 'Những thói quen nhỏ nhưng tạo...',
-    body: 'Những thói quen nhỏ như quy tắc 72 giờ trước khi mua sắm và tự động hóa tiết kiệm nhưng tạo ra khác biệt bền vững cho tương lai tài chính của bạn.',
-    contentType: 'COMMUNITY',
-    status: 'PUBLISHED',
-    moderationStatus: 'APPROVED',
-    moderatedBy: null,
-    moderatedAt: '2025-09-02T12:05:00.000Z',
-    moderationReason: null,
-    authorId: 'user-h',
-    categoryId: 'cat-tc-canhan',
-    categoryName: 'Tài chính cá nhân',
-    publishedAt: '2025-09-02T12:05:00.000Z',
-    createdAt: '2025-09-02T12:05:00.000Z',
-    updatedAt: '2025-09-02T12:05:00.000Z',
-    coverMedia: {
-      id: 'media-8',
-      secureUrl: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=600&auto=format&fit=crop&q=80',
-    },
-    author: {
-      displayName: 'Phạm Bảo Ngọc',
-      username: 'phamngoc',
-      avatarMediaId: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-    },
-    likeCount: 73,
-    commentCount: 19,
-    bookmarkCount: 9,
-    viewCount: '1.1K',
-    tags: [
-      { id: 't18', name: 'tài chính cá nhân' },
-      { id: 't19', name: 'tiết kiệm' },
-      { id: 't20', name: 'thói quen' },
-    ],
-  },
-];
 
 // Helper to determine Category pill color based on mockup aesthetic
 function getCategoryTheme(categoryName: string) {
@@ -373,30 +81,6 @@ function getCategoryTheme(categoryName: string) {
   return 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700';
 }
 
-// Generate deterministic stats for posts lacking explicit counters
-function getDeterministicStats(post: EditablePost) {
-  if (post.likeCount !== undefined) {
-    return {
-      likes: post.likeCount,
-      comments: post.commentCount ?? 20,
-      bookmarks: post.bookmarkCount ?? 5,
-      views: post.viewCount ?? '1.0K',
-    };
-  }
-  let hash = 0;
-  for (let i = 0; i < post.id.length; i++) {
-    hash = (hash << 5) - hash + post.id.charCodeAt(i);
-    hash |= 0;
-  }
-  const pos = Math.abs(hash);
-  const likes = (pos % 115) + 25;
-  const comments = ((pos >> 3) % 45) + 8;
-  const bookmarks = ((pos >> 5) % 15) + 2;
-  const viewsRaw = ((pos >> 2) % 4000) + 300;
-  const views = viewsRaw > 1000 ? `${(viewsRaw / 1000).toFixed(1)}K` : `${viewsRaw}`;
-  return { likes, comments, bookmarks, views };
-}
-
 export function AdminPostsTable() {
   const { toast } = useToast();
   const [page, setPage] = useState(1);
@@ -405,7 +89,12 @@ export function AdminPostsTable() {
   const [preview, setPreview] = useState<EditablePost | null>(null);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [mode, setMode] = useState<'view' | 'edit' | 'delete' | 'hide' | null>(null);
-  const [mockPosts, setMockPosts] = useState<EditablePost[]>(MOCK_COMMUNITY_POSTS);
+  const [posts, setPosts] = useState<EditablePost[]>([]);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [hideReason, setHideReason] = useState('Vi phạm quy định nội dung');
@@ -419,22 +108,38 @@ export function AdminPostsTable() {
   const [sortBy, setSortBy] = useState('latest');
   const [activeTab, setActiveTab] = useState<'ALL' | 'UNREVIEWED' | 'APPROVED' | 'REJECTED' | 'BANNED'>('ALL');
 
-  // UI demo mode: this screen deliberately renders local fixtures only.
-  const basePosts = mockPosts;
-
-  const categories = useMemo(
-    () => Array.from(new Map(basePosts.map((post) => [post.categoryId, post.categoryName || 'Khác'])))
-      .filter((entry): entry is [string, string] => Boolean(entry[0]))
-      .map(([id, name]) => ({ id, name })),
-    [basePosts]
-  );
-
-  // Initialize preview with the first local fixture for the demo UI.
-  useEffect(() => {
-    if (!preview && basePosts.length > 0) {
-      setPreview(basePosts[0]);
+  const loadPosts = useCallback(async () => {
+    setIsLoading(true);
+    setLoadError(false);
+    try {
+      const [firstPage, communityCategories] = await Promise.all([
+        moderationService.getModerationPosts({ moderationStatus: 'ALL', contentType: 'COMMUNITY', page: 1, limit: 100 }) as Promise<PaginatedModerationPostsResponse>,
+        postsService.getCategories('COMMUNITY'),
+      ]);
+      const remainingPages = await Promise.all(
+        Array.from({ length: Math.max(0, firstPage.meta.totalPages - 1) }, (_, index) =>
+          moderationService.getModerationPosts({ moderationStatus: 'ALL', contentType: 'COMMUNITY', page: index + 2, limit: 100 }) as Promise<PaginatedModerationPostsResponse>
+        )
+      );
+      const categoryNames = new Map(communityCategories.map((category) => [category.id, category.nameVi || category.name]));
+      const rows = [firstPage, ...remainingPages].flatMap((response) => response.data).map((post) => ({
+        ...post,
+        categoryName: post.categoryId ? categoryNames.get(post.categoryId) : undefined,
+      }));
+      setPosts(rows);
+      setCategories(communityCategories.map((category) => ({ id: category.id, name: category.nameVi || category.name })));
+      setPreview((current) => current ? rows.find((post) => post.id === current.id) ?? null : rows[0] ?? null);
+    } catch {
+      setLoadError(true);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
     }
-  }, [basePosts, preview]);
+  }, []);
+
+  useEffect(() => { void loadPosts(); }, [loadPosts]);
+
+  const basePosts = posts;
 
   // Map category id to name
   const categoryMap = useMemo(() => {
@@ -497,7 +202,15 @@ export function AdminPostsTable() {
     return result;
   }, [basePosts, debouncedSearch, activeTab, statusFilter, categoryFilter, sortBy, categoryMap]);
 
-  // Fixed or dynamic counts matching mockup
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const visiblePosts = filtered.slice((page - 1) * pageSize, page * pageSize);
+  const firstPageNumber = Math.max(1, Math.min(page - 2, totalPages - 4));
+  const pageNumbers = Array.from({ length: Math.min(totalPages, 5) }, (_, index) => firstPageNumber + index);
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
+  // Counts are derived from the records returned by the API.
   const stats = [
     {
       label: 'Tổng bài viết',
@@ -539,8 +252,16 @@ export function AdminPostsTable() {
     { label: 'Bị ẩn', value: 'BANNED' as const, count: basePosts.filter((p) => p.moderationStatus === 'BANNED').length },
   ];
 
-  const open = (post: ModerationPostItem, next: 'view' | 'edit' | 'delete' | 'hide') => {
-    const item = post as EditablePost;
+  const open = async (post: ModerationPostItem, next: 'view' | 'edit' | 'delete' | 'hide') => {
+    let item = post as EditablePost;
+    if ((next === 'view' || next === 'edit') && !item.body) {
+      try {
+        const detail = await postsService.getById(post.id);
+        item = { ...item, ...detail, categoryName: item.categoryName, coverMedia: item.coverMedia };
+      } catch {
+        toast.error('Không thể tải nội dung bài viết từ máy chủ.');
+      }
+    }
     setSelected(item);
     setMode(next);
     setTitle(item.title);
@@ -554,12 +275,35 @@ export function AdminPostsTable() {
     setMode(null);
   };
 
+  const showPreview = useCallback(async (post: EditablePost) => {
+    setPreview(post);
+    if (post.body) return;
+    try {
+      const detail = await postsService.getById(post.id);
+      const enriched = { ...post, ...detail, categoryName: post.categoryName, coverMedia: post.coverMedia, likeCount: detail.reactionCount };
+      setPreview(enriched);
+      setPosts((items) => items.map((item) => item.id === post.id ? enriched : item));
+    } catch {
+      // The list remains usable if a detail request fails.
+    }
+  }, []);
+
+  useEffect(() => {
+    if (preview && !preview.body) void showPreview(preview);
+  }, [preview?.id, showPreview]);
+
   const remove = async () => {
     if (!selected) return;
-    setMockPosts((posts) => posts.filter((post) => post.id !== selected.id));
-    if (preview?.id === selected.id) setPreview(null);
-    toast.success('Đã xóa bài viết trong dữ liệu demo.');
-    close();
+    try {
+      await postsService.deletePost(selected.id);
+      setPosts((items) => items.filter((post) => post.id !== selected.id));
+      setSelectedIds((ids) => ids.filter((id) => id !== selected.id));
+      if (preview?.id === selected.id) setPreview(null);
+      toast.success('Đã chuyển bài viết vào thùng lưu trữ.');
+      close();
+    } catch {
+      toast.error('Không thể xóa bài viết. Vui lòng tải lại và thử lại.');
+    }
   };
 
   const handleToggleHide = async (e: React.FormEvent) => {
@@ -567,26 +311,29 @@ export function AdminPostsTable() {
     if (!selected) return;
 
     const isRestoring = selected.moderationStatus === 'BANNED';
-    const nextPost: EditablePost = {
-      ...selected,
-      moderationStatus: isRestoring ? 'APPROVED' : 'BANNED',
-      status: isRestoring ? 'PUBLISHED' : 'HIDDEN',
-    };
-    setMockPosts((posts) => posts.map((post) => (post.id === selected.id ? nextPost : post)));
-    if (preview?.id === selected.id) setPreview(nextPost);
-    toast.success(isRestoring ? `Đã phục hồi bài viết demo “${selected.title}”.` : `Đã tạm ẩn bài viết demo “${selected.title}”.`);
-    close();
+    try {
+      if (isRestoring) await moderationService.approvePost(selected.id);
+      else await moderationService.banPost(selected.id, hideReason);
+      toast.success(isRestoring ? 'Đã khôi phục bài viết.' : 'Đã ẩn bài viết.');
+      close();
+      await loadPosts();
+    } catch {
+      toast.error('Không thể cập nhật trạng thái bài viết. Vui lòng thử lại.');
+    }
   };
 
   const update = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selected || !title.trim()) return;
 
-    const nextPost: EditablePost = { ...selected, title: title.trim(), body: body.trim() || undefined };
-    setMockPosts((posts) => posts.map((post) => (post.id === selected.id ? nextPost : post)));
-    if (preview?.id === selected.id) setPreview(nextPost);
-    toast.success('Đã cập nhật bài viết trong dữ liệu demo.');
-    close();
+    try {
+      await postsService.updatePost(selected.id, { title: title.trim(), body: body.trim() });
+      toast.success('Đã cập nhật bài viết.');
+      close();
+      await loadPosts();
+    } catch {
+      toast.error('Không thể cập nhật bài viết. Vui lòng thử lại.');
+    }
   };
 
   const toggleSelectAll = () => {
@@ -676,14 +423,9 @@ export function AdminPostsTable() {
   };
 
   // Stats for the active preview item
-  const previewStats = useMemo(() => {
-    if (!preview) return null;
-    return getDeterministicStats(preview);
-  }, [preview]);
-
   const previewCategoryName = useMemo(() => {
-    if (!preview) return 'Tài chính cá nhân';
-    return preview.categoryName || (preview.categoryId ? categoryMap.get(preview.categoryId) || 'Tài chính cá nhân' : 'Tài chính cá nhân');
+    if (!preview) return 'Chưa phân loại';
+    return preview.categoryName || (preview.categoryId ? categoryMap.get(preview.categoryId) || 'Chưa phân loại' : 'Chưa phân loại');
   }, [preview, categoryMap]);
 
   return (
@@ -701,7 +443,7 @@ export function AdminPostsTable() {
 
         <div className="flex items-center gap-3 self-start">
           <Button
-            onClick={() => toast.info('Chế độ demo: tạo bài viết sẽ được kết nối khi backend sẵn sàng.')}
+            onClick={() => setIsCreateOpen(true)}
             className="h-10 gap-2 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700"
           >
             <Plus className="h-4 w-4" />
@@ -793,17 +535,7 @@ export function AdminPostsTable() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="max-h-80 min-w-[220px] overflow-y-auto rounded-[10px] border-slate-200 bg-white p-1.5 shadow-[0_12px_28px_rgb(15_23_42/0.14),0_3px_8px_rgb(15_23_42/0.08)]">
-                {[
-                  ['ALL', 'Tất cả danh mục'],
-                  ['Tài chính cá nhân', 'Tài chính cá nhân'],
-                  ['Đầu tư', 'Đầu tư'],
-                  ['Chứng khoán', 'Chứng khoán'],
-                  ['Tư duy', 'Tư duy'],
-                  ['Crypto', 'Crypto'],
-                  ['Công cụ', 'Công cụ'],
-                  ['Bất động sản', 'Bất động sản'],
-                  ...categories.map((c) => [c.id, c.name]),
-                ].map(([value, label]) => (
+                {[['ALL', 'Tất cả danh mục'], ...categories.map((category) => [category.id, category.name])].map(([value, label]) => (
                   <DropdownMenuItem
                     key={value}
                     onSelect={() => { setCategoryFilter(value); setPage(1); }}
@@ -853,20 +585,21 @@ export function AdminPostsTable() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => toast.info('Danh sách hiện đang dùng dữ liệu mock cục bộ.')}
-              title="Làm mới bộ lọc"
+              onClick={() => { setIsRefreshing(true); void loadPosts(); }}
+              title="Tải lại dữ liệu"
               className="h-11 w-11 p-0 text-muted-foreground hover:text-foreground"
+              disabled={isRefreshing}
             >
-              <SlidersHorizontal className="h-4 w-4" />
+              <RefreshCw className="h-4 w-4" />
             </Button>
           </div>
         </div>
 
         {/* 4. Posts table */}
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-xs">
+            <table className="w-full min-w-[960px] text-left text-xs">
               <thead className="border-b border-border bg-muted/30 text-muted-foreground">
-                <tr>
+                <tr className="whitespace-nowrap">
                   <th className="w-10 px-4 py-3.5 text-center">
                     <input
                       type="checkbox"
@@ -886,7 +619,7 @@ export function AdminPostsTable() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {false ? (
+                {isLoading ? (
                   <tr>
                     <td colSpan={8} className="py-16 text-center text-muted-foreground">
                       <div className="flex flex-col items-center justify-center gap-2">
@@ -895,10 +628,10 @@ export function AdminPostsTable() {
                       </div>
                     </td>
                   </tr>
-                ) : false ? (
+                ) : loadError ? (
                   <tr>
                     <td colSpan={8} className="py-16 text-center text-rose-500">
-                      Không thể tải danh sách bài viết. Vui lòng thử lại.
+                      Không thể tải bài viết từ máy chủ. Hãy bấm nút tải lại để thử lại.
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
@@ -909,26 +642,24 @@ export function AdminPostsTable() {
                     </td>
                   </tr>
                 ) : (
-                  filtered.map((post) => {
+                  visiblePosts.map((post) => {
                     const isSelected = selectedIds.includes(post.id);
                     const isRowPreviewed = preview?.id === post.id;
                     const isBanned = post.moderationStatus === 'BANNED';
-                    const categoryName =
-                      post.categoryName ||
-                      (post.categoryId ? categoryMap.get(post.categoryId) || 'Tài chính cá nhân' : 'Tài chính cá nhân');
-                    const stats = getDeterministicStats(post);
-                    const authorName = post.author?.displayName || post.author?.username || 'Nguyễn Văn A';
+                    const categoryName = post.categoryName || (post.categoryId ? categoryMap.get(post.categoryId) : undefined) || 'Chưa phân loại';
+                    const authorName = post.author?.displayName || post.author?.username || post.authorId;
                     const authorHandle = post.author?.username
                       ? `@${post.author.username}`
-                      : `@user_${post.authorId.slice(0, 6)}`;
-                    const avatarSrc =
-                      post.author?.avatarMediaId ||
-                      `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.author?.username || post.authorId}`;
+                      : post.authorId;
+                    const avatarSrc = resolveMediaUrl(
+                      post.author?.avatarMediaId,
+                      `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(authorName)}`
+                    );
 
                     return (
                       <tr
                         key={post.id}
-                        onClick={() => setPreview(post)}
+                        onClick={() => void showPreview(post)}
                         className={`group cursor-pointer transition-colors ${
                           isRowPreviewed
                             ? 'bg-emerald-50/50 dark:bg-emerald-950/20'
@@ -1010,11 +741,11 @@ export function AdminPostsTable() {
                           <div className="flex items-center gap-3 text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Heart className="h-3.5 w-3.5" />
-                              <span className="tabular-nums">{stats.likes}</span>
+                              <span className="tabular-nums">{post.likeCount ?? '—'}</span>
                             </span>
                             <span className="flex items-center gap-1">
                               <MessageSquare className="h-3.5 w-3.5" />
-                              <span className="tabular-nums">{stats.comments}</span>
+                              <span className="tabular-nums">{post.commentCount ?? '—'}</span>
                             </span>
                           </div>
                         </td>
@@ -1166,10 +897,7 @@ export function AdminPostsTable() {
                 <div className="flex items-center gap-2.5">
                   <div className="h-9 w-9 overflow-hidden rounded-full border border-border bg-muted">
                     <img
-                      src={
-                        preview.author?.avatarMediaId ||
-                        `https://api.dicebear.com/7.x/avataaars/svg?seed=${preview.author?.username || preview.authorId}`
-                      }
+                      src={resolveMediaUrl(preview.author?.avatarMediaId, `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(preview.author?.displayName || preview.author?.username || preview.authorId)}`)}
                       alt=""
                       className="h-full w-full object-cover"
                       onError={(e) => { (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(preview.author?.displayName || preview.author?.username || 'User')}`; }}
@@ -1177,12 +905,12 @@ export function AdminPostsTable() {
                   </div>
                   <div>
                     <p className="text-xs font-semibold text-foreground">
-                      {preview.author?.displayName || preview.author?.username || 'Nguyễn Văn A'}
+                      {preview.author?.displayName || preview.author?.username || preview.authorId}
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {preview.author?.username
                         ? `@${preview.author.username}`
-                        : `@user_${preview.authorId.slice(0, 6)}`}
+                        : preview.authorId}
                     </p>
                   </div>
                 </div>
@@ -1195,9 +923,7 @@ export function AdminPostsTable() {
 
               {/* Excerpt Summary */}
               <p className="text-sm leading-relaxed text-muted-foreground">
-                {preview.body?.replace(/<[^>]*>?/gm, '').slice(0, 200) ||
-                  preview.metaDescription ||
-                  'Chia sẻ một số nguyên tắc cơ bản giúp bạn bắt đầu hành trình quản lý tài chính cá nhân dễ dàng hơn. Đây là những kinh nghiệm mình rút ra sau nhiều năm tìm hiểu và áp dụng.'}
+                {preview.body?.replace(/<[^>]*>?/gm, '').slice(0, 200) || preview.metaDescription || 'Chưa có mô tả.'}
               </p>
 
               {/* Status Badge */}
@@ -1207,19 +933,19 @@ export function AdminPostsTable() {
               <div className="flex items-center justify-between rounded-[10px] bg-muted/40 p-3 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1.5 text-rose-500">
                   <Heart className="h-4 w-4 fill-rose-500/20" />
-                  <span className="font-medium tabular-nums">{previewStats?.likes ?? 128}</span>
+                  <span className="font-medium tabular-nums">{preview.likeCount ?? '—'}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-sky-500">
                   <MessageSquare className="h-4 w-4 fill-sky-500/20" />
-                  <span className="font-medium tabular-nums">{previewStats?.comments ?? 32}</span>
+                  <span className="font-medium tabular-nums">{preview.commentCount ?? '—'}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-purple-500">
                   <Bookmark className="h-4 w-4 fill-purple-500/20" />
-                  <span className="font-medium tabular-nums">{previewStats?.bookmarks ?? 5}</span>
+                  <span className="font-medium tabular-nums">{preview.bookmarkCount ?? '—'}</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-500">
                   <Eye className="h-4 w-4" />
-                  <span className="font-medium tabular-nums">{previewStats?.views ?? '1.2K'}</span>
+                  <span className="font-medium tabular-nums">{preview.viewCount ?? '—'}</span>
                 </div>
               </div>
 
@@ -1247,10 +973,7 @@ export function AdminPostsTable() {
                     <span>Từ khóa</span>
                   </span>
                   <div className="flex flex-wrap justify-end gap-1.5">
-                    {(preview.tags && preview.tags.length > 0
-                      ? preview.tags.map((t) => t.name)
-                      : ['tài chính', 'quản lý chi tiêu', 'tiết kiệm']
-                    ).map((tag) => (
+                    {(preview.tags || []).map((tag) => tag.name).map((tag) => (
                       <span
                         key={tag}
                         className="rounded-md border border-border bg-muted/40 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
@@ -1267,7 +990,7 @@ export function AdminPostsTable() {
                     <ShieldAlert className="h-4 w-4" />
                     <span>Báo cáo</span>
                   </span>
-                  <span className="text-[11px] font-medium text-slate-400">0 báo cáo vi phạm</span>
+                  <span className="text-[11px] font-medium text-slate-400">—</span>
                 </div>
               </div>
 
@@ -1352,7 +1075,7 @@ export function AdminPostsTable() {
               <ChevronLeft className="h-4 w-4" />
             </button>
 
-            {[1, 2, 3, 4, 5].map((p) => {
+            {pageNumbers.map((p) => {
               const isCurrent = page === p;
               return (
                 <button
@@ -1370,19 +1093,10 @@ export function AdminPostsTable() {
               );
             })}
 
-            <span className="px-1 text-muted-foreground">...</span>
             <button
               type="button"
-              onClick={() => setPage(445)}
-              className="flex h-8 min-w-8 items-center justify-center rounded-lg border border-border bg-background px-2 text-xs font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-            >
-              445
-            </button>
-
-            <button
-              type="button"
-              disabled={page >= 445}
-              onClick={() => setPage((p) => Math.min(445, p + 1))}
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
               aria-label="Trang sau"
             >
@@ -1476,7 +1190,7 @@ export function AdminPostsTable() {
                     alt=""
                     className="h-28 w-full rounded-lg object-cover"
                   />
-                  <p className="mt-2 text-[11px] text-muted-foreground">Ảnh chỉ dùng để xem trước trong chế độ demo.</p>
+                  <p className="mt-2 text-[11px] text-muted-foreground">Ảnh bìa hiện tại của bài viết.</p>
                 </div>
                 <label className="block text-xs font-semibold text-foreground">
                   Tiêu đề
@@ -1580,6 +1294,12 @@ export function AdminPostsTable() {
           </div>
         </div>
       )}
+      <AdminCreatePostModal
+        open={isCreateOpen}
+        fixedContentType="COMMUNITY"
+        onClose={() => setIsCreateOpen(false)}
+        onCreated={loadPosts}
+      />
     </div>
   );
 }

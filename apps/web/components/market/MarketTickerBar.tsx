@@ -56,20 +56,20 @@ export function MarketTickerBar() {
     >
       <div className="flex h-full w-full min-w-0 items-center">
         {/* Live Indicator Badge (Left Anchor) */}
-        <div className="relative z-10 flex h-full shrink-0 items-center gap-2 border-r border-border bg-background px-3 shadow-xs">
+        <div className="relative z-10 flex h-full shrink-0 items-center gap-2 border-r border-border bg-background px-2.5 shadow-xs sm:px-3">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <span className="hidden sm:inline text-xs font-bold tracking-wider text-foreground uppercase font-mono">
+          <span className="hidden text-[10px] font-bold tracking-wider text-foreground uppercase font-mono sm:inline">
             Thị Trường
           </span>
         </div>
 
         {/* Marquee Ticker Track */}
         <div className="group relative flex flex-1 min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_2%,black_98%,transparent)]">
-          <div className="flex w-max shrink-0 items-center gap-4 pr-4 animate-[marquee-loop_45s_linear_infinite] group-hover:[animation-play-state:paused]">
-            {items.map((item) => (
+          <div className="flex w-max shrink-0 items-center gap-2 pr-2 animate-[marquee-loop_60s_linear_infinite] group-hover:[animation-play-state:paused] sm:gap-4 sm:pr-4">
+            {items.slice(0, 8).map((item) => (
               <React.Fragment key={`ticker-1-${item.symbol}`}>
                 <TickerItem item={item} flashState={flashStates[item.symbol]} />
                 <span className="h-3 w-px bg-border/70 shrink-0" />
@@ -79,10 +79,10 @@ export function MarketTickerBar() {
 
           {/* Duplicate set for continuous seamless loop */}
           <div
-            className="flex w-max shrink-0 items-center gap-4 pr-4 animate-[marquee-loop_45s_linear_infinite] group-hover:[animation-play-state:paused]"
+            className="flex w-max shrink-0 items-center gap-2 pr-2 animate-[marquee-loop_60s_linear_infinite] group-hover:[animation-play-state:paused] sm:gap-4 sm:pr-4"
             aria-hidden="true"
           >
-            {items.map((item) => (
+            {items.slice(0, 8).map((item) => (
               <React.Fragment key={`ticker-2-${item.symbol}`}>
                 <TickerItem item={item} flashState={flashStates[item.symbol]} />
                 <span className="h-3 w-px bg-border/70 shrink-0" />

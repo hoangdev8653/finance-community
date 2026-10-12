@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { usersTable } from '../schema/users.schema';
@@ -47,6 +47,16 @@ export class UsersRepository {
       .update(usersTable)
       .set({ status, updatedAt: new Date() })
       .where(eq(usersTable.id, id))
+      .returning();
+    return updated;
+  }
+
+  async softDeleteTx(tx: any, id: string): Promise<UserEntity | undefined> {
+    const client = tx || this.db;
+    const [updated] = await client
+      .update(usersTable)
+      .set({ deletedAt: new Date(), status: 'DEACTIVATED', updatedAt: new Date() })
+      .where(and(eq(usersTable.id, id), isNull(usersTable.deletedAt)))
       .returning();
     return updated;
   }

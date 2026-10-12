@@ -76,6 +76,10 @@ export const adminService = {
     return response.data;
   },
 
+  async deleteUser(id: string): Promise<void> {
+    await apiClient.delete(`/admin/users/${encodeURIComponent(id)}`);
+  },
+
   /**
    * Assign RBAC role to target user directly on Backend API
    * POST /api/v1/admin/roles/assign

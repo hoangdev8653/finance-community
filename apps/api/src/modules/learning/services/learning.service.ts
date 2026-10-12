@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable, NotFoundException, Optional } from '@nestjs/common';
-import { and, asc, eq, desc, count } from 'drizzle-orm';
+import { and, asc, eq, desc, count, isNull } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../../../database/database.constants';
 import type { DrizzleDB } from '../../../database/database.module';
 import { learningProgressTable, learningSourcesTable, postsTable, quizQuestionsTable, quizzesTable } from '../../../database/schema';
@@ -144,7 +144,7 @@ export class LearningService {
   async getEditorialQueue(query: QueryLearningPostsDto) {
     const page = query.page || 1;
     const limit = query.limit || 20;
-    const filters = [eq(postsTable.contentType, 'SERIES')];
+    const filters = [eq(postsTable.contentType, 'SERIES'), isNull(postsTable.deletedAt)];
     if (query.editorialStatus) filters.push(eq(postsTable.editorialStatus, query.editorialStatus));
     const where = and(...filters);
     const [totalResult] = await this.db.select({ total: count() }).from(postsTable).where(where);
