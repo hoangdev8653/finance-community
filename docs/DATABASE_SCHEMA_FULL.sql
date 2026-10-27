@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS domains (
   slug varchar(80) NOT NULL CONSTRAINT uq_domains_slug UNIQUE,
   name varchar(120) NOT NULL,
   name_vi varchar(120),
-  name_en varchar(120),
+  image_url varchar(2048),
   description text,
   sort_order integer NOT NULL DEFAULT 0,
   is_active boolean NOT NULL DEFAULT true,
@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS categories (
   parent_id uuid REFERENCES categories(id) ON DELETE SET NULL,
   name_vi varchar(100),
   name_en varchar(100),
+  image_url varchar(2048),
   content_types jsonb NOT NULL DEFAULT '[]'::jsonb,
   description text,
   sort_order integer NOT NULL DEFAULT 0,
@@ -315,23 +316,16 @@ CREATE TABLE IF NOT EXISTS learning_series (
   title varchar(300) NOT NULL,
   slug varchar(320) NOT NULL UNIQUE,
   description text,
-  estimated_duration_minutes integer CHECK (estimated_duration_minutes IS NULL OR estimated_duration_minutes > 0),
   learning_outcomes jsonb NOT NULL DEFAULT '[]'::jsonb,
   hero_media_id uuid REFERENCES media(id) ON DELETE SET NULL,
   hero_alt_text varchar(250),
-  outcomes_media_id uuid REFERENCES media(id) ON DELETE SET NULL,
-  outcomes_alt_text varchar(250),
-  cta_media_id uuid REFERENCES media(id) ON DELETE SET NULL,
-  cta_alt_text varchar(250),
   domain_id uuid NOT NULL REFERENCES domains(id) ON DELETE RESTRICT,
-  category_id uuid NOT NULL REFERENCES categories(id) ON DELETE RESTRICT,
   status varchar(20) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'REVIEW', 'PUBLISHED', 'ARCHIVED')),
   is_published boolean NOT NULL DEFAULT false,
   created_by uuid NOT NULL,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now()
 );
-CREATE INDEX IF NOT EXISTS idx_learning_series_domain_category ON learning_series(domain_id, category_id);
 
 CREATE TABLE IF NOT EXISTS learning_series_posts (
   series_id uuid NOT NULL REFERENCES learning_series(id) ON DELETE CASCADE,

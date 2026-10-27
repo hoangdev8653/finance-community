@@ -43,6 +43,14 @@ services:
       - ./apps/api/migrations/0032_add_profile_avatar_url.sql:/docker-entrypoint-initdb.d/24_add_profile_avatar_url.sql:ro
       - ./apps/api/migrations/0034_add_daily_page_views.sql:/docker-entrypoint-initdb.d/25_add_daily_page_views.sql:ro
       - ./apps/api/migrations/0035_add_daily_post_views.sql:/docker-entrypoint-initdb.d/26_add_daily_post_views.sql:ro
+      - ./apps/api/migrations/0036_add_domain_image_url.sql:/docker-entrypoint-initdb.d/27_add_domain_image_url.sql:ro
+      - ./apps/api/migrations/0037_remove_domain_legacy_names.sql:/docker-entrypoint-initdb.d/28_remove_domain_legacy_names.sql:ro
+      - ./apps/api/migrations/0038_add_category_image_url.sql:/docker-entrypoint-initdb.d/29_add_category_image_url.sql:ro
+      - ./apps/api/migrations/0039_seed_additional_domains.sql:/docker-entrypoint-initdb.d/30_seed_additional_domains.sql:ro
+      - ./apps/api/migrations/0040_make_learning_series_category_optional.sql:/docker-entrypoint-initdb.d/31_make_learning_series_category_optional.sql:ro
+      - ./apps/api/migrations/0041_simplify_learning_series_fields.sql:/docker-entrypoint-initdb.d/32_simplify_learning_series_fields.sql:ro
+      - ./apps/api/migrations/0042_restore_learning_series_hero_image.sql:/docker-entrypoint-initdb.d/33_restore_learning_series_hero_image.sql:ro
+      - ./apps/api/migrations/0043_remove_categories_from_learning_lessons.sql:/docker-entrypoint-initdb.d/34_remove_categories_from_learning_lessons.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d finance_db"]
       interval: 5s
