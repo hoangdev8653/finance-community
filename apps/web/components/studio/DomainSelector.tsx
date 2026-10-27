@@ -17,8 +17,6 @@ export function DomainSelector({
     staleTime: 300000,
   });
 
-  const learningCodes = new Set(['MONEY', 'TECH', 'CAREER', 'LIFE']);
-
   return (
     <div className="space-y-1.5">
       <label htmlFor="post-domain-select" className="block text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -33,7 +31,7 @@ export function DomainSelector({
       >
         <option value="">Chọn lĩnh vực...</option>
         {data
-          .filter((domain) => domain.isActive && learningCodes.has(domain.code))
+          .filter((domain) => domain.isActive)
           .map((domain) => (
             <option key={domain.id} value={domain.id}>
               {domain.nameVi || domain.name}

@@ -18,7 +18,13 @@ export interface PostDraft {
 
 type DraftStatus = 'idle' | 'saving' | 'saved' | 'restored';
 
-export function usePostDraft(key: string, value: PostDraft, enabled = true) {
+export function usePostDraft(
+  key: string,
+  value: PostDraft,
+  enabled = true,
+  options: { clearOnMount?: boolean; clearOnUnmount?: boolean } = {},
+) {
+  const { clearOnMount = false, clearOnUnmount = false } = options;
   const [status, setStatus] = useState<DraftStatus>('idle');
   const [restoredDraft, setRestoredDraft] = useState<PostDraft | null>(null);
   const firstRender = useRef(true);
@@ -26,6 +32,12 @@ export function usePostDraft(key: string, value: PostDraft, enabled = true) {
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return;
+    if (clearOnMount) {
+      window.localStorage.removeItem(key);
+      setRestoredDraft(null);
+      setStatus('idle');
+      return;
+    }
     try {
       const raw = window.localStorage.getItem(key);
       if (raw) {
@@ -36,7 +48,12 @@ export function usePostDraft(key: string, value: PostDraft, enabled = true) {
     } catch {
       window.localStorage.removeItem(key);
     }
-  }, [enabled, key]);
+  }, [enabled, key, clearOnMount]);
+
+  useEffect(() => {
+    if (!enabled || !clearOnUnmount || typeof window === 'undefined') return;
+    return () => window.localStorage.removeItem(key);
+  }, [enabled, key, clearOnUnmount]);
 
   useEffect(() => {
     if (!enabled || typeof window === 'undefined') return;

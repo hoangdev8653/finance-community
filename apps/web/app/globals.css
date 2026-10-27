@@ -664,3 +664,116 @@ button:disabled,
   cursor: not-allowed;
 }
 
+/* Keep article tables content-sized and make empty cells compact. */
+.rich-text-content table {
+  width: fit-content;
+  min-width: min(100%, 20rem);
+  max-width: 100%;
+  table-layout: auto;
+}
+
+.rich-text-content th,
+.rich-text-content td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+}
+
+.rich-text-content th p,
+.rich-text-content td p,
+.post-content-renderer th p,
+.post-content-renderer td p {
+  margin-bottom: 0;
+}
+
+.post-content-renderer table {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  overflow-x: auto;
+  table-layout: auto;
+}
+
+.post-content-renderer th,
+.post-content-renderer td {
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+}
+
+.rich-text-content table,
+.post-content-renderer table {
+  border: 1px solid #cbd9d5;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #1e293b;
+}
+
+.rich-text-content th,
+.post-content-renderer th {
+  border-right: 1px solid #41464d;
+  border-bottom: 1px solid #41464d;
+  background: #252a31;
+  color: #fff;
+  font-weight: 600;
+  text-align: left;
+}
+
+.rich-text-content th:last-child,
+.post-content-renderer th:last-child,
+.rich-text-content td:last-child,
+.post-content-renderer td:last-child {
+  border-right: 0;
+}
+
+.rich-text-content td,
+.post-content-renderer td {
+  border-right: 1px solid #d7e3df;
+  border-bottom: 1px solid #d7e3df;
+  background: #fff;
+}
+
+.rich-text-content tr:last-child td,
+.post-content-renderer tr:last-child td {
+  border-bottom: 0;
+}
+
+.rich-text-content tbody tr:nth-child(even) td,
+.post-content-renderer tbody tr:nth-child(even) td {
+  background: #f0fdfa;
+}
+
+.rich-text-content tbody tr:hover td,
+.post-content-renderer tbody tr:hover td {
+  background: #e6f7f2;
+}
+
+.dark .rich-text-content table,
+.dark .post-content-renderer table {
+  border-color: #36514b;
+  background: #111f1c;
+  color: #e2e8f0;
+}
+
+.dark .rich-text-content th,
+.dark .post-content-renderer th {
+  border-color: #454b54;
+  background: #30363f;
+}
+
+.dark .rich-text-content td,
+.dark .post-content-renderer td {
+  border-color: #36514b;
+  background: #111f1c;
+}
+
+.dark .rich-text-content tbody tr:nth-child(even) td,
+.dark .post-content-renderer tbody tr:nth-child(even) td {
+  background: #172b27;
+}
+
+.dark .rich-text-content tbody tr:hover td,
+.dark .post-content-renderer tbody tr:hover td {
+  background: #1d3a34;
+}
+

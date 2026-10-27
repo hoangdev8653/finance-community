@@ -71,7 +71,7 @@ export function PostContentRenderer({ body }: PostContentRendererProps) {
   const headings = extractContentHeadings(body);
   return (
     <div
-      className="prose prose-slate dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-slate-800 dark:text-slate-200
+      className="post-content-renderer prose prose-slate dark:prose-invert max-w-none text-base sm:text-lg leading-relaxed text-slate-800 dark:text-slate-200
         [&_h2]:font-heading [&_h2]:text-2xl sm:[&_h2]:text-3xl [&_h2]:font-bold [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:text-slate-900 dark:[&_h2]:text-slate-100 [&_h2]:border-b [&_h2]:border-slate-200/80 dark:[&_h2]:border-slate-800 [&_h2]:pb-3
         [&_h3]:font-heading [&_h3]:text-xl sm:[&_h3]:text-2xl [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-slate-900 dark:[&_h3]:text-slate-100
         [&_h4]:font-heading [&_h4]:text-lg sm:[&_h4]:text-xl [&_h4]:font-semibold [&_h4]:mt-6 [&_h4]:mb-2 [&_h4]:text-slate-900 dark:[&_h4]:text-slate-100

@@ -126,12 +126,20 @@ export function MediaUploader({
       {/* Preview / Drop Zone */}
       {currentPreviewUrl ? (
         <div className="relative rounded-lg border border-border bg-surface overflow-hidden group">
-          <img
-            src={currentPreviewUrl}
-            alt="Uploaded preview"
-            className="max-h-[520px] w-full rounded-lg object-contain bg-black/10"
-          />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={triggerPicker}
+            disabled={isPending}
+            aria-label="Chọn ảnh khác"
+            className="block w-full cursor-pointer disabled:cursor-wait"
+          >
+            <img
+              src={currentPreviewUrl}
+              alt="Ảnh hiện tại. Nhấn để chọn ảnh khác."
+              className="max-h-[520px] w-full rounded-lg object-contain bg-black/10"
+            />
+          </button>
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center gap-3 bg-black/40 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <Button
               type="button"
               variant="outline"
@@ -202,7 +210,7 @@ export function MediaUploader({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-foreground">
-                  <span className="text-primary hover:underline">Nhấn để tải ảnh lên</span> hoặc kéo thả
+                  <span className="text-primary hover:underline">Chọn ảnh từ máy tính</span> hoặc kéo thả vào đây
                 </p>
                 <p className="text-xs text-muted-foreground font-mono">
                   PNG, JPG, WebP, GIF up to 10MB

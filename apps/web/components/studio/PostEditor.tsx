@@ -126,7 +126,7 @@ export function PostEditor(props: PostEditorProps) {
       {/* ========================================================================= */}
       <div className="min-w-0 self-start lg:col-span-8 space-y-6">
         {/* 1. Tiêu đề bài viết */}
-        <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-3">
+        <div className="rounded-[10px] border border-slate-200/70 dark:border-slate-800/70 bg-card p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.035)] space-y-3">
           <div className="flex items-center justify-between">
             <label
               htmlFor="post-title-input"
@@ -195,7 +195,7 @@ export function PostEditor(props: PostEditorProps) {
       {/* ========================================================================= */}
       <div className="min-w-0 self-start lg:col-span-4 space-y-6">
         {/* Card 1: Cấu hình phân loại */}
-        <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-5">
+        <div className="rounded-[10px] border border-slate-200/70 dark:border-slate-800/70 bg-card p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.035)] space-y-5">
           <div className="border-b border-border/80 pb-3">
             <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100">
               Cài đặt phân loại
@@ -248,13 +248,14 @@ export function PostEditor(props: PostEditorProps) {
             onChange={props.onDomainChange ?? (() => undefined)}
           />
 
-          {/* Chủ đề / Chuyên mục */}
-          <CategorySelector
-            value={categoryId}
-            scope={editorContentType}
-            domainId={domainId}
-            onChange={props.onCategoryChange}
-          />
+          {editorContentType === 'COMMUNITY' && (
+            <CategorySelector
+              value={categoryId}
+              scope={editorContentType}
+              domainId={domainId}
+              onChange={props.onCategoryChange}
+            />
+          )}
 
           {/* CHỈ HIỂN THỊ KHI LÀ BÀI HỌC KHÓA HỌC (SERIES) */}
           {!communityOnly && editorContentType === 'SERIES' && (
@@ -276,13 +277,13 @@ export function PostEditor(props: PostEditorProps) {
 
         {/* Card 2: Ảnh bìa đại diện */}
         {props.onCoverMediaChange && (
-          <div className="rounded-[10px] border border-slate-200 dark:border-slate-800 bg-card p-5 sm:p-6 shadow-sm space-y-4">
+          <div className="rounded-[10px] border border-slate-200/70 dark:border-slate-800/70 bg-card p-5 sm:p-6 shadow-[0_1px_2px_rgba(15,23,42,0.035)] space-y-4">
             <div className="border-b border-border/80 pb-3">
               <h2 className="font-heading text-lg font-bold text-slate-900 dark:text-slate-100">
-                Ảnh bìa bài viết
+                Ảnh thumbnail bài viết
               </h2>
               <p className="mt-1 text-sm leading-6 font-medium text-slate-700 dark:text-slate-300">
-                Xuất hiện trên thẻ bài viết và tiêu đề trang đọc
+                Chọn ảnh từ máy tính hoặc kéo thả. Ảnh sẽ tải lên khi bạn lưu bài.
               </p>
             </div>
 

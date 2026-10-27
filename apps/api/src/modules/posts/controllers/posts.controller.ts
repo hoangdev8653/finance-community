@@ -165,11 +165,11 @@ export class PostsController {
   @ApiResponse({ status: 201, description: 'Created PostEntity' })
   @ApiResponse({ status: 400, description: 'Validation error or invalid category/tag' })
   @ApiResponse({ status: 403, description: 'Email verification required' })
-  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 5 posts per hour)' })
+  @ApiResponse({ status: 429, description: 'Rate limit exceeded (Max 30 posts per hour)' })
   @UseGuards(JwtAuthGuard, AccountStatusGuard, EmailVerificationGuard, RateLimitGuard)
-  @RateLimit({ limit: 5, ttlSeconds: 3600, keyPrefix: 'create_post' })
-  createPost(@CurrentUser() user: any, @Body() dto: CreatePostDto) {
-    const roles = this.jitService.getUserRoles(user.sub);
+  @RateLimit({ limit: 30, ttlSeconds: 3600, keyPrefix: 'create_post' })
+  async createPost(@CurrentUser() user: any, @Body() dto: CreatePostDto) {
+    const roles = await this.jitService.getUserRolesAsync(user.sub);
     return this.postsService.createPost(user.sub, dto, roles);
   }
 

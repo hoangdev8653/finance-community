@@ -52,19 +52,22 @@ export function CoverImagePicker({
     <div className={`space-y-2 ${className}`}>
       <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
         <ImageIcon className="h-4 w-4 text-primary" aria-hidden="true" />
-        <span>Ảnh đại diện (không bắt buộc)</span>
+        <span>Ảnh thumbnail (không bắt buộc)</span>
       </div>
 
       <MediaUploader
         purpose="cover"
         folder="posts/covers"
-        label="Upload article cover banner"
+        label="Chọn ảnh thumbnail từ máy tính hoặc kéo thả"
         currentPreviewUrl={previewUrl}
         onSuccess={handleUploadSuccess}
         onClear={handleClear}
         deferUpload
         onFileSelected={handlePendingFile}
       />
+      <p className="text-xs leading-5 text-muted-foreground">
+        Nhấn vào vùng tải ảnh hoặc thumbnail hiện tại để chọn ảnh từ máy tính. Ảnh sẽ tải lên khi lưu bài.
+      </p>
     </div>
   );
 }

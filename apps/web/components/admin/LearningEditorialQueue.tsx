@@ -18,6 +18,7 @@ import {
   ExternalLink,
   Sparkles,
   Trash2,
+  Pencil,
 } from 'lucide-react';
 import { learningAdminService } from '@/lib/learning/learning-admin-service';
 import type { EditorialStatus, LearningAdminPost } from '@/types/learning-admin';
@@ -443,6 +444,15 @@ export function LearningEditorialQueue() {
                       )}
                     </div>
 
+                    <Link
+                      href={`/quan-tri/hoc-tap/${encodeURIComponent(post.id)}/chinh-sua`}
+                      className="inline-flex h-10 items-center gap-2 rounded-[8px] border border-emerald-200 bg-emerald-50 px-3 text-sm font-semibold text-emerald-700 shadow-2xs transition-colors hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-950/70"
+                      title="Chỉnh sửa nội dung bài học"
+                      aria-label={`Chỉnh sửa bài học ${post.title}`}
+                    >
+                      <Pencil className="h-4 w-4" />
+                      <span>Chỉnh sửa</span>
+                    </Link>
                     <Link
                       href={`/khoa-hoc/${post.slug}`}
                       target="_blank"
