@@ -214,10 +214,10 @@ export function LearningHomeView() {
     return [
       { id: "MONEY", label: "Tài chính", slug: "tai-chinh", href: "/tai-chinh", Icon: CircleDollarSign, tone: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400", subtitle: "Khám phá chủ đề" },
       { id: "BUSINESS", label: "Kinh doanh", slug: "business", href: "/business", Icon: BriefcaseBusiness, tone: "bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400", subtitle: "Khám phá chủ đề" },
-      { id: "TECH", label: "Công nghệ", slug: "technology", href: "/technology", Icon: Sparkles, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", subtitle: "Khám phá chủ đề" },
+      { id: "TECH", label: "Công nghệ", slug: "cong-nghe", href: "/cong-nghe", Icon: Sparkles, tone: "bg-violet-50 text-violet-600 dark:bg-violet-950/60 dark:text-violet-400", subtitle: "Khám phá chủ đề" },
       { id: "CAREER", label: "Nghề nghiệp và Học tập", slug: "career", href: "/career", Icon: GraduationCap, tone: "bg-amber-50 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400", subtitle: "Khám phá chủ đề" },
-      { id: "LIFE", label: "Đời sống và Sức khỏe", slug: "doi-song-suc-khoe", href: "/doi-song-suc-khoe", Icon: HeartPulse, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400", subtitle: "Khám phá chủ đề" },
-      { id: "SPORTS", label: "Thể thao", slug: "sports", href: "/sports", Icon: Medal, tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400", subtitle: "Khám phá chủ đề" },
+      { id: "LIFE", label: "Đời sống", slug: "doi-song", href: "/doi-song", Icon: HeartPulse, tone: "bg-rose-50 text-rose-500 dark:bg-rose-950/60 dark:text-rose-400", subtitle: "Khám phá chủ đề" },
+      { id: "SPORTS", label: "Thể thao", slug: "the-thao", href: "/the-thao", Icon: Medal, tone: "bg-teal-50 text-teal-600 dark:bg-teal-950/60 dark:text-teal-400", subtitle: "Khám phá chủ đề" },
     ];
   }, [remoteDomains, remoteCategories]);
 

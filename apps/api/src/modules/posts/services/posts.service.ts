@@ -223,12 +223,12 @@ export class PostsService {
     if (!allowedContentTypes.includes(dto.contentType)) {
       throw new ForbiddenException({ statusCode: 403, error: 'Forbidden', message: 'Your role is not allowed to create this content type.', code: 'CONTENT_TYPE_NOT_ALLOWED' });
     }
-    if (!dto.domainId || !dto.categoryId) {
-      throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'Domain and category are required for every post.', code: 'DOMAIN_CATEGORY_REQUIRED' });
+    if (!dto.domainId || (dto.contentType === 'COMMUNITY' && !dto.categoryId)) {
+      throw new BadRequestException({ statusCode: 400, error: 'Bad Request', message: 'A domain is required, and community posts also require a category.', code: 'DOMAIN_CATEGORY_REQUIRED' });
     }
     // 1. Validate Category if provided
     let categoryDomainId: string | null = null;
-    if (dto.categoryId) {
+    if (dto.contentType === 'COMMUNITY' && dto.categoryId) {
       const category = await this.categoriesService.getCategoryById(dto.categoryId);
       categoryDomainId = category.domainId;
       if (!category.contentTypes.includes(dto.contentType) && category.scope !== dto.contentType) {
@@ -318,7 +318,7 @@ export class PostsService {
             slug: targetSlug,
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
-            categoryId: dto.categoryId || null,
+            categoryId: dto.contentType === 'SERIES' ? null : dto.categoryId || null,
             domainId: effectiveDomainId,
             status: effectiveStatus,
             metaTitle: dto.metaTitle || null,
@@ -345,7 +345,7 @@ export class PostsService {
             slug: fallbackSlug,
             body: sanitizedBody,
             coverMediaId: dto.coverMediaId || null,
-            categoryId: dto.categoryId || null,
+            categoryId: dto.contentType === 'SERIES' ? null : dto.categoryId || null,
             domainId: effectiveDomainId,
             status: dto.status,
             metaTitle: dto.metaTitle || null,
@@ -411,7 +411,7 @@ export class PostsService {
 
     // 1. Validate Category if updating
     let categoryDomainId: string | null = null;
-    if (dto.categoryId !== undefined ? dto.categoryId : existing.categoryId) {
+    if (existing.contentType === 'COMMUNITY' && (dto.categoryId !== undefined ? dto.categoryId : existing.categoryId)) {
       const category = await this.categoriesService.getCategoryById((dto.categoryId || existing.categoryId)!);
       categoryDomainId = category.domainId;
       if (!category.contentTypes.includes(existing.contentType) && category.scope !== existing.contentType) {
@@ -501,7 +501,8 @@ export class PostsService {
       const updateData: Partial<PostEntity> = {};
       if (dto.title !== undefined) updateData.title = dto.title;
       if (sanitizedBody !== undefined) updateData.body = sanitizedBody;
-      if (dto.categoryId !== undefined) updateData.categoryId = dto.categoryId || null;
+      if (existing.contentType === 'SERIES') updateData.categoryId = null;
+      else if (dto.categoryId !== undefined) updateData.categoryId = dto.categoryId || null;
       if (dto.domainId !== undefined) updateData.domainId = dto.domainId || null;
       if (dto.domainId === undefined && dto.categoryId && categoryDomainId) updateData.domainId = categoryDomainId;
       if (resolvedTopics && dto.domainId === undefined && !updateData.domainId) {

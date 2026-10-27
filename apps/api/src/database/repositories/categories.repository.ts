@@ -4,7 +4,6 @@ import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { categoriesTable } from '../schema/categories.schema';
 import { postsTable } from '../schema/posts.schema';
-import { learningSeriesTable } from '../schema/learning-series.schema';
 import { commentsTable } from '../schema/comments.schema';
 import { reportsTable } from '../schema/reports.schema';
 import { notificationsTable } from '../schema/notifications.schema';
@@ -73,25 +72,17 @@ export class CategoriesRepository {
 
   async getUsageCounts(id: string, tx?: any): Promise<{ posts: number; learningPaths: number }> {
     const client = tx || this.db;
-    const [posts, paths] = await Promise.all([
-      client.select({ value: count() }).from(postsTable).where(eq(postsTable.categoryId, id)),
-      client.select({ value: count() }).from(learningSeriesTable).where(eq(learningSeriesTable.categoryId, id)),
-    ]);
-    return { posts: Number(posts[0]?.value ?? 0), learningPaths: Number(paths[0]?.value ?? 0) };
+    const [posts] = await client.select({ value: count() }).from(postsTable).where(eq(postsTable.categoryId, id));
+    return { posts: Number(posts?.value ?? 0), learningPaths: 0 };
   }
 
   async reassignUsageTx(tx: any, oldId: string, newId: string): Promise<void> {
     await tx.update(postsTable).set({ categoryId: newId, updatedAt: new Date() }).where(eq(postsTable.categoryId, oldId));
-    await tx.update(learningSeriesTable).set({ categoryId: newId, updatedAt: new Date() }).where(eq(learningSeriesTable.categoryId, oldId));
   }
 
   async deleteContentsTx(tx: any, categoryId: string): Promise<{ posts: number; learningPaths: number }> {
     const postRows = await tx.select({ id: postsTable.id }).from(postsTable).where(eq(postsTable.categoryId, categoryId));
     const postIds = postRows.map((post: { id: string }) => post.id);
-    const deletedPaths = await tx.delete(learningSeriesTable)
-      .where(eq(learningSeriesTable.categoryId, categoryId))
-      .returning({ id: learningSeriesTable.id });
-
     if (postIds.length > 0) {
       const commentRows = await tx.select({ id: commentsTable.id })
         .from(commentsTable)
@@ -104,6 +95,6 @@ export class CategoriesRepository {
       await tx.delete(postsTable).where(inArray(postsTable.id, postIds));
     }
 
-    return { posts: postIds.length, learningPaths: deletedPaths.length };
+    return { posts: postIds.length, learningPaths: 0 };
   }
 }

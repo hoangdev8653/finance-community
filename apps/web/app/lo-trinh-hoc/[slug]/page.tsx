@@ -24,8 +24,10 @@ export default function LearningPathDetailPage({ params }: { params: Promise<{ s
   return <CourseView
     slug={path.series.slug}
     presentation={{
-      estimatedDurationMinutes: path.series.estimatedDurationMinutes,
+      estimatedDurationMinutes: path.lessons.length * 15,
       learningOutcomes: path.series.learningOutcomes,
+      heroImageUrl: path.series.heroImageUrl,
+      heroAltText: path.series.heroAltText,
     }}
     initialData={{
       series: {

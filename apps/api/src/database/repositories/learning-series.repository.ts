@@ -1,18 +1,35 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, isNull } from 'drizzle-orm';
 import { DRIZZLE_TOKEN } from '../database.constants';
 import type { DrizzleDB } from '../database.module';
 import { learningSeriesPostsTable, learningSeriesTable } from '../schema/learning-series.schema';
 import { postsTable } from '../schema/posts.schema';
 import { learningProgressTable } from '../schema/learning.schema';
+import { mediaTable } from '../schema/media.schema';
 
 @Injectable()
 export class LearningSeriesRepository {
   constructor(@Inject(DRIZZLE_TOKEN) private readonly db: DrizzleDB) {}
-  list() { return this.db.select().from(learningSeriesTable).orderBy(asc(learningSeriesTable.title)); }
-  listPublished() { return this.db.select().from(learningSeriesTable).where(eq(learningSeriesTable.isPublished, true)).orderBy(asc(learningSeriesTable.title)); }
-  async findById(id: string) { const [row] = await this.db.select().from(learningSeriesTable).where(eq(learningSeriesTable.id, id)); return row; }
-  async findBySlug(slug: string) { const [row] = await this.db.select().from(learningSeriesTable).where(eq(learningSeriesTable.slug, slug)); return row; }
+  private withHeroMedia() {
+    return this.db.select({ series: learningSeriesTable, heroImageUrl: mediaTable.secureUrl }).from(learningSeriesTable)
+      .leftJoin(mediaTable, and(eq(learningSeriesTable.heroMediaId, mediaTable.id), eq(mediaTable.resourceType, 'image'), isNull(mediaTable.deletedAt)));
+  }
+  async list() {
+    const rows = await this.withHeroMedia().orderBy(asc(learningSeriesTable.title));
+    return rows.map(({ series, heroImageUrl }) => ({ ...series, heroImageUrl: heroImageUrl ?? null }));
+  }
+  async listPublished() {
+    const rows = await this.withHeroMedia().where(eq(learningSeriesTable.isPublished, true)).orderBy(asc(learningSeriesTable.title));
+    return rows.map(({ series, heroImageUrl }) => ({ ...series, heroImageUrl: heroImageUrl ?? null }));
+  }
+  async findById(id: string) {
+    const [row] = await this.withHeroMedia().where(eq(learningSeriesTable.id, id));
+    return row ? { ...row.series, heroImageUrl: row.heroImageUrl ?? null } : undefined;
+  }
+  async findBySlug(slug: string) {
+    const [row] = await this.withHeroMedia().where(eq(learningSeriesTable.slug, slug));
+    return row ? { ...row.series, heroImageUrl: row.heroImageUrl ?? null } : undefined;
+  }
   async create(data: typeof learningSeriesTable.$inferInsert) { const [row] = await this.db.insert(learningSeriesTable).values(data).returning(); return row; }
   async update(id: string, data: Partial<typeof learningSeriesTable.$inferInsert>) { const [row] = await this.db.update(learningSeriesTable).set({ ...data, updatedAt: new Date() }).where(eq(learningSeriesTable.id, id)).returning(); return row; }
   async remove(id: string) { await this.db.delete(learningSeriesTable).where(eq(learningSeriesTable.id, id)); }

@@ -1,8 +1,8 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { LearningSeriesRepository } from '../../../database/repositories/learning-series.repository';
 import { AddSeriesLessonDto, CreateLearningSeriesDto, UpdateLearningSeriesDto, UpdateSeriesLessonDto, UpdateSeriesLessonOrderDto } from '../dto/create-learning-series.dto';
-import { MediaService } from '../../media/services/media.service';
 import { SlugifyUtil } from '../../../common/utils/slugify.util';
+import { MediaService } from '../../media/services/media.service';
 
 @Injectable()
 export class LearningSeriesService {
@@ -12,17 +12,15 @@ export class LearningSeriesService {
   ) {}
   list() { return this.repo.list(); }
   listPublished() { return this.repo.listPublished(); }
-  private async validateSeriesMedia(userId: string, dto: CreateLearningSeriesDto | UpdateLearningSeriesDto): Promise<void> {
-    const mediaIds = [dto.heroMediaId, dto.outcomesMediaId, dto.ctaMediaId].filter((id): id is string => Boolean(id));
-    for (const mediaId of mediaIds) {
-      const media = await this.mediaService.getMediaById(mediaId);
-      if (media.resourceType !== 'image' || media.uploaderId !== userId) {
-        throw new ForbiddenException('Series media must be an image uploaded by the series owner.');
-      }
+  private async validateHeroMedia(userId: string, mediaId?: string | null): Promise<void> {
+    if (!mediaId) return;
+    const media = await this.mediaService.getMediaById(mediaId);
+    if (media.resourceType !== 'image' || media.uploaderId !== userId) {
+      throw new ForbiddenException('Ảnh bìa phải là ảnh do bạn tải lên.');
     }
   }
   async create(userId: string, dto: CreateLearningSeriesDto) {
-    await this.validateSeriesMedia(userId, dto);
+    await this.validateHeroMedia(userId, dto.heroMediaId);
     let finalSlug = dto.slug?.trim() ? dto.slug.trim().toLowerCase() : '';
     if (!finalSlug) {
       const baseSlug = SlugifyUtil.slugify(dto.title, 300);
@@ -71,11 +69,12 @@ export class LearningSeriesService {
     try { return await this.repo.addLesson({ seriesId, ...dto }); }
     catch { throw new ConflictException('Số thứ tự bài học hoặc bài viết đã tồn tại trong Series.'); }
   }
-  async update(id: string, dto: UpdateLearningSeriesDto) {
+  async update(id: string, userId: string, dto: UpdateLearningSeriesDto) {
     const existing = await this.repo.findById(id);
     if (!existing) throw new NotFoundException('Không tìm thấy Series.');
-    await this.validateSeriesMedia(existing.createdBy, dto);
-
+    if (dto.heroMediaId && dto.heroMediaId !== existing.heroMediaId) {
+      await this.validateHeroMedia(userId, dto.heroMediaId);
+    }
     let finalSlug: string | undefined = undefined;
     if (dto.slug !== undefined && dto.slug.trim()) {
       finalSlug = dto.slug.trim().toLowerCase();

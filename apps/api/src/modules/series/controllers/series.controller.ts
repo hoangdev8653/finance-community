@@ -36,7 +36,7 @@ export class SeriesController {
   addLearningLesson(@Param('id') id: string, @Body() dto: AddSeriesLessonDto) { return this.learningSeriesService.addLesson(id, dto); }
 
   @Patch('learning/:id') @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard) @RequirePermission('learning:manage')
-  updateLearningSeries(@Param('id') id: string, @Body() dto: UpdateLearningSeriesDto) { return this.learningSeriesService.update(id, dto); }
+  updateLearningSeries(@CurrentUser() user: any, @Param('id') id: string, @Body() dto: UpdateLearningSeriesDto) { return this.learningSeriesService.update(id, user.sub, dto); }
 
   @Patch('learning/:id/lessons/:postId/order') @UseGuards(JwtAuthGuard, AccountStatusGuard, PermissionGuard) @RequirePermission('learning:manage')
   reorderLearningLesson(@Param('id') id: string, @Param('postId') postId: string, @Body() dto: UpdateSeriesLessonOrderDto) { return this.learningSeriesService.reorderLesson(id, postId, dto); }

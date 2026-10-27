@@ -82,7 +82,7 @@ const COURSE_ALIASES: Record<string, { seriesSlug: string; defaultTitle?: string
 
 async function getCourseData(slug: string): Promise<{
   seriesDetail: CourseDetailResponse;
-  presentation?: { estimatedDurationMinutes: number | null; learningOutcomes: string[] };
+  presentation?: { estimatedDurationMinutes: number | null; learningOutcomes: string[]; heroImageUrl?: string | null; heroAltText?: string | null };
 } | null> {
   const alias = COURSE_ALIASES[slug];
   const targetSeriesSlug = alias?.seriesSlug || slug;
@@ -168,8 +168,10 @@ async function getCourseData(slug: string): Promise<{
         },
       },
       presentation: {
-        estimatedDurationMinutes: p.series.estimatedDurationMinutes || (articles.length * 15),
+        estimatedDurationMinutes: articles.length * 15,
         learningOutcomes: p.series.learningOutcomes || [],
+        heroImageUrl: p.series.heroImageUrl,
+        heroAltText: p.series.heroAltText,
       },
     };
   }

@@ -1,6 +1,5 @@
-import { pgTable, uuid, varchar, text, integer, boolean, timestamp, unique, index, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, integer, boolean, timestamp, unique, jsonb } from 'drizzle-orm/pg-core';
 import { domainsTable } from './domains.schema';
-import { categoriesTable } from './categories.schema';
 import { postsTable } from './posts.schema';
 import { mediaTable } from './media.schema';
 
@@ -9,22 +8,16 @@ export const learningSeriesTable = pgTable('learning_series', {
   title: varchar('title', { length: 300 }).notNull(),
   slug: varchar('slug', { length: 320 }).notNull().unique(),
   description: text('description'),
-  estimatedDurationMinutes: integer('estimated_duration_minutes'),
   learningOutcomes: jsonb('learning_outcomes').$type<string[]>().notNull().default([]),
   heroMediaId: uuid('hero_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
   heroAltText: varchar('hero_alt_text', { length: 250 }),
-  outcomesMediaId: uuid('outcomes_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
-  outcomesAltText: varchar('outcomes_alt_text', { length: 250 }),
-  ctaMediaId: uuid('cta_media_id').references(() => mediaTable.id, { onDelete: 'set null' }),
-  ctaAltText: varchar('cta_alt_text', { length: 250 }),
   domainId: uuid('domain_id').notNull().references(() => domainsTable.id, { onDelete: 'restrict' }),
-  categoryId: uuid('category_id').notNull().references(() => categoriesTable.id, { onDelete: 'restrict' }),
   status: varchar('status', { length: 20 }).notNull().default('DRAFT'),
   isPublished: boolean('is_published').notNull().default(false),
   createdBy: uuid('created_by').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-}, (table) => [index('idx_learning_series_domain_category').on(table.domainId, table.categoryId)]);
+});
 
 export const learningSeriesPostsTable = pgTable('learning_series_posts', {
   seriesId: uuid('series_id').notNull().references(() => learningSeriesTable.id, { onDelete: 'cascade' }),

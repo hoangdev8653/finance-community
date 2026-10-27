@@ -25,12 +25,14 @@ import {
 } from 'lucide-react';
 import { learningCourseService } from '@/lib/learning/learning-course-service';
 import { postsService } from '@/lib/posts/posts-service';
-import type { CategoryEntity, DomainEntity, PostEntity } from '@/types/content';
+import type { DomainEntity, PostEntity } from '@/types/content';
 import type { LearningPathDetail, LearningCourse } from '@/types/learning-course';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/lib/toast/ToastContext';
 import { useDebounce } from '@/lib/hooks/use-debounce';
 import { AdminConfirmDialog } from './AdminConfirmDialog';
+import { MediaUploader } from '@/components/media/MediaUploader';
+import { useMediaDetail, useUploadMedia } from '@/lib/media/use-media';
 
 const slugify = (value: string) =>
   value
@@ -45,7 +47,6 @@ export function LearningPathsManager() {
   const { toast } = useToast();
   const [paths, setPaths] = useState<LearningCourse[]>([]);
   const [domains, setDomains] = useState<DomainEntity[]>([]);
-  const [categories, setCategories] = useState<CategoryEntity[]>([]);
   const [lessons, setLessons] = useState<PostEntity[]>([]);
   const [selected, setSelected] = useState<LearningPathDetail | null>(null);
   const [modal, setModal] = useState<'create' | 'edit' | null>(null);
@@ -57,8 +58,13 @@ export function LearningPathsManager() {
     slug: '',
     description: '',
     domainId: '',
-    categoryId: '',
+    heroMediaId: null as string | null,
+    heroAltText: '',
   });
+  const [pendingHeroFile, setPendingHeroFile] = useState<File | null>(null);
+  const [heroPreviewUrl, setHeroPreviewUrl] = useState<string | null>(null);
+  const { data: heroMedia } = useMediaDetail(form.heroMediaId);
+  const { mutateAsync: uploadCourseHero, uploadProgress } = useUploadMedia();
   const [lessonId, setLessonId] = useState('');
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -72,10 +78,10 @@ export function LearningPathsManager() {
   const [domainFilter, setDomainFilter] = useState('ALL');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'PUBLISHED' | 'DRAFT'>('ALL');
 
-  const availableCategories = useMemo(
-    () => categories.filter((category) => category.domainId === form.domainId),
-    [categories, form.domainId]
-  );
+  useEffect(() => {
+    if (!heroPreviewUrl) return;
+    return () => URL.revokeObjectURL(heroPreviewUrl);
+  }, [heroPreviewUrl]);
 
   const availableLessons = useMemo(
     () => lessons.filter((lesson) => !selected?.lessons.some((item) => item.id === lesson.id)),
@@ -127,15 +133,13 @@ export function LearningPathsManager() {
   const load = async () => {
     setLoading(true);
     try {
-      const [nextPaths, nextDomains, nextCategories, feed] = await Promise.all([
+      const [nextPaths, nextDomains, feed] = await Promise.all([
         learningCourseService.list(),
         postsService.getDomains(),
-        postsService.getCategories('SERIES'),
         postsService.getFeed({ contentType: 'SERIES', limit: 100, sortBy: 'publishedAt' }),
       ]);
       setPaths(nextPaths);
       setDomains(nextDomains.filter((domain) => domain.isActive));
-      setCategories(nextCategories);
       setLessons(feed.data);
     } catch {
       setError('Không thể tải dữ liệu lộ trình.');
@@ -166,8 +170,11 @@ export function LearningPathsManager() {
       slug: '',
       description: '',
       domainId: domains[0]?.id || '',
-      categoryId: '',
+      heroMediaId: null,
+      heroAltText: '',
     });
+    setPendingHeroFile(null);
+    setHeroPreviewUrl(null);
     setShowSlugInput(false);
     setIsSlugManuallyEdited(false);
     setModal('create');
@@ -180,8 +187,11 @@ export function LearningPathsManager() {
       slug: path.slug,
       description: path.description || '',
       domainId: path.domainId,
-      categoryId: path.categoryId,
+      heroMediaId: path.heroMediaId,
+      heroAltText: path.heroAltText || '',
     });
+    setPendingHeroFile(null);
+    setHeroPreviewUrl(null);
     setShowSlugInput(false);
     setIsSlugManuallyEdited(true);
     setModal('edit');
@@ -190,15 +200,31 @@ export function LearningPathsManager() {
   const savePath = async (event: React.FormEvent) => {
     event.preventDefault();
     const finalSlug = form.slug.trim() || undefined;
-    if (!form.title.trim() || !form.domainId || !form.categoryId) {
-      const msg = 'Hãy nhập đầy đủ thông tin lộ trình (Tiêu đề, lĩnh vực, danh mục).';
+    if (!form.title.trim() || !form.domainId) {
+      const msg = 'Hãy nhập tiêu đề khóa học và chọn lĩnh vực.';
       setError(msg);
       toast.error(msg);
       return;
     }
     setBusy(true);
     try {
-      const payload = { ...form, slug: finalSlug };
+      let heroMediaId = form.heroMediaId;
+      if (pendingHeroFile) {
+        const uploadedMedia = await uploadCourseHero({
+          file: pendingHeroFile,
+          purpose: 'cover',
+          folder: 'courses',
+        });
+        heroMediaId = uploadedMedia.id;
+      }
+      const payload = {
+        title: form.title,
+        slug: finalSlug,
+        description: form.description,
+        domainId: form.domainId,
+        heroMediaId,
+        heroAltText: form.heroAltText.trim() || undefined,
+      };
       if (modal === 'create') {
         await learningCourseService.createPath(payload);
         toast.success('Đã tạo lộ trình học tập mới thành công.');
@@ -207,6 +233,8 @@ export function LearningPathsManager() {
         toast.success('Đã cập nhật thông tin lộ trình thành công.');
       }
       setModal(null);
+      setPendingHeroFile(null);
+      setHeroPreviewUrl(null);
       await load();
       if (selected && editing && selected.series.id === editing.id) {
         await selectPath(editing.id);
@@ -324,12 +352,6 @@ export function LearningPathsManager() {
   const getDomainName = (domainId: string) => {
     const domain = domains.find((d) => d.id === domainId);
     return domain?.nameVi || domain?.name || 'Chung';
-  };
-
-  // Lookup category name helper
-  const getCategoryName = (categoryId: string) => {
-    const cat = categories.find((c) => c.id === categoryId);
-    return cat?.name || 'Chuyên mục';
   };
 
   return (
@@ -513,17 +535,33 @@ export function LearningPathsManager() {
                   >
                     {/* Header: Badges & Select Click */}
                     <div className="flex items-start justify-between gap-3">
-                      <button
-                        type="button"
-                        onClick={() => void selectPath(path.id)}
-                        className="min-w-0 text-left flex-1 group"
-                      >
+                      <div className="flex min-w-0 flex-1 gap-4">
+                        <button
+                          type="button"
+                          onClick={() => void selectPath(path.id)}
+                          aria-label={`Xem khóa học ${path.title}`}
+                          className="group h-24 w-36 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 text-left dark:border-border dark:bg-muted/30 sm:h-28 sm:w-44"
+                        >
+                          {path.heroImageUrl ? (
+                            <img
+                              src={path.heroImageUrl}
+                              alt={path.heroAltText || path.title}
+                              className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+                            />
+                          ) : (
+                            <div className="grid h-full w-full place-items-center text-slate-400 dark:text-muted-foreground">
+                              <BookOpen className="h-8 w-8" aria-hidden="true" />
+                            </div>
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => void selectPath(path.id)}
+                          className="group min-w-0 flex-1 text-left"
+                        >
                         <div className="flex flex-wrap items-center gap-2 mb-1.5">
                           <span className="inline-flex items-center rounded-md border border-sky-200/80 bg-sky-50 px-2 py-0.5 text-[11px] font-semibold text-sky-700 dark:border-sky-900/50 dark:bg-sky-950/40 dark:text-sky-300">
                             {getDomainName(path.domainId)}
-                          </span>
-                          <span className="inline-flex items-center rounded-md border border-slate-200 bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                            {getCategoryName(path.categoryId)}
                           </span>
                         </div>
                         <h3 className="font-heading text-base font-bold text-foreground transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
@@ -535,7 +573,8 @@ export function LearningPathsManager() {
                         <p className="mt-2 font-mono text-xs text-slate-400 dark:text-slate-500">
                           /{path.slug}
                         </p>
-                      </button>
+                        </button>
+                      </div>
 
                       <div className="flex flex-col items-end gap-2 shrink-0">
                         <span
@@ -646,7 +685,7 @@ export function LearningPathsManager() {
                   onChange={(event) => setLessonId(event.target.value)}
                   className="h-10 min-w-0 flex-1 rounded-lg border border-slate-200/80 bg-background px-3 text-xs text-foreground shadow-2xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
                 >
-                  <option value="">Chọn bài học đã xuất bản để thêm…</option>
+                  <option value="">{availableLessons.length ? 'Chọn bài học đã xuất bản để thêm…' : 'Chưa có bài học khả dụng'}</option>
                   {availableLessons.map((lesson) => (
                     <option key={lesson.id} value={lesson.id}>
                       {lesson.title}
@@ -657,12 +696,29 @@ export function LearningPathsManager() {
                   size="sm"
                   onClick={() => void addLesson()}
                   disabled={!lessonId || busy}
+                  title={!lessonId ? 'Chọn một bài học đã xuất bản trước' : undefined}
                   className="h-10 gap-1.5 rounded-lg bg-emerald-600 px-4 text-xs font-semibold text-white shadow-2xs hover:bg-emerald-700"
                 >
                   <Plus className="h-4 w-4" />
                   <span>Thêm</span>
                 </Button>
               </div>
+
+              {availableLessons.length === 0 && (
+                <div className="rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
+                  {lessons.length === 0 ? (
+                    <>
+                      Chưa có bài học nào được xuất bản để thêm vào lộ trình.{' '}
+                      <Link href="/quan-tri/hoc-tap/tao-moi" className="font-bold text-emerald-800 underline underline-offset-2 hover:text-emerald-700 dark:text-emerald-300">
+                        Tạo bài học
+                      </Link>{' '}
+                      rồi xuất bản; bài học sẽ xuất hiện ở đây.
+                    </>
+                  ) : (
+                    'Tất cả bài học đã xuất bản hiện có đã được thêm vào lộ trình này.'
+                  )}
+                </div>
+              )}
 
               {/* Lesson items list */}
               <ol className="space-y-2.5 max-h-[560px] overflow-y-auto pr-1">
@@ -764,16 +820,16 @@ export function LearningPathsManager() {
       {/* 4. Create / Edit Path Modal */}
       {modal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-3 sm:p-5"
           role="dialog"
           aria-modal="true"
         >
           <form
             onSubmit={savePath}
-            className="w-full max-w-3xl rounded-[12px] border border-slate-200/80 bg-card p-7 sm:p-8 shadow-2xl space-y-6 text-foreground my-8 dark:border-border/70"
+            className="flex max-h-[calc(100dvh-1.5rem)] w-full max-w-5xl flex-col overflow-hidden rounded-[12px] border border-slate-200/80 bg-card shadow-2xl text-foreground dark:border-border/70 sm:max-h-[calc(100dvh-2.5rem)]"
           >
             {/* Modal Header */}
-            <div className="flex justify-between items-start border-b border-slate-100 pb-4 dark:border-border/40">
+            <div className="flex shrink-0 justify-between items-start border-b border-slate-100 px-5 py-4 dark:border-border/40 sm:px-8 sm:py-5">
               <div>
                 <h2 className="font-heading text-xl font-bold text-foreground">
                   {modal === 'create' ? 'Tạo lộ trình học tập mới' : 'Chỉnh sửa lộ trình'}
@@ -793,7 +849,7 @@ export function LearningPathsManager() {
             </div>
 
             {/* Modal Body */}
-            <div className="space-y-5">
+            <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-5 sm:px-8 sm:py-6">
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-foreground">
                   Tên lộ trình <strong className="text-rose-500">*</strong>
@@ -847,14 +903,50 @@ export function LearningPathsManager() {
                 )}
               </div>
 
+              <section className="space-y-3 rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-4 dark:border-border dark:bg-muted/20">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-foreground">Ảnh bìa khóa học</h3>
+                <MediaUploader
+                  purpose="cover"
+                  folder="courses"
+                  label="Chọn ảnh bìa khóa học"
+                  currentPreviewUrl={heroPreviewUrl || heroMedia?.secureUrl || null}
+                  deferUpload
+                  onFileSelected={(file) => {
+                    setPendingHeroFile(file);
+                    setHeroPreviewUrl(URL.createObjectURL(file));
+                    setForm((current) => ({ ...current, heroMediaId: null }));
+                  }}
+                  onSuccess={() => undefined}
+                  onError={(uploadError) => toast.error(uploadError.message)}
+                  onClear={() => {
+                    setPendingHeroFile(null);
+                    setHeroPreviewUrl(null);
+                    setForm((current) => ({ ...current, heroMediaId: null }));
+                  }}
+                />
+                {busy && pendingHeroFile && (
+                  <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300" role="status">
+                    Đang tải ảnh lên Cloudinary… {uploadProgress}%
+                  </p>
+                )}
+                <label className="block space-y-1.5 text-xs font-semibold text-foreground">
+                  <span>Mô tả ảnh (alt text)</span>
+                  <input
+                    value={form.heroAltText}
+                    onChange={(event) => setForm((current) => ({ ...current, heroAltText: event.target.value }))}
+                    maxLength={250}
+                    placeholder="Mô tả ngắn nội dung ảnh"
+                    className="h-10 w-full rounded-lg border border-slate-200/80 bg-background px-3.5 text-sm font-normal shadow-2xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
+                  />
+                </label>
+              </section>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block text-xs font-semibold text-foreground space-y-1.5">
                   <span>Lĩnh vực đào tạo <strong className="text-rose-500">*</strong></span>
                   <select
                     value={form.domainId}
-                    onChange={(event) =>
-                      setForm((current) => ({ ...current, domainId: event.target.value, categoryId: '' }))
-                    }
+                    onChange={(event) => setForm((current) => ({ ...current, domainId: event.target.value }))}
                     className="h-11 w-full appearance-none rounded-lg border border-slate-200/80 bg-background px-3.5 text-sm font-medium text-foreground shadow-2xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
                   >
                     <option value="">Chọn lĩnh vực</option>
@@ -866,21 +958,6 @@ export function LearningPathsManager() {
                   </select>
                 </label>
 
-                <label className="block text-xs font-semibold text-foreground space-y-1.5">
-                  <span>Danh mục chuyên đề <strong className="text-rose-500">*</strong></span>
-                  <select
-                    value={form.categoryId}
-                    onChange={(event) => setForm((current) => ({ ...current, categoryId: event.target.value }))}
-                    className="h-11 w-full appearance-none rounded-lg border border-slate-200/80 bg-background px-3.5 text-sm font-medium text-foreground shadow-2xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-emerald-500 dark:border-border/60"
-                  >
-                    <option value="">Chọn danh mục</option>
-                    {availableCategories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </label>
               </div>
 
               <label className="block text-xs font-semibold text-foreground space-y-1.5">
@@ -898,7 +975,7 @@ export function LearningPathsManager() {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end items-center gap-3 pt-4 border-t border-slate-100 dark:border-border/40">
+            <div className="flex shrink-0 justify-end items-center gap-3 border-t border-slate-100 bg-card px-5 py-4 dark:border-border/40 sm:px-8 sm:py-5">
               <Button
                 type="button"
                 variant="outline"

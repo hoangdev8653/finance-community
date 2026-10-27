@@ -4,15 +4,10 @@ export interface LearningCourse {
   slug: string;
   description: string | null;
   domainId: string;
-  categoryId: string;
-  estimatedDurationMinutes: number | null;
   learningOutcomes: string[];
   heroMediaId: string | null;
   heroAltText: string | null;
-  outcomesMediaId: string | null;
-  outcomesAltText: string | null;
-  ctaMediaId: string | null;
-  ctaAltText: string | null;
+  heroImageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
   isPublished?: boolean;
