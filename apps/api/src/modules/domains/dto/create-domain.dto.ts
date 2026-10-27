@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, Matches, IsOptional, IsInt, Min, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, Matches, IsOptional, IsInt, Min, IsBoolean, IsUrl } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateDomainDto {
@@ -8,14 +8,14 @@ export class CreateDomainDto {
   @MaxLength(120)
   name!: string;
 
-  @ApiProperty({ example: 'MONEY', description: 'Unique uppercase system code for the domain' })
+  @ApiPropertyOptional({ example: 'MONEY', description: 'Generated from the domain name when omitted' })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
   @MaxLength(50)
   @Matches(/^[A-Z0-9_]+$/, {
     message: 'Mã code phải viết hoa, chỉ gồm chữ cái, số và dấu gạch dưới (VD: MONEY, REAL_ESTATE)',
   })
-  code!: string;
+  code?: string;
 
   @ApiPropertyOptional({ example: 'tai-chinh', description: 'Unique URL slug in kebab-case (tự động tạo từ tên nếu bỏ trống)' })
   @IsOptional()
@@ -26,17 +26,13 @@ export class CreateDomainDto {
   })
   slug?: string;
 
-  @ApiPropertyOptional({ example: 'Tài chính & Đầu tư' })
+  @ApiPropertyOptional({ example: 'https://cdn.example.com/domains/finance.jpg' })
   @IsOptional()
   @IsString()
-  @MaxLength(120)
-  nameVi?: string;
-
-  @ApiPropertyOptional({ example: 'Finance & Investment' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(120)
-  nameEn?: string;
+  @MaxLength(2048)
+  @IsUrl({ require_protocol: true })
+  @Matches(/^https:\/\/.+/i, { message: 'Image URL must use HTTPS.' })
+  imageUrl?: string;
 
   @ApiPropertyOptional({ example: 'Chuyên đề kiến thức tài chính, đầu tư chứng khoán và kinh tế vĩ mô' })
   @IsOptional()

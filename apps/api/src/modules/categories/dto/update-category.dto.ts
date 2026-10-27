@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength, IsInt, Min, IsUUID, IsArray, ArrayUnique, IsIn, IsBoolean } from 'class-validator';
+import { IsOptional, IsString, MaxLength, IsInt, Min, IsUUID, IsArray, ArrayUnique, IsIn, IsBoolean, IsUrl } from 'class-validator';
 
 export class UpdateCategoryDto {
   @IsOptional()
@@ -38,6 +38,12 @@ export class UpdateCategoryDto {
   @IsString()
   @MaxLength(100)
   nameEn?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  @IsUrl({ require_protocol: true })
+  imageUrl?: string | null;
 
   @IsOptional()
   @IsInt()

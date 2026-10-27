@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import Image from 'next/image';
 import { AdminSearchInput } from '@/components/admin/AdminSearchInput';
 import { useQuery } from '@tanstack/react-query';
 import { useCategories } from '@/lib/posts/use-posts-feed';
@@ -36,6 +37,8 @@ import { useToast } from '@/lib/toast/ToastContext';
 import { getDomainColorTheme } from '@/lib/utils/domain-colors';
 import { DomainFilterDropdown } from './DomainFilterDropdown';
 import { AdminConfirmDialog } from './AdminConfirmDialog';
+import { MediaUploader } from '@/components/media/MediaUploader';
+import { useUploadMedia } from '@/lib/media/use-media';
 
 interface CategoryManagementViewProps {
   learningOnly?: boolean;
@@ -82,7 +85,10 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   const [scope, setScope] = useState<'SERIES' | 'COMMUNITY'>(learningOnly ? 'SERIES' : 'SERIES');
   const [domainId, setDomainId] = useState('');
   const [name, setName] = useState('');
-  const [slug, setSlug] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
+  const [localImagePreviewUrl, setLocalImagePreviewUrl] = useState<string | null>(null);
+  const { mutateAsync: uploadCategoryImage, isPending: isUploadingImage, uploadProgress } = useUploadMedia();
   const [description, setDescription] = useState('');
   const [sortOrder, setSortOrder] = useState<number>(0);
   const [search, setSearch] = useState('');
@@ -94,6 +100,11 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   const [deleteTarget, setDeleteTarget] = useState<CategoryEntity | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const pageSize = DEFAULT_PAGE_SIZE;
+
+  useEffect(() => {
+    if (!localImagePreviewUrl) return;
+    return () => URL.revokeObjectURL(localImagePreviewUrl);
+  }, [localImagePreviewUrl]);
 
   // Compute metric stats
   const stats = useMemo(() => {
@@ -144,7 +155,9 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   const openCreateModal = () => {
     setEditingCategory(null);
     setName('');
-    setSlug('');
+    setImageUrl('');
+    setPendingImageFile(null);
+    setLocalImagePreviewUrl(null);
     setScope(learningOnly ? 'SERIES' : 'SERIES');
     setDomainId(domains[0]?.id || '');
     setDescription('');
@@ -155,24 +168,14 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
   const openEditModal = (cat: CategoryEntity) => {
     setEditingCategory(cat);
     setName(cat.name);
-    setSlug(cat.slug);
+    setImageUrl(cat.imageUrl || '');
+    setPendingImageFile(null);
+    setLocalImagePreviewUrl(null);
     setScope(cat.scope as 'SERIES' | 'COMMUNITY');
     setDomainId(cat.domainId || '');
     setDescription(cat.description || '');
     setSortOrder(cat.sortOrder || 0);
     setIsModalOpen(true);
-  };
-
-  const handleNameChange = (val: string) => {
-    setName(val);
-    const generatedSlug = val
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)+/g, '');
-    setSlug(generatedSlug);
   };
 
   // Filtered categories
@@ -211,24 +214,29 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
       return;
     }
 
-    if (!slug.trim()) {
-      toast.error('Vui lòng nhập đường dẫn (slug) danh mục.');
-      return;
-    }
-
     if (!domainId) {
       toast.error('Vui lòng chọn lĩnh vực cho danh mục.');
       return;
     }
 
     try {
+      let submittedImageUrl: string | undefined = imageUrl.trim() || undefined;
+      if (pendingImageFile) {
+        const media = await uploadCategoryImage({
+          file: pendingImageFile,
+          purpose: 'cover',
+          folder: 'categories',
+        });
+        submittedImageUrl = media.secureUrl;
+      }
+
       if (editingCategory) {
         await updateCategoryMutation.mutateAsync({
           id: editingCategory.id,
           dto: {
             name: name.trim(),
-            slug: slug.trim(),
             domainId,
+            imageUrl: submittedImageUrl ?? (editingCategory.imageUrl ? null : undefined),
             description: description.trim() || undefined,
             sortOrder,
           },
@@ -237,10 +245,10 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
       } else {
         await createCategoryMutation.mutateAsync({
           name: name.trim(),
-          slug: slug.trim(),
           scope,
           domainId,
           contentTypes: [scope],
+          imageUrl: submittedImageUrl,
           description: description.trim() || undefined,
           sortOrder,
         });
@@ -248,7 +256,19 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
       }
       setIsModalOpen(false);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || err?.message || 'Không thể lưu danh mục.';
+      // apiClient normalizes Axios errors into ApiErrorResponse, so the details
+      // are on the error itself rather than under err.response.data.
+      const responseData = err?.response?.data ?? err;
+      const apiMessage = responseData?.message;
+      const msg = Array.isArray(apiMessage)
+        ? apiMessage.join(' ')
+        : typeof apiMessage === 'string'
+          ? apiMessage
+          : responseData?.error || err?.message || 'Không thể lưu danh mục.';
+      console.error('Category save failed', {
+        status: err?.response?.status ?? err?.statusCode,
+        response: responseData,
+      });
       toast.error(msg);
     }
   };
@@ -273,7 +293,7 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
     }
   };
 
-  const isSubmitting = createCategoryMutation.isPending || updateCategoryMutation.isPending;
+  const isSubmitting = createCategoryMutation.isPending || updateCategoryMutation.isPending || isUploadingImage;
 
   return (
     <div className="categories-surface space-y-6">
@@ -502,30 +522,41 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                     className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-slate-50/70 dark:hover:bg-muted/40 transition-colors"
                   >
                     <div className="flex items-center gap-3.5">
-                      <div className={`grid h-10 w-10 shrink-0 place-items-center rounded-[8px] border ${colors.border} ${colors.bg} ${colors.text} font-bold text-xs tracking-wider shadow-2xs`}>
-                        {domain.code.slice(0, 2)}
-                      </div>
+                      {domain.imageUrl ? (
+                        <Image
+                          src={domain.imageUrl}
+                          alt={domainLabels[domain.code] || domain.nameVi || domain.name}
+                          width={56}
+                          height={56}
+                          sizes="56px"
+                          className="h-14 w-14 shrink-0 rounded-xl border border-slate-200 object-cover shadow-sm dark:border-border"
+                        />
+                      ) : (
+                        <div className={`grid h-14 w-14 shrink-0 place-items-center rounded-xl border ${colors.border} ${colors.bg} ${colors.text} font-bold text-sm shadow-2xs`}>
+                          {domain.code.slice(0, 2)}
+                        </div>
+                      )}
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-heading text-base font-bold text-foreground">
+                          <h3 className="font-heading text-lg font-bold text-slate-950 dark:text-foreground">
                             {domainLabels[domain.code] || domain.nameVi || domain.name}
                           </h3>
-                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${colors.border} ${colors.bg} ${colors.text}`}>
+                          <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-bold ${colors.border} ${colors.bg} ${colors.text}`}>
                             {domainCategories.length} danh mục
                           </span>
                         </div>
-                        <p className="mt-0.5 text-xs text-muted-foreground font-mono">
-                          Mã: {domain.code} • /{domain.slug}
+                        <p className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                          /{domain.slug}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <span className="text-xs font-medium hidden sm:inline">
+                    <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+                      <span className="text-sm font-semibold hidden sm:inline">
                         {expanded ? 'Thu gọn' : 'Mở rộng'}
                       </span>
                       <div
-                        className={`grid h-8 w-8 place-items-center rounded-[8px] border border-slate-200/70 dark:border-border bg-white dark:bg-card text-muted-foreground transition-transform duration-200 shadow-2xs ${
+                        className={`grid h-9 w-9 place-items-center rounded-[8px] border border-slate-200/70 dark:border-border bg-white dark:bg-card text-slate-700 dark:text-slate-300 transition-transform duration-200 shadow-2xs ${
                           expanded ? 'rotate-180' : ''
                         }`}
                       >
@@ -568,17 +599,32 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                                 </div>
 
                                 {/* Category Title */}
-                                <h4 className="mt-3 font-heading text-base font-bold text-foreground transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                                  {category.name}
-                                </h4>
+                                <div className="mt-3 flex items-center gap-3">
+                                  {category.imageUrl ? (
+                                    <Image
+                                      src={category.imageUrl}
+                                      alt={`Ảnh ${category.name}`}
+                                      width={64}
+                                      height={64}
+                                      className="h-14 w-14 shrink-0 rounded-lg border border-slate-200 object-cover dark:border-border"
+                                    />
+                                  ) : (
+                                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-50 text-slate-400 dark:border-border dark:bg-muted">
+                                      <FolderTree className="h-6 w-6" />
+                                    </div>
+                                  )}
+                                  <h4 className="font-heading text-lg font-bold text-slate-950 dark:text-foreground transition-colors group-hover:text-emerald-700 dark:group-hover:text-emerald-300">
+                                    {category.name}
+                                  </h4>
+                                </div>
 
                                 {/* Slug */}
-                                <p className="mt-1 font-mono text-xs text-muted-foreground/80 truncate">
+                                <p className="mt-1 font-mono text-sm font-semibold text-slate-600 dark:text-slate-300 truncate">
                                   /{category.slug}
                                 </p>
 
                                 {/* Description */}
-                                <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                                <p className="mt-2 text-sm font-medium text-slate-800 dark:text-slate-200 line-clamp-2 leading-relaxed">
                                   {category.description || 'Chuyên đề kiến thức và nội dung được tuyển chọn.'}
                                 </p>
                               </div>
@@ -589,16 +635,16 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                                   variant="outline"
                                   size="sm"
                                   onClick={() => openEditModal(category)}
-                                  className="h-8 gap-1.5 rounded-[6px] border-slate-200/80 dark:border-border px-3 text-xs font-medium text-foreground hover:bg-slate-50 dark:hover:bg-muted"
+                                  className="h-9 gap-1.5 rounded-lg border-slate-300 dark:border-border px-3 text-sm font-semibold text-slate-800 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-muted"
                                 >
-                                  <Edit2 className="h-3.5 w-3.5 text-muted-foreground" />
+                                  <Edit2 className="h-4 w-4 text-slate-700 dark:text-slate-300" />
                                   <span>Sửa</span>
                                 </Button>
                                 <Button
                                   variant="outline"
                                   size="sm"
                                   onClick={() => void handleDelete(category)}
-                                  className="h-8 gap-1.5 rounded-[6px] border-rose-200/70 dark:border-rose-900/60 px-3 text-xs font-medium text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/30"
+                                  className="h-9 gap-1.5 rounded-lg border-rose-200/70 dark:border-rose-900/60 px-3 text-sm font-semibold text-rose-700 hover:bg-rose-50 dark:text-rose-300 dark:hover:bg-rose-950/30"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                   <span>Xóa</span>
@@ -642,14 +688,29 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
 
                     return (
                       <tr key={cat.id} className="hover:bg-slate-50/60 dark:hover:bg-muted/30 transition-colors">
-                        <td className="py-4 px-5 min-w-[220px]">
-                          <div>
-                            <span className="font-heading font-bold text-sm text-foreground">{cat.name}</span>
-                            {cat.description && (
-                              <p className="text-xs text-muted-foreground truncate max-w-sm mt-0.5">
+                        <td className="py-4 px-5 min-w-[280px]">
+                          <div className="flex items-center gap-3">
+                            {cat.imageUrl ? (
+                              <Image
+                                src={cat.imageUrl}
+                                alt={`Ảnh ${cat.name}`}
+                                width={64}
+                                height={64}
+                                className="h-14 w-14 shrink-0 rounded-lg border border-slate-200 object-cover dark:border-border"
+                              />
+                            ) : (
+                              <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg border border-slate-200 bg-slate-50 text-slate-400 dark:border-border dark:bg-muted">
+                                <FolderTree className="h-6 w-6" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <span className="font-heading font-bold text-sm text-foreground">{cat.name}</span>
+                              {cat.description && (
+                              <p className="mt-0.5 max-w-sm truncate text-xs text-muted-foreground">
                                 {cat.description}
                               </p>
-                            )}
+                              )}
+                            </div>
                           </div>
                         </td>
 
@@ -725,17 +786,17 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
           aria-modal="true"
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in zoom-in-95 duration-200"
         >
-          <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[10px] border border-slate-100 dark:border-border bg-white dark:bg-card p-7 sm:p-8 shadow-2xl space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-border/60 pb-4">
+          <div className="relative flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-border dark:bg-card">
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-7 py-5 dark:border-border/60 sm:px-9">
               <div className="flex items-center gap-2.5">
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   <Layers className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-xl font-bold text-foreground">
+                  <h3 className="font-heading text-2xl font-bold text-foreground">
                     {editingCategory ? 'Chỉnh sửa danh mục' : 'Thêm danh mục mới'}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">
+                  <p className="text-base font-medium text-slate-600 dark:text-slate-300 mt-1">
                     Thiết lập thông tin và phạm vi phân bổ danh mục.
                   </p>
                 </div>
@@ -743,15 +804,16 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
+                disabled={isSubmitting}
                 className="rounded-[6px] p-1.5 text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-muted transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="min-h-0 flex-1 space-y-6 overflow-y-auto px-7 py-6 sm:px-9">
               <div>
-                <label htmlFor="category-name-input" className="block text-xs font-semibold text-foreground">
+                <label htmlFor="category-name-input" className="block text-sm font-bold text-slate-900 dark:text-foreground">
                   Tên danh mục <span className="text-rose-500">*</span>
                 </label>
                 <input
@@ -759,28 +821,55 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                   type="text"
                   required
                   value={name}
-                  onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="Ví dụ: Chứng khoán, Phân tích kỹ thuật, Tài chính cá nhân..."
-                  className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Ví dụ: Chứng khoán, Phân tích kỹ thuật"
+                  className="mt-1 h-12 w-full rounded-xl border border-slate-300 dark:border-border bg-background px-4 text-base font-medium text-foreground placeholder:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                 />
-                <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <span>Đường dẫn (Slug tự động):</span>
-                  <code className="rounded bg-slate-100 dark:bg-muted px-2 py-0.5 font-mono text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                    /{slug || '...'}
-                  </code>
-                </div>
               </div>
+
+              <section className="rounded-xl border border-dashed border-slate-300 dark:border-border bg-slate-50/70 dark:bg-muted/30 p-5">
+                <div className="mb-4">
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-foreground">Ảnh danh mục</h4>
+                </div>
+                <div className={isUploadingImage ? 'pointer-events-none opacity-70' : ''}>
+                  <MediaUploader
+                    purpose="cover"
+                    folder="categories"
+                    label="Chọn ảnh đại diện danh mục"
+                    className="[&_p]:font-semibold"
+                    currentPreviewUrl={localImagePreviewUrl || imageUrl || null}
+                    deferUpload
+                    onFileSelected={(file) => {
+                      setPendingImageFile(file);
+                      setLocalImagePreviewUrl(URL.createObjectURL(file));
+                      setImageUrl('');
+                    }}
+                    onSuccess={() => undefined}
+                    onError={(error) => toast.error(error.message)}
+                    onClear={() => {
+                      setPendingImageFile(null);
+                      setLocalImagePreviewUrl(null);
+                      setImageUrl('');
+                    }}
+                  />
+                </div>
+                {isUploadingImage && (
+                  <p className="mt-3 text-sm font-semibold text-emerald-700 dark:text-emerald-400" role="status">
+                    Đang tải ảnh lên Cloudinary… {uploadProgress}%
+                  </p>
+                )}
+              </section>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="category-domain-select" className="block text-xs font-semibold text-foreground">
+                  <label htmlFor="category-domain-select" className="block text-sm font-bold text-slate-900 dark:text-foreground">
                     Trực thuộc Lĩnh vực <span className="text-rose-500">*</span>
                   </label>
                   <select
                     id="category-domain-select"
                     value={domainId}
                     onChange={(e) => setDomainId(e.target.value)}
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
+                    className="mt-1 h-12 w-full rounded-xl border border-slate-300 dark:border-border bg-background px-4 text-base font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                   >
                     <option value="">Chọn lĩnh vực...</option>
                     {domains.map((domain) => (
@@ -806,7 +895,7 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">
+                  <label className="block text-sm font-bold text-slate-900 dark:text-foreground">
                     Thứ tự hiển thị
                   </label>
                   <input
@@ -815,9 +904,9 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                     value={sortOrder}
                     onChange={(e) => setSortOrder(parseInt(e.target.value, 10) || 0)}
                     placeholder="10, 20, 30..."
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
+                    className="mt-1 h-12 w-full rounded-xl border border-slate-300 dark:border-border bg-background px-4 text-base font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                   />
-                  <p className="mt-1 text-[11px] text-muted-foreground">Số nhỏ hơn ưu tiên hiển thị trước</p>
+                  <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-300">Số nhỏ hơn ưu tiên hiển thị trước</p>
                 </div>
               </div>
 
@@ -830,7 +919,7 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                     <button
                       type="button"
                       onClick={() => setScope('SERIES')}
-                      className={`flex items-center justify-center gap-2 rounded-[8px] border p-3.5 text-sm font-semibold transition-all ${
+                      className={`flex items-center justify-center gap-2 rounded-xl border p-4 text-base font-semibold transition-all ${
                         scope === 'SERIES'
                           ? 'border-emerald-500 bg-emerald-50/80 text-emerald-700 shadow-2xs dark:bg-emerald-950/60 dark:text-emerald-300'
                           : 'border-slate-200 dark:border-border bg-background text-muted-foreground hover:bg-slate-50 dark:hover:bg-muted'
@@ -842,7 +931,7 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
                     <button
                       type="button"
                       onClick={() => setScope('COMMUNITY')}
-                      className={`flex items-center justify-center gap-2 rounded-[8px] border p-3.5 text-sm font-semibold transition-all ${
+                      className={`flex items-center justify-center gap-2 rounded-xl border p-4 text-base font-semibold transition-all ${
                         scope === 'COMMUNITY'
                           ? 'border-blue-500 bg-blue-50/80 text-blue-700 shadow-2xs dark:bg-blue-950/60 dark:text-blue-300'
                           : 'border-slate-200 dark:border-border bg-background text-muted-foreground hover:bg-slate-50 dark:hover:bg-muted'
@@ -856,24 +945,25 @@ export function CategoryManagementView({ learningOnly = false }: CategoryManagem
               )}
 
               <div>
-                <label className="block text-xs font-semibold text-foreground">Mô tả ngắn</label>
+                <label className="block text-sm font-bold text-slate-900 dark:text-foreground">Mô tả ngắn</label>
                 <textarea
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Mô tả phạm vi kiến thức mà danh mục này bao quát..."
-                  className="mt-1 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background p-3.5 text-sm text-foreground min-h-[96px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all resize-y"
+                  className="mt-1 min-h-[128px] w-full resize-y rounded-xl border border-slate-300 dark:border-border bg-background px-4 py-3 text-base font-medium text-foreground placeholder:font-medium placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                 />
               </div>
 
 
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-border/60">
+              <div className="sticky bottom-0 -mx-7 flex items-center justify-end gap-3 border-t border-slate-100 bg-white px-7 py-4 dark:border-border/60 dark:bg-card sm:-mx-9 sm:px-9">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setIsModalOpen(false)}
+                  disabled={isSubmitting}
                   className="rounded-[8px] h-11 px-5 text-sm font-medium"
                 >
                   Hủy

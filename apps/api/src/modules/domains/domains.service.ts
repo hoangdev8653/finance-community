@@ -44,14 +44,20 @@ export class DomainsService {
   }
 
   async createDomain(dto: CreateDomainDto): Promise<DomainEntity> {
-    const existingCode = await this.domainsRepository.findByCode(dto.code);
-    if (existingCode) {
-      throw new ConflictException({
-        statusCode: 409,
-        error: 'Conflict',
-        message: `Mã lĩnh vực '${dto.code}' đã tồn tại trong hệ thống.`,
-        code: 'DOMAIN_CODE_EXISTS',
-      });
+    const baseCode = (dto.code?.trim() || SlugifyUtil.slugify(dto.name, 50).replace(/-/g, '_')).toUpperCase();
+    let finalCode = baseCode;
+    let codeCounter = 1;
+    while (await this.domainsRepository.findByCode(finalCode)) {
+      if (dto.code?.trim()) {
+        throw new ConflictException({
+          statusCode: 409,
+          error: 'Conflict',
+          message: `Domain code '${finalCode}' already exists.`,
+          code: 'DOMAIN_CODE_EXISTS',
+        });
+      }
+      const suffix = `_${codeCounter++}`;
+      finalCode = `${baseCode.slice(0, 50 - suffix.length)}${suffix}`;
     }
 
     let finalSlug: string;
@@ -76,11 +82,11 @@ export class DomainsService {
     }
 
     return this.domainsRepository.create({
-      code: dto.code.trim().toUpperCase(),
+      code: finalCode,
       slug: finalSlug,
       name: dto.name.trim(),
-      nameVi: dto.nameVi?.trim() || null,
-      nameEn: dto.nameEn?.trim() || null,
+      nameVi: dto.name.trim(),
+      imageUrl: dto.imageUrl?.trim() || null,
       description: dto.description?.trim() || null,
       sortOrder: dto.sortOrder ?? 0,
       isActive: dto.isActive ?? true,
@@ -126,9 +132,8 @@ export class DomainsService {
     const updated = await this.domainsRepository.update(id, {
       ...(dto.code ? { code: dto.code.trim().toUpperCase() } : {}),
       ...(dto.slug ? { slug: dto.slug.trim().toLowerCase() } : {}),
-      ...(dto.name ? { name: dto.name.trim() } : {}),
-      ...(dto.nameVi !== undefined ? { nameVi: dto.nameVi?.trim() || null } : {}),
-      ...(dto.nameEn !== undefined ? { nameEn: dto.nameEn?.trim() || null } : {}),
+      ...(dto.name ? { name: dto.name.trim(), nameVi: dto.name.trim() } : {}),
+      ...(dto.imageUrl !== undefined ? { imageUrl: dto.imageUrl?.trim() || null } : {}),
       ...(dto.description !== undefined ? { description: dto.description?.trim() || null } : {}),
       ...(dto.sortOrder !== undefined ? { sortOrder: dto.sortOrder } : {}),
       ...(dto.isActive !== undefined ? { isActive: dto.isActive } : {}),

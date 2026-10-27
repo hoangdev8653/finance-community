@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, MaxLength, Matches, IsIn, IsOptional, IsInt, Min, IsUUID, IsArray, ArrayUnique } from 'class-validator';
+import { IsString, IsNotEmpty, MaxLength, Matches, IsIn, IsOptional, IsInt, Min, IsUUID, IsArray, ArrayUnique, IsUrl } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -41,6 +41,12 @@ export class CreateCategoryDto {
   @IsString()
   @MaxLength(100)
   nameEn?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2048)
+  @IsUrl({ require_protocol: true })
+  imageUrl?: string;
 
   @IsOptional()
   @IsString()

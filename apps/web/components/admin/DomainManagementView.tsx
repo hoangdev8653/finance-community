@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Compass,
@@ -26,13 +27,12 @@ import { AdminSearchInput } from './AdminSearchInput';
 import { useToast } from '@/lib/toast/ToastContext';
 import { getDomainColorTheme } from '@/lib/utils/domain-colors';
 import { AdminConfirmDialog } from './AdminConfirmDialog';
+import { MediaUploader } from '@/components/media/MediaUploader';
+import { useUploadMedia } from '@/lib/media/use-media';
 
 interface DomainFormData {
   name: string;
-  code: string;
-  slug: string;
-  nameVi: string;
-  nameEn: string;
+  imageUrl: string;
   description: string;
   sortOrder: number;
   isActive: boolean;
@@ -41,35 +41,13 @@ interface DomainFormData {
 
 const emptyForm: DomainFormData = {
   name: '',
-  code: '',
-  slug: '',
-  nameVi: '',
-  nameEn: '',
+  imageUrl: '',
   description: '',
   sortOrder: 0,
   isActive: true,
   isPromoted: false,
 };
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'd')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-function codeify(text: string): string {
-  return text
-    .toUpperCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/đ/g, 'D')
-    .replace(/[^A-Z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '');
-}
 
 export function DomainManagementView() {
   const { toast } = useToast();
@@ -79,9 +57,16 @@ export function DomainManagementView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingDomain, setEditingDomain] = useState<DomainEntity | null>(null);
   const [form, setForm] = useState<DomainFormData>(emptyForm);
-  const [autoGenerateSlug, setAutoGenerateSlug] = useState(true);
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
+  const [localImagePreviewUrl, setLocalImagePreviewUrl] = useState<string | null>(null);
+  const { mutateAsync: uploadDomainImage, isPending: isUploadingImage, uploadProgress } = useUploadMedia();
   const [deleteTarget, setDeleteTarget] = useState<DomainEntity | null>(null);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!localImagePreviewUrl) return;
+    return () => URL.revokeObjectURL(localImagePreviewUrl);
+  }, [localImagePreviewUrl]);
 
   // Fetch domains (with inactive domains included for admin)
   const {
@@ -134,10 +119,7 @@ export function DomainManagementView() {
     mutationFn: (data: DomainFormData) =>
       postsService.createDomain({
         name: data.name.trim(),
-        code: data.code.trim().toUpperCase(),
-        slug: data.slug.trim().toLowerCase(),
-        nameVi: data.nameVi.trim() || undefined,
-        nameEn: data.nameEn.trim() || undefined,
+        imageUrl: data.imageUrl?.trim() || undefined,
         description: data.description.trim() || undefined,
         sortOrder: Number(data.sortOrder) || 0,
         isActive: data.isActive,
@@ -191,9 +173,7 @@ export function DomainManagementView() {
       const matchesSearch =
         search === '' ||
         d.name.toLowerCase().includes(search.toLowerCase()) ||
-        d.code.toLowerCase().includes(search.toLowerCase()) ||
-        d.slug.toLowerCase().includes(search.toLowerCase()) ||
-        (d.nameVi && d.nameVi.toLowerCase().includes(search.toLowerCase()));
+        (d.description?.toLowerCase().includes(search.toLowerCase()) ?? false);
 
       const matchesStatus =
         statusFilter === 'ALL' ||
@@ -207,24 +187,23 @@ export function DomainManagementView() {
   const openCreateModal = () => {
     setEditingDomain(null);
     setForm(emptyForm);
-    setAutoGenerateSlug(true);
+    setPendingImageFile(null);
+    setLocalImagePreviewUrl(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (domain: DomainEntity) => {
     setEditingDomain(domain);
+    setPendingImageFile(null);
+    setLocalImagePreviewUrl(null);
     setForm({
       name: domain.name,
-      code: domain.code,
-      slug: domain.slug,
-      nameVi: domain.nameVi || '',
-      nameEn: domain.nameEn || '',
+      imageUrl: domain.imageUrl ?? '',
       description: domain.description || '',
       sortOrder: domain.sortOrder || 0,
       isActive: domain.isActive,
       isPromoted: domain.isPromoted,
     });
-    setAutoGenerateSlug(false);
     setIsModalOpen(true);
   };
 
@@ -232,33 +211,41 @@ export function DomainManagementView() {
     setIsModalOpen(false);
     setEditingDomain(null);
     setForm(emptyForm);
+    setPendingImageFile(null);
+    setLocalImagePreviewUrl(null);
   };
 
   const handleNameChange = (val: string) => {
-    setForm((prev) => {
-      const next = { ...prev, name: val };
-      if (autoGenerateSlug && !editingDomain) {
-        next.slug = slugify(val);
-        next.code = codeify(val);
-      }
-      return next;
-    });
+    setForm((prev) => ({ ...prev, name: val }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!form.name.trim()) {
       toast.error('Vui lòng nhập tên lĩnh vực.');
       return;
     }
-    if (!form.code.trim()) {
-      toast.error('Vui lòng nhập mã code lĩnh vực (VD: MONEY, REAL_ESTATE).');
-      return;
+
+
+    let imageUrl = form.imageUrl.trim() || undefined;
+    if (pendingImageFile) {
+      try {
+        const media = await uploadDomainImage({
+          file: pendingImageFile,
+          purpose: 'cover',
+          folder: 'domains',
+        });
+        imageUrl = media.secureUrl;
+      } catch (error: any) {
+        toast.error(error?.message || 'Không thể tải ảnh lên Cloudinary. Vui lòng thử lại.');
+        return;
+      }
     }
 
     const payload = {
       ...form,
-      slug: form.slug.trim() || undefined,
+      imageUrl: imageUrl ?? (editingDomain ? null : undefined),
     };
 
     if (editingDomain) {
@@ -293,7 +280,7 @@ export function DomainManagementView() {
     deleteMutation.mutate(deleteTarget.id, { onSuccess: () => setDeleteTarget(null) });
   };
 
-  const isSubmitting = createMutation.isPending || updateMutation.isPending;
+  const isSubmitting = createMutation.isPending || updateMutation.isPending || isUploadingImage;
 
   return (
     <div className="domains-surface space-y-6">
@@ -397,7 +384,7 @@ export function DomainManagementView() {
             onValueChange={setSearch}
             fullWidth
             containerClassName="min-w-[220px] flex-1"
-            placeholder="Tên lĩnh vực, mã hoặc slug..."
+            placeholder="Tên lĩnh vực hoặc mô tả..."
             aria-label="Tìm kiếm lĩnh vực"
           />
 
@@ -408,16 +395,16 @@ export function DomainManagementView() {
 
         {/* Table Content */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[1100px] table-fixed text-left text-sm">
             <thead className="bg-slate-50/70 dark:bg-slate-900/40 border-b border-slate-100 dark:border-border/60 text-slate-700 dark:text-slate-200 font-semibold">
               <tr>
-                <th className="py-3.5 px-5">Lĩnh vực</th>
-                <th className="py-3.5 px-4">Mã Code</th>
-                <th className="py-3.5 px-4">Đường dẫn (Slug)</th>
-                <th className="py-3.5 px-4 text-center">Trực thuộc</th>
-                <th className="py-3.5 px-4 text-center">Thứ tự</th>
-                <th className="py-3.5 px-4 text-center">Trạng thái</th>
-                <th className="py-3.5 px-5 text-right">Thao tác</th>
+                <th className="w-[15%] py-3.5 px-5">Tên lĩnh vực</th>
+                <th className="w-[16%] py-3.5 px-4 text-center">Ảnh</th>
+                <th className="w-[29%] py-3.5 px-4">Mô tả ngắn</th>
+                <th className="w-[11%] py-3.5 px-4 text-center">Trực thuộc</th>
+                <th className="w-[7%] py-3.5 px-4 text-center">Thứ tự</th>
+                <th className="w-[12%] py-3.5 px-4 text-center">Trạng thái</th>
+                <th className="w-[10%] py-3.5 px-5 text-right">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-border/60">
@@ -448,45 +435,42 @@ export function DomainManagementView() {
                     >
                       {/* Name */}
                       <td className="py-4 px-5">
-                        <div className="flex items-center gap-3">
-                          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-[8px] font-bold text-xs shadow-2xs border ${domainColor.border} ${domainColor.bg} ${domainColor.text}`}>
-                            {domain.code.slice(0, 2)}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-heading font-bold text-base text-foreground">
-                                {domain.name}
-                              </span>
-                              {domain.isPromoted && (
-                                <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
-                                  <Sparkles className="h-2.5 w-2.5" /> Nổi bật
-                                </span>
-                              )}
-                            </div>
-                            {domain.description ? (
-                              <p className="text-sm text-slate-600 dark:text-slate-300 line-clamp-1 mt-0.5">
-                                {domain.description}
-                              </p>
-                            ) : (
-                              <p className="text-sm text-slate-600 dark:text-slate-300 mt-0.5">
-                                {domain.nameVi || domain.nameEn || 'Trục nội dung hệ thống'}
-                              </p>
-                            )}
-                          </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-heading font-bold text-base text-foreground">
+                            {domain.name}
+                          </span>
+                          {domain.isPromoted && (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:text-amber-300">
+                              <Sparkles className="h-2.5 w-2.5" /> Nổi bật
+                            </span>
+                          )}
                         </div>
                       </td>
 
-                      {/* Code */}
-                      <td className="py-4 px-4 font-mono">
-                        <span className={`inline-flex items-center rounded-[6px] border px-2.5 py-1 text-sm font-semibold ${domainColor.border} ${domainColor.bg} ${domainColor.text}`}>
-                          {domain.code}
-                        </span>
+                      {/* Image */}
+                      <td className="py-4 px-4">
+                        <div className="flex justify-center">
+                          {domain.imageUrl ? (
+                            <Image
+                              src={domain.imageUrl}
+                              alt=""
+                              width={240}
+                              height={180}
+                              sizes="120px"
+                              loading="lazy"
+                              className="h-[90px] w-[120px] rounded-lg border border-slate-200 object-cover shadow-sm dark:border-border"
+                            />
+                          ) : (
+                            <div className={`flex h-[90px] w-[120px] items-center justify-center rounded-lg font-bold text-base shadow-2xs border ${domainColor.border} ${domainColor.bg} ${domainColor.text}`}>
+                              {domain.name.slice(0, 2).toLocaleUpperCase('vi')}
+                            </div>
+                          )}
+                        </div>
                       </td>
 
-                    {/* Slug */}
-                    <td className="py-4 px-4 text-sm font-medium text-slate-600 dark:text-slate-300">
-                      /{domain.slug}
-                    </td>
+                      <td className="max-w-0 py-4 px-4 text-base font-semibold text-slate-700 dark:text-slate-200">
+                        <p className="line-clamp-2">{domain.description || '—'}</p>
+                      </td>
 
                     {/* Children count */}
                     <td className="py-4 px-4 text-center">
@@ -570,17 +554,17 @@ export function DomainManagementView() {
       {/* 4. Modal: Thêm / Sửa Lĩnh vực */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[10px] border border-slate-100 dark:border-border bg-white dark:bg-card p-7 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-border/60 pb-4">
+          <div className="flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-border bg-white dark:bg-card shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex shrink-0 items-center justify-between border-b border-slate-200 dark:border-border/60 px-7 py-5 sm:px-8">
               <div className="flex items-center gap-2.5">
                 <div className="grid h-12 w-12 shrink-0 place-items-center rounded-[10px] bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
                   <Compass className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading text-xl font-bold text-foreground">
+                  <h3 className="font-heading text-2xl font-bold text-foreground">
                     {editingDomain ? 'Chỉnh sửa Lĩnh vực' : 'Thêm Lĩnh vực mới'}
                   </h3>
-                  <p className="text-sm text-muted-foreground mt-0.5">
+                  <p className="text-base text-slate-600 dark:text-muted-foreground mt-1">
                     Quản lý trục chủ đề chính cho toàn bộ nền tảng.
                   </p>
                 </div>
@@ -588,104 +572,79 @@ export function DomainManagementView() {
               <button
                 type="button"
                 onClick={closeModal}
+                disabled={isSubmitting}
                 className="rounded-[6px] p-1.5 text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-muted transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col font-medium">
+              <div className="min-h-0 flex-1 space-y-6 overflow-y-auto px-7 py-6 sm:px-8">
               <div>
-                <label className="block text-xs font-semibold text-foreground">
+                <label className="block text-sm font-bold text-slate-900 dark:text-foreground">
                   Tên lĩnh vực <span className="text-rose-500">*</span>
                 </label>
                 <input
                   type="text"
                   required
+                  maxLength={120}
                   value={form.name}
                   onChange={(e) => handleNameChange(e.target.value)}
-                  placeholder="Ví dụ: Bất động sản, Tiền mã hóa, Tài chính..."
-                  className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
+                  placeholder="Ví dụ: Tài chính, Bất động sản"
+                  className="mt-1 h-12 w-full rounded-xl border border-slate-300 dark:border-border bg-white dark:bg-background px-4 text-base font-medium text-slate-900 dark:text-foreground placeholder:font-medium placeholder:text-slate-600 dark:placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Mã Code <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={form.code}
-                    onChange={(e) =>
-                      setForm((prev) => ({ ...prev, code: e.target.value.toUpperCase() }))
-                    }
-                    placeholder="VD: REAL_ESTATE"
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm font-mono uppercase text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
-                  />
-                  <p className="mt-1 text-[10px] text-muted-foreground">Viết hoa, không dấu</p>
+              <div className="rounded-xl border border-dashed border-slate-300 dark:border-border bg-slate-50/70 dark:bg-muted/30 p-4">
+                <div className="mb-3">
+                  <h4 className="text-sm font-semibold text-slate-900 dark:text-foreground">Ảnh đại diện</h4>
                 </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Đường dẫn (Slug) <span className="font-normal text-muted-foreground text-[11px]">(tùy chọn - tự sinh từ tên)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={form.slug}
-                    onChange={(e) =>
-                      setForm((prev) => ({ ...prev, slug: e.target.value.toLowerCase() }))
-                    }
-                    placeholder="VD: bat-dong-san"
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
-                  />
-                  <p className="mt-1 text-[10px] text-muted-foreground">kebab-case trên URL</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Tên tiếng Việt mở rộng
-                  </label>
-                  <input
-                    type="text"
-                    value={form.nameVi}
-                    onChange={(e) => setForm((prev) => ({ ...prev, nameVi: e.target.value }))}
-                    placeholder="VD: Bất động sản & Nhà đất"
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground">
-                    Tên tiếng Anh
-                  </label>
-                  <input
-                    type="text"
-                    value={form.nameEn}
-                    onChange={(e) => setForm((prev) => ({ ...prev, nameEn: e.target.value }))}
-                    placeholder="VD: Real Estate"
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
-                  />
-                </div>
+                <MediaUploader
+                  purpose="cover"
+                  folder="domains"
+                  label="Chọn ảnh đại diện lĩnh vực"
+                  className="[&_p]:font-semibold"
+                  currentPreviewUrl={localImagePreviewUrl || form.imageUrl || null}
+                  deferUpload
+                  onFileSelected={(file) => {
+                    setPendingImageFile(file);
+                    setLocalImagePreviewUrl(URL.createObjectURL(file));
+                    setForm((current) => ({ ...current, imageUrl: '' }));
+                  }}
+                  onSuccess={() => undefined}
+                  onError={(error) => toast.error(error.message)}
+                  onClear={() => {
+                    setPendingImageFile(null);
+                    setLocalImagePreviewUrl(null);
+                    setForm((current) => ({ ...current, imageUrl: '' }));
+                  }}
+                />
+                {isUploadingImage && (
+                  <p className="mt-3 text-sm font-medium text-emerald-700 dark:text-emerald-400" role="status">
+                    Đang tải ảnh lên Cloudinary… {uploadProgress}%
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-foreground">Mô tả ngắn</label>
+                <label className="block text-sm font-bold text-slate-900 dark:text-foreground">Mô tả ngắn</label>
                 <textarea
                   rows={2}
                   value={form.description}
                   onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-                  placeholder="Mô tả tóm tắt nội dung của lĩnh vực này..."
-                  className="mt-1 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background p-3.5 text-sm text-foreground min-h-[96px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all resize-y"
+                  placeholder="Mô tả ngắn về lĩnh vực này..."
+                  className="mt-1 min-h-[120px] w-full resize-y rounded-xl border border-slate-300 dark:border-border bg-white dark:bg-background px-4 py-3.5 text-base font-medium text-slate-900 dark:text-foreground placeholder:font-medium placeholder:text-slate-600 dark:placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-3.5 items-center pt-1">
+              <div className="border-t border-slate-100 dark:border-border/60 pt-5">
+              <div className="mb-4">
+                <h4 className="text-sm font-semibold text-foreground">Trạng thái và sắp xếp</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 items-center pt-1">
                 <div>
-                  <label className="block text-xs font-semibold text-foreground">Thứ tự hiển thị</label>
+                  <label className="block text-sm font-bold text-slate-900 dark:text-foreground">Thứ tự hiển thị</label>
                   <input
                     type="number"
                     min={0}
@@ -693,7 +652,7 @@ export function DomainManagementView() {
                     onChange={(e) =>
                       setForm((prev) => ({ ...prev, sortOrder: parseInt(e.target.value, 10) || 0 }))
                     }
-                    className="mt-1 h-11 w-full rounded-[8px] border border-slate-200 dark:border-border bg-background px-4 text-sm font-mono text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
+                    className="mt-1 h-12 w-full rounded-xl border border-slate-300 dark:border-border bg-white dark:bg-background px-4 text-base font-mono text-slate-900 dark:text-foreground placeholder:text-slate-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/20 focus-visible:border-emerald-500 transition-all"
                   />
                 </div>
 
@@ -705,7 +664,7 @@ export function DomainManagementView() {
                     onChange={(e) => setForm((prev) => ({ ...prev, isActive: e.target.checked }))}
                     className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <label htmlFor="is-active" className="text-xs font-medium text-foreground cursor-pointer">
+                  <label htmlFor="is-active" className="text-sm font-medium text-slate-800 dark:text-foreground cursor-pointer">
                     Kích hoạt
                   </label>
                 </div>
@@ -718,45 +677,21 @@ export function DomainManagementView() {
                     onChange={(e) => setForm((prev) => ({ ...prev, isPromoted: e.target.checked }))}
                     className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500"
                   />
-                  <label htmlFor="is-promoted" className="text-xs font-medium text-foreground cursor-pointer">
+                  <label htmlFor="is-promoted" className="text-sm font-medium text-slate-800 dark:text-foreground cursor-pointer">
                     Nổi bật
                   </label>
                 </div>
               </div>
+              </div>
 
-              {/* Color Theme Preview */}
-              {(() => {
-                const previewTheme = getDomainColorTheme(
-                  { code: form.code, slug: form.slug, id: editingDomain?.id },
-                  domains
-                );
-                return (
-                  <div className="flex items-center gap-3 rounded-[8px] border border-slate-100 dark:border-border/80 bg-slate-50/70 dark:bg-muted/40 p-3">
-                    <div className={`grid h-9 w-9 shrink-0 place-items-center rounded-[8px] font-bold text-xs ${previewTheme.border} ${previewTheme.bg} ${previewTheme.text} border shadow-2xs`}>
-                      {(form.code || 'LV').slice(0, 2)}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[11px] font-medium text-muted-foreground">Màu sắc nhận diện:</p>
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <span className={`h-2 w-2 rounded-full ${previewTheme.dot}`} />
-                        <span className={`text-xs font-semibold ${previewTheme.text}`}>
-                          {previewTheme.name}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          (Tự động gán màu riêng biệt, không trùng lặp)
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-border/60">
+              </div>
+              <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 dark:border-border/60 bg-white dark:bg-card px-7 py-4 sm:px-8">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={closeModal}
+                  disabled={isSubmitting}
                   className="rounded-[8px] h-11 px-5 text-sm font-medium"
                 >
                   Hủy

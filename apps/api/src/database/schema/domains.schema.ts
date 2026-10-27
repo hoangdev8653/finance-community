@@ -8,7 +8,7 @@ export const domainsTable = pgTable(
     slug: varchar('slug', { length: 80 }).notNull(),
     name: varchar('name', { length: 120 }).notNull(),
     nameVi: varchar('name_vi', { length: 120 }),
-    nameEn: varchar('name_en', { length: 120 }),
+    imageUrl: varchar('image_url', { length: 2048 }),
     description: text('description'),
     sortOrder: integer('sort_order').notNull().default(0),
     isActive: boolean('is_active').notNull().default(true),

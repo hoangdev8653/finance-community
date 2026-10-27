@@ -102,6 +102,7 @@ export interface CategoryEntity {
   parentId?: string | null;
   nameVi?: string | null;
   nameEn?: string | null;
+  imageUrl?: string | null;
   contentTypes?: Array<'SERIES' | 'COMMUNITY'>;
   isActive?: boolean;
   isPromoted?: boolean;
@@ -153,7 +154,7 @@ export interface DomainEntity {
   slug: string;
   name: string;
   nameVi: string | null;
-  nameEn: string | null;
+  imageUrl?: string | null;
   description: string | null;
   sortOrder: number;
   isActive: boolean;

@@ -104,10 +104,9 @@ export const postsService = {
 
   async createDomain(data: {
     name: string;
-    code: string;
-    slug: string;
-    nameVi?: string;
-    nameEn?: string;
+    code?: string;
+    slug?: string;
+    imageUrl?: string;
     description?: string;
     sortOrder?: number;
     isActive?: boolean;
@@ -123,8 +122,7 @@ export const postsService = {
       name: string;
       code: string;
       slug: string;
-      nameVi?: string;
-      nameEn?: string;
+      imageUrl?: string;
       description?: string;
       sortOrder?: number;
       isActive?: boolean;

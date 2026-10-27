@@ -12,6 +12,7 @@ export const categoriesTable = pgTable(
     parentId: uuid('parent_id').references((): any => categoriesTable.id, { onDelete: 'set null' }),
     nameVi: varchar('name_vi', { length: 100 }),
     nameEn: varchar('name_en', { length: 100 }),
+    imageUrl: varchar('image_url', { length: 2048 }),
     contentTypes: jsonb('content_types').$type<string[]>().notNull().default([]),
     description: text('description'),
     sortOrder: integer('sort_order').notNull().default(0),
